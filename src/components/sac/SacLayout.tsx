@@ -11,7 +11,7 @@ import logo from "@/assets/logo.png";
 export function SacLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { isAgent, isAdmin } = useIsSupportAgent();
 
   const agentNav = [
@@ -91,6 +91,21 @@ export function SacLayout({ children }: { children: ReactNode }) {
         "flex-1 overflow-y-auto",
         isAgent ? "md:p-6 p-4 pt-14 md:pt-6" : "p-4"
       )}>
+        {/* Top bar for logged-in non-agent users */}
+        {user && !isAgent && (
+          <div className="max-w-3xl mx-auto mb-4 flex items-center justify-between">
+            <Link to="/timer">
+              <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                <ArrowLeft className="h-4 w-4" />
+                {t("support.back_to_app")}
+              </Button>
+            </Link>
+            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2 text-destructive hover:text-destructive">
+              <LogOut className="h-4 w-4" />
+              {t("sidebar.logout")}
+            </Button>
+          </div>
+        )}
         {children}
       </main>
     </div>
