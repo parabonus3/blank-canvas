@@ -39,7 +39,7 @@ export function useDirectMessages(friendUserId: string | null) {
   useEffect(() => {
     if (!user || !friendUserId) return;
     const channel = supabase
-      .channel(`dm-${user.id}-${friendUserId}`)
+      .channel(`dm-${user.id}-${friendUserId}-${crypto.randomUUID()}`)
       .on("postgres_changes", {
         event: "INSERT",
         schema: "public",
