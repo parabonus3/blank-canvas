@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -1232,30 +1232,18 @@ export type Database = {
         Args: { _color?: string; _name: string; _password?: string }
         Returns: string
       }
-      create_room_with_password:
-        | {
-            Args: {
-              _description: string
-              _is_public: boolean
-              _name: string
-              _password?: string
-              _room_type: string
-              _rules?: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              _country?: string
-              _description: string
-              _is_public: boolean
-              _name: string
-              _password?: string
-              _room_type: string
-              _rules?: string
-            }
-            Returns: string
-          }
+      create_room_with_password: {
+        Args: {
+          _country?: string
+          _description: string
+          _is_public: boolean
+          _name: string
+          _password?: string
+          _room_type: string
+          _rules?: string
+        }
+        Returns: string
+      }
       credit_purchased_freezes: {
         Args: { _amount: number; _user_id: string }
         Returns: undefined
@@ -1321,39 +1309,23 @@ export type Database = {
         }[]
       }
       get_member_room_streak: { Args: { _user_id: string }; Returns: number }
-      get_public_rooms_ranking:
-        | {
-            Args: { _category?: string }
-            Returns: {
-              description: string
-              goal_hours: number
-              invite_code: string
-              member_count: number
-              name: string
-              online_count: number
-              room_id: string
-              room_type: string
-              slug: string
-              total_seconds: number
-            }[]
-          }
-        | {
-            Args: { _category?: string; _country?: string; _search?: string }
-            Returns: {
-              country: string
-              description: string
-              goal_hours: number
-              invite_code: string
-              member_count: number
-              name: string
-              online_count: number
-              room_id: string
-              room_type: string
-              slug: string
-              studying_count: number
-              total_seconds: number
-            }[]
-          }
+      get_public_rooms_ranking: {
+        Args: { _category?: string; _country?: string; _search?: string }
+        Returns: {
+          country: string
+          description: string
+          goal_hours: number
+          invite_code: string
+          member_count: number
+          name: string
+          online_count: number
+          room_id: string
+          room_type: string
+          slug: string
+          studying_count: number
+          total_seconds: number
+        }[]
+      }
       get_public_rooms_ranking_by_period: {
         Args: {
           _category?: string
@@ -1384,19 +1356,12 @@ export type Database = {
           total_minutes: number
         }[]
       }
-      get_room_daily_progress:
-        | {
-            Args: { _room_id: string }
-            Returns: {
-              total_seconds_today: number
-            }[]
-          }
-        | {
-            Args: { _period?: string; _room_id: string }
-            Returns: {
-              total_seconds_today: number
-            }[]
-          }
+      get_room_daily_progress: {
+        Args: { _period?: string; _room_id: string }
+        Returns: {
+          total_seconds_today: number
+        }[]
+      }
       get_room_invite_code: { Args: { _room_id: string }; Returns: string }
       get_room_member_profiles: {
         Args: { _room_id: string }
@@ -1464,9 +1429,10 @@ export type Database = {
         Args: { _password?: string; _room_id: string }
         Returns: string
       }
-      join_room_by_invite_code:
-        | { Args: { _code: string }; Returns: string }
-        | { Args: { _code: string; _password?: string }; Returns: string }
+      join_room_by_invite_code: {
+        Args: { _code: string; _password?: string }
+        Returns: string
+      }
       kick_room_member: {
         Args: { _member_user_id: string; _room_id: string }
         Returns: undefined

@@ -1,16 +1,1 @@
-project_id = "yxjyulhjfsubmdkyzgru"
-
-[functions.admin-users]
-verify_jwt = false
-
-[functions.check-subscription]
-verify_jwt = false
-
-[functions.send-email]
-verify_jwt = false
-
-[functions.stripe-webhook]
-verify_jwt = false
-
-[functions.sac-admin]
-verify_jwt = false
+project_id = "iukwvfyhforubyqgguwl"
