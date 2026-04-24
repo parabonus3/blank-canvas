@@ -86,21 +86,20 @@ export function useRoomMembers(roomId: string | undefined) {
     if (!roomId) return;
 
     const channel = supabase
-      .channel(`room-members-${roomId}`)
+      .channel(`room-members-${roomId}-${Math.random().toString(36).slice(2, 8)}`);
+
+    channel
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         { event: "UPDATE", schema: "public", table: "room_members", filter: `room_id=eq.${roomId}` },
         (payload: any) => {
           queryClient.invalidateQueries({ queryKey: ["roomMembers", roomId] });
-          
-          // Auto-log study started/completed events
+
           const newRow = payload.new;
           const oldRow = payload.old;
           if (newRow && oldRow && user) {
-            // Only log for other members (our own logs are handled locally)
             if (newRow.user_id !== user.id) {
               if (!oldRow.is_timer_active && newRow.is_timer_active) {
-                // Someone started studying
                 supabase.from("room_activity_log").insert({
                   room_id: roomId,
                   user_id: newRow.user_id,
@@ -108,8 +107,7 @@ export function useRoomMembers(roomId: string | undefined) {
                 }).then();
               }
             }
-            
-            // Check for milestone achievements (1h, 5h, 10h, 50h, 100h)
+
             if (newRow.total_seconds !== oldRow.total_seconds) {
               const oldHours = Math.floor(oldRow.total_seconds / 3600);
               const newHours = Math.floor(newRow.total_seconds / 3600);
@@ -130,14 +128,14 @@ export function useRoomMembers(roomId: string | undefined) {
         }
       )
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         { event: "INSERT", schema: "public", table: "room_members", filter: `room_id=eq.${roomId}` },
         () => {
           queryClient.invalidateQueries({ queryKey: ["roomMembers", roomId] });
         }
       )
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         { event: "DELETE", schema: "public", table: "room_members", filter: `room_id=eq.${roomId}` },
         () => {
           queryClient.invalidateQueries({ queryKey: ["roomMembers", roomId] });
