@@ -1,47 +1,28 @@
 ## Diagnóstico
 
-Fiz uma varredura completa no código procurando referências a banco de dados. **Boas notícias**: nenhum código-fonte (`src/`, edge functions, `config.toml`) referencia outro projeto Supabase. Tudo usa as variáveis de ambiente padrão e o `supabase/config.toml` aponta corretamente para o projeto atual (`iukwvfyhforubyqgguwl`).
+Pelos logs do Supabase Auth + console do navegador:
 
-**Mas o arquivo `.env` está bagunçado e parcialmente apontando para um projeto antigo:**
+1. **`429 Too Many Requests` em `/signup`** — rate limit de envio de email atingido.
+2. **`400 email_address_invalid` em `nicky@gmail.com`** — o Supabase desse projeto está rejeitando esse email específico (provavelmente validação anti-spam ativa). Não é bug do código; é necessário usar um email real.
+3. **Duplicação de email de confirmação** no `AuthContext.signUp`: além do email padrão que o Supabase já dispara automaticamente no `signUp`, o código chama **mais uma vez** a edge function `send-email` para mandar outro email. Resultado: 2 emails por cadastro → bate no rate limit muito rápido (foi o que aconteceu nos logs).
+4. **Falta `emailRedirectTo` no `signUp`** — sem isso, quando o usuário clica no link de confirmação no email, ele não volta para o app corretamente. É um requisito obrigatório.
+5. **Fluxo de signup navega para `/timer` mesmo sem confirmação** — se a confirmação de email estiver ativa no projeto Supabase, o usuário "se cadastra" mas não tem sessão; o `navigate('/timer')` fica em loop voltando para `/auth`, dando impressão de bug.
 
-```
-SUPABASE_PUBLISHABLE_KEY="...ref:lezufzdmjbozpzskqglv..."   ← chave de OUTRO projeto (antigo)
-SUPABASE_URL="https://iukwvfyhforubyqgguwl.supabase.co"     ← projeto atual (ok)
-VITE_SUPABASE_PROJECT_ID=                                    ← VAZIO
-VITE_SUPABASE_PUBLISHABLE_KEY=                               ← VAZIO
-VITE_SUPABASE_URL=                                           ← VAZIO
-```
+## Correções
 
-Problemas concretos:
-1. `SUPABASE_PUBLISHABLE_KEY` contém um JWT cujo `ref` é `lezufzdmjbozpzskqglv` — esse é um projeto Supabase **antigo/diferente** do nosso. Não é usado pelo frontend (porque o frontend lê `VITE_SUPABASE_*`), mas está poluindo o arquivo e pode confundir scripts/ferramentas.
-2. As três variáveis `VITE_SUPABASE_*` (que o `src/integrations/supabase/client.ts` realmente lê) estão vazias. O frontend só funciona porque a Lovable injeta esses valores em runtime — mas qualquer build local ou dev fora da Lovable falharia.
+### 1. `src/contexts/AuthContext.tsx` — corrigir `signUp`
+- Adicionar `options.emailRedirectTo: ${window.location.origin}/`.
+- **Remover** a chamada manual à edge function `send-email` no signup. O Supabase já envia o email padrão automaticamente. Manter chamada manual estava causando o rate limit 429.
+- Retornar também `data` para a UI saber se a sessão foi criada (auto-login) ou se requer confirmação por email.
 
-Confirmações adicionais:
-- `supabase/config.toml` → `project_id = "iukwvfyhforubyqgguwl"` ✅
-- Todas as 9 edge functions usam apenas `Deno.env.get('SUPABASE_*')` (injetado pela Supabase no runtime das functions, sempre o projeto atual) ✅
-- Nenhum URL hardcoded de outro projeto encontrado em código ✅
-- Tabelas listadas batem 1:1 com `src/integrations/supabase/types.ts` ✅
-- Banco está vazio (`profiles` tem 0 linhas) — nada a migrar de dados.
+### 2. `src/pages/Auth.tsx` — melhorar UX do signup
+- Após signup bem-sucedido: se `data.session` existir → `navigate('/timer')`. Se não existir (confirmação pendente) → mostrar toast "Confirme seu email para entrar" e ficar na página de login.
+- Mensagens de erro mais claras quando o Supabase rejeita o email (ex: "Esse email não foi aceito. Use um email real.").
+- Tratar erro `over_email_send_rate_limit` (429) com mensagem amigável: "Muitas tentativas. Aguarde alguns minutos e tente novamente."
 
-## Plano de correção
-
-Atualizar o `.env` para:
-1. Remover a chave antiga do projeto `lezufzdmjbozpzskqglv`.
-2. Preencher as três variáveis `VITE_SUPABASE_*` com os valores corretos do projeto atual:
-   - `VITE_SUPABASE_PROJECT_ID="iukwvfyhforubyqgguwl"`
-   - `VITE_SUPABASE_URL="https://iukwvfyhforubyqgguwl.supabase.co"`
-   - `VITE_SUPABASE_PUBLISHABLE_KEY="<anon key do projeto atual>"`
-3. Manter `SUPABASE_URL` e adicionar `SUPABASE_PUBLISHABLE_KEY` corretos (caso scripts não-Vite leiam dessas vars).
-
-Resultado esperado: `.env` 100% consistente apontando para `iukwvfyhforubyqgguwl`, build funciona em qualquer ambiente, zero referência ao projeto antigo.
+### 3. Recomendação ao usuário (não é mudança de código)
+- Para teste imediato, usar **um email real** (não `nicky@gmail.com`).
+- Se quiser testar sem precisar confirmar email, desabilitar "Confirm email" no painel do Supabase Auth → permite cadastro com login automático imediato.
 
 ## Risco
-
-**Mínimo.** É apenas reescrita de variáveis de ambiente. O frontend já está funcionando hoje (a Lovable injeta os valores em runtime). A correção só elimina inconsistência latente e remove resíduo do projeto antigo.
-
-## Não há outras mudanças necessárias
-
-- Nenhum código TS/TSX precisa ser alterado.
-- Nenhuma edge function precisa ser alterada.
-- Nenhuma migration de schema necessária.
-- Nenhum dado para migrar.
+**Mínimo.** Apenas remoção de chamada duplicada e adição de `emailRedirectTo` (boa prática obrigatória). Sem mudanças de schema/backend.

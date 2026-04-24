@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: Error | null; needsConfirmation?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -39,30 +39,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, displayName?: string) => {
-    const { error } = await supabase.auth.signUp({
+    const redirectUrl = `${window.location.origin}/`;
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectUrl,
         data: { display_name: displayName },
       },
     });
-    
+
     if (error) return { error };
 
-    // Send confirmation email via Resend (bypasses Lovable Cloud hook)
-    try {
-      await supabase.functions.invoke('send-email', {
-        body: {
-          email,
-          type: 'signup',
-          redirect_to: `${window.location.origin}/`,
-        },
-      });
-    } catch (emailError) {
-      console.error('Error sending signup email:', emailError);
-    }
-
-    return { error: null };
+    // If no session is returned, the project requires email confirmation
+    const needsConfirmation = !data.session;
+    return { error: null, needsConfirmation };
   };
 
   const signIn = async (email: string, password: string) => {
