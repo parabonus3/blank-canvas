@@ -207,12 +207,14 @@ export default function Explore() {
                   const flag = getFlagByCode(room.country);
                   const metric = getSecondaryMetric(room);
 
+                  const isPrivate = room.is_public === false;
                   return (
                     <div
                       key={room.room_id}
                       className={cn(
                         "rounded-xl border bg-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:shadow-md",
-                        isTop3 && "border-primary/30"
+                        isTop3 && "border-primary/30",
+                        isPrivate && "opacity-90"
                       )}
                     >
                       <div className="flex items-center gap-3 sm:w-12 shrink-0">
@@ -224,42 +226,58 @@ export default function Explore() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-primary shrink-0" />
-                          {flag && <span className="text-base shrink-0">{flag}</span>}
-                          <h3 className="font-semibold truncate">{room.name}</h3>
-                          {index < 10 && (
+                          {isPrivate ? (
+                            <Lock className="h-4 w-4 text-muted-foreground shrink-0" />
+                          ) : (
+                            <Icon className="h-4 w-4 text-primary shrink-0" />
+                          )}
+                          {!isPrivate && flag && <span className="text-base shrink-0">{flag}</span>}
+                          <h3 className={cn("font-semibold truncate", isPrivate && "italic text-muted-foreground")}>{room.name}</h3>
+                          {!isPrivate && index < 10 && (
                             <span className="text-[10px] bg-yellow-500/10 text-yellow-600 px-1.5 py-0.5 rounded-full font-medium shrink-0 flex items-center gap-0.5">
                               <Trophy className="h-3 w-3" /> Top 10
                             </span>
                           )}
                         </div>
-                        {room.description && (
+                        {!isPrivate && room.description && (
                           <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{room.description}</p>
                         )}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground shrink-0">
-                        <div className="flex items-center gap-1">
-                          <Users className="h-3.5 w-3.5" />
-                          <span>{room.member_count}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Wifi className="h-3.5 w-3.5 text-green-500" />
-                          <span>{room.online_count}</span>
-                        </div>
+                        {!isPrivate && (
+                          <div className="flex items-center gap-1">
+                            <Users className="h-3.5 w-3.5" />
+                            <span>{room.member_count}</span>
+                          </div>
+                        )}
+                        {!isPrivate && (
+                          <div className="flex items-center gap-1">
+                            <Wifi className="h-3.5 w-3.5 text-green-500" />
+                            <span>{room.online_count}</span>
+                          </div>
+                        )}
                         {room.studying_count > 0 && (
                           <div className="flex items-center gap-1 text-green-600 font-medium">
                             <BookOpen className="h-3.5 w-3.5 animate-pulse" />
                             <span>{room.studying_count}</span>
                           </div>
                         )}
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3.5 w-3.5" />
-                          <span>{metric.value}</span>
-                        </div>
+                        {!isPrivate && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3.5 w-3.5" />
+                            <span>{metric.value}</span>
+                          </div>
+                        )}
                       </div>
-                      <Button size="sm" onClick={() => handleJoin(room)} className="shrink-0">
-                        {t("rooms.join")}
-                      </Button>
+                      {isPrivate ? (
+                        <Button size="sm" variant="outline" disabled className="shrink-0">
+                          <Lock className="h-3.5 w-3.5 mr-1" /> {t("rooms.private") || "Privada"}
+                        </Button>
+                      ) : (
+                        <Button size="sm" onClick={() => handleJoin(room)} className="shrink-0">
+                          {t("rooms.join")}
+                        </Button>
+                      )}
                     </div>
                   );
                 })}
