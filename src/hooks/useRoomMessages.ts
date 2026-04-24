@@ -66,7 +66,7 @@ export function useRoomMessages(roomId: string | undefined, options?: UseRoomMes
     if (!roomId) return;
 
     const channel = supabase
-      .channel(`room-messages-${roomId}`)
+      .channel(`room-messages-${roomId}-${crypto.randomUUID()}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "room_messages", filter: `room_id=eq.${roomId}` },
