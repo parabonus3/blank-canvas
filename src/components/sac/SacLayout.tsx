@@ -11,7 +11,7 @@ import logo from "@/assets/logo.png";
 export function SacLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { isAgent, isAdmin } = useIsSupportAgent();
 
   const agentNav = [
