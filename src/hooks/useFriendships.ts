@@ -34,26 +34,8 @@ export function useFriendships() {
     enabled: !!user,
   });
 
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel("friendships-realtime")
-      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, (payload) => {
-        queryClient.invalidateQueries({ queryKey: ["friendships"] });
-        // Notify on new friend request received
-        if (payload.eventType === "INSERT") {
-          const row = payload.new as any;
-          if (row.addressee_id === user.id && row.status === "pending") {
-            sonnerToast.info("👋 New friend request!");
-            if ("Notification" in window && Notification.permission === "granted") {
-              new Notification("TimeZoni", { body: "You received a friend request!", icon: "/favicon.ico" });
-            }
-          }
-        }
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  // Realtime subscription is centralized in `useFriendshipsRealtime` (mounted once in App.tsx)
+  // to avoid duplicate channel names when this hook is used by multiple components simultaneously.
 
   const accepted = (friendsQuery.data || []).filter(f => f.status === "accepted");
   const pendingReceived = (friendsQuery.data || []).filter(
@@ -147,4 +129,30 @@ export function useRemoveFriend() {
       queryClient.invalidateQueries({ queryKey: ["friendships"] });
     },
   });
+}
+
+// Global realtime subscription for friendships. Mount once in App.tsx.
+export function useFriendshipsRealtime() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`friendships-rt-${user.id}-${crypto.randomUUID()}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, (payload) => {
+        queryClient.invalidateQueries({ queryKey: ["friendships"] });
+        if (payload.eventType === "INSERT") {
+          const row = payload.new as any;
+          if (row.addressee_id === user.id && row.status === "pending") {
+            sonnerToast.info("👋 New friend request!");
+            if ("Notification" in window && Notification.permission === "granted") {
+              new Notification("TimeZoni", { body: "You received a friend request!", icon: "/favicon.ico" });
+            }
+          }
+        }
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, queryClient]);
 }

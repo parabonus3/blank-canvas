@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDMNotifications } from "@/hooks/useDirectMessages";
+import { useFriendshipsRealtime } from "@/hooks/useFriendships";
+import { useRoomInvitationsRealtime } from "@/hooks/useRoomInvitations";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -46,6 +48,8 @@ const queryClient = new QueryClient();
 function DirectionHandler() {
   const { i18n } = useTranslation();
   useDMNotifications();
+  useFriendshipsRealtime();
+  useRoomInvitationsRealtime();
   useEffect(() => {
     const dir = i18n.language.startsWith("ar") ? "rtl" : "ltr";
     document.documentElement.dir = dir;
