@@ -53,7 +53,17 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
 
-      if (error) throw error;
+      // Transient edge runtime errors (503) — keep previous state, just stop loading
+      if (error) {
+        console.warn("check-subscription transient error, keeping previous state:", error);
+        setState(prev => ({ ...prev, loading: false }));
+        return;
+      }
+      if (data?.fallback) {
+        console.warn("check-subscription returned fallback, keeping previous state");
+        setState(prev => ({ ...prev, loading: false }));
+        return;
+      }
 
       const hasStripeSub = data?.subscribed ?? false;
 
