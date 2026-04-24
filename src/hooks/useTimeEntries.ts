@@ -354,7 +354,7 @@ export function useUpdateTimeEntry() {
       
       const { data, error } = await supabase
         .from("time_entries")
-        .update(updateData)
+        .update(updateData as never)
         .eq("id", id)
         .select()
         .single();

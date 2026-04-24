@@ -229,7 +229,7 @@ export function useUpdateGoal() {
       
       const { data, error } = await supabase
         .from("goals")
-        .update(updateData)
+        .update(updateData as never)
         .eq("id", id)
         .select()
         .single();
