@@ -190,3 +190,24 @@ export function useJoinByInviteCode() {
     },
   });
 }
+
+// Global realtime subscription for room invitations. Mount once in App.tsx.
+export function useRoomInvitationsRealtime() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`invitations-rt-${user.id}-${crypto.randomUUID()}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "room_invitations", filter: `invitee_id=eq.${user.id}` },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["pendingInvitations"] });
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, queryClient]);
+}
