@@ -130,3 +130,29 @@ export function useRemoveFriend() {
     },
   });
 }
+
+// Global realtime subscription for friendships. Mount once in App.tsx.
+export function useFriendshipsRealtime() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`friendships-rt-${user.id}-${crypto.randomUUID()}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, (payload) => {
+        queryClient.invalidateQueries({ queryKey: ["friendships"] });
+        if (payload.eventType === "INSERT") {
+          const row = payload.new as any;
+          if (row.addressee_id === user.id && row.status === "pending") {
+            sonnerToast.info("👋 New friend request!");
+            if ("Notification" in window && Notification.permission === "granted") {
+              new Notification("TimeZoni", { body: "You received a friend request!", icon: "/favicon.ico" });
+            }
+          }
+        }
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, queryClient]);
+}
