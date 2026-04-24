@@ -1,0 +1,459 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Time Tracker Design System - Futuristic Cyan/Teal Theme */
+
+@layer base {
+  :root {
+    /* Light theme - Clean with cyan accents */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 192 91% 36%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 214 16% 89%;
+    --input: 214 16% 89%;
+    --ring: 199 89% 48%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 16% 89%;
+    --sidebar-ring: 199 89% 48%;
+
+    /* Timer specific colors */
+    --timer-active: 142 76% 36%;
+    --timer-paused: 38 92% 50%;
+    --timer-stopped: 215 16% 47%;
+
+    /* Chart colors */
+    --chart-1: 199 89% 48%;
+    --chart-2: 192 91% 36%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 0 84% 60%;
+     
+     /* Achievement colors */
+     --exceptional: 45 93% 47%;
+  }
+
+  .dark {
+    /* Dark theme - Deep navy with cyan/teal accents */
+    --background: 222 47% 4%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222 47% 10%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 222 47% 10%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 192 91% 36%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 222 47% 12%;
+    --input: 222 47% 12%;
+    --ring: 199 89% 48%;
+
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 47% 10%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 222 47% 12%;
+    --sidebar-ring: 199 89% 48%;
+
+    /* Timer specific colors */
+    --timer-active: 142 76% 36%;
+    --timer-paused: 38 92% 50%;
+    --timer-stopped: 215 20% 65%;
+
+    /* Chart colors */
+    --chart-1: 199 89% 48%;
+    --chart-2: 192 91% 36%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 0 84% 60%;
+     
+     /* Achievement colors */
+     --exceptional: 45 93% 47%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .timer-display {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+  }
+
+  .glass-effect {
+    @apply bg-card/80 backdrop-blur-sm;
+  }
+
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(142 76% 46%) 100%);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+}
+
+/* Landing Page - Futuristic Design */
+.landing-bg {
+  background: linear-gradient(135deg, hsl(222 47% 4%) 0%, hsl(222 47% 8%) 50%, hsl(222 47% 4%) 100%);
+}
+
+/* Clean section transition shadow */
+.landing-light-body {
+  box-shadow: inset 0 20px 40px -20px rgba(0, 0, 0, 0.12);
+}
+
+.landing-gradient {
+  background: radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, hsl(var(--accent) / 0.1) 0%, transparent 50%),
+              radial-gradient(ellipse at 20% 80%, hsl(var(--primary) / 0.08) 0%, transparent 50%);
+}
+
+/* Floating particles */
+.landing-particle {
+  position: absolute;
+  background: hsl(var(--primary) / 0.4);
+  border-radius: 50%;
+  animation: float-particle 20s infinite ease-in-out;
+  will-change: transform, opacity;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-40px) translateX(20px);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) translateX(-30px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-60px) translateX(10px);
+    opacity: 0.5;
+  }
+}
+
+/* Clock animation */
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .landing-particle,
+  .animate-pulse-slow,
+  [style*="animation"] {
+    animation: none !important;
+  }
+}
+
+/* Classroom Theme */
+.classroom-wall {
+  background: linear-gradient(180deg, hsl(30 30% 90%) 0%, hsl(30 25% 85%) 100%);
+}
+
+.dark .classroom-wall {
+  background: linear-gradient(180deg, hsl(222 30% 12%) 0%, hsl(222 30% 8%) 100%);
+}
+
+.classroom-chalkboard {
+  background: linear-gradient(170deg, hsl(120 40% 18%) 0%, hsl(120 45% 12%) 100%);
+  border: 6px solid hsl(30 50% 30%);
+  box-shadow:
+    inset 0 0 30px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+}
+
+.dark .classroom-chalkboard {
+  background: linear-gradient(170deg, hsl(120 30% 14%) 0%, hsl(120 35% 8%) 100%);
+  border-color: hsl(30 40% 22%);
+}
+
+.classroom-floor {
+  background: linear-gradient(180deg, hsl(30 40% 45%) 0%, hsl(25 35% 35%) 50%, hsl(20 30% 28%) 100%);
+  background-size: 100% 100%;
+}
+
+.dark .classroom-floor {
+  background: linear-gradient(180deg, hsl(25 30% 18%) 0%, hsl(20 25% 12%) 100%);
+}
+
+.classroom-desk {
+  background: linear-gradient(180deg, hsl(35 30% 92%) 0%, hsl(35 25% 88%) 100%);
+  border-bottom: 6px solid hsl(25 50% 32%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem 0.5rem 0.25rem 0.25rem;
+}
+
+.dark .classroom-desk {
+  background: linear-gradient(180deg, hsl(222 25% 16%) 0%, hsl(222 25% 13%) 100%);
+  border-bottom-color: hsl(25 40% 22%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chalk-text {
+  color: hsl(0 0% 95%);
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .sidebar-nav {
+  text-align: right;
+}
+
+/* Plan tier avatar glow animations */
+@keyframes plan-glow-premium {
+  0%, 100% {
+    box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.4), 0 0 20px 4px rgba(251, 191, 36, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 14px 4px rgba(245, 158, 11, 0.6), 0 0 30px 8px rgba(251, 191, 36, 0.25);
+  }
+}
+
+@keyframes plan-glow-pro {
+  0%, 100% {
+    box-shadow: 0 0 6px 1px rgba(59, 130, 246, 0.3), 0 0 16px 3px rgba(6, 182, 212, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px 3px rgba(59, 130, 246, 0.45), 0 0 24px 6px rgba(6, 182, 212, 0.18);
+  }
+}
+
+/* Premium / Pro classroom desk styling — strong visual emphasis inside rooms */
+.classroom-desk-premium {
+  background: linear-gradient(135deg, hsl(45 95% 88%) 0%, hsl(40 90% 80%) 50%, hsl(38 95% 75%) 100%);
+  border: 1.5px solid hsl(40 90% 55%);
+  border-bottom: 6px solid hsl(35 80% 40%);
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.4),
+    0 4px 16px rgba(245, 158, 11, 0.35),
+    0 8px 32px rgba(251, 191, 36, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+.classroom-desk-premium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: shimmer-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+.dark .classroom-desk-premium {
+  background: linear-gradient(135deg, hsl(38 60% 18%) 0%, hsl(35 55% 14%) 50%, hsl(40 70% 20%) 100%);
+  border-color: hsl(40 80% 45%);
+  border-bottom-color: hsl(35 70% 35%);
+  box-shadow:
+    0 0 0 1px rgba(251, 191, 36, 0.5),
+    0 4px 20px rgba(245, 158, 11, 0.4),
+    0 8px 40px rgba(251, 191, 36, 0.25),
+    inset 0 1px 0 rgba(251, 191, 36, 0.15);
+}
+
+.classroom-desk-pro {
+  background: linear-gradient(135deg, hsl(210 95% 92%) 0%, hsl(195 90% 85%) 50%, hsl(200 95% 82%) 100%);
+  border: 1.5px solid hsl(210 90% 55%);
+  border-bottom: 6px solid hsl(215 70% 35%);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.35),
+    0 4px 14px rgba(59, 130, 246, 0.3),
+    0 8px 28px rgba(6, 182, 212, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+.classroom-desk-pro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: shimmer-sweep 5s ease-in-out infinite;
+  pointer-events: none;
+}
+.dark .classroom-desk-pro {
+  background: linear-gradient(135deg, hsl(215 50% 18%) 0%, hsl(210 55% 14%) 50%, hsl(200 60% 18%) 100%);
+  border-color: hsl(210 80% 50%);
+  border-bottom-color: hsl(215 60% 30%);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.5),
+    0 4px 18px rgba(59, 130, 246, 0.35),
+    0 8px 36px rgba(6, 182, 212, 0.22),
+    inset 0 1px 0 rgba(59, 130, 246, 0.15);
+}
+
+@keyframes shimmer-sweep {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -50% 0; }
+}
+
+/* Corner ribbon for plan tiers */
+.plan-ribbon {
+  position: absolute;
+  top: 8px;
+  right: -28px;
+  transform: rotate(35deg);
+  padding: 2px 32px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: white;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+.plan-ribbon-premium {
+  background: linear-gradient(90deg, #d97706, #fbbf24, #d97706);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+.plan-ribbon-pro {
+  background: linear-gradient(90deg, #2563eb, #06b6d4, #2563eb);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Leader glow in ranking */
+.leader-glow {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.08), rgba(251, 191, 36, 0.04));
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.15);
+  border: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+/* Typing indicator bouncing dots */
+.typing-dots span {
+  animation: typing-bounce 1.4s infinite ease-in-out;
+}
+.typing-dots span:nth-child(1) { animation-delay: 0s; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Focus session start button glow */
+.focus-start-glow:hover {
+  box-shadow: 0 0 16px hsl(var(--primary) / 0.4);
+  transform: scale(1.02);
+}
+
+.focus-start-glow {
+  transition: box-shadow 0.3s, transform 0.2s;
+}

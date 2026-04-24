@@ -1,0 +1,1 @@
+ALTER TABLE public.room_members ADD COLUMN focus_session_joined boolean NOT NULL DEFAULT false;
