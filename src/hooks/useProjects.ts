@@ -236,7 +236,7 @@ export function useUpdateProject() {
       
       const { data, error } = await supabase
         .from("projects")
-        .update(updateData)
+        .update(updateData as never)
         .eq("id", id)
         .select(`*, category:categories(*)`)
         .single();
