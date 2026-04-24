@@ -94,18 +94,28 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    const { error } = await signUp(signupEmail, signupPassword, signupName);
+    const { error, needsConfirmation } = await signUp(signupEmail, signupPassword, signupName);
     setIsLoading(false);
 
     if (error) {
       let message = error.message;
-      if (error.message.includes("already registered")) {
+      const lower = error.message.toLowerCase();
+      if (lower.includes("already registered") || lower.includes("already exists")) {
         message = t('auth.email_registered');
+      } else if (lower.includes("rate limit") || lower.includes("too many")) {
+        message = "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.";
+      } else if (lower.includes("invalid") && lower.includes("email")) {
+        message = "Este e-mail não foi aceito. Use um e-mail real e válido (ex: seu nome em um provedor que você usa).";
       }
       toast({
         title: t('auth.signup_error'),
         description: message,
         variant: "destructive",
+      });
+    } else if (needsConfirmation) {
+      toast({
+        title: t('auth.account_created'),
+        description: "Confirme seu e-mail para entrar. Verifique sua caixa de entrada (e a pasta de spam).",
       });
     } else {
       toast({
