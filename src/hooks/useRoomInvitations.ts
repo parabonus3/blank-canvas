@@ -53,25 +53,8 @@ export function usePendingInvitations() {
     enabled: !!user,
   });
 
-  // Realtime for new invitations
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel(`invitations-${user.id}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "room_invitations", filter: `invitee_id=eq.${user.id}` },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["pendingInvitations"] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, queryClient]);
+  // Realtime subscription is centralized in `useRoomInvitationsRealtime`
+  // (mounted once in App.tsx) to avoid duplicate channel names across consumers.
 
   return query;
 }
