@@ -35,16 +35,13 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    { auth: { persistSession: false } }
-  );
-
   try {
     logStep("Function started");
 
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!supabaseUrl || !serviceRoleKey) throw new Error("Supabase server credentials are not set");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
 
     const authHeader = req.headers.get("Authorization");
@@ -55,7 +52,25 @@ serve(async (req) => {
       });
     }
 
+    const supabaseClient = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: { persistSession: false },
+        global: { headers: { Authorization: authHeader } },
+      }
+    );
+
     const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) {
+      logStep("Claims error (non-fatal)", { message: claimsError?.message ?? "Missing claims" });
+      return new Response(JSON.stringify({ subscribed: false }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError) {
       logStep("Auth error (non-fatal)", { message: userError.message });
