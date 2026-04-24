@@ -156,7 +156,7 @@ export function useDMNotifications() {
   useEffect(() => {
     if (!user) return;
     const channel = supabase
-      .channel(`dm-notifications-${user.id}`)
+      .channel(`dm-notifications-${user.id}-${crypto.randomUUID()}`)
       .on("postgres_changes", {
         event: "INSERT",
         schema: "public",
