@@ -424,7 +424,7 @@
       "title": "Gaya Avatar",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "Tersedia di Pro dan Premium — pilih efek animasi eksklusif untuk menonjolkan avatar Anda.",
+      "description_free": "Efek animasi eksklusif untuk menonjolkan avatar Anda. Tersedia di paket Pro dan Premium.",
       "description_paid": "Pilih efek animasi eksklusif untuk menonjolkan avatar Anda di ruangan, daftar teman, dan profil.",
       "show_more": "Tampilkan lebih banyak (+{{count}} efek)",
       "show_less": "Tampilkan lebih sedikit",
@@ -433,12 +433,12 @@
       "upgrade_hint_pro": "Tingkatkan ke Premium dan buka semua efek spesial.",
       "upgrade_hint_premium": "Anda memiliki akses ke semua efek yang tersedia.",
       "free_cta_title": "Buka efek animasi pada avatar Anda.",
-      "free_cta_subtitle": "Pro: efek Klasik, Dark, dan Feminin • Premium: semua 18 efek eksklusif",
+      "free_cta_subtitle": "Pro: efek Klasik, Dark, dan Floral • Premium: semua 18 efek eksklusif",
       "free_cta_button": "Lihat paket",
       "categories": {
         "classic": "Klasik",
         "dark": "Dark",
-        "feminine": "Feminin",
+        "feminine": "Floral",
         "special": "Spesial"
       },
       "items": {
@@ -721,7 +721,7 @@
     "change_cancelled": "Perubahan paket yang dijadwalkan telah dibatalkan.",
     "feature_freezes_3_monthly": "3 perisai streak/bulan untuk melindungi streak Anda",
     "feature_freezes_6_monthly": "6 perisai streak/bulan untuk melindungi streak Anda",
-    "feature_avatar_flair_pro": "7 efek avatar beranimasi (Klasik, Dark, dan Feminin)",
+    "feature_avatar_flair_pro": "7 efek avatar beranimasi (Klasik, Dark, dan Floral)",
     "feature_avatar_flair_premium": "Semua 18 efek beranimasi (+ Spesial eksklusif: Api, Mahkota, Galaksi, Aurora…)",
     "feature_rooms_1": "Buat 1 ruangan (10 anggota)",
     "feature_rooms_3": "Buat hingga 3 ruangan (50 anggota)",

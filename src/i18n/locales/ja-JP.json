@@ -424,7 +424,7 @@
       "title": "アバタースタイル",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "ProとPremiumで利用可能 — アバターを際立たせる限定アニメーションエフェクトを選びましょう。",
+      "description_free": "アバターを際立たせる限定アニメーションエフェクト。ProプランとPremiumプランでご利用いただけます。",
       "description_paid": "ルーム、友達リスト、プロフィールでアバターを際立たせる限定アニメーションエフェクトを選びましょう。",
       "show_more": "さらに表示（+{{count}}個）",
       "show_less": "折りたたむ",
@@ -433,12 +433,12 @@
       "upgrade_hint_pro": "Premiumにアップグレードして、すべての特別エフェクトを解除しましょう。",
       "upgrade_hint_premium": "利用可能なすべてのエフェクトにアクセスできます。",
       "free_cta_title": "アバターのアニメーションエフェクトを解除しましょう。",
-      "free_cta_subtitle": "Pro: クラシック・ダーク・フェミニン • Premium: 限定18エフェクトすべて",
+      "free_cta_subtitle": "Pro: クラシック・ダーク・フローラル • Premium: 限定18エフェクトすべて",
       "free_cta_button": "プランを見る",
       "categories": {
         "classic": "クラシック",
         "dark": "ダーク",
-        "feminine": "フェミニン",
+        "feminine": "フローラル",
         "special": "スペシャル"
       },
       "items": {
@@ -721,7 +721,7 @@
     "change_cancelled": "予約されたプラン変更がキャンセルされました。",
     "feature_freezes_3_monthly": "連続記録を守るストリークフリーズ月3回",
     "feature_freezes_6_monthly": "連続記録を守るストリークフリーズ月6回",
-    "feature_avatar_flair_pro": "アニメーションアバターエフェクト7種（クラシック・ダーク・フェミニン）",
+    "feature_avatar_flair_pro": "アニメーションアバターエフェクト7種（クラシック・ダーク・フローラル）",
     "feature_avatar_flair_premium": "アニメーションエフェクト全18種（限定スペシャル：炎・王冠・銀河・オーロラ…）",
     "feature_rooms_1": "1ルーム作成可能（10メンバー）",
     "feature_rooms_3": "最大3ルーム作成可能（50メンバー）",

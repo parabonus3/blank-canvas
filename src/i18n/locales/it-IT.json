@@ -424,7 +424,7 @@
       "title": "Stile Avatar",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "Disponibile in Pro e Premium — scegli un effetto animato esclusivo per mettere in risalto il tuo avatar.",
+      "description_free": "Effetti animati esclusivi per mettere in risalto il tuo avatar. Disponibile nei piani Pro e Premium.",
       "description_paid": "Scegli un effetto animato esclusivo per mettere in risalto il tuo avatar in stanze, lista amici e profili.",
       "show_more": "Mostra di più (+{{count}} effetti)",
       "show_less": "Mostra meno",
@@ -433,12 +433,12 @@
       "upgrade_hint_pro": "Passa a Premium e sblocca tutti gli effetti speciali.",
       "upgrade_hint_premium": "Hai accesso a tutti gli effetti disponibili.",
       "free_cta_title": "Sblocca effetti animati sul tuo avatar.",
-      "free_cta_subtitle": "Pro: effetti Classici, Dark e Femminili • Premium: tutti i 18 effetti esclusivi",
+      "free_cta_subtitle": "Pro: effetti Classici, Dark e Floreale • Premium: tutti i 18 effetti esclusivi",
       "free_cta_button": "Vedi piani",
       "categories": {
         "classic": "Classici",
         "dark": "Dark",
-        "feminine": "Femminili",
+        "feminine": "Floreale",
         "special": "Speciali"
       },
       "items": {
@@ -721,7 +721,7 @@
     "change_cancelled": "Il cambio di piano programmato è stato annullato.",
     "feature_freezes_3_monthly": "3 scudi serie/mese per proteggere la tua serie",
     "feature_freezes_6_monthly": "6 scudi serie/mese per proteggere la tua serie",
-    "feature_avatar_flair_pro": "7 effetti avatar animati (Classici, Dark e Femminili)",
+    "feature_avatar_flair_pro": "7 effetti avatar animati (Classici, Dark e Floreale)",
     "feature_avatar_flair_premium": "Tutti i 18 effetti animati (+ Speciali esclusivi: Fiamme, Corona, Galassia, Aurora…)",
     "feature_rooms_1": "Crea 1 stanza (10 membri)",
     "feature_rooms_3": "Crea fino a 3 stanze (50 membri)",

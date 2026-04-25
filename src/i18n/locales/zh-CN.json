@@ -424,7 +424,7 @@
       "title": "头像风格",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "在Pro和Premium中可用 — 选择独家动画特效突出你的头像。",
+      "description_free": "独家动画特效，让你的头像与众不同。Pro 和 Premium 套餐可用。",
       "description_paid": "在房间、好友列表和个人资料中选择独家动画特效突出你的头像。",
       "show_more": "显示更多（+{{count}}个特效）",
       "show_less": "收起",
@@ -433,12 +433,12 @@
       "upgrade_hint_pro": "升级到Premium解锁所有特别特效。",
       "upgrade_hint_premium": "你可以使用所有可用特效。",
       "free_cta_title": "为你的头像解锁动画特效。",
-      "free_cta_subtitle": "Pro：经典、暗黑和女性特效 • Premium：全部18种独家特效",
+      "free_cta_subtitle": "Pro：经典、暗黑和花卉特效 • Premium：全部18种独家特效",
       "free_cta_button": "查看套餐",
       "categories": {
         "classic": "经典",
         "dark": "暗黑",
-        "feminine": "女性",
+        "feminine": "花卉",
         "special": "特别"
       },
       "items": {
@@ -721,7 +721,7 @@
     "change_cancelled": "预约的计划更改已取消。",
     "feature_freezes_3_monthly": "每月3次连胜护盾，保护你的连续记录",
     "feature_freezes_6_monthly": "每月6次连胜护盾，保护你的连续记录",
-    "feature_avatar_flair_pro": "7种动画头像特效（经典、暗黑和女性）",
+    "feature_avatar_flair_pro": "7种动画头像特效（经典、暗黑和花卉）",
     "feature_avatar_flair_premium": "全部18种动画特效（+独家特别款：火焰、王冠、银河、极光…）",
     "feature_rooms_1": "创建1个房间（10名成员）",
     "feature_rooms_3": "创建最多3个房间（50名成员）",

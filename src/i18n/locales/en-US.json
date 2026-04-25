@@ -436,7 +436,7 @@
       "title": "Avatar Style",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "Available in Pro and Premium — choose an exclusive animated effect to highlight your avatar.",
+      "description_free": "Exclusive animated effects to highlight your avatar. Available on Pro and Premium plans.",
       "description_paid": "Choose an exclusive animated effect to highlight your avatar in rooms, friends list, and profiles.",
       "show_more": "Show more (+{{count}} effects)",
       "show_less": "Show less",
@@ -445,12 +445,12 @@
       "upgrade_hint_pro": "Upgrade to Premium and unlock all special effects.",
       "upgrade_hint_premium": "You have access to all available effects.",
       "free_cta_title": "Unlock animated effects on your avatar.",
-      "free_cta_subtitle": "Pro: Classic, Dark and Feminine effects • Premium: all 18 exclusive effects",
+      "free_cta_subtitle": "Pro: Classic, Dark and Floral effects • Premium: all 18 exclusive effects",
       "free_cta_button": "View plans",
       "categories": {
         "classic": "Classic",
         "dark": "Dark",
-        "feminine": "Feminine",
+        "feminine": "Floral",
         "special": "Special"
       },
       "items": {
@@ -767,7 +767,7 @@
     "feature_priority_support": "Priority support",
     "feature_freezes_3_monthly": "3 streak freezes/month to protect your streak",
     "feature_freezes_6_monthly": "6 streak freezes/month to protect your streak",
-    "feature_avatar_flair_pro": "7 animated avatar effects (Classic, Dark and Feminine)",
+    "feature_avatar_flair_pro": "7 animated avatar effects (Classic, Dark and Floral)",
     "feature_avatar_flair_premium": "All 18 animated effects (+ exclusive Specials: Flames, Crown, Galaxy, Aurora…)",
     "feature_rooms_1": "Create 1 room (10 members)",
     "feature_rooms_3": "Create up to 3 rooms (50 members)",
