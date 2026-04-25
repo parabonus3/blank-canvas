@@ -135,7 +135,7 @@ export function FriendProfileModal({ open, onOpenChange, userId, displayName, av
 
             {/* Avatar + Name + Level + PlanBadge */}
             <div className="flex flex-col items-center gap-3">
-              <PlanAvatarRing tier={planTier}>
+              <PlanAvatarRing tier={planTier} flairId={(publicStats as any)?.avatar_flair}>
                 <div className="rounded-full p-[3px] bg-muted">
                   <Avatar className="h-20 w-20 border-2 border-background">
                     {avatarUrl && <AvatarImage src={avatarUrl} />}
