@@ -358,6 +358,46 @@
   0%, 100% { transform: translate(-50%, 0) rotate(-4deg); }
   50% { transform: translate(-50%, -3px) rotate(4deg); }
 }
+/* New flair keyframes — emoji-free */
+@keyframes flame-flicker {
+  0%, 100% { opacity: 0.85; transform: scale(1); filter: blur(6px); }
+  25% { opacity: 1; transform: scale(1.06); filter: blur(7px); }
+  50% { opacity: 0.7; transform: scale(0.97); filter: blur(5px); }
+  75% { opacity: 0.95; transform: scale(1.04); filter: blur(8px); }
+}
+@keyframes flame-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes petal-float {
+  0% { transform: translate(0,0) rotate(0deg); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate(var(--tx,8px), var(--ty,-18px)) rotate(180deg); opacity: 0; }
+}
+@keyframes pearl-shimmer {
+  0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(40deg) brightness(1.15); }
+}
+@keyframes wing-flap {
+  0%, 100% { transform: scaleX(1) rotate(-10deg); }
+  50% { transform: scaleX(0.6) rotate(-25deg); }
+}
+@keyframes wing-flap-right {
+  0%, 100% { transform: scaleX(1) rotate(10deg); }
+  50% { transform: scaleX(0.6) rotate(25deg); }
+}
+@keyframes void-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+@keyframes crown-shine {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(251,191,36,0.6)) brightness(1); }
+  50% { filter: drop-shadow(0 0 10px rgba(251,191,36,1)) brightness(1.2); }
+}
+@keyframes silver-sweep {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
 
 /* Premium / Pro classroom desk styling — strong visual emphasis inside rooms */
 .classroom-desk-premium {
