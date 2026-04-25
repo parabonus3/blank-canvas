@@ -112,8 +112,10 @@ export default function Settings() {
     return () => clearInterval(interval);
   }, [timezone, i18n.language]);
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    // reset input value so same file can be picked again
+    e.target.value = "";
     if (!file || !user) return;
 
     if (!file.type.startsWith("image/")) {
@@ -121,14 +123,19 @@ export default function Settings() {
       return;
     }
 
+    setPendingFile(file);
+    setCropOpen(true);
+  };
+
+  const uploadCroppedAvatar = async (blob: Blob) => {
+    if (!user) return;
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const filePath = `${user.id}/avatar.${ext}`;
+      const filePath = `${user.id}/avatar.webp`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, blob, { upsert: true, contentType: "image/webp" });
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
@@ -144,6 +151,8 @@ export default function Settings() {
         .eq("user_id", user.id);
 
       toast({ title: t("settings.avatar_updated") });
+      setCropOpen(false);
+      setPendingFile(null);
     } catch (err: any) {
       toast({ title: t("settings.avatar_error"), description: err.message, variant: "destructive" });
     } finally {
