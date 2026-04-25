@@ -82,6 +82,8 @@ export const STRIPE_PLANS = {
       "members_50",
       "goals",
       "export_csv",
+      "freezes_3_monthly",
+      "avatar_flair_pro",
     ],
   },
   premium: {
@@ -110,6 +112,8 @@ export const STRIPE_PLANS = {
       "advanced_analytics",
       "export_pdf",
       "priority_support",
+      "freezes_6_monthly",
+      "avatar_flair_premium",
     ],
   },
 } as const;

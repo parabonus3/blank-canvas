@@ -19,6 +19,7 @@ import { getGroupedTimezones, getTimezoneLabel, formatInTimezone } from "@/lib/t
 import { getDateLocale } from "@/lib/timezone";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarFlairPicker } from "@/components/settings/AvatarFlairPicker";
 
 const groupedTimezones = getGroupedTimezones();
 
@@ -236,6 +237,9 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Avatar Flair Picker (Pro/Premium animated effects, Discord-style) */}
+        <AvatarFlairPicker displayName={displayName} avatarUrl={avatarUrl} />
 
         {/* Privacy */}
         <Card>
