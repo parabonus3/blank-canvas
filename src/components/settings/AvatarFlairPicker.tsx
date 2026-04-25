@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Lock, Check, Crown, Zap, Moon, Flower2, Star } from "lucide-react";
+import { Sparkles, Lock, Check, Crown, Zap, Moon, Flower2, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,10 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
   const initials = (displayName || user?.email || "?")[0]?.toUpperCase() || "?";
   const currentFlair = profile?.avatar_flair || DEFAULT_FLAIR_BY_TIER[tier];
   const [selected, setSelected] = useState<string>(currentFlair);
+  const [expanded, setExpanded] = useState<Record<FlairCategory, boolean>>({
+    classic: false, dark: false, feminine: false, special: false,
+  });
+  const PREVIEW_COUNT = 4;
 
   useEffect(() => {
     setSelected(profile?.avatar_flair || DEFAULT_FLAIR_BY_TIER[tier]);
@@ -79,15 +83,18 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
         </CardTitle>
         <CardDescription>
           {isFree
-            ? "Disponível em Pro e Premium — escolha um efeito animado para seu avatar (estilo Discord Nitro)."
-            : "Escolha um efeito animado. Aparece em salas, lista de amigos e perfis."}
+            ? "Disponível em Pro e Premium — escolha um efeito animado exclusivo para destacar seu avatar."
+            : "Escolha um efeito animado exclusivo para destacar seu avatar em salas, lista de amigos e perfis."}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-8">
         {FLAIR_CATEGORIES.map((cat) => {
-          const items = AVATAR_FLAIRS.filter(f => f.category === cat.id);
-          if (items.length === 0) return null;
+          const allItems = AVATAR_FLAIRS.filter(f => f.category === cat.id);
+          if (allItems.length === 0) return null;
+          const isExpanded = expanded[cat.id];
+          const items = isExpanded ? allItems : allItems.slice(0, PREVIEW_COUNT);
+          const hiddenCount = allItems.length - PREVIEW_COUNT;
           const Icon = CATEGORY_ICON[cat.id];
 
           return (
@@ -170,6 +177,29 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
                   );
                 })}
               </div>
+
+              {hiddenCount > 0 && !isFree && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setExpanded(prev => ({ ...prev, [cat.id]: !prev[cat.id] }))}
+                  className={cn(
+                    "w-full gap-2 border-dashed transition-all hover:border-solid hover:bg-gradient-to-r hover:text-white",
+                    `hover:${CATEGORY_ACCENT[cat.id].replace(/from-(\S+)/, "from-$1").replace(/to-(\S+)/, "to-$1")}`
+                  )}
+                >
+                  {isExpanded ? (
+                    <>
+                      <ChevronUp className="h-4 w-4" /> Mostrar menos
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-4 w-4" /> Mostrar mais (+{hiddenCount})
+                    </>
+                  )}
+                </Button>
+              )}
             </section>
           );
         })}
