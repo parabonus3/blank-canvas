@@ -1,123 +1,53 @@
-## Visão geral
+## Goal
 
-Modernizar dois painéis com a mesma experiência: **busca avançada, filtros relevantes, paginação de 50 por página, exportação PDF/CSV e ações úteis para escalar**. Tudo com i18n em todos os idiomas.
+Permitir que o **admin master** conceda defensivas (streak freezes) gratuitamente para qualquer usuário, com o mesmo comportamento da compra via Stripe — créditos acumulam no saldo e só são consumidos quando o usuário perde a sequência.
 
----
+## Como funcionará
 
-## 1) Painel Admin (`/admin`)
+A função SQL `credit_purchased_freezes(_user_id, _amount)` **já existe** e faz exatamente o necessário: incrementa `balance` e `total_purchased` na tabela `purchased_streak_freezes`, criando o registro se não existir. Os créditos ficam acumulados indefinidamente e são consumidos pela função `consume_streak_freeze` (mesma lógica usada hoje para defensivas compradas).
 
-### Novos recursos para gestão de usuários
+Vamos apenas expor essa função para o admin master, sem cobrança.
 
-**Toolbar superior**
-- Busca avançada (email, nome, friend_code, ID)
-- Filtros: Status (free/trial/active/expired/banned), Plano (Free/Pro/Premium + intervalo mensal/anual), Papel (admin, agente, usuário), Período de cadastro (hoje/7d/30d/custom), Trial expirando em (3d/7d/30d), Atividade (ativo/inativo 30d)
-- Ordenação: cadastro, último login, total de horas, plano
-- Botão **Exportar**: PDF (jsPDF) e CSV
-- Contador "X de Y usuários"
-- Botão limpar filtros
+## Mudanças técnicas
 
-**Paginação server-side**
-- 50 usuários por página com Anterior/Próxima e indicador "Página X de Y"
-- Edge function `admin-users` recebe `page`, `perPage`, `search`, `filters`, `sort` e devolve `{ users, total, page, totalPages }`
-- Toggle "por página": 25 / 50 / 100
+### 1. Edge function `admin-users` — nova ação `grant_streak_freezes`
 
-**Novas ações por usuário** (além das existentes editar/reset/plano/cancelar/deletar)
-- **Banir / Suspender** (defensiva): bloqueia login imediato sem deletar dados
-- **Reativar** usuário banido
-- **Promover/Remover admin** (gerencia `user_roles`)
-- **Promover/Remover agente de suporte** (gerencia `support_agents`)
-- **Ver detalhes**: drawer lateral com perfil completo, histórico de tickets, total de horas, último login, IP do último acesso, assinatura Stripe, salas que participa
-- **Enviar e-mail manual** (campo livre via edge function)
-- **Ações em massa** (checkbox por linha): banir, exportar selecionados, alterar plano em lote
-
-**Cards de stats expandidos**
-- Total | Ativos | Trial | Expirados | **Banidos** | **Novos hoje** | **Receita ativa estimada** (soma de planos ativos)
-
-### Backend
-- Migração: adicionar coluna `is_banned boolean default false` e `banned_at timestamptz` em `profiles`; trigger ou RLS para bloquear ações de banidos onde fizer sentido
-- Edge function `admin-users` ganha actions: `ban_user`, `unban_user`, `grant_role`, `revoke_role`, `grant_support_agent`, `revoke_support_agent`, `send_email`, `get_user_details` e suporte a paginação/filtros/sort no `list_users`
-- Para banir: chamar `supabaseAdmin.auth.admin.updateUserById(id, { ban_duration: '876000h' })` + atualizar flag
-
----
-
-## 2) Painel SAC
-
-### Dashboard de tickets (`/sac/dashboard`)
-- **Busca** por assunto, e-mail, ID, conteúdo da mensagem
-- Filtros existentes (status, prioridade, categoria) + novos:
-  - **Atribuído a** (agente específico, não atribuído, eu)
-  - **Período** (hoje/7d/30d/custom)
-  - **Plano do usuário** (Free/Pro/Premium) — útil para priorizar pagantes
-  - **Tempo aberto** (>1h, >24h, >7d) para SLA
-- Ordenação: prioridade+data (atual), mais antigo, mais novo, último update
-- **Paginação 50 por página** com Anterior/Próxima
-- **Ações em massa**: marcar como resolvido/fechado, atribuir a agente, mudar prioridade
-- **Exportar**: PDF e CSV dos tickets filtrados
-- Stats expandidos: Abertos | Em andamento | Resolvidos hoje | Tempo médio de espera | **Sem atribuição** | **SLA estourado (>24h aberto)**
-
-### Meus tickets (`/sac/tickets`)
-- Busca por assunto/conteúdo
-- Filtro por status
-- Paginação 50/página
-- Botão exportar histórico (PDF) próprio
-
-### Gerenciar agentes (`/sac/agents`)
-- Busca por e-mail/nome
-- Filtros: papel (admin/agente), status (ativo/inativo)
-- Paginação 50/página
-- Coluna nova: **e-mail real** (hoje mostra apenas user_id), **tickets atribuídos**, **resolvidos no mês**
-- Ações em massa: ativar/desativar, mudar papel
-- Exportar lista de agentes
-
----
-
-## 3) Componente reutilizável de paginação + exportação
-
-Criar componentes compartilhados:
-- `PaginatedTable` (já existe `PaginationControls`, vamos estender)
-- `useTableState` hook: gerencia search, filtros, sort, page, perPage com persistência em URL (`?page=2&status=open`)
-- `exportToPDF(data, columns, title)` em `src/lib/exportTable.ts` usando jsPDF + jspdf-autotable
-- `exportToCSV(data, columns, filename)` no mesmo arquivo
-
----
-
-## 4) Internacionalização
-
-Todas as novas strings (filtros, ações de banir, exportar, paginação, mensagens de confirmação, badges de status banido) traduzidas nos 12 idiomas: pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ru-RU, ja-JP, ko-KR, zh-CN, ar-SA, id-ID.
-
----
-
-## Detalhes técnicos
-
-**Migração SQL necessária:**
+Recebe `{ user_id, amount, reason? }`, valida (1–365), chama:
+```ts
+await supabaseAdmin.rpc("credit_purchased_freezes", { _user_id: user_id, _amount: amount });
 ```
-ALTER TABLE public.profiles 
-  ADD COLUMN is_banned boolean NOT NULL DEFAULT false,
-  ADD COLUMN banned_at timestamptz,
-  ADD COLUMN banned_reason text;
-```
+Registra em `streak_freeze_purchases` uma linha de auditoria com `currency = 'admin_grant'`, `amount_cents = 0`, `stripe_session_id = 'admin-grant-{timestamp}-{callerId}'` e `quantity = freezes_added = amount`. Isso mantém o histórico rastreável sem alterar o esquema.
 
-**Pacotes a adicionar:**
-- `jspdf` + `jspdf-autotable` para exportação PDF de tabelas
+### 2. Hook `useAdmin` — nova mutation `useGrantStreakFreezes`
 
-**Estrutura de arquivos novos/alterados:**
-- `src/lib/exportTable.ts` (novo) — helpers PDF/CSV
-- `src/hooks/useTableState.ts` (novo) — estado de tabela com URL sync
-- `src/components/admin/AdminFilters.tsx` (novo)
-- `src/components/admin/UserDetailDrawer.tsx` (novo)
-- `src/components/admin/BulkActionsBar.tsx` (novo)
-- `src/pages/Admin.tsx` (refatorar)
-- `src/pages/sac/SacDashboard.tsx` (refatorar)
-- `src/pages/sac/MyTickets.tsx` (busca + paginação)
-- `src/pages/sac/AgentManager.tsx` (busca + paginação + colunas extras)
-- `src/components/sac/TicketFilters.tsx` (adicionar filtros novos)
-- `src/hooks/useAdmin.ts` (suporte a paginação/filtros + novas mutations: ban, unban, grant_role, etc.)
-- `src/hooks/useSupportTickets.ts` (paginação server-side + filtro por agente)
-- `supabase/functions/admin-users/index.ts` (novas actions e paginação)
-- `supabase/functions/sac-admin/index.ts` (action para listar agentes com email + stats)
-- `src/i18n/locales/*.json` (12 idiomas)
+Mutation que invoca `admin-users` com `action: "grant_streak_freezes"` e invalida `["admin-user-details", userId]`.
 
-**RLS / segurança:**
-- Banir usa `auth.admin.updateUserById` com `ban_duration` — bloqueia login no Supabase Auth
-- Promoção de admin valida que o caller já é admin (já feito) e impede auto-rebaixamento
-- Exportação PDF/CSV é feita no cliente com dados já filtrados (sem expor dados extras)
+### 3. UI — `UserDetailDrawer.tsx`
+
+Adicionar nova seção "Defensivas (Admin)" com:
+- Saldo atual (já obtido se incluirmos no `get_user_details`).
+- Input numérico (quantidade) + textarea opcional (motivo).
+- Botão "Conceder defensivas" com confirmação.
+- Toast de sucesso + atualização do saldo.
+
+Ampliar `get_user_details` na edge function para incluir `purchased_freezes` (balance, total_purchased, total_used) e as últimas 5 linhas de `streak_freeze_purchases` (histórico, mostrando se foi compra Stripe ou concessão admin).
+
+### 4. i18n
+
+Adicionar chaves em `pt-BR.json` e `en-US.json`:
+- `admin.streak_freezes.title`, `.balance`, `.grant`, `.amount`, `.reason`, `.granted_success`, `.history`, `.source_stripe`, `.source_admin`.
+
+## Segurança
+
+- Apenas admins (verificação já existente via `requireAdmin` no início da edge function) podem chamar `grant_streak_freezes`.
+- Limite máximo por concessão: 365 defensivas (proteção contra erros de digitação).
+- Auditoria completa via `streak_freeze_purchases`.
+
+## Arquivos afetados
+
+- `supabase/functions/admin-users/index.ts` — nova case `grant_streak_freezes` + enriquecer `get_user_details`.
+- `src/hooks/useAdmin.ts` — nova mutation.
+- `src/components/admin/UserDetailDrawer.tsx` — nova seção UI.
+- `src/i18n/locales/pt-BR.json` e `en-US.json` — novas chaves.
+
+Sem necessidade de migração de banco — toda a infraestrutura SQL já existe.
