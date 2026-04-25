@@ -83,8 +83,8 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
         </CardTitle>
         <CardDescription>
           {isFree
-            ? "Disponível em Pro e Premium — escolha um efeito animado para seu avatar (estilo Discord Nitro)."
-            : "Escolha um efeito animado. Aparece em salas, lista de amigos e perfis."}
+            ? "Disponível em Pro e Premium — escolha um efeito animado exclusivo para destacar seu avatar."
+            : "Escolha um efeito animado exclusivo para destacar seu avatar em salas, lista de amigos e perfis."}
         </CardDescription>
       </CardHeader>
 
