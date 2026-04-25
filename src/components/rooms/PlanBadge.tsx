@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Crown, Zap } from "lucide-react";
+import { AvatarFlair } from "@/components/avatar/AvatarFlair";
 
 interface PlanBadgeProps {
   tier: string;
@@ -56,8 +57,6 @@ interface PlanAvatarRingProps {
  * Callers that don't pass `flairId` get the tier's default flair.
  */
 export function PlanAvatarRing({ tier, flairId, children, className, compact }: PlanAvatarRingProps) {
-  // Lazy-import to avoid circular concerns; AvatarFlair is a tiny component.
-  const { AvatarFlair } = require("@/components/avatar/AvatarFlair");
   return (
     <AvatarFlair tier={tier} flairId={flairId} className={className} compact={compact}>
       {children}
