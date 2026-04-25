@@ -419,7 +419,103 @@
     "privacy": "Privasi",
     "privacy_desc": "Kontrol siapa yang dapat melihat statistik Anda",
     "public_stats": "Statistik Publik",
-    "public_stats_desc": "Izinkan anggota ruangan melihat jam belajar Anda"
+    "public_stats_desc": "Izinkan anggota ruangan melihat jam belajar Anda",
+    "avatar_flair": {
+      "title": "Gaya Avatar",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "Tersedia di Pro dan Premium — pilih efek animasi eksklusif untuk menonjolkan avatar Anda.",
+      "description_paid": "Pilih efek animasi eksklusif untuk menonjolkan avatar Anda di ruangan, daftar teman, dan profil.",
+      "show_more": "Tampilkan lebih banyak (+{{count}} efek)",
+      "show_less": "Tampilkan lebih sedikit",
+      "save": "Simpan gaya",
+      "saving": "Menyimpan...",
+      "upgrade_hint_pro": "Tingkatkan ke Premium dan buka semua efek spesial.",
+      "upgrade_hint_premium": "Anda memiliki akses ke semua efek yang tersedia.",
+      "free_cta_title": "Buka efek animasi pada avatar Anda.",
+      "free_cta_subtitle": "Pro: efek Klasik, Dark, dan Feminin • Premium: semua 18 efek eksklusif",
+      "free_cta_button": "Lihat paket",
+      "categories": {
+        "classic": "Klasik",
+        "dark": "Dark",
+        "feminine": "Feminin",
+        "special": "Spesial"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "Denyut",
+          "description": "Cincin biru berdenyut lembut"
+        },
+        "pro-orbit": {
+          "name": "Orbit",
+          "description": "Titik cahaya mengorbit"
+        },
+        "pro-shimmer": {
+          "name": "Kilau",
+          "description": "Gradien cyan meluncur"
+        },
+        "pro-wave": {
+          "name": "Gelombang",
+          "description": "Gelombang konsentris meluas"
+        },
+        "pro-noir": {
+          "name": "Noir",
+          "description": "Grafit dengan garis cyan"
+        },
+        "premium-obsidian": {
+          "name": "Obsidian",
+          "description": "Hitam pekat dengan refleksi perak"
+        },
+        "premium-void": {
+          "name": "Hampa",
+          "description": "Cincin hitam dengan partikel halus"
+        },
+        "pro-blossom": {
+          "name": "Mekar",
+          "description": "Lavender dan merah muda dalam denyut lembut"
+        },
+        "premium-rose": {
+          "name": "Rosé",
+          "description": "Kelopak emas mengambang"
+        },
+        "premium-pearl": {
+          "name": "Mutiara",
+          "description": "Iridensi mutiara"
+        },
+        "premium-butterfly": {
+          "name": "Kupu-kupu",
+          "description": "Sayap mengepak dalam merah muda dan ungu"
+        },
+        "premium-gold": {
+          "name": "Emas",
+          "description": "Halo emas berputar"
+        },
+        "premium-flames": {
+          "name": "Api",
+          "description": "Lingkaran api menyala"
+        },
+        "premium-sparkles": {
+          "name": "Kilauan",
+          "description": "Partikel bintang mengorbit"
+        },
+        "premium-rainbow": {
+          "name": "Pelangi",
+          "description": "Cincin berwarna-warni cerah"
+        },
+        "premium-aurora": {
+          "name": "Aurora",
+          "description": "Aurora borealis mengambang"
+        },
+        "premium-crown": {
+          "name": "Mahkota",
+          "description": "Diadem emas kerajaan"
+        },
+        "premium-galaxy": {
+          "name": "Galaksi",
+          "description": "Bintang mengorbit di galaksi"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "Navigasi",
@@ -622,7 +718,21 @@
     "pending_change": "Dijadwalkan",
     "pending_change_message": "Paket Anda akan berubah ke {{plan}} pada {{date}}.",
     "cancel_change": "Batalkan Perubahan",
-    "change_cancelled": "Perubahan paket yang dijadwalkan telah dibatalkan."
+    "change_cancelled": "Perubahan paket yang dijadwalkan telah dibatalkan.",
+    "feature_freezes_3_monthly": "3 perisai streak/bulan untuk melindungi streak Anda",
+    "feature_freezes_6_monthly": "6 perisai streak/bulan untuk melindungi streak Anda",
+    "feature_avatar_flair_pro": "7 efek avatar beranimasi (Klasik, Dark, dan Feminin)",
+    "feature_avatar_flair_premium": "Semua 18 efek beranimasi (+ Spesial eksklusif: Api, Mahkota, Galaksi, Aurora…)",
+    "feature_rooms_1": "Buat 1 ruangan (10 anggota)",
+    "feature_rooms_3": "Buat hingga 3 ruangan (50 anggota)",
+    "feature_rooms_10": "Buat hingga 10 ruangan (200 anggota)",
+    "feature_members_10": "Hingga 10 anggota per ruangan",
+    "feature_members_50": "Hingga 50 anggota per ruangan",
+    "feature_members_200": "Hingga 200 anggota per ruangan",
+    "feature_locked_desc": "Fitur ini tidak tersedia di paket Anda saat ini. Tingkatkan untuk membukanya.",
+    "plan_expired": "Paket Berakhir",
+    "plan_expired_banner": "Paket Anda telah berakhir. Perbarui sekarang untuk terus menggunakan fitur premium.",
+    "renew_now": "Perbarui Sekarang"
   },
   "pagination": {
     "previous": "Sebelumnya",

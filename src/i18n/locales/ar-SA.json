@@ -419,7 +419,103 @@
     "privacy": "الخصوصية",
     "privacy_desc": "تحكم في من يمكنه رؤية إحصائياتك",
     "public_stats": "إحصائيات عامة",
-    "public_stats_desc": "السماح لأعضاء الغرفة برؤية ساعات دراستك"
+    "public_stats_desc": "السماح لأعضاء الغرفة برؤية ساعات دراستك",
+    "avatar_flair": {
+      "title": "نمط الصورة الرمزية",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "متاح في Pro و Premium — اختر تأثيراً متحركاً حصرياً لإبراز صورتك الرمزية.",
+      "description_paid": "اختر تأثيراً متحركاً حصرياً لإبراز صورتك الرمزية في الغرف وقائمة الأصدقاء والملفات الشخصية.",
+      "show_more": "عرض المزيد (+{{count}} تأثيرات)",
+      "show_less": "عرض أقل",
+      "save": "حفظ النمط",
+      "saving": "جارٍ الحفظ...",
+      "upgrade_hint_pro": "قم بالترقية إلى Premium لفتح جميع التأثيرات الخاصة.",
+      "upgrade_hint_premium": "لديك وصول إلى جميع التأثيرات المتاحة.",
+      "free_cta_title": "افتح التأثيرات المتحركة على صورتك الرمزية.",
+      "free_cta_subtitle": "Pro: تأثيرات كلاسيكية وداكنة وأنثوية • Premium: جميع التأثيرات الـ18 الحصرية",
+      "free_cta_button": "عرض الخطط",
+      "categories": {
+        "classic": "كلاسيكية",
+        "dark": "داكنة",
+        "feminine": "أنثوية",
+        "special": "خاصة"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "نبضة",
+          "description": "حلقة زرقاء نابضة ناعمة"
+        },
+        "pro-orbit": {
+          "name": "مدار",
+          "description": "نقطة ضوء تدور"
+        },
+        "pro-shimmer": {
+          "name": "وميض",
+          "description": "تدرج سماوي منزلق"
+        },
+        "pro-wave": {
+          "name": "موجة",
+          "description": "موجات متراكزة تتوسع"
+        },
+        "pro-noir": {
+          "name": "نوار",
+          "description": "جرافيت مع خط سماوي"
+        },
+        "premium-obsidian": {
+          "name": "أوبسيديان",
+          "description": "أسود عميق مع انعكاس فضي"
+        },
+        "premium-void": {
+          "name": "فراغ",
+          "description": "حلقة سوداء مع جسيمات أثيرية"
+        },
+        "pro-blossom": {
+          "name": "تفتح",
+          "description": "لافندر ووردي بنبض ناعم"
+        },
+        "premium-rose": {
+          "name": "روزيه",
+          "description": "بتلات ذهبية عائمة"
+        },
+        "premium-pearl": {
+          "name": "لؤلؤة",
+          "description": "تقزح لؤلؤي"
+        },
+        "premium-butterfly": {
+          "name": "فراشة",
+          "description": "أجنحة ترفرف بالوردي والبنفسجي"
+        },
+        "premium-gold": {
+          "name": "ذهب",
+          "description": "هالة ذهبية دوارة"
+        },
+        "premium-flames": {
+          "name": "لهب",
+          "description": "دائرة نار مشتعلة"
+        },
+        "premium-sparkles": {
+          "name": "تلألؤ",
+          "description": "جسيمات نجمية تدور"
+        },
+        "premium-rainbow": {
+          "name": "قوس قزح",
+          "description": "حلقة متعددة الألوان نابضة"
+        },
+        "premium-aurora": {
+          "name": "شفق",
+          "description": "شفق قطبي عائم"
+        },
+        "premium-crown": {
+          "name": "تاج",
+          "description": "تاج ذهبي ملكي"
+        },
+        "premium-galaxy": {
+          "name": "مجرة",
+          "description": "نجوم تدور في مجرة"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "التنقل",
@@ -622,7 +718,21 @@
     "pending_change": "مجدول",
     "pending_change_message": "ستتغير خطتك إلى {{plan}} في {{date}}.",
     "cancel_change": "إلغاء التغيير",
-    "change_cancelled": "تم إلغاء تغيير الخطة المجدول."
+    "change_cancelled": "تم إلغاء تغيير الخطة المجدول.",
+    "feature_freezes_3_monthly": "3 دروع تتابع شهرياً لحماية سلسلتك",
+    "feature_freezes_6_monthly": "6 دروع تتابع شهرياً لحماية سلسلتك",
+    "feature_avatar_flair_pro": "7 تأثيرات صورة رمزية متحركة (كلاسيكية، داكنة، أنثوية)",
+    "feature_avatar_flair_premium": "جميع التأثيرات المتحركة الـ18 (+ تأثيرات خاصة حصرية: لهب، تاج، مجرة، شفق…)",
+    "feature_rooms_1": "إنشاء غرفة واحدة (10 أعضاء)",
+    "feature_rooms_3": "إنشاء حتى 3 غرف (50 عضواً)",
+    "feature_rooms_10": "إنشاء حتى 10 غرف (200 عضو)",
+    "feature_members_10": "حتى 10 أعضاء في كل غرفة",
+    "feature_members_50": "حتى 50 عضواً في كل غرفة",
+    "feature_members_200": "حتى 200 عضو في كل غرفة",
+    "feature_locked_desc": "هذه الميزة غير متاحة في خطتك الحالية. قم بالترقية لفتحها.",
+    "plan_expired": "انتهت صلاحية الخطة",
+    "plan_expired_banner": "انتهت صلاحية خطتك. جدد الآن لمواصلة استخدام الميزات المميزة.",
+    "renew_now": "جدد الآن"
   },
   "pagination": {
     "previous": "السابق",

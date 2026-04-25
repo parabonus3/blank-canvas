@@ -431,7 +431,103 @@
     "privacy": "Privacidade",
     "privacy_desc": "Controle quem pode ver suas estatísticas",
     "public_stats": "Estatísticas Públicas",
-    "public_stats_desc": "Permitir que membros das salas vejam suas horas de estudo e progresso diário"
+    "public_stats_desc": "Permitir que membros das salas vejam suas horas de estudo e progresso diário",
+    "avatar_flair": {
+      "title": "Estilo do Avatar",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "Disponível em Pro e Premium — escolha um efeito animado exclusivo para destacar seu avatar.",
+      "description_paid": "Escolha um efeito animado exclusivo para destacar seu avatar em salas, lista de amigos e perfis.",
+      "show_more": "Mostrar mais (+{{count}} efeitos)",
+      "show_less": "Mostrar menos",
+      "save": "Salvar estilo",
+      "saving": "Salvando...",
+      "upgrade_hint_pro": "Faça upgrade para Premium e desbloqueie todos os efeitos especiais.",
+      "upgrade_hint_premium": "Você tem acesso a todos os efeitos disponíveis.",
+      "free_cta_title": "Desbloqueie efeitos animados no seu avatar.",
+      "free_cta_subtitle": "Pro: efeitos Clássicos, Dark e Femininos • Premium: todos os 18 efeitos exclusivos",
+      "free_cta_button": "Ver planos",
+      "categories": {
+        "classic": "Clássicos",
+        "dark": "Dark",
+        "feminine": "Femininos",
+        "special": "Especiais"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "Pulso",
+          "description": "Anel azul pulsante suave"
+        },
+        "pro-orbit": {
+          "name": "Órbita",
+          "description": "Ponto de luz orbitando"
+        },
+        "pro-shimmer": {
+          "name": "Brilho",
+          "description": "Gradiente cyan deslizante"
+        },
+        "pro-wave": {
+          "name": "Onda",
+          "description": "Ondas concêntricas expandindo"
+        },
+        "pro-noir": {
+          "name": "Noir",
+          "description": "Grafite com linha cyan"
+        },
+        "premium-obsidian": {
+          "name": "Obsidiana",
+          "description": "Preto profundo com reflexo prateado"
+        },
+        "premium-void": {
+          "name": "Vazio",
+          "description": "Anel preto com partículas etéreas"
+        },
+        "pro-blossom": {
+          "name": "Florescer",
+          "description": "Lavanda e rosa em pulso suave"
+        },
+        "premium-rose": {
+          "name": "Rosé",
+          "description": "Pétalas douradas flutuando"
+        },
+        "premium-pearl": {
+          "name": "Pérola",
+          "description": "Iridescência perolada"
+        },
+        "premium-butterfly": {
+          "name": "Borboleta",
+          "description": "Asas batendo em rosa e violeta"
+        },
+        "premium-gold": {
+          "name": "Ouro",
+          "description": "Halo dourado giratório"
+        },
+        "premium-flames": {
+          "name": "Chamas",
+          "description": "Círculo de fogo flamejante"
+        },
+        "premium-sparkles": {
+          "name": "Brilhos",
+          "description": "Partículas estelares orbitando"
+        },
+        "premium-rainbow": {
+          "name": "Arco-íris",
+          "description": "Anel multicolorido vibrante"
+        },
+        "premium-aurora": {
+          "name": "Aurora",
+          "description": "Aurora boreal flutuante"
+        },
+        "premium-crown": {
+          "name": "Coroa",
+          "description": "Diadema dourado real"
+        },
+        "premium-galaxy": {
+          "name": "Galáxia",
+          "description": "Estrelas orbitando em galáxia"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "Navegação",

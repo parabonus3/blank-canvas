@@ -419,7 +419,103 @@
     "privacy": "개인정보",
     "privacy_desc": "통계 공개 범위를 설정합니다",
     "public_stats": "통계 공개",
-    "public_stats_desc": "방 멤버들이 학습 시간을 볼 수 있도록 허용"
+    "public_stats_desc": "방 멤버들이 학습 시간을 볼 수 있도록 허용",
+    "avatar_flair": {
+      "title": "아바타 스타일",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "Pro 및 Premium에서 사용 가능 — 아바타를 돋보이게 할 독점 애니메이션 효과를 선택하세요.",
+      "description_paid": "방, 친구 목록 및 프로필에서 아바타를 돋보이게 할 독점 애니메이션 효과를 선택하세요.",
+      "show_more": "더 보기 (+{{count}}개)",
+      "show_less": "접기",
+      "save": "스타일 저장",
+      "saving": "저장 중...",
+      "upgrade_hint_pro": "Premium으로 업그레이드하여 모든 특수 효과의 잠금을 해제하세요.",
+      "upgrade_hint_premium": "사용 가능한 모든 효과에 액세스할 수 있습니다.",
+      "free_cta_title": "아바타에 애니메이션 효과를 잠금 해제하세요.",
+      "free_cta_subtitle": "Pro: 클래식, 다크, 페미닌 효과 • Premium: 18가지 독점 효과 모두",
+      "free_cta_button": "플랜 보기",
+      "categories": {
+        "classic": "클래식",
+        "dark": "다크",
+        "feminine": "페미닌",
+        "special": "스페셜"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "펄스",
+          "description": "부드럽게 맥동하는 파란 링"
+        },
+        "pro-orbit": {
+          "name": "오빗",
+          "description": "궤도를 도는 빛의 점"
+        },
+        "pro-shimmer": {
+          "name": "시머",
+          "description": "슬라이딩 시안 그라디언트"
+        },
+        "pro-wave": {
+          "name": "웨이브",
+          "description": "동심원 파동이 확장"
+        },
+        "pro-noir": {
+          "name": "느와르",
+          "description": "그라파이트와 시안 라인"
+        },
+        "premium-obsidian": {
+          "name": "옵시디언",
+          "description": "은빛 반사가 있는 깊은 검정"
+        },
+        "premium-void": {
+          "name": "보이드",
+          "description": "에테르 입자가 있는 검은 링"
+        },
+        "pro-blossom": {
+          "name": "블로썸",
+          "description": "부드러운 맥동의 라벤더와 핑크"
+        },
+        "premium-rose": {
+          "name": "로제",
+          "description": "떠다니는 황금 꽃잎"
+        },
+        "premium-pearl": {
+          "name": "펄",
+          "description": "진주빛 무지개"
+        },
+        "premium-butterfly": {
+          "name": "버터플라이",
+          "description": "핑크와 바이올렛으로 펄럭이는 날개"
+        },
+        "premium-gold": {
+          "name": "골드",
+          "description": "회전하는 황금 후광"
+        },
+        "premium-flames": {
+          "name": "플레임",
+          "description": "타오르는 불의 원"
+        },
+        "premium-sparkles": {
+          "name": "스파클",
+          "description": "궤도를 도는 별 입자"
+        },
+        "premium-rainbow": {
+          "name": "레인보우",
+          "description": "생동감 있는 다채로운 링"
+        },
+        "premium-aurora": {
+          "name": "오로라",
+          "description": "떠다니는 오로라"
+        },
+        "premium-crown": {
+          "name": "크라운",
+          "description": "왕실의 황금 왕관"
+        },
+        "premium-galaxy": {
+          "name": "갤럭시",
+          "description": "은하에서 궤도를 도는 별"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "내비게이션",
@@ -622,7 +718,21 @@
     "pending_change": "예약됨",
     "pending_change_message": "플랜이 {{date}}에 {{plan}}으로 변경됩니다.",
     "cancel_change": "변경 취소",
-    "change_cancelled": "예약된 플랜 변경이 취소되었습니다."
+    "change_cancelled": "예약된 플랜 변경이 취소되었습니다.",
+    "feature_freezes_3_monthly": "연속 기록을 보호하는 스트릭 프리즈 월 3회",
+    "feature_freezes_6_monthly": "연속 기록을 보호하는 스트릭 프리즈 월 6회",
+    "feature_avatar_flair_pro": "7가지 애니메이션 아바타 효과 (클래식, 다크, 페미닌)",
+    "feature_avatar_flair_premium": "18가지 애니메이션 효과 모두 (+ 독점 스페셜: 불꽃, 왕관, 갤럭시, 오로라…)",
+    "feature_rooms_1": "1개 방 생성 (10명)",
+    "feature_rooms_3": "최대 3개 방 생성 (50명)",
+    "feature_rooms_10": "최대 10개 방 생성 (200명)",
+    "feature_members_10": "방당 최대 10명",
+    "feature_members_50": "방당 최대 50명",
+    "feature_members_200": "방당 최대 200명",
+    "feature_locked_desc": "이 기능은 현재 플랜에서 사용할 수 없습니다. 업그레이드하여 잠금을 해제하세요.",
+    "plan_expired": "플랜 만료",
+    "plan_expired_banner": "플랜이 만료되었습니다. 프리미엄 기능을 계속 사용하려면 지금 갱신하세요.",
+    "renew_now": "지금 갱신"
   },
   "pagination": {
     "previous": "이전",
