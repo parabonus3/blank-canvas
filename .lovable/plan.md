@@ -1,93 +1,68 @@
 ## Objetivo
 
-1. Reformular os flairs **Chamas** e **Coroa** (sem emoji) e adicionar uma nova categoria **Dark** + estilos **Femininos**, todos puramente em CSS animado.
-2. Resolver o "achatamento" da imagem do avatar adicionando um **editor de avatar** com zoom + reposicionamento (estilo Discord/Telegram), salvando a versão recortada.
+Refinar a seção "Estilo do Avatar" em Configurações para ficar mais limpa, remover a menção a "Discord Nitro", e adicionar transparência sobre quais efeitos cada plano (Pro vs Premium) inclui na página de Planos.
 
 ---
 
-## Parte 1 — Redesign dos Flairs (sem emoji)
+## Parte 1 — Limpar a UI do AvatarFlairPicker
 
-### Remover emojis dos flairs existentes
-- `premium-flames`: tirar os 🔥. Substituir por **anel de fogo CSS** — múltiplas camadas de `radial-gradient` laranja/vermelho com `mask` e blur, usando keyframes `flame-flicker` (escala + opacidade pulsando irregularmente) + `flame-rotate` lento. Resultado: "halo de fogo" envolvendo o avatar.
-- `premium-crown`: tirar o 👑. Substituir por **diadema CSS** — pseudo-elementos com `clip-path` formando uma silhueta de coroa minimalista em ouro, com gradiente animado e brilho `drop-shadow` pulsante. Posicionado acima do anel sem texto/emoji.
-- `premium-sparkles`: trocar caracteres `✦/✧` por **partículas CSS** (pequenos `div` redondos com `box-shadow` brilhante) orbitando — já existe a base, só remover os caracteres.
-- `premium-galaxy`: já é puro CSS, manter.
+Arquivo: `src/components/settings/AvatarFlairPicker.tsx`
 
-### Novos flairs Premium
-| ID | Nome | Visual |
-|---|---|---|
-| `premium-obsidian` | Obsidiana | Anel preto profundo com reflexo prateado deslizante (gradiente cônico preto→cinza→preto) + sombra interna |
-| `premium-void` | Vazio | Anel preto absoluto com partículas roxas/azuis pulsando, halo escuro |
-| `premium-rose` | Rosé | Gradiente rosa-claro → coral → dourado, brilho suave feminino, partículas em forma de pétala (CSS `border-radius` assimétrico) flutuando |
-| `premium-pearl` | Pérola | Anel iridescente branco/rosa/azul-bebê com shimmer perolado, halo suave |
-| `premium-butterfly` | Borboleta | Anel rosa/violeta com 2 "asas" CSS (clip-path) batendo suavemente nas laterais |
+### Remover menção ao Discord Nitro
+- Trocar a `CardDescription` atual:
+  - De: *"Disponível em Pro e Premium — escolha um efeito animado para seu avatar (estilo Discord Nitro)."*
+  - Para: *"Escolha um efeito animado exclusivo para destacar seu avatar em salas, lista de amigos e perfis."*
+- Remover qualquer outra referência a "Discord" / "Nitro" no componente.
 
-### Novos flairs Pro
-| ID | Nome | Visual |
-|---|---|---|
-| `pro-noir` | Noir | Anel preto/grafite minimalista com linha cyan deslizante |
-| `pro-blossom` | Florescer | Gradiente rosa-claro → lavanda suave, pulso delicado |
+### Mostrar apenas 4 flairs por padrão + botão "Mostrar mais"
+- Adicionar estado `expanded: Record<FlairCategory, boolean>` (default `false`).
+- Para cada categoria:
+  - Se `expanded[cat] === false` → renderizar **apenas os primeiros 4** flairs daquela categoria.
+  - Se `true` → renderizar todos.
+- Abaixo do grid de cada categoria (apenas quando `items.length > 4`):
+  - Botão `variant="outline"` largura total, com ícone `ChevronDown`/`ChevronUp` (Lucide) e texto:
+    - Fechado: *"Mostrar mais (+N)"* onde N = `items.length - 4`
+    - Aberto: *"Mostrar menos"*
+  - Estilo: borda sutil, hover com leve gradiente da categoria, transição suave.
+- Hoje categorias com >4: **Especiais (7)**. Demais (Clássicos 4, Dark 3, Femininos 4) ficam sem o botão.
 
-### Organização visual no picker
-- Agrupar por **categoria** (não só por tier) com tabs ou seções: **Clássicos**, **Dark**, **Femininos**, **Especiais**.
-- Cada categoria com cabeçalho pequeno e ícone (Lucide: `Sparkles`, `Moon`, `Flower`, `Star`).
-- Cards dos flairs maiores com mais respiro, hover com leve `scale` e `shadow`, selecionado com borda gradiente animada.
-- Adicionar `category` ao `AvatarFlairDef` em `src/lib/avatarFlairs.ts`.
-
-### Arquivos
-- `src/lib/avatarFlairs.ts` — adicionar campo `category`, novos IDs
-- `src/components/avatar/AvatarFlair.tsx` — substituir blocos `premium-flames` e `premium-crown`, adicionar novos casos
-- `src/index.css` — novos keyframes: `flame-flicker`, `flame-rotate`, `petal-float`, `pearl-shimmer`, `wing-flap`, `void-pulse`
-- `src/components/settings/AvatarFlairPicker.tsx` — agrupar por categoria, melhorar visual
+### Pequenos ajustes de layout
+- Manter os cabeçalhos coloridos por categoria.
+- Adicionar `transition-all` e `animate-fade-in` nos itens revelados ao expandir.
+- Free continua vendo blur + paywall (sem alteração de comportamento).
 
 ---
 
-## Parte 2 — Editor de imagem do avatar (zoom + reposicionar)
+## Parte 2 — Comunicar diferença Pro vs Premium nos Planos
 
-### Comportamento atual
-Em `Settings.tsx` (linhas 112-149) o arquivo é enviado direto pro Supabase Storage. O `<AvatarImage>` aplica `object-cover` então imagens não-quadradas são cortadas no centro — daí a sensação de "achatamento/compressão".
+### `src/lib/stripePlans.ts`
+Já existem `avatar_flair_pro` e `avatar_flair_premium` em features. Não mudar a estrutura — só refinar as labels nos i18n.
 
-### Solução
-Após o usuário escolher arquivo, abrir um **diálogo de edição** antes do upload:
+### i18n: `src/i18n/locales/pt-BR.json` e `en-US.json`
+Atualizar os textos das features de avatar flair para serem específicos:
 
-- Componente novo: `src/components/settings/AvatarCropDialog.tsx`
-- Usa `<canvas>` puro (sem libs novas) com:
-  - Imagem carregada no centro
-  - **Slider de zoom** (1x → 3x)
-  - **Arrastar com mouse/touch** para reposicionar
-  - Máscara circular mostrando o recorte final (preview)
-- Ao confirmar: gera blob 512×512 quadrado via `canvas.toBlob('image/webp', 0.9)` → faz upload (substituindo o fluxo atual).
-- Cancelar fecha o dialog sem upload.
+- `avatar_flair_pro`:
+  - PT: **"7 efeitos animados no avatar (Clássicos, Dark e Femininos)"**
+  - EN: **"7 animated avatar effects (Classic, Dark and Feminine)"**
+- `avatar_flair_premium`:
+  - PT: **"Todos os 18 efeitos animados (+ Especiais exclusivos: Chamas, Coroa, Galáxia, Aurora…)"**
+  - EN: **"All 18 animated effects (+ exclusive Specials: Flames, Crown, Galaxy, Aurora…)"**
 
-### Bônus de qualidade
-- Antes de exibir no canvas, redimensionar para no máx 1024px no maior lado (evita memória alta).
-- Forçar saída como `.webp` (ou `.jpg` fallback) para garantir tamanho pequeno e nome consistente (`avatar.webp`), eliminando o problema de extensões variáveis.
-- Manter o cache-busting `?t=Date.now()` já existente.
-
-### Arquivos
-- Novo: `src/components/settings/AvatarCropDialog.tsx`
-- Editar: `src/pages/Settings.tsx` — `handleAvatarUpload` agora abre o dialog ao invés de subir direto; ao confirmar, recebe o blob recortado e faz upload.
-
----
-
-## Detalhes técnicos
-
-- **Sem novas dependências** — crop usa Canvas API nativo, flairs usam CSS puro.
-- `prefers-reduced-motion` continua respeitado em todos os novos keyframes.
-- Tipos do Supabase (`avatar_flair`) já cobrem os novos IDs (string), nenhuma migração necessária.
-- Backward compat: IDs existentes mantidos; usuários com `premium-flames`/`premium-crown` veem automaticamente a versão nova/melhor.
-- Picker mantém a lógica de bloqueio por tier e a paywall para Free.
+### `src/pages/Pricing.tsx` e/ou `src/components/landing/PricingSection.tsx`
+- Verificar se já renderizam features pelos i18n keys. Se sim, a mudança acima já reflete automaticamente.
+- Se houver uma seção de comparação destacada (highlights), adicionar uma linha visual destacando o avatar flair com pequeno preview animado lado a lado:
+  - Pro: ícone `Sparkles` + "7 efeitos"
+  - Premium: ícone `Crown` dourado + "18 efeitos + Especiais"
+- Manter consistência com os badges de plano já existentes.
 
 ---
 
 ## Resumo de arquivos
 
-**Novos**
-- `src/components/settings/AvatarCropDialog.tsx`
-
 **Editados**
-- `src/lib/avatarFlairs.ts` (novos flairs + categorias)
-- `src/components/avatar/AvatarFlair.tsx` (renderização sem emoji + novos casos)
-- `src/components/settings/AvatarFlairPicker.tsx` (UI agrupada por categoria)
-- `src/index.css` (novos keyframes)
-- `src/pages/Settings.tsx` (integrar crop dialog ao upload)
+- `src/components/settings/AvatarFlairPicker.tsx` — remover "Discord Nitro", mostrar 4 + botão "Mostrar mais/menos" por categoria
+- `src/i18n/locales/pt-BR.json` — refinar textos `avatar_flair_pro` / `avatar_flair_premium`
+- `src/i18n/locales/en-US.json` — idem
+- `src/pages/Pricing.tsx` (se necessário) — destacar visualmente diferença Pro vs Premium em flairs
+
+Sem mudanças em banco de dados, sem novas dependências.
