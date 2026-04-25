@@ -419,7 +419,103 @@
     "privacy": "Datenschutz",
     "privacy_desc": "Steuern Sie, wer Ihre Statistiken sehen kann",
     "public_stats": "Öffentliche Statistiken",
-    "public_stats_desc": "Raummitgliedern erlauben, Ihre Lernstunden zu sehen"
+    "public_stats_desc": "Raummitgliedern erlauben, Ihre Lernstunden zu sehen",
+    "avatar_flair": {
+      "title": "Avatar-Stil",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "Verfügbar in Pro und Premium — wähle einen exklusiven animierten Effekt, um deinen Avatar hervorzuheben.",
+      "description_paid": "Wähle einen exklusiven animierten Effekt, um deinen Avatar in Räumen, Freundeslisten und Profilen hervorzuheben.",
+      "show_more": "Mehr anzeigen (+{{count}} Effekte)",
+      "show_less": "Weniger anzeigen",
+      "save": "Stil speichern",
+      "saving": "Speichern...",
+      "upgrade_hint_pro": "Upgrade auf Premium und schalte alle Spezialeffekte frei.",
+      "upgrade_hint_premium": "Du hast Zugriff auf alle verfügbaren Effekte.",
+      "free_cta_title": "Schalte animierte Effekte für deinen Avatar frei.",
+      "free_cta_subtitle": "Pro: Klassisch, Dark und Feminin • Premium: alle 18 exklusiven Effekte",
+      "free_cta_button": "Pläne ansehen",
+      "categories": {
+        "classic": "Klassisch",
+        "dark": "Dark",
+        "feminine": "Feminin",
+        "special": "Spezial"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "Puls",
+          "description": "Sanft pulsierender blauer Ring"
+        },
+        "pro-orbit": {
+          "name": "Orbit",
+          "description": "Lichtpunkt im Orbit"
+        },
+        "pro-shimmer": {
+          "name": "Schimmer",
+          "description": "Gleitender Cyan-Verlauf"
+        },
+        "pro-wave": {
+          "name": "Welle",
+          "description": "Konzentrische sich ausbreitende Wellen"
+        },
+        "pro-noir": {
+          "name": "Noir",
+          "description": "Graphit mit Cyan-Linie"
+        },
+        "premium-obsidian": {
+          "name": "Obsidian",
+          "description": "Tiefes Schwarz mit silbernem Reflex"
+        },
+        "premium-void": {
+          "name": "Leere",
+          "description": "Schwarzer Ring mit ätherischen Partikeln"
+        },
+        "pro-blossom": {
+          "name": "Blüte",
+          "description": "Lavendel und Rosa im sanften Puls"
+        },
+        "premium-rose": {
+          "name": "Rosé",
+          "description": "Schwebende goldene Blütenblätter"
+        },
+        "premium-pearl": {
+          "name": "Perle",
+          "description": "Perlmuttfarbene Iridiszenz"
+        },
+        "premium-butterfly": {
+          "name": "Schmetterling",
+          "description": "Flügel schlagen in Rosa und Violett"
+        },
+        "premium-gold": {
+          "name": "Gold",
+          "description": "Rotierender goldener Halo"
+        },
+        "premium-flames": {
+          "name": "Flammen",
+          "description": "Loderner Feuerkreis"
+        },
+        "premium-sparkles": {
+          "name": "Funkeln",
+          "description": "Kreisende Sternenpartikel"
+        },
+        "premium-rainbow": {
+          "name": "Regenbogen",
+          "description": "Lebendiger mehrfarbiger Ring"
+        },
+        "premium-aurora": {
+          "name": "Aurora",
+          "description": "Schwebende Aurora Borealis"
+        },
+        "premium-crown": {
+          "name": "Krone",
+          "description": "Königliches goldenes Diadem"
+        },
+        "premium-galaxy": {
+          "name": "Galaxie",
+          "description": "Sterne im Orbit einer Galaxie"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "Navigation",
@@ -622,7 +718,21 @@
     "pending_change": "Geplant",
     "pending_change_message": "Ihr Plan wechselt am {{date}} zu {{plan}}.",
     "cancel_change": "Änderung abbrechen",
-    "change_cancelled": "Die geplante Planänderung wurde abgebrochen."
+    "change_cancelled": "Die geplante Planänderung wurde abgebrochen.",
+    "feature_freezes_3_monthly": "3 Streak-Schilde/Monat zum Schutz deiner Serie",
+    "feature_freezes_6_monthly": "6 Streak-Schilde/Monat zum Schutz deiner Serie",
+    "feature_avatar_flair_pro": "7 animierte Avatar-Effekte (Klassisch, Dark und Feminin)",
+    "feature_avatar_flair_premium": "Alle 18 animierten Effekte (+ exklusive Specials: Flammen, Krone, Galaxie, Aurora…)",
+    "feature_rooms_1": "1 Raum erstellen (10 Mitglieder)",
+    "feature_rooms_3": "Bis zu 3 Räume erstellen (50 Mitglieder)",
+    "feature_rooms_10": "Bis zu 10 Räume erstellen (200 Mitglieder)",
+    "feature_members_10": "Bis zu 10 Mitglieder pro Raum",
+    "feature_members_50": "Bis zu 50 Mitglieder pro Raum",
+    "feature_members_200": "Bis zu 200 Mitglieder pro Raum",
+    "feature_locked_desc": "Diese Funktion ist in deinem aktuellen Plan nicht verfügbar. Upgrade, um sie freizuschalten.",
+    "plan_expired": "Plan abgelaufen",
+    "plan_expired_banner": "Dein Plan ist abgelaufen. Verlängere jetzt, um weiterhin Premium-Funktionen zu nutzen.",
+    "renew_now": "Jetzt verlängern"
   },
   "pagination": {
     "previous": "Zurück",

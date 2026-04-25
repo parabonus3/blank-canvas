@@ -419,7 +419,103 @@
     "privacy": "Confidentialité",
     "privacy_desc": "Contrôlez qui peut voir vos statistiques",
     "public_stats": "Statistiques Publiques",
-    "public_stats_desc": "Autoriser les membres à voir vos heures d'étude"
+    "public_stats_desc": "Autoriser les membres à voir vos heures d'étude",
+    "avatar_flair": {
+      "title": "Style de l'avatar",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "Disponible en Pro et Premium — choisissez un effet animé exclusif pour mettre en valeur votre avatar.",
+      "description_paid": "Choisissez un effet animé exclusif pour mettre en valeur votre avatar dans les salles, la liste d'amis et les profils.",
+      "show_more": "Afficher plus (+{{count}} effets)",
+      "show_less": "Afficher moins",
+      "save": "Enregistrer le style",
+      "saving": "Enregistrement...",
+      "upgrade_hint_pro": "Passez à Premium et débloquez tous les effets spéciaux.",
+      "upgrade_hint_premium": "Vous avez accès à tous les effets disponibles.",
+      "free_cta_title": "Débloquez des effets animés sur votre avatar.",
+      "free_cta_subtitle": "Pro : effets Classiques, Dark et Féminins • Premium : les 18 effets exclusifs",
+      "free_cta_button": "Voir les plans",
+      "categories": {
+        "classic": "Classiques",
+        "dark": "Dark",
+        "feminine": "Féminins",
+        "special": "Spéciaux"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "Pulsation",
+          "description": "Anneau bleu pulsant doux"
+        },
+        "pro-orbit": {
+          "name": "Orbite",
+          "description": "Point lumineux en orbite"
+        },
+        "pro-shimmer": {
+          "name": "Scintillement",
+          "description": "Dégradé cyan glissant"
+        },
+        "pro-wave": {
+          "name": "Onde",
+          "description": "Ondes concentriques en expansion"
+        },
+        "pro-noir": {
+          "name": "Noir",
+          "description": "Graphite avec ligne cyan"
+        },
+        "premium-obsidian": {
+          "name": "Obsidienne",
+          "description": "Noir profond avec reflet argenté"
+        },
+        "premium-void": {
+          "name": "Vide",
+          "description": "Anneau noir avec particules éthérées"
+        },
+        "pro-blossom": {
+          "name": "Éclosion",
+          "description": "Lavande et rose en pulsation douce"
+        },
+        "premium-rose": {
+          "name": "Rosé",
+          "description": "Pétales dorés flottants"
+        },
+        "premium-pearl": {
+          "name": "Perle",
+          "description": "Iridescence nacrée"
+        },
+        "premium-butterfly": {
+          "name": "Papillon",
+          "description": "Ailes battant en rose et violet"
+        },
+        "premium-gold": {
+          "name": "Or",
+          "description": "Halo doré rotatif"
+        },
+        "premium-flames": {
+          "name": "Flammes",
+          "description": "Cercle de feu ardent"
+        },
+        "premium-sparkles": {
+          "name": "Étincelles",
+          "description": "Particules stellaires en orbite"
+        },
+        "premium-rainbow": {
+          "name": "Arc-en-ciel",
+          "description": "Anneau multicolore vibrant"
+        },
+        "premium-aurora": {
+          "name": "Aurore",
+          "description": "Aurore boréale flottante"
+        },
+        "premium-crown": {
+          "name": "Couronne",
+          "description": "Diadème doré royal"
+        },
+        "premium-galaxy": {
+          "name": "Galaxie",
+          "description": "Étoiles en orbite dans une galaxie"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "Navigation",
@@ -622,7 +718,21 @@
     "pending_change": "Programmé",
     "pending_change_message": "Votre plan passera à {{plan}} le {{date}}.",
     "cancel_change": "Annuler le changement",
-    "change_cancelled": "Le changement de plan programmé a été annulé."
+    "change_cancelled": "Le changement de plan programmé a été annulé.",
+    "feature_freezes_3_monthly": "3 boucliers de série/mois pour protéger votre série",
+    "feature_freezes_6_monthly": "6 boucliers de série/mois pour protéger votre série",
+    "feature_avatar_flair_pro": "7 effets d'avatar animés (Classiques, Dark et Féminins)",
+    "feature_avatar_flair_premium": "Les 18 effets animés (+ Spéciaux exclusifs : Flammes, Couronne, Galaxie, Aurore…)",
+    "feature_rooms_1": "Créer 1 salle (10 membres)",
+    "feature_rooms_3": "Créer jusqu'à 3 salles (50 membres)",
+    "feature_rooms_10": "Créer jusqu'à 10 salles (200 membres)",
+    "feature_members_10": "Jusqu'à 10 membres par salle",
+    "feature_members_50": "Jusqu'à 50 membres par salle",
+    "feature_members_200": "Jusqu'à 200 membres par salle",
+    "feature_locked_desc": "Cette fonctionnalité n'est pas disponible dans votre plan actuel. Mettez à niveau pour la débloquer.",
+    "plan_expired": "Plan expiré",
+    "plan_expired_banner": "Votre plan a expiré. Renouvelez maintenant pour continuer à utiliser les fonctionnalités premium.",
+    "renew_now": "Renouveler"
   },
   "pagination": {
     "previous": "Précédent",

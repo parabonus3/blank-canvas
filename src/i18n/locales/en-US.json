@@ -431,7 +431,103 @@
     "privacy": "Privacy",
     "privacy_desc": "Control who can see your statistics",
     "public_stats": "Public Statistics",
-    "public_stats_desc": "Allow room members to see your study hours and daily progress"
+    "public_stats_desc": "Allow room members to see your study hours and daily progress",
+    "avatar_flair": {
+      "title": "Avatar Style",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "Available in Pro and Premium — choose an exclusive animated effect to highlight your avatar.",
+      "description_paid": "Choose an exclusive animated effect to highlight your avatar in rooms, friends list, and profiles.",
+      "show_more": "Show more (+{{count}} effects)",
+      "show_less": "Show less",
+      "save": "Save style",
+      "saving": "Saving...",
+      "upgrade_hint_pro": "Upgrade to Premium and unlock all special effects.",
+      "upgrade_hint_premium": "You have access to all available effects.",
+      "free_cta_title": "Unlock animated effects on your avatar.",
+      "free_cta_subtitle": "Pro: Classic, Dark and Feminine effects • Premium: all 18 exclusive effects",
+      "free_cta_button": "View plans",
+      "categories": {
+        "classic": "Classic",
+        "dark": "Dark",
+        "feminine": "Feminine",
+        "special": "Special"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "Pulse",
+          "description": "Soft pulsing blue ring"
+        },
+        "pro-orbit": {
+          "name": "Orbit",
+          "description": "Light point orbiting"
+        },
+        "pro-shimmer": {
+          "name": "Shimmer",
+          "description": "Sliding cyan gradient"
+        },
+        "pro-wave": {
+          "name": "Wave",
+          "description": "Concentric waves expanding"
+        },
+        "pro-noir": {
+          "name": "Noir",
+          "description": "Graphite with cyan line"
+        },
+        "premium-obsidian": {
+          "name": "Obsidian",
+          "description": "Deep black with silver reflection"
+        },
+        "premium-void": {
+          "name": "Void",
+          "description": "Black ring with ethereal particles"
+        },
+        "pro-blossom": {
+          "name": "Blossom",
+          "description": "Lavender and pink in soft pulse"
+        },
+        "premium-rose": {
+          "name": "Rosé",
+          "description": "Floating golden petals"
+        },
+        "premium-pearl": {
+          "name": "Pearl",
+          "description": "Pearlescent iridescence"
+        },
+        "premium-butterfly": {
+          "name": "Butterfly",
+          "description": "Wings flapping in pink and violet"
+        },
+        "premium-gold": {
+          "name": "Gold",
+          "description": "Rotating golden halo"
+        },
+        "premium-flames": {
+          "name": "Flames",
+          "description": "Blazing fire circle"
+        },
+        "premium-sparkles": {
+          "name": "Sparkles",
+          "description": "Orbiting stellar particles"
+        },
+        "premium-rainbow": {
+          "name": "Rainbow",
+          "description": "Vibrant multicolored ring"
+        },
+        "premium-aurora": {
+          "name": "Aurora",
+          "description": "Floating aurora borealis"
+        },
+        "premium-crown": {
+          "name": "Crown",
+          "description": "Royal golden diadem"
+        },
+        "premium-galaxy": {
+          "name": "Galaxy",
+          "description": "Stars orbiting in galaxy"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "Navigation",

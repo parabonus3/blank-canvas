@@ -419,7 +419,103 @@
     "privacy": "プライバシー",
     "privacy_desc": "統計情報の公開範囲を設定",
     "public_stats": "統計を公開",
-    "public_stats_desc": "ルームメンバーに学習時間を公開する"
+    "public_stats_desc": "ルームメンバーに学習時間を公開する",
+    "avatar_flair": {
+      "title": "アバタースタイル",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "ProとPremiumで利用可能 — アバターを際立たせる限定アニメーションエフェクトを選びましょう。",
+      "description_paid": "ルーム、友達リスト、プロフィールでアバターを際立たせる限定アニメーションエフェクトを選びましょう。",
+      "show_more": "さらに表示（+{{count}}個）",
+      "show_less": "折りたたむ",
+      "save": "スタイルを保存",
+      "saving": "保存中...",
+      "upgrade_hint_pro": "Premiumにアップグレードして、すべての特別エフェクトを解除しましょう。",
+      "upgrade_hint_premium": "利用可能なすべてのエフェクトにアクセスできます。",
+      "free_cta_title": "アバターのアニメーションエフェクトを解除しましょう。",
+      "free_cta_subtitle": "Pro: クラシック・ダーク・フェミニン • Premium: 限定18エフェクトすべて",
+      "free_cta_button": "プランを見る",
+      "categories": {
+        "classic": "クラシック",
+        "dark": "ダーク",
+        "feminine": "フェミニン",
+        "special": "スペシャル"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "パルス",
+          "description": "柔らかく脈打つ青いリング"
+        },
+        "pro-orbit": {
+          "name": "オービット",
+          "description": "光の点が周回"
+        },
+        "pro-shimmer": {
+          "name": "シマー",
+          "description": "スライドするシアングラデーション"
+        },
+        "pro-wave": {
+          "name": "ウェーブ",
+          "description": "同心円状に広がる波"
+        },
+        "pro-noir": {
+          "name": "ノワール",
+          "description": "グラファイトとシアンライン"
+        },
+        "premium-obsidian": {
+          "name": "オブシディアン",
+          "description": "深い黒と銀の反射"
+        },
+        "premium-void": {
+          "name": "ヴォイド",
+          "description": "黒いリングと幽玄な粒子"
+        },
+        "pro-blossom": {
+          "name": "ブロッサム",
+          "description": "ラベンダーとピンクの柔らかな脈動"
+        },
+        "premium-rose": {
+          "name": "ロゼ",
+          "description": "舞い散る黄金の花びら"
+        },
+        "premium-pearl": {
+          "name": "パール",
+          "description": "真珠のような虹色"
+        },
+        "premium-butterfly": {
+          "name": "バタフライ",
+          "description": "ピンクとバイオレットで羽ばたく翼"
+        },
+        "premium-gold": {
+          "name": "ゴールド",
+          "description": "回転する黄金のハロー"
+        },
+        "premium-flames": {
+          "name": "フレイム",
+          "description": "燃え盛る炎の輪"
+        },
+        "premium-sparkles": {
+          "name": "スパークル",
+          "description": "周回する星の粒子"
+        },
+        "premium-rainbow": {
+          "name": "レインボー",
+          "description": "鮮やかな多色のリング"
+        },
+        "premium-aurora": {
+          "name": "オーロラ",
+          "description": "漂うオーロラ"
+        },
+        "premium-crown": {
+          "name": "クラウン",
+          "description": "王室の黄金の冠"
+        },
+        "premium-galaxy": {
+          "name": "ギャラクシー",
+          "description": "銀河を周回する星"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "ナビゲーション",
@@ -622,7 +718,21 @@
     "pending_change": "予約済み",
     "pending_change_message": "プランは{{date}}に{{plan}}に変更されます。",
     "cancel_change": "変更をキャンセル",
-    "change_cancelled": "予約されたプラン変更がキャンセルされました。"
+    "change_cancelled": "予約されたプラン変更がキャンセルされました。",
+    "feature_freezes_3_monthly": "連続記録を守るストリークフリーズ月3回",
+    "feature_freezes_6_monthly": "連続記録を守るストリークフリーズ月6回",
+    "feature_avatar_flair_pro": "アニメーションアバターエフェクト7種（クラシック・ダーク・フェミニン）",
+    "feature_avatar_flair_premium": "アニメーションエフェクト全18種（限定スペシャル：炎・王冠・銀河・オーロラ…）",
+    "feature_rooms_1": "1ルーム作成可能（10メンバー）",
+    "feature_rooms_3": "最大3ルーム作成可能（50メンバー）",
+    "feature_rooms_10": "最大10ルーム作成可能（200メンバー）",
+    "feature_members_10": "1ルームあたり最大10メンバー",
+    "feature_members_50": "1ルームあたり最大50メンバー",
+    "feature_members_200": "1ルームあたり最大200メンバー",
+    "feature_locked_desc": "この機能は現在のプランでは利用できません。アップグレードして解除してください。",
+    "plan_expired": "プラン期限切れ",
+    "plan_expired_banner": "プランの有効期限が切れました。プレミアム機能を引き続き使用するには更新してください。",
+    "renew_now": "今すぐ更新"
   },
   "pagination": {
     "previous": "前へ",

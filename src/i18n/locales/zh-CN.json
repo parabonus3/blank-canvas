@@ -419,7 +419,103 @@
     "privacy": "隐私",
     "privacy_desc": "控制谁可以查看你的统计数据",
     "public_stats": "公开统计",
-    "public_stats_desc": "允许房间成员查看你的学习时间"
+    "public_stats_desc": "允许房间成员查看你的学习时间",
+    "avatar_flair": {
+      "title": "头像风格",
+      "badge_pro": "Pro",
+      "badge_premium": "Premium",
+      "description_free": "在Pro和Premium中可用 — 选择独家动画特效突出你的头像。",
+      "description_paid": "在房间、好友列表和个人资料中选择独家动画特效突出你的头像。",
+      "show_more": "显示更多（+{{count}}个特效）",
+      "show_less": "收起",
+      "save": "保存风格",
+      "saving": "保存中...",
+      "upgrade_hint_pro": "升级到Premium解锁所有特别特效。",
+      "upgrade_hint_premium": "你可以使用所有可用特效。",
+      "free_cta_title": "为你的头像解锁动画特效。",
+      "free_cta_subtitle": "Pro：经典、暗黑和女性特效 • Premium：全部18种独家特效",
+      "free_cta_button": "查看套餐",
+      "categories": {
+        "classic": "经典",
+        "dark": "暗黑",
+        "feminine": "女性",
+        "special": "特别"
+      },
+      "items": {
+        "pro-pulse": {
+          "name": "脉冲",
+          "description": "柔和脉动的蓝色光环"
+        },
+        "pro-orbit": {
+          "name": "轨道",
+          "description": "光点环绕"
+        },
+        "pro-shimmer": {
+          "name": "闪烁",
+          "description": "滑动的青色渐变"
+        },
+        "pro-wave": {
+          "name": "波浪",
+          "description": "同心波扩展"
+        },
+        "pro-noir": {
+          "name": "黑色",
+          "description": "石墨配青色线条"
+        },
+        "premium-obsidian": {
+          "name": "黑曜石",
+          "description": "深黑色配银色反射"
+        },
+        "premium-void": {
+          "name": "虚空",
+          "description": "黑色光环配空灵粒子"
+        },
+        "pro-blossom": {
+          "name": "绽放",
+          "description": "薰衣草和粉红柔和脉动"
+        },
+        "premium-rose": {
+          "name": "玫瑰",
+          "description": "飘落的金色花瓣"
+        },
+        "premium-pearl": {
+          "name": "珍珠",
+          "description": "珍珠虹彩"
+        },
+        "premium-butterfly": {
+          "name": "蝴蝶",
+          "description": "粉红和紫罗兰拍动的翅膀"
+        },
+        "premium-gold": {
+          "name": "黄金",
+          "description": "旋转的金色光环"
+        },
+        "premium-flames": {
+          "name": "火焰",
+          "description": "燃烧的火圈"
+        },
+        "premium-sparkles": {
+          "name": "闪光",
+          "description": "环绕的星辰粒子"
+        },
+        "premium-rainbow": {
+          "name": "彩虹",
+          "description": "充满活力的多彩光环"
+        },
+        "premium-aurora": {
+          "name": "极光",
+          "description": "漂浮的极光"
+        },
+        "premium-crown": {
+          "name": "皇冠",
+          "description": "皇家金冠"
+        },
+        "premium-galaxy": {
+          "name": "银河",
+          "description": "银河中环绕的星辰"
+        }
+      }
+    }
   },
   "sidebar": {
     "navigation": "导航",
@@ -622,7 +718,21 @@
     "pending_change": "已预约",
     "pending_change_message": "您的计划将在{{date}}更改为{{plan}}。",
     "cancel_change": "取消更改",
-    "change_cancelled": "预约的计划更改已取消。"
+    "change_cancelled": "预约的计划更改已取消。",
+    "feature_freezes_3_monthly": "每月3次连胜护盾，保护你的连续记录",
+    "feature_freezes_6_monthly": "每月6次连胜护盾，保护你的连续记录",
+    "feature_avatar_flair_pro": "7种动画头像特效（经典、暗黑和女性）",
+    "feature_avatar_flair_premium": "全部18种动画特效（+独家特别款：火焰、王冠、银河、极光…）",
+    "feature_rooms_1": "创建1个房间（10名成员）",
+    "feature_rooms_3": "创建最多3个房间（50名成员）",
+    "feature_rooms_10": "创建最多10个房间（200名成员）",
+    "feature_members_10": "每个房间最多10名成员",
+    "feature_members_50": "每个房间最多50名成员",
+    "feature_members_200": "每个房间最多200名成员",
+    "feature_locked_desc": "当前套餐不支持此功能。升级以解锁。",
+    "plan_expired": "套餐已过期",
+    "plan_expired_banner": "你的套餐已过期。立即续订以继续使用高级功能。",
+    "renew_now": "立即续订"
   },
   "pagination": {
     "previous": "上一页",
