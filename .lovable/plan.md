@@ -1,130 +1,93 @@
-# Plano: Flair Animado Pro/Premium estilo Discord + Defensivas nos Planos
+## Objetivo
 
-## Visão geral
-Hoje, na lista de **Amigos**, usuários Premium aparecem com um halo dourado animado bonito. Em **Salas** o destaque também existe, mas é estático e o mesmo para todos. Vamos transformar isso em um **sistema de flair (efeito de avatar) escolhível** — como Discord faz com Nitro — onde Pro/Premium escolhem qual animação querem usar, e ela aparece **em todos os lugares** (salas, lista de amigos, modal de perfil de amigo, modal de membro de sala). Premium recebe efeitos exclusivos mais elaborados que Pro.
+1. Reformular os flairs **Chamas** e **Coroa** (sem emoji) e adicionar uma nova categoria **Dark** + estilos **Femininos**, todos puramente em CSS animado.
+2. Resolver o "achatamento" da imagem do avatar adicionando um **editor de avatar** com zoom + reposicionamento (estilo Discord/Telegram), salvando a versão recortada.
 
-Também faltam as **defensivas (streak freeze)** nas listas de features dos planos — vamos adicionar.
+---
 
-## 1. Banco — preferência de flair por usuário
+## Parte 1 — Redesign dos Flairs (sem emoji)
 
-Adicionar coluna em `profiles`:
-- `avatar_flair` text, default `'default'`
-- `avatar_flair_color` text, nullable (hex opcional para customizar a cor base de alguns flairs)
+### Remover emojis dos flairs existentes
+- `premium-flames`: tirar os 🔥. Substituir por **anel de fogo CSS** — múltiplas camadas de `radial-gradient` laranja/vermelho com `mask` e blur, usando keyframes `flame-flicker` (escala + opacidade pulsando irregularmente) + `flame-rotate` lento. Resultado: "halo de fogo" envolvendo o avatar.
+- `premium-crown`: tirar o 👑. Substituir por **diadema CSS** — pseudo-elementos com `clip-path` formando uma silhueta de coroa minimalista em ouro, com gradiente animado e brilho `drop-shadow` pulsante. Posicionado acima do anel sem texto/emoji.
+- `premium-sparkles`: trocar caracteres `✦/✧` por **partículas CSS** (pequenos `div` redondos com `box-shadow` brilhante) orbitando — já existe a base, só remover os caracteres.
+- `premium-galaxy`: já é puro CSS, manter.
 
-Atualizar RPCs que retornam membros/amigos/ranking (`get_room_members_with_status`, `get_friend_profiles`, `get_global_user_ranking`, etc.) para incluir `avatar_flair` e `avatar_flair_color`. Listar e migrar todas que já retornam `plan_tier`.
+### Novos flairs Premium
+| ID | Nome | Visual |
+|---|---|---|
+| `premium-obsidian` | Obsidiana | Anel preto profundo com reflexo prateado deslizante (gradiente cônico preto→cinza→preto) + sombra interna |
+| `premium-void` | Vazio | Anel preto absoluto com partículas roxas/azuis pulsando, halo escuro |
+| `premium-rose` | Rosé | Gradiente rosa-claro → coral → dourado, brilho suave feminino, partículas em forma de pétala (CSS `border-radius` assimétrico) flutuando |
+| `premium-pearl` | Pérola | Anel iridescente branco/rosa/azul-bebê com shimmer perolado, halo suave |
+| `premium-butterfly` | Borboleta | Anel rosa/violeta com 2 "asas" CSS (clip-path) batendo suavemente nas laterais |
 
-## 2. Catálogo de flairs (`src/lib/avatarFlairs.ts`)
+### Novos flairs Pro
+| ID | Nome | Visual |
+|---|---|---|
+| `pro-noir` | Noir | Anel preto/grafite minimalista com linha cyan deslizante |
+| `pro-blossom` | Florescer | Gradiente rosa-claro → lavanda suave, pulso delicado |
 
-Define um array tipado de flairs com `id`, `name`, `description`, `tier` (`pro` ou `premium`), `preview` (componente). Catálogo proposto:
+### Organização visual no picker
+- Agrupar por **categoria** (não só por tier) com tabs ou seções: **Clássicos**, **Dark**, **Femininos**, **Especiais**.
+- Cada categoria com cabeçalho pequeno e ícone (Lucide: `Sparkles`, `Moon`, `Flower`, `Star`).
+- Cards dos flairs maiores com mais respiro, hover com leve `scale` e `shadow`, selecionado com borda gradiente animada.
+- Adicionar `category` ao `AvatarFlairDef` em `src/lib/avatarFlairs.ts`.
 
-**Pro (4 flairs):**
-- `pro-pulse` — anel azul com pulse suave (atual)
-- `pro-orbit` — pequeno ponto orbitando
-- `pro-shimmer` — gradiente cyan→azul deslizando
-- `pro-wave` — ondas concêntricas saindo do avatar
+### Arquivos
+- `src/lib/avatarFlairs.ts` — adicionar campo `category`, novos IDs
+- `src/components/avatar/AvatarFlair.tsx` — substituir blocos `premium-flames` e `premium-crown`, adicionar novos casos
+- `src/index.css` — novos keyframes: `flame-flicker`, `flame-rotate`, `petal-float`, `pearl-shimmer`, `wing-flap`, `void-pulse`
+- `src/components/settings/AvatarFlairPicker.tsx` — agrupar por categoria, melhorar visual
 
-**Premium (7 flairs, mais elaborados):**
-- `premium-gold` — halo dourado giratório (atual)
-- `premium-flames` — chamas douradas subindo nas bordas
-- `premium-sparkles` — partículas/estrelas girando ao redor
-- `premium-rainbow` — anel arco-íris animado
-- `premium-aurora` — gradiente tipo aurora boreal
-- `premium-crown` — coroa flutuando acima do avatar com glow
-- `premium-galaxy` — partículas estilo galáxia girando
+---
 
-Todos usam apenas CSS keyframes + SVG inline (sem libs).
+## Parte 2 — Editor de imagem do avatar (zoom + reposicionar)
 
-## 3. Componente `AvatarFlair`
+### Comportamento atual
+Em `Settings.tsx` (linhas 112-149) o arquivo é enviado direto pro Supabase Storage. O `<AvatarImage>` aplica `object-cover` então imagens não-quadradas são cortadas no centro — daí a sensação de "achatamento/compressão".
 
-Substitui o atual `PlanAvatarRing`. Assinatura:
+### Solução
+Após o usuário escolher arquivo, abrir um **diálogo de edição** antes do upload:
 
-```tsx
-<AvatarFlair tier={tier} flairId={flairId} size="sm|md|lg">
-  <Avatar />
-</AvatarFlair>
-```
+- Componente novo: `src/components/settings/AvatarCropDialog.tsx`
+- Usa `<canvas>` puro (sem libs novas) com:
+  - Imagem carregada no centro
+  - **Slider de zoom** (1x → 3x)
+  - **Arrastar com mouse/touch** para reposicionar
+  - Máscara circular mostrando o recorte final (preview)
+- Ao confirmar: gera blob 512×512 quadrado via `canvas.toBlob('image/webp', 0.9)` → faz upload (substituindo o fluxo atual).
+- Cancelar fecha o dialog sem upload.
 
-- Se `tier === 'free'` → renderiza children sem efeito.
-- Se `flairId` não pertence ao tier do usuário (ex: Pro com flair Premium) → faz fallback para o flair default do tier.
-- Cada flair é um sub-componente isolado para code-splitting visual e fácil manutenção.
-- Mantém `PlanAvatarRing` como wrapper deprecated que delega para `AvatarFlair` para não quebrar imports existentes.
+### Bônus de qualidade
+- Antes de exibir no canvas, redimensionar para no máx 1024px no maior lado (evita memória alta).
+- Forçar saída como `.webp` (ou `.jpg` fallback) para garantir tamanho pequeno e nome consistente (`avatar.webp`), eliminando o problema de extensões variáveis.
+- Manter o cache-busting `?t=Date.now()` já existente.
 
-Adicionar keyframes novos em `tailwind.config.ts` / `index.css` para os efeitos (flames, sparkles-spin, aurora-shift, rainbow-rotate, galaxy, crown-float).
+### Arquivos
+- Novo: `src/components/settings/AvatarCropDialog.tsx`
+- Editar: `src/pages/Settings.tsx` — `handleAvatarUpload` agora abre o dialog ao invés de subir direto; ao confirmar, recebe o blob recortado e faz upload.
 
-## 4. Tela de seleção em Configurações de Perfil
+---
 
-Nova seção em `src/pages/Settings.tsx` chamada **"Estilo do Avatar"**, visível apenas se `tier !== 'free'`:
+## Detalhes técnicos
 
-- Grid responsivo (2 col mobile, 3-4 col desktop) de cards.
-- Cada card mostra: preview animado em tamanho grande (avatar do próprio usuário com o flair aplicado), nome, badge do tier requerido.
-- Flairs Premium aparecem **bloqueados (cadeado + blur)** para usuários Pro com CTA "Upgrade para Premium".
-- Card selecionado tem borda animada + check.
-- Botão "Salvar" persiste em `profiles.avatar_flair`, invalida queries de perfil/amigos/membros para refletir em tempo real.
-- Animação de entrada `fade-in + scale-in` em sequência (stagger) ao abrir a seção.
+- **Sem novas dependências** — crop usa Canvas API nativo, flairs usam CSS puro.
+- `prefers-reduced-motion` continua respeitado em todos os novos keyframes.
+- Tipos do Supabase (`avatar_flair`) já cobrem os novos IDs (string), nenhuma migração necessária.
+- Backward compat: IDs existentes mantidos; usuários com `premium-flames`/`premium-crown` veem automaticamente a versão nova/melhor.
+- Picker mantém a lógica de bloqueio por tier e a paywall para Free.
 
-Para usuários `free`: mostrar a seção como **paywall preview** — grid blureado com overlay "Disponível em Pro e Premium" e botão para `/pricing`.
+---
 
-## 5. Aplicar flair em todos os lugares
+## Resumo de arquivos
 
-Substituir `PlanAvatarRing` por `AvatarFlair tier={tier} flairId={flair}` em:
-- `src/components/rooms/RoomMemberGrid.tsx`
-- `src/components/friends/FriendsList.tsx`
-- `src/components/rooms/MemberProfileModal.tsx`
-- `src/components/friends/FriendProfileModal.tsx`
-- `src/components/rooms/RoomRankingSidebar.tsx`
-- `src/components/rooms/RoomChat.tsx` (mensagens) — versão `size="sm"` mais econômica
+**Novos**
+- `src/components/settings/AvatarCropDialog.tsx`
 
-## 6. Defensivas nos planos
-
-Hoje os arrays `STRIPE_PLANS.{pro,premium}.features` não citam streak freezes. Adicionar:
-- Free: nenhuma menção (ou `freezes_none`)
-- Pro: `freezes_3_monthly` (3 defensivas por mês) + flair customizável (4 estilos)
-- Premium: `freezes_6_monthly` + flair exclusivo (7 estilos premium)
-
-Adicionar chaves de i18n em `pt-BR.json` (e demais locales — pelo menos pt-BR e en-US, outras com fallback):
-- `pricing.feature_freezes_3_monthly`: "3 defensivas/mês para proteger sua sequência"
-- `pricing.feature_freezes_6_monthly`: "6 defensivas/mês para proteger sua sequência"
-- `pricing.feature_avatar_flair_pro`: "4 efeitos animados de avatar"
-- `pricing.feature_avatar_flair_premium`: "7 efeitos exclusivos de avatar (estilo Discord)"
-- `settings.avatar_flair_title`, `settings.avatar_flair_desc`, etc.
-
-Atualizar tanto `src/pages/Pricing.tsx` quanto `src/components/landing/PricingSection.tsx` (compartilham `STRIPE_PLANS.features`, então só editar o array já reflete em ambos).
-
-## 7. Detalhes técnicos
-
-- **Tipos Supabase**: regenerar após migração para incluir `avatar_flair` em `profiles` e nos retornos de RPCs.
-- **Performance**: animações puramente CSS (transform/opacity) com `will-change` apenas em flairs Premium pesados (galaxy/sparkles); avatares fora da viewport não recebem animação extra (usar `content-visibility: auto` no container do membro grid já existente).
-- **Acessibilidade**: respeitar `prefers-reduced-motion` — todos os flairs param de animar mantendo o estilo estático.
-- **Fallback de carregamento**: se `avatar_flair` vier `null`, usar `'pro-pulse'` para Pro e `'premium-gold'` para Premium (mantém comportamento atual).
-- **Cache**: `useProfile` já invalida em update; garantir que `roomMembers` e `friends` queries também reagem (já fazem via realtime de `profiles`? caso não, invalidar manualmente após salvar flair).
-
-## Arquivos afetados
-
-**Novos:**
-- `src/lib/avatarFlairs.ts` — catálogo
-- `src/components/avatar/AvatarFlair.tsx` — componente principal
-- `src/components/avatar/flairs/*.tsx` — um por efeito (ou um arquivo só com sub-componentes)
-- `src/components/settings/AvatarFlairPicker.tsx` — UI de seleção
-- `supabase/migrations/<timestamp>_avatar_flair.sql`
-
-**Editados:**
-- `tailwind.config.ts` + `src/index.css` — keyframes
-- `src/lib/stripePlans.ts` — features arrays
-- `src/i18n/locales/pt-BR.json` + `en-US.json` — novas chaves
-- `src/pages/Settings.tsx` — nova seção
-- `src/components/rooms/PlanBadge.tsx` — `PlanAvatarRing` vira shim
-- `src/components/rooms/RoomMemberGrid.tsx`
-- `src/components/friends/FriendsList.tsx`
-- `src/components/rooms/MemberProfileModal.tsx`
-- `src/components/friends/FriendProfileModal.tsx`
-- `src/components/rooms/RoomRankingSidebar.tsx`
-- `src/components/rooms/RoomChat.tsx`
-- `src/hooks/useProfile.ts` — adicionar `avatar_flair` na interface
-- `src/integrations/supabase/types.ts` (auto)
-
-## Resultado para o usuário
-
-- Em **Configurações → Estilo do Avatar**: grid lindo de previews animados, escolho um, salvo, e me vejo brilhando do jeito que escolhi.
-- Em **Salas**, **Amigos**, modais de perfil e ranking: meu avatar aparece com o efeito que escolhi, em vez do mesmo para todos os Premium.
-- Premium tem efeitos visivelmente mais ricos e exclusivos do que Pro, justificando o preço.
-- Página de **Planos** agora deixa explícito que Pro tem 3 defensivas/mês + 4 efeitos, Premium tem 6 defensivas/mês + 7 efeitos exclusivos.
+**Editados**
+- `src/lib/avatarFlairs.ts` (novos flairs + categorias)
+- `src/components/avatar/AvatarFlair.tsx` (renderização sem emoji + novos casos)
+- `src/components/settings/AvatarFlairPicker.tsx` (UI agrupada por categoria)
+- `src/index.css` (novos keyframes)
+- `src/pages/Settings.tsx` (integrar crop dialog ao upload)
