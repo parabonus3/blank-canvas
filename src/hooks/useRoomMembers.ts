@@ -20,6 +20,9 @@ export interface RoomMember {
   notifications_enabled?: boolean;
   status_text?: string | null;
   timer_started_at?: string | null;
+  plan_tier?: string;
+  avatar_flair?: string | null;
+  avatar_flair_color?: string | null;
 }
 
 export function useRoomMembers(roomId: string | undefined) {
