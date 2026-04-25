@@ -204,7 +204,7 @@ export default function Settings() {
             <div className="flex items-center gap-4">
               <div className="relative group">
                 <Avatar className="h-20 w-20">
-                  {avatarUrl && <AvatarImage src={avatarUrl} />}
+                  {avatarUrl && <AvatarImage src={avatarUrl} className="object-cover" />}
                   <AvatarFallback className="text-lg bg-primary/10 text-primary">
                     {displayName ? displayName.charAt(0).toUpperCase() : "?"}
                   </AvatarFallback>
