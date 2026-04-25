@@ -253,6 +253,15 @@ export default function Settings() {
         {/* Avatar Flair Picker (Pro/Premium animated effects, Discord-style) */}
         <AvatarFlairPicker displayName={displayName} avatarUrl={avatarUrl} />
 
+        {/* Avatar crop dialog (zoom + reposition before upload) */}
+        <AvatarCropDialog
+          open={cropOpen}
+          file={pendingFile}
+          saving={uploading}
+          onCancel={() => { setCropOpen(false); setPendingFile(null); }}
+          onConfirm={uploadCroppedAvatar}
+        />
+
         {/* Privacy */}
         <Card>
           <CardHeader>
