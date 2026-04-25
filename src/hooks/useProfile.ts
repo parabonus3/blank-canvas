@@ -26,6 +26,8 @@ export interface Profile {
   pomodoro_auto_start_work: boolean;
   timezone: string;
   onboarding_completed: boolean;
+  avatar_flair: string;
+  avatar_flair_color: string | null;
   created_at: string;
   updated_at: string;
 }

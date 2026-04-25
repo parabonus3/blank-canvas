@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Crown, Zap } from "lucide-react";
+import { AvatarFlair } from "@/components/avatar/AvatarFlair";
 
 interface PlanBadgeProps {
   tier: string;
@@ -45,47 +46,20 @@ export function PlanBadge({ tier, size = "sm", className }: PlanBadgeProps) {
 
 interface PlanAvatarRingProps {
   tier: string;
+  flairId?: string | null;
   children: React.ReactNode;
   className?: string;
+  compact?: boolean;
 }
 
 /**
- * Premium: Animated golden glow halo that pulses behind the avatar.
- * Pro: Subtle blue shimmer ring.
- * Both are rendered BEHIND the avatar so they never overlap online/live indicators.
+ * Backward-compatible wrapper that delegates to the new AvatarFlair system.
+ * Callers that don't pass `flairId` get the tier's default flair.
  */
-export function PlanAvatarRing({ tier, children, className }: PlanAvatarRingProps) {
-  if (tier === "premium") {
-    return (
-      <div className={cn("relative", className)}>
-        {/* Outer pulsing glow */}
-        <div className="absolute -inset-[5px] rounded-full animate-[plan-glow-premium_3s_ease-in-out_infinite]" />
-        {/* Inner rotating gradient ring */}
-        <div className="absolute -inset-[3px] rounded-full overflow-hidden">
-          <div className="absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,#f59e0b,#fbbf24,#f59e0b,#d97706,#f59e0b)] animate-[spin_3s_linear_infinite]" />
-        </div>
-        <div className="relative">
-          {children}
-        </div>
-      </div>
-    );
-  }
-
-  if (tier === "pro") {
-    return (
-      <div className={cn("relative", className)}>
-        {/* Subtle blue glow */}
-        <div className="absolute -inset-[4px] rounded-full animate-[plan-glow-pro_4s_ease-in-out_infinite]" />
-        {/* Gradient ring */}
-        <div className="absolute -inset-[2.5px] rounded-full overflow-hidden">
-          <div className="absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,#3b82f6,#06b6d4,#3b82f6,#6366f1,#3b82f6)] animate-[spin_5s_linear_infinite]" />
-        </div>
-        <div className="relative">
-          {children}
-        </div>
-      </div>
-    );
-  }
-
-  return <div className={className}>{children}</div>;
+export function PlanAvatarRing({ tier, flairId, children, className, compact }: PlanAvatarRingProps) {
+  return (
+    <AvatarFlair tier={tier} flairId={flairId} className={className} compact={compact}>
+      {children}
+    </AvatarFlair>
+  );
 }

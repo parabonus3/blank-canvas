@@ -193,7 +193,7 @@ export function MemberProfileModal({ open, onOpenChange, member, roomId, totalMe
             {/* Avatar + Name + Status */}
             <div className="flex flex-col items-center gap-3">
               <div className="relative">
-                <PlanAvatarRing tier={(member as any).plan_tier || "free"}>
+                <PlanAvatarRing tier={(member as any).plan_tier || "free"} flairId={(member as any).avatar_flair || (publicStats as any)?.avatar_flair}>
                 <div className={cn(
                   "rounded-full p-[3px]",
                   isStudying

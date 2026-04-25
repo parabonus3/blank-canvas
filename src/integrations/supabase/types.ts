@@ -445,6 +445,8 @@ export type Database = {
           ambient_sound: string | null
           ambient_volume: number | null
           autoplay_on_timer: boolean | null
+          avatar_flair: string
+          avatar_flair_color: string | null
           avatar_url: string | null
           created_at: string
           display_name: string | null
@@ -474,6 +476,8 @@ export type Database = {
           ambient_sound?: string | null
           ambient_volume?: number | null
           autoplay_on_timer?: boolean | null
+          avatar_flair?: string
+          avatar_flair_color?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
@@ -503,6 +507,8 @@ export type Database = {
           ambient_sound?: string | null
           ambient_volume?: number | null
           autoplay_on_timer?: boolean | null
+          avatar_flair?: string
+          avatar_flair_color?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
@@ -1276,6 +1282,8 @@ export type Database = {
       get_global_user_ranking: {
         Args: { _period?: string }
         Returns: {
+          avatar_flair: string
+          avatar_flair_color: string
           avatar_url: string
           display_name: string
           is_anonymous: boolean
@@ -1301,6 +1309,8 @@ export type Database = {
       get_member_public_stats: {
         Args: { _user_id: string }
         Returns: {
+          avatar_flair: string
+          avatar_flair_color: string
           avatar_url: string
           display_name: string
           is_stats_public: boolean
@@ -1367,6 +1377,8 @@ export type Database = {
       get_room_member_profiles: {
         Args: { _room_id: string }
         Returns: {
+          avatar_flair: string
+          avatar_flair_color: string
           avatar_url: string
           display_name: string
           friend_code: string
