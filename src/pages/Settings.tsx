@@ -20,6 +20,7 @@ import { getDateLocale } from "@/lib/timezone";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarFlairPicker } from "@/components/settings/AvatarFlairPicker";
+import { AvatarCropDialog } from "@/components/settings/AvatarCropDialog";
 
 const groupedTimezones = getGroupedTimezones();
 
@@ -40,6 +41,8 @@ export default function Settings() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isStatsPublic, setIsStatsPublic] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
   
   // Configurações de som ambiente
   const [ambientSound, setAmbientSound] = useState<string | null>(null);
@@ -109,8 +112,10 @@ export default function Settings() {
     return () => clearInterval(interval);
   }, [timezone, i18n.language]);
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    // reset input value so same file can be picked again
+    e.target.value = "";
     if (!file || !user) return;
 
     if (!file.type.startsWith("image/")) {
@@ -118,14 +123,19 @@ export default function Settings() {
       return;
     }
 
+    setPendingFile(file);
+    setCropOpen(true);
+  };
+
+  const uploadCroppedAvatar = async (blob: Blob) => {
+    if (!user) return;
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const filePath = `${user.id}/avatar.${ext}`;
+      const filePath = `${user.id}/avatar.webp`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(filePath, file, { upsert: true });
+        .upload(filePath, blob, { upsert: true, contentType: "image/webp" });
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
@@ -141,6 +151,8 @@ export default function Settings() {
         .eq("user_id", user.id);
 
       toast({ title: t("settings.avatar_updated") });
+      setCropOpen(false);
+      setPendingFile(null);
     } catch (err: any) {
       toast({ title: t("settings.avatar_error"), description: err.message, variant: "destructive" });
     } finally {
@@ -192,7 +204,7 @@ export default function Settings() {
             <div className="flex items-center gap-4">
               <div className="relative group">
                 <Avatar className="h-20 w-20">
-                  {avatarUrl && <AvatarImage src={avatarUrl} />}
+                  {avatarUrl && <AvatarImage src={avatarUrl} className="object-cover" />}
                   <AvatarFallback className="text-lg bg-primary/10 text-primary">
                     {displayName ? displayName.charAt(0).toUpperCase() : "?"}
                   </AvatarFallback>
@@ -240,6 +252,15 @@ export default function Settings() {
 
         {/* Avatar Flair Picker (Pro/Premium animated effects, Discord-style) */}
         <AvatarFlairPicker displayName={displayName} avatarUrl={avatarUrl} />
+
+        {/* Avatar crop dialog (zoom + reposition before upload) */}
+        <AvatarCropDialog
+          open={cropOpen}
+          file={pendingFile}
+          saving={uploading}
+          onCancel={() => { setCropOpen(false); setPendingFile(null); }}
+          onConfirm={uploadCroppedAvatar}
+        />
 
         {/* Privacy */}
         <Card>
