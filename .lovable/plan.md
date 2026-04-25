@@ -1,75 +1,130 @@
+# Plano: Flair Animado Pro/Premium estilo Discord + Defensivas nos Planos
 
-# Fix Explore (Salas + Usuários)
+## Visão geral
+Hoje, na lista de **Amigos**, usuários Premium aparecem com um halo dourado animado bonito. Em **Salas** o destaque também existe, mas é estático e o mesmo para todos. Vamos transformar isso em um **sistema de flair (efeito de avatar) escolhível** — como Discord faz com Nitro — onde Pro/Premium escolhem qual animação querem usar, e ela aparece **em todos os lugares** (salas, lista de amigos, modal de perfil de amigo, modal de membro de sala). Premium recebe efeitos exclusivos mais elaborados que Pro.
 
-## Diagnóstico
+Também faltam as **defensivas (streak freeze)** nas listas de features dos planos — vamos adicionar.
 
-Investiguei o banco e o código. Existem **3 problemas distintos** causando o que você está vendo:
+## 1. Banco — preferência de flair por usuário
 
-### 1. Sala "Leitura" não aparece em Explorar → Salas
-- A única sala criada (`Leitura`, dona do `nickygameroficial`) tem `is_public = false` no banco.
-- A RPC `get_public_rooms_ranking_by_period` filtra por `is_public = true`, então corretamente esconde salas privadas.
-- No `CreateRoomDialog`, a regra é `isPublic = !password.trim()` — ou seja, a sala só vira pública se for criada **sem senha**. Provavelmente a sala foi criada com senha, então virou privada para sempre. Não há UI para alternar isso depois (só existe em `RoomSettingsTab`, mas não está claro/visível).
+Adicionar coluna em `profiles`:
+- `avatar_flair` text, default `'default'`
+- `avatar_flair_color` text, nullable (hex opcional para customizar a cor base de alguns flairs)
 
-### 2. Usuário `nickymenezes15@gmail.com` não aparece em Explorar → Usuários → Agora
-- Ele tem um `time_entry` aberto (timer rodando), mas **não está em nenhuma sala** (`room_members` vazio para ele).
-- A RPC `get_global_user_ranking` no modo `now` exige `EXISTS (... room_members rm WHERE rm.is_timer_active = true)`. Ou seja, só conta quem está estudando **dentro de uma sala**.
-- Resultado: timers solo são invisíveis no ranking "Agora", mesmo estando online estudando.
+Atualizar RPCs que retornam membros/amigos/ranking (`get_room_members_with_status`, `get_friend_profiles`, `get_global_user_ranking`, etc.) para incluir `avatar_flair` e `avatar_flair_color`. Listar e migrar todas que já retornam `plan_tier`.
 
-### 3. `is_online` em `room_members` fica desatualizado
-- O flag `is_online` só é setado para `true` quando o usuário abre a página da sala, e volta a `false` no `beforeunload`.
-- Quem está com timer ativo mas não está com a aba da sala aberta aparece como offline. Por isso `online_count` subestima na Explore.
-- O `studying_count` (que usa `is_timer_active + last_active_at < 2h05min`) é o indicador confiável de "estudando agora".
+## 2. Catálogo de flairs (`src/lib/avatarFlairs.ts`)
 
----
+Define um array tipado de flairs com `id`, `name`, `description`, `tier` (`pro` ou `premium`), `preview` (componente). Catálogo proposto:
 
-## Plano de correção
+**Pro (4 flairs):**
+- `pro-pulse` — anel azul com pulse suave (atual)
+- `pro-orbit` — pequeno ponto orbitando
+- `pro-shimmer` — gradiente cyan→azul deslizando
+- `pro-wave` — ondas concêntricas saindo do avatar
 
-### A. Ranking de usuários "Agora" — incluir timers solo
-Atualizar `get_global_user_ranking` (`_period = 'now'`) para considerar **qualquer** `time_entry` aberto e não pausado nas últimas 24h, independentemente de pertencer a uma sala. Mantém o respeito a `is_stats_public` (anonimizado quando privado).
+**Premium (7 flairs, mais elaborados):**
+- `premium-gold` — halo dourado giratório (atual)
+- `premium-flames` — chamas douradas subindo nas bordas
+- `premium-sparkles` — partículas/estrelas girando ao redor
+- `premium-rainbow` — anel arco-íris animado
+- `premium-aurora` — gradiente tipo aurora boreal
+- `premium-crown` — coroa flutuando acima do avatar com glow
+- `premium-galaxy` — partículas estilo galáxia girando
 
-Resultado: `nickymenezes15` passa a aparecer no ranking "Agora".
+Todos usam apenas CSS keyframes + SVG inline (sem libs).
 
-### B. Salas em Explore — mostrar salas com estudo ativo, mesmo privadas (anonimizadas)
-Duas mudanças na RPC `get_public_rooms_ranking_by_period`:
+## 3. Componente `AvatarFlair`
 
-1. **Modo "Agora"**: incluir também salas privadas que tenham pelo menos 1 membro com `is_timer_active = true` nas últimas 2h05min — mas exibindo apenas nome genérico ("Sala privada"), sem descrição, sem permitir entrada (front decide).
-2. Adicionar coluna `is_public` ao retorno para o front diferenciar.
+Substitui o atual `PlanAvatarRing`. Assinatura:
 
-No front (`Explore.tsx`):
-- Salas privadas no período "Agora" exibem nome ofuscado, ícone de cadeado, contagem de pessoas estudando, e botão "Entrar" desativado (ou substituído por "Sala privada — peça convite").
-- Para os outros períodos (Hoje/Semana/Total) mantém só públicas.
+```tsx
+<AvatarFlair tier={tier} flairId={flairId} size="sm|md|lg">
+  <Avatar />
+</AvatarFlair>
+```
 
-### C. Permitir tornar sala pública sem deletar
-- Garantir que `RoomSettingsTab` exponha o toggle "Sala pública" de forma clara para o dono. Verificar se está visível e funcionando; ajustar copy se necessário.
-- Adicionar atalho/aviso no `CreateRoomDialog` deixando explícito: "Sala com senha = privada (não aparece em Explorar)".
+- Se `tier === 'free'` → renderiza children sem efeito.
+- Se `flairId` não pertence ao tier do usuário (ex: Pro com flair Premium) → faz fallback para o flair default do tier.
+- Cada flair é um sub-componente isolado para code-splitting visual e fácil manutenção.
+- Mantém `PlanAvatarRing` como wrapper deprecated que delega para `AvatarFlair` para não quebrar imports existentes.
 
-### D. Sincronizar `is_online` com timer ativo
-Para refletir presença real no contador `online_count`:
-- No `useRoomMembers`, manter `is_online = true` enquanto o usuário tiver qualquer aba do app aberta (não só a página da sala). Mover o ping de presença para um nível superior (ex: `MainLayout` ou `AuthContext`), atualizando todas as filiações de sala do usuário.
-- Adicionar heartbeat a cada ~60s atualizando `last_active_at` para todas as `room_members` do usuário, e marcar `is_online = false` apenas após inatividade real (timeout) — não no `beforeunload`, que é pouco confiável.
-- Alternativa mais simples (recomendada): usar `is_timer_active = true OR last_active_at recente` como definição de "online" diretamente nas RPCs e nos componentes, sem mexer no schema.
+Adicionar keyframes novos em `tailwind.config.ts` / `index.css` para os efeitos (flames, sparkles-spin, aurora-shift, rainbow-rotate, galaxy, crown-float).
 
-### E. Correção pontual na sala existente
-Após aprovar o plano, dar opção ao usuário de:
-- Tornar manualmente a sala "Leitura" pública (UPDATE pontual via migration, com confirmação), **ou**
-- Deixar como está e só corrigir o fluxo daqui para frente.
+## 4. Tela de seleção em Configurações de Perfil
 
----
+Nova seção em `src/pages/Settings.tsx` chamada **"Estilo do Avatar"**, visível apenas se `tier !== 'free'`:
 
-## Detalhes técnicos
+- Grid responsivo (2 col mobile, 3-4 col desktop) de cards.
+- Cada card mostra: preview animado em tamanho grande (avatar do próprio usuário com o flair aplicado), nome, badge do tier requerido.
+- Flairs Premium aparecem **bloqueados (cadeado + blur)** para usuários Pro com CTA "Upgrade para Premium".
+- Card selecionado tem borda animada + check.
+- Botão "Salvar" persiste em `profiles.avatar_flair`, invalida queries de perfil/amigos/membros para refletir em tempo real.
+- Animação de entrada `fade-in + scale-in` em sequência (stagger) ao abrir a seção.
 
-**Arquivos a editar**
-- `supabase/functions` → migration SQL para recriar:
-  - `public.get_global_user_ranking` (modo `now` sem exigir room_members)
-  - `public.get_public_rooms_ranking_by_period` (incluir privadas com estudo ativo + coluna `is_public`)
-- `src/pages/Explore.tsx` — renderização condicional para salas privadas/anonimizadas; usar `studying_count` como destaque do período "Agora"
-- `src/hooks/useRoomMembers.ts` ou novo `usePresenceHeartbeat.ts` — heartbeat global de presença
-- `src/components/rooms/CreateRoomDialog.tsx` — copy explicando senha=privada
-- `src/components/rooms/RoomSettingsTab.tsx` — verificar toggle público/privado
+Para usuários `free`: mostrar a seção como **paywall preview** — grid blureado com overlay "Disponível em Pro e Premium" e botão para `/pricing`.
 
-**Sem breaking changes** no schema; somente novas migrations de `CREATE OR REPLACE FUNCTION` e (opcional) UPDATE pontual da sala existente.
+## 5. Aplicar flair em todos os lugares
 
-**Verificações pós-deploy**
-1. `nickymenezes15` aparece em Explorar → Usuários → Agora.
-2. Sala "Leitura" aparece em Explorar → Salas → Agora (anonimizada se mantida privada, ou normal se for tornada pública).
-3. `online_count` reflete usuários realmente ativos.
+Substituir `PlanAvatarRing` por `AvatarFlair tier={tier} flairId={flair}` em:
+- `src/components/rooms/RoomMemberGrid.tsx`
+- `src/components/friends/FriendsList.tsx`
+- `src/components/rooms/MemberProfileModal.tsx`
+- `src/components/friends/FriendProfileModal.tsx`
+- `src/components/rooms/RoomRankingSidebar.tsx`
+- `src/components/rooms/RoomChat.tsx` (mensagens) — versão `size="sm"` mais econômica
+
+## 6. Defensivas nos planos
+
+Hoje os arrays `STRIPE_PLANS.{pro,premium}.features` não citam streak freezes. Adicionar:
+- Free: nenhuma menção (ou `freezes_none`)
+- Pro: `freezes_3_monthly` (3 defensivas por mês) + flair customizável (4 estilos)
+- Premium: `freezes_6_monthly` + flair exclusivo (7 estilos premium)
+
+Adicionar chaves de i18n em `pt-BR.json` (e demais locales — pelo menos pt-BR e en-US, outras com fallback):
+- `pricing.feature_freezes_3_monthly`: "3 defensivas/mês para proteger sua sequência"
+- `pricing.feature_freezes_6_monthly`: "6 defensivas/mês para proteger sua sequência"
+- `pricing.feature_avatar_flair_pro`: "4 efeitos animados de avatar"
+- `pricing.feature_avatar_flair_premium`: "7 efeitos exclusivos de avatar (estilo Discord)"
+- `settings.avatar_flair_title`, `settings.avatar_flair_desc`, etc.
+
+Atualizar tanto `src/pages/Pricing.tsx` quanto `src/components/landing/PricingSection.tsx` (compartilham `STRIPE_PLANS.features`, então só editar o array já reflete em ambos).
+
+## 7. Detalhes técnicos
+
+- **Tipos Supabase**: regenerar após migração para incluir `avatar_flair` em `profiles` e nos retornos de RPCs.
+- **Performance**: animações puramente CSS (transform/opacity) com `will-change` apenas em flairs Premium pesados (galaxy/sparkles); avatares fora da viewport não recebem animação extra (usar `content-visibility: auto` no container do membro grid já existente).
+- **Acessibilidade**: respeitar `prefers-reduced-motion` — todos os flairs param de animar mantendo o estilo estático.
+- **Fallback de carregamento**: se `avatar_flair` vier `null`, usar `'pro-pulse'` para Pro e `'premium-gold'` para Premium (mantém comportamento atual).
+- **Cache**: `useProfile` já invalida em update; garantir que `roomMembers` e `friends` queries também reagem (já fazem via realtime de `profiles`? caso não, invalidar manualmente após salvar flair).
+
+## Arquivos afetados
+
+**Novos:**
+- `src/lib/avatarFlairs.ts` — catálogo
+- `src/components/avatar/AvatarFlair.tsx` — componente principal
+- `src/components/avatar/flairs/*.tsx` — um por efeito (ou um arquivo só com sub-componentes)
+- `src/components/settings/AvatarFlairPicker.tsx` — UI de seleção
+- `supabase/migrations/<timestamp>_avatar_flair.sql`
+
+**Editados:**
+- `tailwind.config.ts` + `src/index.css` — keyframes
+- `src/lib/stripePlans.ts` — features arrays
+- `src/i18n/locales/pt-BR.json` + `en-US.json` — novas chaves
+- `src/pages/Settings.tsx` — nova seção
+- `src/components/rooms/PlanBadge.tsx` — `PlanAvatarRing` vira shim
+- `src/components/rooms/RoomMemberGrid.tsx`
+- `src/components/friends/FriendsList.tsx`
+- `src/components/rooms/MemberProfileModal.tsx`
+- `src/components/friends/FriendProfileModal.tsx`
+- `src/components/rooms/RoomRankingSidebar.tsx`
+- `src/components/rooms/RoomChat.tsx`
+- `src/hooks/useProfile.ts` — adicionar `avatar_flair` na interface
+- `src/integrations/supabase/types.ts` (auto)
+
+## Resultado para o usuário
+
+- Em **Configurações → Estilo do Avatar**: grid lindo de previews animados, escolho um, salvo, e me vejo brilhando do jeito que escolhi.
+- Em **Salas**, **Amigos**, modais de perfil e ranking: meu avatar aparece com o efeito que escolhi, em vez do mesmo para todos os Premium.
+- Premium tem efeitos visivelmente mais ricos e exclusivos do que Pro, justificando o preço.
+- Página de **Planos** agora deixa explícito que Pro tem 3 defensivas/mês + 4 efeitos, Premium tem 6 defensivas/mês + 7 efeitos exclusivos.
