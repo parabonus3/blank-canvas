@@ -1,55 +1,56 @@
-# Plano: i18n completo + UI mais limpa do Estilo do Avatar
+# Plano: copy melhor + categoria unissex + "Mostrar mais" para todos
 
-## Problema identificado
+## 1. Nova copy sem travessão (12 idiomas)
 
-1. **Tradução faltando em 10 idiomas**: as chaves `pricing.feature_*` (incluindo `feature_rooms_1`, `feature_members_10`, `feature_avatar_flair_pro`, `feature_avatar_flair_premium`, etc.) só existem em **pt-BR** e **en-US**. Por isso a tela em japonês mostra `pricing.feature_rooms_1` como texto cru. Faltam: es-ES, fr-FR, ja-JP, de-DE, ar-SA, ko-KR, zh-CN, it-IT, ru-RU, id-ID.
+Trocar `settings.avatar_flair.description_free` por uma frase mais natural, sem travessão:
 
-2. **Estilo do Avatar 100% em português hardcoded**: `AvatarFlairPicker.tsx` (título, descrição, badges, botões "Mostrar mais/menos", rodapé "Salvar estilo", aviso de upgrade) e os nomes/descrições dos flairs em `avatarFlairs.ts` ("Pulso", "Anel azul pulsante suave", "Clássicos", "Dark", "Femininos", "Especiais"…) estão fixos em PT.
+| Idioma | Nova copy |
+|---|---|
+| pt-BR | "Efeitos animados exclusivos para destacar seu avatar. Disponível nos planos Pro e Premium." |
+| en-US | "Exclusive animated effects to highlight your avatar. Available on Pro and Premium plans." |
+| es-ES | "Efectos animados exclusivos para destacar tu avatar. Disponible en los planes Pro y Premium." |
+| fr-FR | "Des effets animés exclusifs pour mettre en valeur votre avatar. Disponible avec les plans Pro et Premium." |
+| ja-JP | "アバターを際立たせる限定アニメーションエフェクト。ProプランとPremiumプランでご利用いただけます。" |
+| de-DE | "Exklusive animierte Effekte, um deinen Avatar hervorzuheben. Verfügbar in den Plänen Pro und Premium." |
+| it-IT | "Effetti animati esclusivi per mettere in risalto il tuo avatar. Disponibile nei piani Pro e Premium." |
+| ru-RU | "Эксклюзивные анимированные эффекты для выделения вашего аватара. Доступно в планах Pro и Premium." |
+| ar-SA | "تأثيرات متحركة حصرية لإبراز صورتك الرمزية. متاحة في خطط Pro و Premium." |
+| ko-KR | "아바타를 돋보이게 하는 독점 애니메이션 효과. Pro 및 Premium 플랜에서 이용 가능합니다." |
+| zh-CN | "独家动画特效，让你的头像与众不同。Pro 和 Premium 套餐可用。" |
+| id-ID | "Efek animasi eksklusif untuk menonjolkan avatar Anda. Tersedia di paket Pro dan Premium." |
 
-3. **Picker mostra todas as 4 categorias abertas** com 4 itens cada — visualmente pesado. O usuário quer ver **só os 4 Clássicos** por padrão e um único botão **"Mostrar mais"** que revela tudo o resto (Dark + Femininos + Especiais).
+## 2. Renomear categoria "Femininos" para "Floral" (unissex)
 
-## Mudanças
+A categoria atual reúne efeitos de pétalas, pérola e borboleta — todos têm tema floral/natureza. "Floral" funciona como termo unissex em quase todos idiomas.
 
-### 1. UI do Avatar Flair Picker (`AvatarFlairPicker.tsx`)
-- Substituir o estado `expanded` por-categoria por **um único `showAll`**.
-- Renderizar sempre a categoria **Classic completa (4 itens)**.
-- Se `!showAll`: esconder Dark, Feminine e Special; mostrar um botão único largo **"Mostrar mais (+14 efeitos)"** com chevron.
-- Se `showAll`: renderizar as três categorias restantes em sequência + botão **"Mostrar menos"** no final.
-- Layout permanece responsivo: `grid-cols-2 sm:grid-cols-3 md:grid-cols-4`.
-- Todos os textos passam a usar `t('settings.avatar_flair.*')`.
+Atualizar `settings.avatar_flair.categories.feminine` em **todos os 12 idiomas**:
+- pt-BR/en/es/fr/de/it/id: "Floral" / "Floreale"
+- ja: "フローラル" • ko: "플로럴" • zh: "花卉" • ru: "Флораль" • ar: "زهري"
 
-### 2. Catálogo de flairs (`avatarFlairs.ts`)
-- Remover `name` e `description` literais; manter apenas `id`, `tier`, `category`.
-- Criar helpers `getFlairName(id, t)` e `getFlairDescription(id, t)` que leem de `settings.avatar_flair.items.{id}.name` / `.description`.
-- `FLAIR_CATEGORIES` passa a expor só `id`; o `label` vem de `settings.avatar_flair.categories.{id}`.
+Atualizar também:
+- `settings.avatar_flair.free_cta_subtitle` (substituir "Femininos" por "Floral" em cada idioma)
+- `pricing.feature_avatar_flair_pro` (mesma substituição) em todos os 12 idiomas
 
-### 3. Novas chaves i18n (em **todos os 12 locales**)
+Os IDs internos dos flairs (`pro-blossom`, `premium-rose`, etc.) **não mudam** — só o rótulo da categoria.
 
-Adicionar bloco `settings.avatar_flair`:
-- `title`, `badge_pro`, `badge_premium`
-- `description_free`, `description_paid`
-- `show_more` (com `{{count}}`), `show_less`
-- `save`, `saving`
-- `upgrade_hint_pro`, `upgrade_hint_premium`
-- `free_cta_title`, `free_cta_subtitle`, `free_cta_button`
-- `categories.classic|dark|feminine|special`
-- `items.{id}.name` e `items.{id}.description` para os 18 flairs
+## 3. Botão "Mostrar mais" também para usuários free
 
-Adicionar/garantir bloco `pricing` completo em **es-ES, fr-FR, ja-JP, de-DE, ar-SA, ko-KR, zh-CN, it-IT, ru-RU, id-ID** com todas as chaves já existentes em pt-BR/en-US (`feature_timer_basic`, `feature_rooms_1/3/10`, `feature_members_10/50/200`, `feature_freezes_3_monthly/6_monthly`, `feature_avatar_flair_pro/premium`, e todas as outras `feature_*`, além de `month`, `year`, `billed_annually`, etc., se ausentes).
+No `AvatarFlairPicker.tsx`, remover a condição `!isFree` em volta do botão de expandir. Resultado:
 
-### 4. Verificação
-- Rodar `tsc --noEmit` para garantir tipagem.
-- Conferir que nenhum texto da seção "Estilo do Avatar" ou planos aparece como chave crua.
+- Free vê os 4 Clássicos (já bloqueados/blur com a CTA "Ver planos") + botão **"Mostrar mais (+14 efeitos)"**.
+- Ao clicar, expande Dark, Floral e Especiais — todos renderizados com o mesmo `pointer-events-none opacity-70 blur-[1.5px]` que já existe via `isFree` em `renderCategory`, então o usuário pode **ver** todos os efeitos sem conseguir clicar (gerando desejo de upgrade).
+
+Sem outras mudanças no comportamento. A CTA "Desbloqueie efeitos animados no seu avatar / Ver planos" continua aparecendo no rodapé.
 
 ## Arquivos afetados
 
-- `src/components/settings/AvatarFlairPicker.tsx` (refator UI + i18n)
-- `src/lib/avatarFlairs.ts` (remover strings hardcoded, adicionar helpers)
-- `src/i18n/locales/pt-BR.json` e `en-US.json` (adicionar bloco `settings.avatar_flair`)
-- `src/i18n/locales/{es-ES,fr-FR,ja-JP,de-DE,ar-SA,ko-KR,zh-CN,it-IT,ru-RU,id-ID}.json` (adicionar bloco `pricing` completo + `settings.avatar_flair`)
+- `src/i18n/locales/{pt-BR,en-US,es-ES,fr-FR,ja-JP,de-DE,ar-SA,ko-KR,zh-CN,it-IT,ru-RU,id-ID}.json` (3 chaves cada)
+- `src/components/settings/AvatarFlairPicker.tsx` (remover guard `!isFree` do botão expandir)
 
 ## Resultado esperado
 
-- Em qualquer idioma, a página de **Planos** mostra os benefícios traduzidos (sem `pricing.feature_*` cru).
-- A seção **Estilo do Avatar** aparece traduzida (título, categorias, nomes dos efeitos, descrições, botões).
-- O picker abre limpo mostrando **apenas os 4 efeitos Clássicos** + botão "Mostrar mais (+14 efeitos)"; ao clicar, expande Dark, Femininos e Especiais com botão "Mostrar menos".
+Usuário free abre Configurações → Estilo do Avatar:
+- Lê uma copy convidativa, natural, sem travessão.
+- Vê os 4 Clássicos com blur + botão **"Mostrar mais (+14 efeitos)"**.
+- Clica e visualiza todos Dark, Floral e Especiais bloqueados, criando vontade de assinar.
+- A categoria antes chamada "Femininos" aparece como "Floral" — neutra, qualquer pessoa usa sem constrangimento.
