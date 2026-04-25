@@ -46,6 +46,10 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
   const initials = (displayName || user?.email || "?")[0]?.toUpperCase() || "?";
   const currentFlair = profile?.avatar_flair || DEFAULT_FLAIR_BY_TIER[tier];
   const [selected, setSelected] = useState<string>(currentFlair);
+  const [expanded, setExpanded] = useState<Record<FlairCategory, boolean>>({
+    classic: false, dark: false, feminine: false, special: false,
+  });
+  const PREVIEW_COUNT = 4;
 
   useEffect(() => {
     setSelected(profile?.avatar_flair || DEFAULT_FLAIR_BY_TIER[tier]);
