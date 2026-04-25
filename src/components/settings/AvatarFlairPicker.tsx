@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Lock, Check, Crown, Zap, Moon, Flower2, Star } from "lucide-react";
+import { Sparkles, Lock, Check, Crown, Zap, Moon, Flower2, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
