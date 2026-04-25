@@ -177,6 +177,29 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
                   );
                 })}
               </div>
+
+              {hiddenCount > 0 && !isFree && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setExpanded(prev => ({ ...prev, [cat.id]: !prev[cat.id] }))}
+                  className={cn(
+                    "w-full gap-2 border-dashed transition-all hover:border-solid hover:bg-gradient-to-r hover:text-white",
+                    `hover:${CATEGORY_ACCENT[cat.id].replace(/from-(\S+)/, "from-$1").replace(/to-(\S+)/, "to-$1")}`
+                  )}
+                >
+                  {isExpanded ? (
+                    <>
+                      <ChevronUp className="h-4 w-4" /> Mostrar menos
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-4 w-4" /> Mostrar mais (+{hiddenCount})
+                    </>
+                  )}
+                </Button>
+              )}
             </section>
           );
         })}
