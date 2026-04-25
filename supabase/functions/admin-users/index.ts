@@ -368,13 +368,58 @@ serve(async (req) => {
           .select("id", { count: "exact", head: true })
           .eq("user_id", user_id);
 
+        const { data: purchasedFreezes } = await supabaseAdmin
+          .from("purchased_streak_freezes")
+          .select("balance, total_purchased, total_used")
+          .eq("user_id", user_id)
+          .maybeSingle();
+
+        const { data: freezeHistory } = await supabaseAdmin
+          .from("streak_freeze_purchases")
+          .select("id, quantity, freezes_added, amount_cents, currency, created_at")
+          .eq("user_id", user_id)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
         return new Response(JSON.stringify({
           auth: authUser?.user || null,
           profile: profile || null,
           total_seconds: totalSeconds,
           tickets: tickets || [],
           room_count: roomCount || 0,
+          purchased_freezes: purchasedFreezes || { balance: 0, total_purchased: 0, total_used: 0 },
+          freeze_history: freezeHistory || [],
         }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      case "grant_streak_freezes": {
+        const { user_id, amount, reason } = payload;
+        if (!user_id) throw new Error("user_id required");
+        const amt = Number(amount);
+        if (!Number.isInteger(amt) || amt < 1 || amt > 365) {
+          throw new Error("amount must be an integer between 1 and 365");
+        }
+
+        const { error: rpcErr } = await supabaseAdmin.rpc("credit_purchased_freezes", {
+          _user_id: user_id,
+          _amount: amt,
+        });
+        if (rpcErr) throw rpcErr;
+
+        // Audit trail
+        await supabaseAdmin.from("streak_freeze_purchases").insert({
+          user_id,
+          stripe_session_id: `admin-grant-${Date.now()}-${callerId}`,
+          stripe_payment_intent: reason ? `reason:${reason}` : null,
+          quantity: amt,
+          freezes_added: amt,
+          amount_cents: 0,
+          currency: "admin_grant",
+        });
+
+        return new Response(JSON.stringify({ success: true, granted: amt }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
 
       case "assign_plan": {
