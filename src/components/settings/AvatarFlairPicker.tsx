@@ -187,25 +187,23 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
 
         {showAll && SECONDARY_CATEGORIES.map(cat => renderCategory(cat))}
 
-        {!isFree && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setShowAll(prev => !prev)}
-            className="w-full gap-2 border-dashed hover:border-solid hover:bg-primary/5"
-          >
-            {showAll ? (
-              <>
-                <ChevronUp className="h-4 w-4" /> {t("settings.avatar_flair.show_less")}
-              </>
-            ) : (
-              <>
-                <ChevronDown className="h-4 w-4" /> {t("settings.avatar_flair.show_more", { count: hiddenCount })}
-              </>
-            )}
-          </Button>
-        )}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setShowAll(prev => !prev)}
+          className="w-full gap-2 border-dashed hover:border-solid hover:bg-primary/5"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp className="h-4 w-4" /> {t("settings.avatar_flair.show_less")}
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4" /> {t("settings.avatar_flair.show_more", { count: hiddenCount })}
+            </>
+          )}
+        </Button>
 
         {isFree ? (
           <div className="rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 p-4 text-center space-y-2">
