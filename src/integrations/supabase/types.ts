@@ -448,10 +448,13 @@ export type Database = {
           avatar_flair: string
           avatar_flair_color: string | null
           avatar_url: string | null
+          banned_at: string | null
+          banned_reason: string | null
           created_at: string
           display_name: string | null
           friend_code: string | null
           id: string
+          is_banned: boolean
           is_stats_public: boolean
           last_known_streak: number
           last_streak_rescue_at: string | null
@@ -479,10 +482,13 @@ export type Database = {
           avatar_flair?: string
           avatar_flair_color?: string | null
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           created_at?: string
           display_name?: string | null
           friend_code?: string | null
           id?: string
+          is_banned?: boolean
           is_stats_public?: boolean
           last_known_streak?: number
           last_streak_rescue_at?: string | null
@@ -510,10 +516,13 @@ export type Database = {
           avatar_flair?: string
           avatar_flair_color?: string | null
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           created_at?: string
           display_name?: string | null
           friend_code?: string | null
           id?: string
+          is_banned?: boolean
           is_stats_public?: boolean
           last_known_streak?: number
           last_streak_rescue_at?: string | null
