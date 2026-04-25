@@ -75,12 +75,18 @@ export function useRoomMembers(roomId: string | undefined) {
         (profiles || []).map((p: any) => [p.user_id, p])
       );
 
-      return (members || []).map((m: any) => ({
-        ...m,
-        display_name: profileMap.get(m.user_id)?.display_name || "Usuário",
-        friend_code: profileMap.get(m.user_id)?.friend_code || "",
-        avatar_url: profileMap.get(m.user_id)?.avatar_url || null,
-      })) as RoomMember[];
+      return (members || []).map((m: any) => {
+        const p: any = profileMap.get(m.user_id);
+        return {
+          ...m,
+          display_name: p?.display_name || "Usuário",
+          friend_code: p?.friend_code || "",
+          avatar_url: p?.avatar_url || null,
+          plan_tier: p?.plan_tier || "free",
+          avatar_flair: p?.avatar_flair || "default",
+          avatar_flair_color: p?.avatar_flair_color || null,
+        };
+      }) as RoomMember[];
     },
     enabled: !!roomId && !!user,
   });
