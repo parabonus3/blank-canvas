@@ -90,8 +90,11 @@ export function AvatarFlairPicker({ displayName, avatarUrl }: Props) {
 
       <CardContent className="space-y-8">
         {FLAIR_CATEGORIES.map((cat) => {
-          const items = AVATAR_FLAIRS.filter(f => f.category === cat.id);
-          if (items.length === 0) return null;
+          const allItems = AVATAR_FLAIRS.filter(f => f.category === cat.id);
+          if (allItems.length === 0) return null;
+          const isExpanded = expanded[cat.id];
+          const items = isExpanded ? allItems : allItems.slice(0, PREVIEW_COUNT);
+          const hiddenCount = allItems.length - PREVIEW_COUNT;
           const Icon = CATEGORY_ICON[cat.id];
 
           return (
