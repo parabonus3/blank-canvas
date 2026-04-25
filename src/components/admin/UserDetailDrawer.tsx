@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
+import { Shield, Plus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAdminUserDetails } from "@/hooks/useAdmin";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useAdminUserDetails, useAdminGrantStreakFreezes } from "@/hooks/useAdmin";
 
 interface Props {
   userId: string | null;
@@ -20,6 +26,21 @@ function formatHours(seconds: number) {
 export function UserDetailDrawer({ userId, onClose }: Props) {
   const { t } = useTranslation();
   const { data, isLoading } = useAdminUserDetails(userId);
+  const grantFreezes = useAdminGrantStreakFreezes();
+
+  const [amount, setAmount] = useState<string>("1");
+  const [reason, setReason] = useState<string>("");
+
+  const handleGrant = async () => {
+    if (!userId) return;
+    const amt = parseInt(amount, 10);
+    if (!amt || amt < 1) return;
+    await grantFreezes.mutateAsync({ user_id: userId, amount: amt, reason: reason || undefined });
+    setAmount("1");
+    setReason("");
+  };
+
+  const purchased = data?.purchased_freezes || { balance: 0, total_purchased: 0, total_used: 0 };
 
   return (
     <Sheet open={!!userId} onOpenChange={(o) => !o && onClose()}>
@@ -72,6 +93,83 @@ export function UserDetailDrawer({ userId, onClose }: Props) {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Streak Freezes admin grant */}
+            <Card>
+              <CardContent className="pt-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-primary" />
+                  <p className="text-sm font-medium">{t("admin.streak_freezes.title", "Defensivas (Streak Freezes)")}</p>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="rounded-md bg-muted/50 p-2">
+                    <p className="text-[10px] uppercase text-muted-foreground">{t("admin.streak_freezes.balance", "Saldo")}</p>
+                    <p className="text-lg font-bold text-primary">{purchased.balance}</p>
+                  </div>
+                  <div className="rounded-md bg-muted/50 p-2">
+                    <p className="text-[10px] uppercase text-muted-foreground">{t("admin.streak_freezes.total_purchased", "Total recebido")}</p>
+                    <p className="text-lg font-bold">{purchased.total_purchased}</p>
+                  </div>
+                  <div className="rounded-md bg-muted/50 p-2">
+                    <p className="text-[10px] uppercase text-muted-foreground">{t("admin.streak_freezes.total_used", "Usadas")}</p>
+                    <p className="text-lg font-bold">{purchased.total_used}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2 border-t">
+                  <Label className="text-xs">{t("admin.streak_freezes.grant", "Conceder defensivas (admin)")}</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      min={1}
+                      max={365}
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder={t("admin.streak_freezes.amount", "Quantidade")}
+                      className="w-24"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={handleGrant}
+                      disabled={grantFreezes.isPending || !amount}
+                      className="flex-1"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      {grantFreezes.isPending
+                        ? t("common.loading", "Carregando...")
+                        : t("admin.streak_freezes.grant_button", "Conceder")}
+                    </Button>
+                  </div>
+                  <Textarea
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    placeholder={t("admin.streak_freezes.reason", "Motivo (opcional)")}
+                    rows={2}
+                    className="text-xs"
+                  />
+                </div>
+
+                {data.freeze_history?.length ? (
+                  <div className="pt-2 border-t space-y-1">
+                    <p className="text-[10px] uppercase text-muted-foreground">{t("admin.streak_freezes.history", "Histórico recente")}</p>
+                    {data.freeze_history.map((h: any) => (
+                      <div key={h.id} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <Badge variant={h.currency === "admin_grant" ? "secondary" : "outline"} className="text-[10px]">
+                            {h.currency === "admin_grant"
+                              ? t("admin.streak_freezes.source_admin", "Admin")
+                              : t("admin.streak_freezes.source_stripe", "Stripe")}
+                          </Badge>
+                          <span className="font-medium">+{h.freezes_added}</span>
+                        </div>
+                        <span className="text-muted-foreground">{format(new Date(h.created_at), "dd/MM/yyyy")}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
 
             <Card>
               <CardContent className="pt-4">
