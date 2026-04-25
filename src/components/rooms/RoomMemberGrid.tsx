@@ -194,7 +194,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
               {isPro && <span className="plan-ribbon plan-ribbon-pro">Pro</span>}
               {/* Avatar with plan ring */}
               <div className="relative shrink-0 z-[1]">
-                <PlanAvatarRing tier={memberTier}>
+                <PlanAvatarRing tier={memberTier} flairId={(member as any).avatar_flair}>
                   <Avatar className={cn(
                     "h-11 w-11 ring-2 ring-offset-1 ring-offset-transparent",
                     memberTier !== "free"
