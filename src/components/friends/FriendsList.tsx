@@ -127,7 +127,7 @@ export function FriendsList() {
                         className="flex items-center gap-3 cursor-pointer flex-1 min-w-0"
                         onClick={() => setProfileFriend({ userId: friendId, name: profile?.display_name || t("rooms.anonymous"), avatarUrl: profile?.avatar_url })}
                       >
-                        <PlanAvatarRing tier={planTier}>
+                        <PlanAvatarRing tier={planTier} flairId={(profile as any)?.avatar_flair}>
                           <Avatar className="h-10 w-10">
                             {profile?.avatar_url && <AvatarImage src={profile.avatar_url} />}
                             <AvatarFallback>{(profile?.display_name || "?")[0]}</AvatarFallback>
