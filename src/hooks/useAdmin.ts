@@ -178,3 +178,9 @@ export function useAdminGrantSupportAgent() {
 export function useAdminRevokeSupportAgent() {
   return useInvalidatingMutation<{ user_id: string }>("revoke_support_agent", "Acesso ao suporte removido");
 }
+export function useAdminGrantStreakFreezes() {
+  return useInvalidatingMutation<{ user_id: string; amount: number; reason?: string }>(
+    "grant_streak_freezes",
+    "Defensivas concedidas!"
+  );
+}
