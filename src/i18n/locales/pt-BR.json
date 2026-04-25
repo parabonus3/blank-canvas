@@ -8,7 +8,9 @@
     "delete": "Excluir",
     "edit": "Editar",
     "create": "Criar",
-    "close": "Fechar"
+    "close": "Fechar",
+    "export": "Exportar",
+    "clear_filters": "Limpar filtros"
   },
   "landing": {
     "tagline_1": "Seu tempo.",
