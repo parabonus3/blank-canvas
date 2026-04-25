@@ -41,6 +41,8 @@ export default function Settings() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isStatsPublic, setIsStatsPublic] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
   
   // Configurações de som ambiente
   const [ambientSound, setAmbientSound] = useState<string | null>(null);
