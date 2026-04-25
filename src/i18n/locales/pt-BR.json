@@ -436,7 +436,7 @@
       "title": "Estilo do Avatar",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "Disponível em Pro e Premium — escolha um efeito animado exclusivo para destacar seu avatar.",
+      "description_free": "Efeitos animados exclusivos para destacar seu avatar. Disponível nos planos Pro e Premium.",
       "description_paid": "Escolha um efeito animado exclusivo para destacar seu avatar em salas, lista de amigos e perfis.",
       "show_more": "Mostrar mais (+{{count}} efeitos)",
       "show_less": "Mostrar menos",
@@ -445,12 +445,12 @@
       "upgrade_hint_pro": "Faça upgrade para Premium e desbloqueie todos os efeitos especiais.",
       "upgrade_hint_premium": "Você tem acesso a todos os efeitos disponíveis.",
       "free_cta_title": "Desbloqueie efeitos animados no seu avatar.",
-      "free_cta_subtitle": "Pro: efeitos Clássicos, Dark e Femininos • Premium: todos os 18 efeitos exclusivos",
+      "free_cta_subtitle": "Pro: efeitos Clássicos, Dark e Floral • Premium: todos os 18 efeitos exclusivos",
       "free_cta_button": "Ver planos",
       "categories": {
         "classic": "Clássicos",
         "dark": "Dark",
-        "feminine": "Femininos",
+        "feminine": "Floral",
         "special": "Especiais"
       },
       "items": {
@@ -767,7 +767,7 @@
     "feature_priority_support": "Suporte prioritário",
     "feature_freezes_3_monthly": "3 defensivas/mês para proteger sua sequência",
     "feature_freezes_6_monthly": "6 defensivas/mês para proteger sua sequência",
-    "feature_avatar_flair_pro": "7 efeitos animados no avatar (Clássicos, Dark e Femininos)",
+    "feature_avatar_flair_pro": "7 efeitos animados no avatar (Clássicos, Dark e Floral)",
     "feature_avatar_flair_premium": "Todos os 18 efeitos animados (+ Especiais exclusivos: Chamas, Coroa, Galáxia, Aurora…)",
     "feature_rooms_1": "Criar 1 sala (10 membros)",
     "feature_rooms_3": "Criar até 3 salas (50 membros)",

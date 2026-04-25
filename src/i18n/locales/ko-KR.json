@@ -424,7 +424,7 @@
       "title": "아바타 스타일",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "Pro 및 Premium에서 사용 가능 — 아바타를 돋보이게 할 독점 애니메이션 효과를 선택하세요.",
+      "description_free": "아바타를 돋보이게 하는 독점 애니메이션 효과. Pro 및 Premium 플랜에서 이용 가능합니다.",
       "description_paid": "방, 친구 목록 및 프로필에서 아바타를 돋보이게 할 독점 애니메이션 효과를 선택하세요.",
       "show_more": "더 보기 (+{{count}}개)",
       "show_less": "접기",
@@ -433,12 +433,12 @@
       "upgrade_hint_pro": "Premium으로 업그레이드하여 모든 특수 효과의 잠금을 해제하세요.",
       "upgrade_hint_premium": "사용 가능한 모든 효과에 액세스할 수 있습니다.",
       "free_cta_title": "아바타에 애니메이션 효과를 잠금 해제하세요.",
-      "free_cta_subtitle": "Pro: 클래식, 다크, 페미닌 효과 • Premium: 18가지 독점 효과 모두",
+      "free_cta_subtitle": "Pro: 클래식, 다크, 플로럴 효과 • Premium: 18가지 독점 효과 모두",
       "free_cta_button": "플랜 보기",
       "categories": {
         "classic": "클래식",
         "dark": "다크",
-        "feminine": "페미닌",
+        "feminine": "플로럴",
         "special": "스페셜"
       },
       "items": {
@@ -721,7 +721,7 @@
     "change_cancelled": "예약된 플랜 변경이 취소되었습니다.",
     "feature_freezes_3_monthly": "연속 기록을 보호하는 스트릭 프리즈 월 3회",
     "feature_freezes_6_monthly": "연속 기록을 보호하는 스트릭 프리즈 월 6회",
-    "feature_avatar_flair_pro": "7가지 애니메이션 아바타 효과 (클래식, 다크, 페미닌)",
+    "feature_avatar_flair_pro": "7가지 애니메이션 아바타 효과 (클래식, 다크, 플로럴)",
     "feature_avatar_flair_premium": "18가지 애니메이션 효과 모두 (+ 독점 스페셜: 불꽃, 왕관, 갤럭시, 오로라…)",
     "feature_rooms_1": "1개 방 생성 (10명)",
     "feature_rooms_3": "최대 3개 방 생성 (50명)",

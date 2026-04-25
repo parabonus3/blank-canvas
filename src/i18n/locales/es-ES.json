@@ -424,7 +424,7 @@
       "title": "Estilo del Avatar",
       "badge_pro": "Pro",
       "badge_premium": "Premium",
-      "description_free": "Disponible en Pro y Premium — elige un efecto animado exclusivo para destacar tu avatar.",
+      "description_free": "Efectos animados exclusivos para destacar tu avatar. Disponible en los planes Pro y Premium.",
       "description_paid": "Elige un efecto animado exclusivo para destacar tu avatar en salas, lista de amigos y perfiles.",
       "show_more": "Mostrar más (+{{count}} efectos)",
       "show_less": "Mostrar menos",
@@ -433,12 +433,12 @@
       "upgrade_hint_pro": "Mejora a Premium y desbloquea todos los efectos especiales.",
       "upgrade_hint_premium": "Tienes acceso a todos los efectos disponibles.",
       "free_cta_title": "Desbloquea efectos animados en tu avatar.",
-      "free_cta_subtitle": "Pro: efectos Clásicos, Dark y Femeninos • Premium: los 18 efectos exclusivos",
+      "free_cta_subtitle": "Pro: efectos Clásicos, Dark y Floral • Premium: los 18 efectos exclusivos",
       "free_cta_button": "Ver planes",
       "categories": {
         "classic": "Clásicos",
         "dark": "Dark",
-        "feminine": "Femeninos",
+        "feminine": "Floral",
         "special": "Especiales"
       },
       "items": {
@@ -721,7 +721,7 @@
     "change_cancelled": "El cambio de plan programado ha sido cancelado.",
     "feature_freezes_3_monthly": "3 escudos de racha/mes para proteger tu racha",
     "feature_freezes_6_monthly": "6 escudos de racha/mes para proteger tu racha",
-    "feature_avatar_flair_pro": "7 efectos animados de avatar (Clásicos, Dark y Femeninos)",
+    "feature_avatar_flair_pro": "7 efectos animados de avatar (Clásicos, Dark y Floral)",
     "feature_avatar_flair_premium": "Los 18 efectos animados (+ Especiales exclusivos: Llamas, Corona, Galaxia, Aurora…)",
     "feature_rooms_1": "Crear 1 sala (10 miembros)",
     "feature_rooms_3": "Crear hasta 3 salas (50 miembros)",
