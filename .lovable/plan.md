@@ -1,56 +1,123 @@
-# Plano: copy melhor + categoria unissex + "Mostrar mais" para todos
+## Visão geral
 
-## 1. Nova copy sem travessão (12 idiomas)
+Modernizar dois painéis com a mesma experiência: **busca avançada, filtros relevantes, paginação de 50 por página, exportação PDF/CSV e ações úteis para escalar**. Tudo com i18n em todos os idiomas.
 
-Trocar `settings.avatar_flair.description_free` por uma frase mais natural, sem travessão:
+---
 
-| Idioma | Nova copy |
-|---|---|
-| pt-BR | "Efeitos animados exclusivos para destacar seu avatar. Disponível nos planos Pro e Premium." |
-| en-US | "Exclusive animated effects to highlight your avatar. Available on Pro and Premium plans." |
-| es-ES | "Efectos animados exclusivos para destacar tu avatar. Disponible en los planes Pro y Premium." |
-| fr-FR | "Des effets animés exclusifs pour mettre en valeur votre avatar. Disponible avec les plans Pro et Premium." |
-| ja-JP | "アバターを際立たせる限定アニメーションエフェクト。ProプランとPremiumプランでご利用いただけます。" |
-| de-DE | "Exklusive animierte Effekte, um deinen Avatar hervorzuheben. Verfügbar in den Plänen Pro und Premium." |
-| it-IT | "Effetti animati esclusivi per mettere in risalto il tuo avatar. Disponibile nei piani Pro e Premium." |
-| ru-RU | "Эксклюзивные анимированные эффекты для выделения вашего аватара. Доступно в планах Pro и Premium." |
-| ar-SA | "تأثيرات متحركة حصرية لإبراز صورتك الرمزية. متاحة في خطط Pro و Premium." |
-| ko-KR | "아바타를 돋보이게 하는 독점 애니메이션 효과. Pro 및 Premium 플랜에서 이용 가능합니다." |
-| zh-CN | "独家动画特效，让你的头像与众不同。Pro 和 Premium 套餐可用。" |
-| id-ID | "Efek animasi eksklusif untuk menonjolkan avatar Anda. Tersedia di paket Pro dan Premium." |
+## 1) Painel Admin (`/admin`)
 
-## 2. Renomear categoria "Femininos" para "Floral" (unissex)
+### Novos recursos para gestão de usuários
 
-A categoria atual reúne efeitos de pétalas, pérola e borboleta — todos têm tema floral/natureza. "Floral" funciona como termo unissex em quase todos idiomas.
+**Toolbar superior**
+- Busca avançada (email, nome, friend_code, ID)
+- Filtros: Status (free/trial/active/expired/banned), Plano (Free/Pro/Premium + intervalo mensal/anual), Papel (admin, agente, usuário), Período de cadastro (hoje/7d/30d/custom), Trial expirando em (3d/7d/30d), Atividade (ativo/inativo 30d)
+- Ordenação: cadastro, último login, total de horas, plano
+- Botão **Exportar**: PDF (jsPDF) e CSV
+- Contador "X de Y usuários"
+- Botão limpar filtros
 
-Atualizar `settings.avatar_flair.categories.feminine` em **todos os 12 idiomas**:
-- pt-BR/en/es/fr/de/it/id: "Floral" / "Floreale"
-- ja: "フローラル" • ko: "플로럴" • zh: "花卉" • ru: "Флораль" • ar: "زهري"
+**Paginação server-side**
+- 50 usuários por página com Anterior/Próxima e indicador "Página X de Y"
+- Edge function `admin-users` recebe `page`, `perPage`, `search`, `filters`, `sort` e devolve `{ users, total, page, totalPages }`
+- Toggle "por página": 25 / 50 / 100
 
-Atualizar também:
-- `settings.avatar_flair.free_cta_subtitle` (substituir "Femininos" por "Floral" em cada idioma)
-- `pricing.feature_avatar_flair_pro` (mesma substituição) em todos os 12 idiomas
+**Novas ações por usuário** (além das existentes editar/reset/plano/cancelar/deletar)
+- **Banir / Suspender** (defensiva): bloqueia login imediato sem deletar dados
+- **Reativar** usuário banido
+- **Promover/Remover admin** (gerencia `user_roles`)
+- **Promover/Remover agente de suporte** (gerencia `support_agents`)
+- **Ver detalhes**: drawer lateral com perfil completo, histórico de tickets, total de horas, último login, IP do último acesso, assinatura Stripe, salas que participa
+- **Enviar e-mail manual** (campo livre via edge function)
+- **Ações em massa** (checkbox por linha): banir, exportar selecionados, alterar plano em lote
 
-Os IDs internos dos flairs (`pro-blossom`, `premium-rose`, etc.) **não mudam** — só o rótulo da categoria.
+**Cards de stats expandidos**
+- Total | Ativos | Trial | Expirados | **Banidos** | **Novos hoje** | **Receita ativa estimada** (soma de planos ativos)
 
-## 3. Botão "Mostrar mais" também para usuários free
+### Backend
+- Migração: adicionar coluna `is_banned boolean default false` e `banned_at timestamptz` em `profiles`; trigger ou RLS para bloquear ações de banidos onde fizer sentido
+- Edge function `admin-users` ganha actions: `ban_user`, `unban_user`, `grant_role`, `revoke_role`, `grant_support_agent`, `revoke_support_agent`, `send_email`, `get_user_details` e suporte a paginação/filtros/sort no `list_users`
+- Para banir: chamar `supabaseAdmin.auth.admin.updateUserById(id, { ban_duration: '876000h' })` + atualizar flag
 
-No `AvatarFlairPicker.tsx`, remover a condição `!isFree` em volta do botão de expandir. Resultado:
+---
 
-- Free vê os 4 Clássicos (já bloqueados/blur com a CTA "Ver planos") + botão **"Mostrar mais (+14 efeitos)"**.
-- Ao clicar, expande Dark, Floral e Especiais — todos renderizados com o mesmo `pointer-events-none opacity-70 blur-[1.5px]` que já existe via `isFree` em `renderCategory`, então o usuário pode **ver** todos os efeitos sem conseguir clicar (gerando desejo de upgrade).
+## 2) Painel SAC
 
-Sem outras mudanças no comportamento. A CTA "Desbloqueie efeitos animados no seu avatar / Ver planos" continua aparecendo no rodapé.
+### Dashboard de tickets (`/sac/dashboard`)
+- **Busca** por assunto, e-mail, ID, conteúdo da mensagem
+- Filtros existentes (status, prioridade, categoria) + novos:
+  - **Atribuído a** (agente específico, não atribuído, eu)
+  - **Período** (hoje/7d/30d/custom)
+  - **Plano do usuário** (Free/Pro/Premium) — útil para priorizar pagantes
+  - **Tempo aberto** (>1h, >24h, >7d) para SLA
+- Ordenação: prioridade+data (atual), mais antigo, mais novo, último update
+- **Paginação 50 por página** com Anterior/Próxima
+- **Ações em massa**: marcar como resolvido/fechado, atribuir a agente, mudar prioridade
+- **Exportar**: PDF e CSV dos tickets filtrados
+- Stats expandidos: Abertos | Em andamento | Resolvidos hoje | Tempo médio de espera | **Sem atribuição** | **SLA estourado (>24h aberto)**
 
-## Arquivos afetados
+### Meus tickets (`/sac/tickets`)
+- Busca por assunto/conteúdo
+- Filtro por status
+- Paginação 50/página
+- Botão exportar histórico (PDF) próprio
 
-- `src/i18n/locales/{pt-BR,en-US,es-ES,fr-FR,ja-JP,de-DE,ar-SA,ko-KR,zh-CN,it-IT,ru-RU,id-ID}.json` (3 chaves cada)
-- `src/components/settings/AvatarFlairPicker.tsx` (remover guard `!isFree` do botão expandir)
+### Gerenciar agentes (`/sac/agents`)
+- Busca por e-mail/nome
+- Filtros: papel (admin/agente), status (ativo/inativo)
+- Paginação 50/página
+- Coluna nova: **e-mail real** (hoje mostra apenas user_id), **tickets atribuídos**, **resolvidos no mês**
+- Ações em massa: ativar/desativar, mudar papel
+- Exportar lista de agentes
 
-## Resultado esperado
+---
 
-Usuário free abre Configurações → Estilo do Avatar:
-- Lê uma copy convidativa, natural, sem travessão.
-- Vê os 4 Clássicos com blur + botão **"Mostrar mais (+14 efeitos)"**.
-- Clica e visualiza todos Dark, Floral e Especiais bloqueados, criando vontade de assinar.
-- A categoria antes chamada "Femininos" aparece como "Floral" — neutra, qualquer pessoa usa sem constrangimento.
+## 3) Componente reutilizável de paginação + exportação
+
+Criar componentes compartilhados:
+- `PaginatedTable` (já existe `PaginationControls`, vamos estender)
+- `useTableState` hook: gerencia search, filtros, sort, page, perPage com persistência em URL (`?page=2&status=open`)
+- `exportToPDF(data, columns, title)` em `src/lib/exportTable.ts` usando jsPDF + jspdf-autotable
+- `exportToCSV(data, columns, filename)` no mesmo arquivo
+
+---
+
+## 4) Internacionalização
+
+Todas as novas strings (filtros, ações de banir, exportar, paginação, mensagens de confirmação, badges de status banido) traduzidas nos 12 idiomas: pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ru-RU, ja-JP, ko-KR, zh-CN, ar-SA, id-ID.
+
+---
+
+## Detalhes técnicos
+
+**Migração SQL necessária:**
+```
+ALTER TABLE public.profiles 
+  ADD COLUMN is_banned boolean NOT NULL DEFAULT false,
+  ADD COLUMN banned_at timestamptz,
+  ADD COLUMN banned_reason text;
+```
+
+**Pacotes a adicionar:**
+- `jspdf` + `jspdf-autotable` para exportação PDF de tabelas
+
+**Estrutura de arquivos novos/alterados:**
+- `src/lib/exportTable.ts` (novo) — helpers PDF/CSV
+- `src/hooks/useTableState.ts` (novo) — estado de tabela com URL sync
+- `src/components/admin/AdminFilters.tsx` (novo)
+- `src/components/admin/UserDetailDrawer.tsx` (novo)
+- `src/components/admin/BulkActionsBar.tsx` (novo)
+- `src/pages/Admin.tsx` (refatorar)
+- `src/pages/sac/SacDashboard.tsx` (refatorar)
+- `src/pages/sac/MyTickets.tsx` (busca + paginação)
+- `src/pages/sac/AgentManager.tsx` (busca + paginação + colunas extras)
+- `src/components/sac/TicketFilters.tsx` (adicionar filtros novos)
+- `src/hooks/useAdmin.ts` (suporte a paginação/filtros + novas mutations: ban, unban, grant_role, etc.)
+- `src/hooks/useSupportTickets.ts` (paginação server-side + filtro por agente)
+- `supabase/functions/admin-users/index.ts` (novas actions e paginação)
+- `supabase/functions/sac-admin/index.ts` (action para listar agentes com email + stats)
+- `src/i18n/locales/*.json` (12 idiomas)
+
+**RLS / segurança:**
+- Banir usa `auth.admin.updateUserById` com `ban_duration` — bloqueia login no Supabase Auth
+- Promoção de admin valida que o caller já é admin (já feito) e impede auto-rebaixamento
+- Exportação PDF/CSV é feita no cliente com dados já filtrados (sem expor dados extras)
