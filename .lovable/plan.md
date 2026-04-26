@@ -1,53 +1,44 @@
-## Goal
+## Situação atual
 
-Permitir que o **admin master** conceda defensivas (streak freezes) gratuitamente para qualquer usuário, com o mesmo comportamento da compra via Stripe — créditos acumulam no saldo e só são consumidos quando o usuário perde a sequência.
+Boa notícia: a logo do TimeZoni já está em uso no app. Após inspeção:
 
-## Como funcionará
+- `public/logo.png` → já é a logo do TimeZoni (o "Z" com ondas).
+- `public/favicon.ico` → também já é a logo do TimeZoni (não é o ícone do Lovable).
+- `index.html` → já referencia `/logo.png` no favicon, OG image e Twitter image. Não há nenhuma menção textual ao "Lovable".
+- Componentes do app (Sidebar, Auth, etc.) → todos usam `@/assets/logo.png`, que também é a logo do TimeZoni.
 
-A função SQL `credit_purchased_freezes(_user_id, _amount)` **já existe** e faz exatamente o necessário: incrementa `balance` e `total_purchased` na tabela `purchased_streak_freezes`, criando o registro se não existir. Os créditos ficam acumulados indefinidamente e são consumidos pela função `consume_streak_freeze` (mesma lógica usada hoje para defensivas compradas).
+As únicas referências ao "Lovable" que sobraram no projeto são:
 
-Vamos apenas expor essa função para o admin master, sem cobrança.
+1. **`README.md`** — texto institucional padrão do template Lovable (URL do projeto, instruções de edição). Não aparece em nenhum lugar para o usuário final.
+2. **`package.json` + `vite.config.ts`** — pacote `lovable-tagger`, usado apenas em modo de desenvolvimento dentro do editor Lovable (não vai para produção, não aparece para o usuário). **Não pode ser removido** sem quebrar o ambiente de edição.
 
-## Mudanças técnicas
+## O que será alterado
 
-### 1. Edge function `admin-users` — nova ação `grant_streak_freezes`
+### 1. Substituir `public/favicon.ico` pela logo do TimeZoni em formato `.ico`
+Mesmo o atual já sendo a logo do TimeZoni, vou regenerá-lo a partir de `public/logo.png` para garantir nitidez em múltiplos tamanhos (16x16, 32x32, 48x48) — assim a aba do navegador exibe a logo limpa em qualquer DPI.
 
-Recebe `{ user_id, amount, reason? }`, valida (1–365), chama:
-```ts
-await supabaseAdmin.rpc("credit_purchased_freezes", { _user_id: user_id, _amount: amount });
-```
-Registra em `streak_freeze_purchases` uma linha de auditoria com `currency = 'admin_grant'`, `amount_cents = 0`, `stripe_session_id = 'admin-grant-{timestamp}-{callerId}'` e `quantity = freezes_added = amount`. Isso mantém o histórico rastreável sem alterar o esquema.
+### 2. Adicionar favicon de alta resolução para dispositivos modernos
+Atualizar `index.html` para incluir:
+- `<link rel="icon" type="image/x-icon" href="/favicon.ico">` (fallback)
+- `<link rel="icon" type="image/png" sizes="32x32" href="/logo.png">`
+- `<link rel="apple-touch-icon" href="/logo.png">` (para iOS)
 
-### 2. Hook `useAdmin` — nova mutation `useGrantStreakFreezes`
+### 3. Reescrever `README.md`
+Substituir o conteúdo padrão do Lovable por um README do TimeZoni (descrição do projeto, stack, como rodar localmente). Sem links nem menções ao Lovable.
 
-Mutation que invoca `admin-users` com `action: "grant_streak_freezes"` e invalida `["admin-user-details", userId]`.
+## O que NÃO será alterado (e por quê)
 
-### 3. UI — `UserDetailDrawer.tsx`
+- **`lovable-tagger` em `package.json` / `vite.config.ts`**: É uma dependência interna do editor Lovable usada só em `mode === 'development'`. Não é incluída no build de produção, não aparece para o usuário final, e removê-la quebra o ambiente de edição visual.
+- **Pasta `.lovable/`**: arquivos internos do editor, invisíveis ao usuário.
 
-Adicionar nova seção "Defensivas (Admin)" com:
-- Saldo atual (já obtido se incluirmos no `get_user_details`).
-- Input numérico (quantidade) + textarea opcional (motivo).
-- Botão "Conceder defensivas" com confirmação.
-- Toast de sucesso + atualização do saldo.
+## Detalhes técnicos
 
-Ampliar `get_user_details` na edge function para incluir `purchased_freezes` (balance, total_purchased, total_used) e as últimas 5 linhas de `streak_freeze_purchases` (histórico, mostrando se foi compra Stripe ou concessão admin).
+- O novo `favicon.ico` será gerado via ImageMagick (`nix run nixpkgs#imagemagick`) a partir de `public/logo.png`, empacotando 16/32/48px no mesmo `.ico`.
+- O `index.html` ganha 2 tags `<link>` adicionais para cobrir Apple Touch e PNG nativo, mantendo a tag de favicon existente.
 
-### 4. i18n
+## Verificação
 
-Adicionar chaves em `pt-BR.json` e `en-US.json`:
-- `admin.streak_freezes.title`, `.balance`, `.grant`, `.amount`, `.reason`, `.granted_success`, `.history`, `.source_stripe`, `.source_admin`.
-
-## Segurança
-
-- Apenas admins (verificação já existente via `requireAdmin` no início da edge function) podem chamar `grant_streak_freezes`.
-- Limite máximo por concessão: 365 defensivas (proteção contra erros de digitação).
-- Auditoria completa via `streak_freeze_purchases`.
-
-## Arquivos afetados
-
-- `supabase/functions/admin-users/index.ts` — nova case `grant_streak_freezes` + enriquecer `get_user_details`.
-- `src/hooks/useAdmin.ts` — nova mutation.
-- `src/components/admin/UserDetailDrawer.tsx` — nova seção UI.
-- `src/i18n/locales/pt-BR.json` e `en-US.json` — novas chaves.
-
-Sem necessidade de migração de banco — toda a infraestrutura SQL já existe.
+Após as mudanças:
+- Recarregar o preview e confirmar que a aba do navegador mostra o "Z" do TimeZoni.
+- Testar em mobile (Apple Touch Icon).
+- Confirmar que o `README.md` não tem mais nenhuma menção ao Lovable.
