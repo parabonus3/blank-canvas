@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { PinnedMessage } from "@/components/rooms/PinnedMessage";
 import { EditGoalDialog } from "@/components/rooms/EditGoalDialog";
