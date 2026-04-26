@@ -44,7 +44,15 @@ export function RoomSettingsTab({ room, isOwner }: Props) {
   const [rules, setRules] = useState((room as any).rules || "");
   const [rulesDirty, setRulesDirty] = useState(false);
   const [roomPassword, setRoomPassword] = useState("");
-  const [hasPassword, setHasPassword] = useState(!!(room as any).password_hash);
+  const [hasPassword, setHasPassword] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase.rpc("room_has_password", { _room_id: room.id }).then(({ data }) => {
+      if (!cancelled) setHasPassword(!!data);
+    });
+    return () => { cancelled = true; };
+  }, [room.id]);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [roomCountry, setRoomCountry] = useState<string>(room.country || "");
   const [countrySaving, setCountrySaving] = useState(false);
