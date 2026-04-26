@@ -22,7 +22,6 @@ export interface StudyRoom {
   focus_session_started_by?: string | null;
   is_public?: boolean;
   slug?: string | null;
-  password_hash?: string | null;
   rules?: string | null;
   chat_mode?: string;
   country?: string | null;
@@ -46,7 +45,7 @@ export function useRooms() {
 
       const { data, error } = await supabase
         .from("study_rooms")
-        .select("*, room_members(count)")
+        .select("id, name, description, room_type, invite_code, owner_id, max_members, is_active, created_at, goal_hours, goal_label, pinned_message, focus_session_end_at, focus_session_duration, focus_session_started_by, is_public, slug, rules, chat_mode, country, room_members(count)")
         .in("id", myRoomIds)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
