@@ -103,8 +103,24 @@ export function TimerProvider({ children }: { children: ReactNode }) {
   );
 }
 
+const noopTimerContext: TimerContextType = {
+  isPaused: false,
+  pausedElapsed: 0,
+  pauseStartTime: null,
+  pause: () => {},
+  resume: () => {},
+  resetPause: () => {},
+  addPausedSeconds: () => {},
+  hydrateFromServer: () => {},
+};
+
 export function useTimerContext() {
   const ctx = useContext(TimerContext);
-  if (!ctx) throw new Error('useTimerContext must be used within TimerProvider');
+  if (!ctx) {
+    if (typeof console !== 'undefined') {
+      console.warn('useTimerContext used outside TimerProvider — returning no-op fallback');
+    }
+    return noopTimerContext;
+  }
   return ctx;
 }
