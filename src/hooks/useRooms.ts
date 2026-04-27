@@ -8,7 +8,7 @@ export interface StudyRoom {
   name: string;
   description: string | null;
   room_type: string;
-  invite_code: string;
+  invite_code?: string; // não é mais retornado na listagem; busque sob demanda via RPC get_room_invite_code (apenas owner/mod)
   owner_id: string;
   max_members: number;
   is_active: boolean;
@@ -34,26 +34,11 @@ export function useRooms() {
     queryKey: ["rooms", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      // First get room IDs where user is a member
-      const { data: memberRows, error: memberError } = await supabase
-        .from("room_members")
-        .select("room_id")
-        .eq("user_id", user.id);
-      if (memberError) throw memberError;
-      const myRoomIds = (memberRows || []).map((r) => r.room_id);
-      if (myRoomIds.length === 0) return [];
-
-      const { data, error } = await supabase
-        .from("study_rooms")
-        .select("id, name, description, room_type, invite_code, owner_id, max_members, is_active, created_at, goal_hours, goal_label, pinned_message, focus_session_end_at, focus_session_duration, focus_session_started_by, is_public, slug, rules, chat_mode, country, room_members(count)")
-        .in("id", myRoomIds)
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
+      // RPC seguro: não retorna invite_code nem password_hash.
+      // O invite_code é buscado sob demanda via get_room_invite_code (owner/mod only).
+      const { data, error } = await supabase.rpc("get_my_rooms");
       if (error) throw error;
-      return (data || []).map((r: any) => ({
-        ...r,
-        member_count: r.room_members?.[0]?.count || 0,
-      })) as StudyRoom[];
+      return (data || []) as StudyRoom[];
     },
     enabled: !!user,
   });
