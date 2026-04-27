@@ -97,23 +97,42 @@ export default function RoomDetail() {
         queryClient.invalidateQueries({ queryKey: ["roomMembers", id] });
         if (notificationsOn) playMemberLeft();
       })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "room_members", filter: `room_id=eq.${id}` }, (payload: any) => {
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "room_members", filter: `room_id=eq.${id}` }, () => {
         queryClient.invalidateQueries({ queryKey: ["roomMembers", id] });
-        // Tocar som "live-chat" quando alguém (que não sou eu) entra na sessão de foco ao vivo.
-        // Se replica identity estiver incompleta, payload.old pode não trazer focus_session_joined;
-        // nesse caso, considera apenas a transição para true.
-        const newJoined = payload?.new?.focus_session_joined === true;
-        const oldJoined = payload?.old?.focus_session_joined === true;
-        const changedUser = payload?.new?.user_id;
-        const isOther = changedUser && changedUser !== user?.id;
-        console.log("[live-chat] update", { oldJoined, newJoined, changedUser, isMe: changedUser === user?.id, notificationsOn });
-        if (notificationsOn && newJoined && !oldJoined && isOther) {
-          playLiveChat();
-        }
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [id, queryClient, notificationsOn, user?.id]);
+  }, [id, queryClient, notificationsOn]);
+
+  // Detecta transição de focus_session_joined: false -> true para qualquer membro
+  // (exceto o próprio usuário) e toca o som "live-chat". Comparar o array de membros
+  // é mais confiável que confiar no payload.old do Realtime.
+  const prevJoinedRef = useRef<Map<string, boolean>>(new Map());
+  const hasInitializedJoinedRef = useRef(false);
+  useEffect(() => {
+    if (!members || members.length === 0) return;
+    const prev = prevJoinedRef.current;
+    const next = new Map<string, boolean>();
+    members.forEach((m: any) => next.set(m.user_id, !!m.focus_session_joined));
+
+    // Na primeira execução, apenas inicializa o estado base (sem tocar som)
+    if (!hasInitializedJoinedRef.current) {
+      prevJoinedRef.current = next;
+      hasInitializedJoinedRef.current = true;
+      return;
+    }
+
+    if (notificationsOn) {
+      next.forEach((joined, userId) => {
+        const wasJoined = prev.get(userId) === true;
+        if (joined && !wasJoined && userId !== user?.id) {
+          playLiveChat();
+        }
+      });
+    }
+    prevJoinedRef.current = next;
+  }, [members, notificationsOn, user?.id]);
+
 
   const isMember = useMemo(() => members.some(m => m.user_id === user?.id), [members, user]);
 

@@ -1,0 +1,1 @@
+ALTER TABLE public.room_members REPLICA IDENTITY FULL;
