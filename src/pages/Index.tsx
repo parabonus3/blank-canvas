@@ -312,6 +312,8 @@ export default function Index() {
 
   const handleStopConfirm = (notes?: string, tagIds?: string[]) => {
     if (activeEntry) {
+      // Tocar som ANTES de qualquer trabalho assíncrono para preservar o user gesture do clique de confirmação.
+      playStopSound();
       let totalPausedSeconds = pausedElapsed;
       if (isPaused && pauseStartTime) {
         const currentPauseDuration = Math.floor((Date.now() - pauseStartTime) / 1000);
@@ -331,7 +333,6 @@ export default function Index() {
         }
       });
       resetPause();
-      playStopSound();
     }
     setShowStopDialog(false);
   };
