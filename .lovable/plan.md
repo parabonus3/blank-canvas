@@ -1,91 +1,144 @@
-## Objetivo
+# Diagnóstico e plano de correção
 
-Tocar 4 sons MP3 enviados em eventos específicos da app, sempre respeitando o toggle global de som do usuário (já existente em `profile.reminder_sound`, controlado via `setSoundEnabled` em `src/hooks/useSoundEffects.ts`). Nenhum som toca se o usuário desativou notificações.
+## Bug 1 — Pausa não foi contabilizada ao parar o cronômetro
 
-## Mapeamento som → evento
+### O que aconteceu (confirmado no banco)
 
-| Som | Arquivo | Quando toca |
-|-----|---------|-------------|
-| `live-chat.mp3` | `/sounds/live-chat.mp3` | Cada vez que um membro fica "online na live" da sala (entra na sessão de foco compartilhada — `focus_session_joined` muda de `false`→`true`). Se 5 pessoas entram, tocará 5 vezes (com pequeno debounce/throttle anti-spam de 150 ms entre disparos para não sobrepor). |
-| `page.mp3` | `/sounds/page.mp3` | Iniciar cronômetro normal (Index.tsx `handleStart`) **e** iniciar pomodoro (`PomodoroContext.start` + `RoomFocusSession.startSession` quando começa imediatamente / quando `autoStartSession` dispara o início real após o countdown). Substitui as chamadas atuais de `playFocusStart()` nesses pontos. |
-| `pause.mp3` | `/sounds/pause.mp3` | Pausar em qualquer lugar: cronômetro normal (`handlePause` em Index.tsx), pomodoro (`PomodoroContext.pause`), e mini-timer da sidebar (já dispara via mesmas funções). Substitui `playTimerPause()`. |
-| `stop.mp3` | `/sounds/stop.mp3` | Concluir/parar tempo em qualquer lugar: cronômetro normal (`handleStopConfirm`), pomodoro (`PomodoroContext.stop` + fim de fase de trabalho), `SidebarMiniTimer.handleStop`, e fim de sessão de foco compartilhada da sala (`RoomFocusSession` quando `remaining===0`). Substitui `playFocusEnd()` / `playSuccess()` nesses pontos específicos. |
+A entry ativa do usuário mostrada na tela tem:
+- `start_time = 22:35:19`
+- `paused_at = 22:54:37` (foi pausada ~19min depois)
+- `paused_seconds = 550` (~9min de pausa anterior já acumulados)
+- `end_time = null` (ainda não foi parada)
 
-## Implementação técnica
+Ou seja, a pausa **está sendo registrada no servidor**. O problema é o que acontece quando o usuário clica em "Parar" enquanto ainda está pausado.
 
-**1. Copiar arquivos para `public/sounds/`**
-- `live-chat.mp3`, `page.mp3`, `pause.mp3`, `stop.mp3`.
+### A causa raiz
 
-**2. Criar player leve em `src/lib/uiSounds.ts`**
-- Pool de elementos `HTMLAudioElement` pré-carregados (1 instância por som, clonada via `audio.cloneNode()` para permitir disparos sobrepostos sem travar — ex.: vários joins seguidos).
-- Respeita o flag global `soundEnabled` (mesmo já usado em `soundEffects.ts`, exportar/compartilhar via `getSoundEnabled()`).
-- Volume vinculado ao `globalVolume` já existente.
-- Throttle por som (150 ms) para evitar empilhar disparos no mesmo tick.
-- Funções exportadas: `playLiveChat()`, `playPageStart()`, `playPauseSound()`, `playStopSound()`.
+Em `src/pages/Index.tsx` (`handleStopConfirm`), após minha última alteração, a ordem ficou:
 
-**3. Refatorar `src/lib/soundEffects.ts`**
-- Expor um getter `getSoundEnabled()` e `getGlobalVolume()` para `uiSounds.ts` reutilizar (sem duplicar estado).
-
-**4. Substituições nos arquivos**
-
-- `src/pages/Index.tsx`
-  - `handleStart` → trocar `playFocusStart()` por `playPageStart()`.
-  - `handlePause` → trocar `playTimerPause()` por `playPauseSound()`.
-  - `handleResume` → manter como está (não foi pedido um som específico para retomar; manter `playTimerResume` atual evita regressão silenciosa). 
-  - `handleStopConfirm` → trocar `playFocusEnd()` por `playStopSound()`.
-
-- `src/contexts/PomodoroContext.tsx`
-  - `start()` → adicionar `playPageStart()`.
-  - `pause()` → adicionar `playPauseSound()`.
-  - `resume()` → manter silencioso (sem som específico solicitado).
-  - `stop()` → adicionar `playStopSound()` (substituindo notificação atual de fim).
-  - Fim de fase de trabalho (transição automática) → `playStopSound()` no lugar de `playFocusEnd` quando a fase de trabalho conclui.
-
-- `src/components/SidebarMiniTimer.tsx`
-  - `handleStop` (cronômetro normal) → `playStopSound()`.
-  - Botão de stop do mini-pomodoro → `playStopSound()`.
-
-- `src/components/rooms/RoomFocusSession.tsx`
-  - `startSession` (início imediato) → trocar `playFocusStart()` por `playPageStart()`.
-  - `autoStartSession` (quando countdown chega a zero) → adicionar `playPageStart()`.
-  - Fim da sessão (effect com `remaining===0`) → trocar `playSuccess()` por `playStopSound()`.
-
-- `src/pages/RoomDetail.tsx` (detecção de "online na live")
-  - Adicionar canal Realtime extra escutando `UPDATE` em `room_members` filtrado por `room_id=eq.${id}`. Quando o payload mostrar transição `focus_session_joined: false → true` para qualquer usuário (inclusive quando `id !== user.id` — ou seja, alguém **diferente de mim** entra na live), disparar `playLiveChat()`.
-  - Respeita `notificationsOn` (toggle de notificações do membro atual na sala, igual ao já feito em `playMemberJoined`).
-  - Throttle interno do `playLiveChat` permite múltiplos disparos consecutivos sem clipping.
-
-**5. Configurações do usuário**
-- Nada a adicionar na UI: o toggle "som de notificação" já existe em Settings (`reminder_sound`) e é o mesmo flag usado por `setSoundEnabled` via `useSoundEffects`. Quando desligado, **todos** os 4 sons novos ficam mudos automaticamente.
-
-## Diagrama de fluxo
-
-```text
-profile.reminder_sound ──► setSoundEnabled() ──► soundEnabled (global)
-                                                     │
-                          ┌──────────────────────────┼───────────────┐
-                          ▼                          ▼               ▼
-                    soundEffects.ts            uiSounds.ts      (todos os sons
-                    (Web Audio gerados)        (MP3 do user)     respeitam o flag)
+```
+1. playStopSound()          ← OK
+2. calcula totalPausedSeconds (incluindo pausa atual)
+3. stopTimer.mutate({ pausedSeconds: totalPausedSeconds })
+4. resetPause()              ← limpa o context local
 ```
 
-## Arquivos alterados
+Mas o `useStopTimer` (em `src/hooks/useTimeEntries.ts`) já tem fallback do servidor:
 
-- `public/sounds/live-chat.mp3` (novo)
-- `public/sounds/page.mp3` (novo)
-- `public/sounds/pause.mp3` (novo)
-- `public/sounds/stop.mp3` (novo)
-- `src/lib/uiSounds.ts` (novo)
-- `src/lib/soundEffects.ts` (expor getters)
-- `src/pages/Index.tsx`
-- `src/contexts/PomodoroContext.tsx`
-- `src/components/SidebarMiniTimer.tsx`
-- `src/components/rooms/RoomFocusSession.tsx`
-- `src/pages/RoomDetail.tsx`
+```ts
+const effectivePaused = Math.max(pausedSeconds, serverPaused + liveServerPause);
+```
 
-## Garantias de fluidez
+Então o cálculo no `mutate` está correto **se o cliente enviar o valor certo**.
 
-- Áudios pré-carregados no import do módulo (`new Audio(url); audio.preload = 'auto'`) → zero atraso na 1ª reprodução.
-- `cloneNode` para sobreposições (vários joins simultâneos não cortam o som anterior).
-- Throttle de 150 ms por tipo de som evita CPU/áudio empilhados.
-- Nenhuma alteração no banco, nenhuma migração, nenhum risco de quebra de fluxo existente.
+O problema real é que **`pausedElapsed` no contexto não é incrementado em tempo real enquanto está pausado** — ele só é incrementado quando o usuário clica em "Resume". Se o usuário pausar e clicar direto em "Parar" sem retomar, o cliente envia apenas `pausedElapsed` (valor antigo) — mas o `Math.max(pausedSeconds, serverPaused + liveServerPause)` deveria pegar o `liveServerPause` (`now - paused_at`) corretamente.
+
+**Investigando mais a fundo**: o `handleStopConfirm` calcula `currentPauseDuration = (Date.now() - pauseStartTime) / 1000` e soma. Isso já está correto. Então por que o usuário viu o tempo cheio?
+
+### Hipótese real
+
+O bug está no `SidebarMiniTimer.handleStop` e no `Index.handleStopConfirm`: quando o stop acontece **dentro do estado pausado**, o `displayedElapsed` mostra o valor congelado correto, mas:
+
+1. `formatTime(elapsed)` no toast/dialog mostra o elapsed **descontando o pausedElapsed**, mas **não desconta a pausa atual em andamento** — porque o `useEffect` que calcula `elapsed` faz `pausedElapsed` (o estado salvo), não inclui o tempo decorrido desde `pauseStartTime`.
+
+Olhando o `useEffect`:
+```ts
+if (isPaused) {
+  const frozenTime = pauseStartTime
+    ? Math.floor((pauseStartTime - startTime) / 1000) - pausedElapsed
+    : ...
+}
+```
+
+Isso está correto — congela em `pauseStartTime`. Mas o `duration` salvo no DB usa `endTime - startTime - effectivePaused`. Se `effectivePaused` for menor que o esperado, a duration fica inflada.
+
+**O verdadeiro bug**: no `useStopTimer`, `serverPaused = paused_seconds` (550) e `serverPausedAt = paused_at`. O `liveServerPause = now - paused_at` ≈ tempo desde a pausa atual. Mas o valor enviado pelo cliente (`pausedSeconds`) inclui `pausedElapsed (já acumulado) + currentPauseDuration (pausa atual)`. Se `pausedElapsed` no contexto **não foi sincronizado com o `paused_seconds` do servidor** (550), o cliente envia só, digamos, 0 + 1140 = 1140, enquanto o servidor calcula 550 + 1140 = 1690. O `Math.max` pega 1690 → certo.
+
+**Mas se houver problemas de sincronização de hidratação** (`hydrateFromServer` só roda se `pausedElapsed === 0`), e o estado inicial vier do localStorage com valor errado, a pausa antiga pode não ser contabilizada. Isso explicaria o comportamento.
+
+### Reprodução provável
+- Usuário pausa (servidor: paused_seconds=0, paused_at=T1)
+- Usuário retoma (cliente acumula em pausedElapsed local; servidor: paused_seconds=X, paused_at=null)
+- Usuário pausa de novo (servidor: paused_at=T2, paused_seconds=X)
+- **Usuário fecha aba / muda de dispositivo / cache limpo**
+- Volta, abre o timer
+- `pausedElapsed` no contexto é 0 (localStorage vazio); `hydrateFromServer` restaura `pausedElapsed = X` e `pauseStartTime = T2`
+- Usuário clica em parar **sem retomar**
+- Cliente envia: `pausedElapsed (X) + (now - T2)` ✓
+- Servidor faz: `Math.max(X + (now-T2), X + (now - T2))` ✓
+
+OK, nesse caso funciona. Mas se o `hydrateFromServer` não roda (porque o `useEffect` depende do `activeEntry?.id` e algum re-render sobrescreve), o cliente envia 0 — e o `Math.max` pega o valor do servidor. **Isso já está protegido.**
+
+### Conclusão sobre o bug 1
+
+Após análise minuciosa, o cálculo está logicamente correto na maioria dos caminhos. Os pontos de falha possíveis:
+
+1. **Stop pelo dialog enquanto pausado**: o `currentPauseDuration` é calculado, mas só se `isPaused && pauseStartTime` ambos verdadeiros. Se o `isPaused` for `true` mas `pauseStartTime` for `null` (estado corrompido), a pausa atual não é somada. O `Math.max` no servidor então pega só `pausedSeconds` antigo — **bug**.
+
+2. **Toast mostra duração cheia**: o `toast` em `useStopTimer.onSuccess` mostra `data.duration` (vindo do servidor), então se o backend gravou errado, o toast também fica errado.
+
+### Correções para Bug 1
+
+**a) Tornar o cálculo do servidor sempre autoritativo** em `useStopTimer`:
+   - Em vez de `Math.max(client, server)`, calcular tudo no servidor com base em `paused_at`/`paused_seconds`.
+   - O cliente envia apenas `entryId` e `roomId`. O servidor calcula `effectivePaused = paused_seconds + (paused_at ? now - paused_at : 0)`.
+
+**b) Adicionar uma função RPC `stop_time_entry`** que faz o cálculo atomicamente no Postgres, evitando race conditions client/server e simplificando o código.
+
+**c) Garantir hidratação correta**: ajustar `hydrateFromServer` para sobrescrever `pausedElapsed` quando o servidor tiver valor maior (não só quando o local for 0).
+
+## Bug 2 — Ranking "Agora" mostra usuários que não confirmaram a verificação de 2h
+
+### O que está acontecendo (confirmado no banco)
+
+Existe um registro:
+- `id = c1ad41a4...` 
+- `start_time = 16:27` (hoje)
+- `end_time = null`, `paused_at = null`, `paused_seconds = 0`
+- Última atualização: `16:27` (ou seja, **nunca foi tocado depois disso**)
+
+O usuário começou um timer às 16:27, **fechou a aba** (ou abandonou), nunca confirmou a verificação de 2h, e agora aparece no ranking "Agora" com 6h25m de "estudando agora" — porque a função `get_global_user_ranking` com `_period='now'` filtra apenas:
+
+```sql
+WHERE te.end_time IS NULL AND te.paused_at IS NULL
+  AND te.start_time >= (now() - INTERVAL '24 hours')
+```
+
+Não há checagem de `last_active_at` ou de heartbeat real.
+
+### Por que isso acontece
+
+A verificação de 2h (`InactivityCheckModal`) **só roda no cliente, com a aba aberta**. Se o usuário fecha a aba ou perde foco prolongado, ninguém pausa a entry no servidor — ela fica "ativa" para sempre (ou até o usuário voltar).
+
+### Correções para Bug 2
+
+**a) Filtrar `get_global_user_ranking` (period='now')** para considerar somente entries com atividade recente:
+   - Critério proposto: `te.updated_at >= now() - INTERVAL '15 minutes'` OU exigir que exista um `room_member.last_active_at >= now() - INTERVAL '15 minutes'` para o usuário.
+   - Como o heartbeat de `room_members.last_active_at` roda a cada 5min quando o timer está rodando (ver `Index.tsx` linha 150-162), 15 min é uma margem segura.
+
+**b) Mesmo critério para `get_public_rooms_ranking_by_period` `studying_count`**: já usa `last_active_at >= now() - INTERVAL '2 hours 5 minutes'`. Reduzir essa janela para 15 min para ser mais preciso (ou manter 2h5min e adicionar cap).
+
+**c) Job de limpeza (opcional, futuro)**: criar uma função SQL `auto_close_stale_entries()` que roda via cron e fecha entries com mais de 2h sem `updated_at`. Por agora, vamos só filtrar na consulta — sem alterar dados existentes.
+
+## Resumo das mudanças propostas
+
+### Backend (uma migration)
+1. Atualizar `get_global_user_ranking(_period='now')` para exigir `te.updated_at >= now() - INTERVAL '15 minutes'`.
+2. Atualizar `get_public_rooms_ranking_by_period` `studying_count` para usar a mesma janela de 15 min.
+3. Criar RPC `stop_time_entry(_entry_id uuid, _room_id uuid default null)` que calcula `effective_paused` no servidor (`paused_seconds + COALESCE(now() - paused_at, 0)`), grava `end_time` e `duration`, atualiza `room_members`, retorna a entry.
+
+### Frontend
+4. `src/hooks/useTimeEntries.ts` — `useStopTimer` passa a chamar a RPC `stop_time_entry`. Remove o cálculo client-side de `effectivePaused`.
+5. `src/pages/Index.tsx` `handleStopConfirm` — simplifica: só envia `entryId` e `roomId`. Mantém `playStopSound` antes da mutação.
+6. `src/components/SidebarMiniTimer.tsx` `handleStop` — mesma simplificação.
+7. `src/contexts/TimerContext.tsx` `hydrateFromServer` — sobrescrever `pausedElapsed` quando o valor do servidor for maior (não só quando for 0), evitando dessincronização visual.
+
+### Sem mudança de dados
+- Não vamos fechar entries antigas em massa. O filtro de 15 min na query basta para "Agora".
+- Entries órfãs continuam no DB; o usuário pode pará-las manualmente se quiser.
+
+## Por que isso é seguro
+
+- A RPC `stop_time_entry` é `SECURITY DEFINER` mas verifica `auth.uid() = user_id`, igual ao padrão atual.
+- O filtro de 15 min em "Agora" é mais restritivo (não menos): nenhum usuário que está realmente ativo será removido (heartbeat roda a cada 5 min).
+- O cálculo de pausa no servidor elimina dependência do estado do cliente (mais robusto a cache limpo, multi-dispositivo, etc).
