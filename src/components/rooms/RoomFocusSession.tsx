@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Play, Square, Timer, Users, UserPlus, UserMinus, Clock, CheckCircle, PartyPopper } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { playFocusStart, playSuccess } from "@/lib/soundEffects";
+import { playPageStart, playStopSound } from "@/lib/uiSounds";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -87,6 +87,7 @@ export function RoomFocusSession({
 
   const autoStartSession = useCallback(async () => {
     if (!user || !focusSessionDuration) return;
+    playPageStart();
     const endAt = new Date(Date.now() + focusSessionDuration * 60 * 1000).toISOString();
     await supabase
       .from("study_rooms")
@@ -106,7 +107,7 @@ export function RoomFocusSession({
       if (Math.abs(now.getTime() - endTime.getTime()) < 5000 && user) {
         // Trigger celebration
         setShowCelebration(true);
-        playSuccess();
+        playStopSound();
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         setTimeout(() => setShowCelebration(false), 5000);
 
@@ -149,7 +150,7 @@ export function RoomFocusSession({
         toast({ title: t("rooms.focus_scheduled_toast", { minutes: delayMinutes }) });
       } else {
         // Start immediately
-        playFocusStart();
+        playPageStart();
         const endAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();
         const { error } = await supabase
           .from("study_rooms")

@@ -14,7 +14,8 @@ import { useTimerContext } from "@/contexts/TimerContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useStreakFreeze } from "@/hooks/useStreakFreeze";
 import { supabase } from "@/integrations/supabase/client";
-import { playFocusStart, playFocusEnd, playTimerPause, playTimerResume } from "@/lib/soundEffects";
+import { playTimerResume } from "@/lib/soundEffects";
+import { playPageStart, playPauseSound, playStopSound } from "@/lib/uiSounds";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProjectPicker } from "@/components/ProjectPicker";
@@ -94,7 +95,7 @@ export default function Index() {
   // Wrap pause/resume to sync is_timer_active with room_members + paused_at on time_entries
   const handlePause = useCallback(() => {
     contextPause();
-    playTimerPause();
+    playPauseSound();
     if (user) {
       supabase
         .from("room_members")
@@ -300,7 +301,7 @@ export default function Index() {
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       startTimer.mutate({ projectId: selectedProject, roomId });
-      playFocusStart();
+      playPageStart();
     }
   };
 
@@ -329,7 +330,7 @@ export default function Index() {
         }
       });
       resetPause();
-      playFocusEnd();
+      playStopSound();
     }
     setShowStopDialog(false);
   };

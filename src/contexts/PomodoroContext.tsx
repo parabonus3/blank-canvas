@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { useProfile } from '@/hooks/useProfile';
-import { playFocusEnd, playFocusStart, playTimerTick } from '@/lib/soundEffects';
+import { playTimerTick } from '@/lib/soundEffects';
+import { playPageStart, playPauseSound, playStopSound } from '@/lib/uiSounds';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
@@ -159,7 +160,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   }, []);
 
   const playNotificationSound = useCallback(() => {
-    playFocusEnd();
+    playStopSound();
   }, []);
 
   const showNotification = useCallback((title: string, body: string) => {
@@ -385,6 +386,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   ]);
 
   const start = useCallback(async (projectId: string, roomId?: string) => {
+    playPageStart();
     const entry = await createPomodoroEntry(projectId, 'work');
     const duration = config.workDuration;
 
@@ -417,6 +419,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   }, [config.workDuration, createPomodoroEntry, user]);
 
   const pause = useCallback(() => {
+    playPauseSound();
     setState(prev => {
       // Sync paused_at on server so explore ranking knows we're paused
       if (prev.activeEntryId) {
@@ -461,6 +464,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   }, []);
 
   const stop = useCallback(async () => {
+    playStopSound();
     let totalPaused = state.totalPausedTime;
     if (state.pauseStartTime) {
       totalPaused += Math.floor((Date.now() - state.pauseStartTime) / 1000);

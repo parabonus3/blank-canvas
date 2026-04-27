@@ -23,6 +23,14 @@ export function setSoundEnabled(enabled: boolean) {
   soundEnabled = enabled;
 }
 
+export function getSoundEnabled(): boolean {
+  return soundEnabled;
+}
+
+export function getGlobalVolume(): number {
+  return globalVolume;
+}
+
 function gain(ctx: AudioContext, volume: number): GainNode {
   const g = ctx.createGain();
   g.gain.value = volume * globalVolume;
