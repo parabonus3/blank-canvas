@@ -99,11 +99,15 @@ export default function RoomDetail() {
       })
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "room_members", filter: `room_id=eq.${id}` }, (payload: any) => {
         queryClient.invalidateQueries({ queryKey: ["roomMembers", id] });
-        // Tocar som "live-chat" quando alguém (que não sou eu) entra na sessão de foco ao vivo
-        const oldJoined = payload?.old?.focus_session_joined === true;
+        // Tocar som "live-chat" quando alguém (que não sou eu) entra na sessão de foco ao vivo.
+        // Se replica identity estiver incompleta, payload.old pode não trazer focus_session_joined;
+        // nesse caso, considera apenas a transição para true.
         const newJoined = payload?.new?.focus_session_joined === true;
+        const oldJoined = payload?.old?.focus_session_joined === true;
         const changedUser = payload?.new?.user_id;
-        if (notificationsOn && !oldJoined && newJoined && changedUser && changedUser !== user?.id) {
+        const isOther = changedUser && changedUser !== user?.id;
+        console.log("[live-chat] update", { oldJoined, newJoined, changedUser, isMe: changedUser === user?.id, notificationsOn });
+        if (notificationsOn && newJoined && !oldJoined && isOther) {
           playLiveChat();
         }
       })

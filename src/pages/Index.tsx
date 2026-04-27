@@ -297,11 +297,12 @@ export default function Index() {
 
   const handleStart = () => {
     if (selectedProject) {
+      // Tocar som ANTES de qualquer trabalho assíncrono para preservar o user gesture.
+      playPageStart();
       resetInactivityCheck(); // Clear stale check from previous session
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       startTimer.mutate({ projectId: selectedProject, roomId });
-      playPageStart();
     }
   };
 
