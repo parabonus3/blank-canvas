@@ -86,9 +86,10 @@ export function TimerProvider({ children }: { children: ReactNode }) {
     setPausedElapsed(p => p + Math.floor(seconds));
   }, []);
 
-  // Defensive hydration: if localStorage was cleared but server has pause data, restore it
+  // Defensive hydration: keep client in sync with server pause state.
+  // If server has larger paused_seconds (e.g. another device updated it), trust the server.
   const hydrateFromServer = useCallback((serverPausedSeconds: number, serverPausedAt: string | null) => {
-    setPausedElapsed(prev => (prev === 0 && serverPausedSeconds > 0 ? serverPausedSeconds : prev));
+    setPausedElapsed(prev => (serverPausedSeconds > prev ? serverPausedSeconds : prev));
     if (serverPausedAt) {
       setIsPaused(true);
       setPauseStartTime(prev => prev ?? new Date(serverPausedAt).getTime());
