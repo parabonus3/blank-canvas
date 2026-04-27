@@ -7,6 +7,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GridNav, GridNavItem } from "@/components/ui/grid-nav";
 import { ArrowLeft, UserPlus, Copy, Link, LogOut, LayoutDashboard, MessageCircle, Settings2, Bell, BellOff, Shield } from "lucide-react";
 import { playMemberJoined, playMemberLeft } from "@/lib/soundEffects";
+import { playLiveChat } from "@/lib/uiSounds";
 import { useRooms } from "@/hooks/useRooms";
 import { useRoomMembers, useLeaveRoom } from "@/hooks/useRoomMembers";
 import { useRoomMessages } from "@/hooks/useRoomMessages";
@@ -96,9 +97,19 @@ export default function RoomDetail() {
         queryClient.invalidateQueries({ queryKey: ["roomMembers", id] });
         if (notificationsOn) playMemberLeft();
       })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "room_members", filter: `room_id=eq.${id}` }, (payload: any) => {
+        queryClient.invalidateQueries({ queryKey: ["roomMembers", id] });
+        // Tocar som "live-chat" quando alguém (que não sou eu) entra na sessão de foco ao vivo
+        const oldJoined = payload?.old?.focus_session_joined === true;
+        const newJoined = payload?.new?.focus_session_joined === true;
+        const changedUser = payload?.new?.user_id;
+        if (notificationsOn && !oldJoined && newJoined && changedUser && changedUser !== user?.id) {
+          playLiveChat();
+        }
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [id, queryClient, notificationsOn]);
+  }, [id, queryClient, notificationsOn, user?.id]);
 
   const isMember = useMemo(() => members.some(m => m.user_id === user?.id), [members, user]);
 
