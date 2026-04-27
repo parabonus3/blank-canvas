@@ -640,6 +640,13 @@ export type Database = {
             referencedRelation: "study_rooms"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "room_achievements_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       room_activity_log: {
@@ -673,6 +680,13 @@ export type Database = {
             columns: ["room_id"]
             isOneToOne: false
             referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_activity_log_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -711,6 +725,13 @@ export type Database = {
             columns: ["room_id"]
             isOneToOne: false
             referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_invitations_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -772,6 +793,13 @@ export type Database = {
             referencedRelation: "study_rooms"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "room_members_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
+            referencedColumns: ["id"]
+          },
         ]
       }
       room_messages: {
@@ -802,6 +830,13 @@ export type Database = {
             columns: ["room_id"]
             isOneToOne: false
             referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -1223,7 +1258,75 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      study_rooms_safe: {
+        Row: {
+          chat_mode: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          focus_session_duration: number | null
+          focus_session_end_at: string | null
+          focus_session_start_at: string | null
+          focus_session_started_by: string | null
+          goal_hours: number | null
+          goal_label: string | null
+          id: string | null
+          is_active: boolean | null
+          is_public: boolean | null
+          max_members: number | null
+          name: string | null
+          owner_id: string | null
+          pinned_message: string | null
+          room_type: string | null
+          rules: string | null
+          slug: string | null
+        }
+        Insert: {
+          chat_mode?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          focus_session_duration?: number | null
+          focus_session_end_at?: string | null
+          focus_session_start_at?: string | null
+          focus_session_started_by?: string | null
+          goal_hours?: number | null
+          goal_label?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_public?: boolean | null
+          max_members?: number | null
+          name?: string | null
+          owner_id?: string | null
+          pinned_message?: string | null
+          room_type?: string | null
+          rules?: string | null
+          slug?: string | null
+        }
+        Update: {
+          chat_mode?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          focus_session_duration?: number | null
+          focus_session_end_at?: string | null
+          focus_session_start_at?: string | null
+          focus_session_started_by?: string | null
+          goal_hours?: number | null
+          goal_label?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_public?: boolean | null
+          max_members?: number | null
+          name?: string | null
+          owner_id?: string | null
+          pinned_message?: string | null
+          room_type?: string | null
+          rules?: string | null
+          slug?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_and_grant_streak_rescue: {
@@ -1328,6 +1431,31 @@ export type Database = {
         }[]
       }
       get_member_room_streak: { Args: { _user_id: string }; Returns: number }
+      get_my_rooms: {
+        Args: never
+        Returns: {
+          chat_mode: string
+          country: string
+          created_at: string
+          description: string
+          focus_session_duration: number
+          focus_session_end_at: string
+          focus_session_started_by: string
+          goal_hours: number
+          goal_label: string
+          id: string
+          is_active: boolean
+          is_public: boolean
+          max_members: number
+          member_count: number
+          name: string
+          owner_id: string
+          pinned_message: string
+          room_type: string
+          rules: string
+          slug: string
+        }[]
+      }
       get_public_rooms_ranking: {
         Args: { _category?: string; _country?: string; _search?: string }
         Returns: {
