@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Square, Timer, Coffee } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StopTimerDialog } from "@/components/StopTimerDialog";
+import { playStopSound } from "@/lib/uiSounds";
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -68,7 +69,7 @@ function SidebarMiniPomodoro() {
           variant="ghost"
           size="icon"
           className="h-7 w-7 text-destructive hover:bg-destructive/10"
-          onClick={(e) => { e.stopPropagation(); stop(); }}
+          onClick={(e) => { e.stopPropagation(); playStopSound(); stop(); }}
         >
           <Square className="h-3.5 w-3.5" />
         </Button>
@@ -124,6 +125,7 @@ export function SidebarMiniTimer() {
   if ((activeEntry as any).is_pomodoro) return null;
 
   const handleStop = (notes?: string, tagIds?: string[]) => {
+    playStopSound();
     let totalPaused = pausedElapsed;
     if (isPaused && pauseStartTime) {
       totalPaused += Math.floor((Date.now() - pauseStartTime) / 1000);
