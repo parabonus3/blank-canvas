@@ -314,14 +314,9 @@ export default function Index() {
     if (activeEntry) {
       // Tocar som ANTES de qualquer trabalho assíncrono para preservar o user gesture do clique de confirmação.
       playStopSound();
-      let totalPausedSeconds = pausedElapsed;
-      if (isPaused && pauseStartTime) {
-        const currentPauseDuration = Math.floor((Date.now() - pauseStartTime) / 1000);
-        totalPausedSeconds += currentPauseDuration;
-      }
-      
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
-      stopTimer.mutate({ entryId: activeEntry.id, pausedSeconds: totalPausedSeconds, roomId }, {
+      // O servidor calcula a pausa real (paused_seconds + tempo desde paused_at) atomicamente.
+      stopTimer.mutate({ entryId: activeEntry.id, roomId }, {
         onSuccess: async (data) => {
           if (notes) {
             const { supabase } = await import("@/integrations/supabase/client");
