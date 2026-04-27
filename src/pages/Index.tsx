@@ -95,7 +95,7 @@ export default function Index() {
   // Wrap pause/resume to sync is_timer_active with room_members + paused_at on time_entries
   const handlePause = useCallback(() => {
     contextPause();
-    playTimerPause();
+    playPauseSound();
     if (user) {
       supabase
         .from("room_members")
@@ -301,7 +301,7 @@ export default function Index() {
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       startTimer.mutate({ projectId: selectedProject, roomId });
-      playFocusStart();
+      playPageStart();
     }
   };
 
@@ -330,7 +330,7 @@ export default function Index() {
         }
       });
       resetPause();
-      playFocusEnd();
+      playStopSound();
     }
     setShowStopDialog(false);
   };
