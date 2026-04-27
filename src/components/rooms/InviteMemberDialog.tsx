@@ -23,8 +23,9 @@ export function InviteMemberDialog({ open, onOpenChange, roomId, inviteCode }: P
   const [friendCode, setFriendCode] = useState("");
   const inviteMember = useInviteMember();
   const { toast } = useToast();
+  const canShareLink = Boolean(inviteCode);
 
-  const inviteLink = `${window.location.origin}/rooms?join=${inviteCode}`;
+  const inviteLink = canShareLink ? `${window.location.origin}/rooms?join=${inviteCode}` : "";
 
   const handleInvite = async () => {
     if (!friendCode.trim()) return;
@@ -48,9 +49,9 @@ export function InviteMemberDialog({ open, onOpenChange, roomId, inviteCode }: P
         </DialogHeader>
 
         <Tabs defaultValue="code" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className={`grid w-full ${canShareLink ? "grid-cols-2" : "grid-cols-1"}`}>
             <TabsTrigger value="code">{t("rooms.by_friend_code")}</TabsTrigger>
-            <TabsTrigger value="link">{t("rooms.by_link")}</TabsTrigger>
+            {canShareLink && <TabsTrigger value="link">{t("rooms.by_link")}</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="code" className="space-y-4 mt-4">
