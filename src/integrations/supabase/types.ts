@@ -1593,6 +1593,30 @@ export type Database = {
         Args: { _member_user_id: string; _role: string; _room_id: string }
         Returns: undefined
       }
+      stop_time_entry: {
+        Args: { _entry_id: string }
+        Returns: {
+          created_at: string
+          duration: number | null
+          end_time: string | null
+          id: string
+          is_pomodoro: boolean | null
+          notes: string | null
+          paused_at: string | null
+          paused_seconds: number
+          pomodoro_type: string | null
+          project_id: string
+          start_time: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "time_entries"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       toggle_mute_member: {
         Args: { _member_user_id: string; _muted: boolean; _room_id: string }
         Returns: undefined

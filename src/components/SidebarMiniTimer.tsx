@@ -126,11 +126,8 @@ export function SidebarMiniTimer() {
 
   const handleStop = (notes?: string, tagIds?: string[]) => {
     playStopSound();
-    let totalPaused = pausedElapsed;
-    if (isPaused && pauseStartTime) {
-      totalPaused += Math.floor((Date.now() - pauseStartTime) / 1000);
-    }
-    stopTimer.mutate({ entryId: activeEntry.id, pausedSeconds: totalPaused }, {
+    // Server-authoritative: a RPC stop_time_entry calcula a pausa real
+    stopTimer.mutate({ entryId: activeEntry.id }, {
       onSuccess: async (data) => {
         if (notes) {
           const { supabase } = await import("@/integrations/supabase/client");

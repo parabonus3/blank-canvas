@@ -190,34 +190,18 @@ export function useStopTimer() {
   const { toast } = useToast();
   
   return useMutation({
-    mutationFn: async ({ entryId, pausedSeconds = 0, roomId }: { entryId: string; pausedSeconds?: number; roomId?: string }) => {
-      const endTime = new Date();
-      
-      // Get the entry to calculate duration
-      const { data: entryRaw } = await supabase
-        .from("time_entries")
-        .select("start_time, paused_at, paused_seconds")
-        .eq("id", entryId)
-        .single();
-      const entry = entryRaw as any;
-      
-      if (!entry) throw new Error("Entrada não encontrada");
-      
-      const startTime = new Date(entry.start_time);
-      // Fallback: if localStorage was cleared, use server-side paused tracking
-      const serverPaused = (entry as any).paused_seconds || 0;
-      const serverPausedAt = (entry as any).paused_at ? new Date((entry as any).paused_at).getTime() : null;
-      const liveServerPause = serverPausedAt ? Math.max(0, Math.floor((endTime.getTime() - serverPausedAt) / 1000)) : 0;
-      const effectivePaused = Math.max(pausedSeconds, serverPaused + liveServerPause);
-      const durationSeconds = Math.max(0, Math.floor((endTime.getTime() - startTime.getTime()) / 1000) - effectivePaused);
-      
+    mutationFn: async ({ entryId, roomId }: { entryId: string; pausedSeconds?: number; roomId?: string }) => {
+      // Server-authoritative stop: the RPC computes effective pause from
+      // paused_seconds + (now - paused_at) atomically, regardless of client state.
+      const { data: stopped, error: stopErr } = await (supabase as any).rpc("stop_time_entry", {
+        _entry_id: entryId,
+      });
+      if (stopErr) throw stopErr;
+      if (!stopped) throw new Error("Entrada não encontrada");
+
+      // Re-fetch with project relation so callers/toasts have full data
       const { data, error } = await supabase
         .from("time_entries")
-        .update({
-          end_time: endTime.toISOString(),
-          duration: durationSeconds,
-        })
-        .eq("id", entryId)
         .select(`
           *,
           project:projects(
@@ -226,9 +210,10 @@ export function useStopTimer() {
             category:categories(id, name, color)
           )
         `)
+        .eq("id", entryId)
         .single();
-      
       if (error) throw error;
+      const durationSeconds = (data as any)?.duration ?? 0;
 
       // Sync time to selected room only (or all if no room specified for backward compat)
       if (user) {
