@@ -13,26 +13,48 @@ const corsHeaders = {
     'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 }
 
-// Simple in-memory rate limiter for recovery emails (per email, max 3 per 10 min)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+// Persistent rate limiter for recovery emails (per email, max 3 per 10 min)
+// Backed by the public.email_rate_limits table so the limit applies across
+// all serverless instances (the previous in-memory Map was bypassable).
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000 // 10 minutes
 const RATE_LIMIT_MAX = 3
 
-function isRateLimited(email: string): boolean {
-  const now = Date.now()
-  const key = email.toLowerCase()
-  const entry = rateLimitMap.get(key)
+const EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+async function isRateLimited(
+  client: ReturnType<typeof createClient>,
+  email: string,
+): Promise<boolean> {
+  const key = email.toLowerCase()
+  const now = new Date()
+  const windowCutoff = new Date(now.getTime() - RATE_LIMIT_WINDOW_MS)
+
+  // Read current row
+  const { data: row } = await client
+    .from('email_rate_limits')
+    .select('email, window_start, count')
+    .eq('email', key)
+    .maybeSingle()
+
+  if (!row || new Date(row.window_start as string) < windowCutoff) {
+    // No row, or window expired -> reset
+    await client
+      .from('email_rate_limits')
+      .upsert(
+        { email: key, window_start: now.toISOString(), count: 1, updated_at: now.toISOString() },
+        { onConflict: 'email' },
+      )
     return false
   }
 
-  if (entry.count >= RATE_LIMIT_MAX) {
+  if ((row.count as number) >= RATE_LIMIT_MAX) {
     return true
   }
 
-  entry.count++
+  await client
+    .from('email_rate_limits')
+    .update({ count: (row.count as number) + 1, updated_at: now.toISOString() })
+    .eq('email', key)
   return false
 }
 
@@ -87,8 +109,15 @@ Deno.serve(async (req) => {
     }
 
     if (type === 'recovery') {
+      // Validate email format before doing anything (avoids generating links / hitting DB with garbage)
+      if (typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid email format' }),
+          { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        )
+      }
       // For recovery: apply rate limiting since user is unauthenticated
-      if (isRateLimited(email)) {
+      if (await isRateLimited(supabaseAdmin, email)) {
         return new Response(
           JSON.stringify({ error: 'Too many requests. Please try again later.' }),
           { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
