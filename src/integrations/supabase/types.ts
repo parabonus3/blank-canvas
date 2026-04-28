@@ -191,6 +191,27 @@ export type Database = {
         }
         Relationships: []
       }
+      email_rate_limits: {
+        Row: {
+          count: number
+          email: string
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          email: string
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          email?: string
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
