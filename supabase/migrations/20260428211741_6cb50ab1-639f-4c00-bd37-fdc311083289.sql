@@ -1,0 +1,1 @@
+REVOKE SELECT (invite_code, password_hash) ON public.study_rooms FROM anon, authenticated;
