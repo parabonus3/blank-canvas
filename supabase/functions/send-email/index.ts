@@ -109,8 +109,15 @@ Deno.serve(async (req) => {
     }
 
     if (type === 'recovery') {
+      // Validate email format before doing anything (avoids generating links / hitting DB with garbage)
+      if (typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid email format' }),
+          { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        )
+      }
       // For recovery: apply rate limiting since user is unauthenticated
-      if (isRateLimited(email)) {
+      if (await isRateLimited(supabaseAdmin, email)) {
         return new Response(
           JSON.stringify({ error: 'Too many requests. Please try again later.' }),
           { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
