@@ -1,98 +1,73 @@
-## Análise — o que é real, o que pode ser ignorado
+## Análise dos 3 avisos
 
-Analisei cada aviso, conferi o código que usa cada coisa e o impacto real. Resumo antes do plano:
+### 1. `SUPA_anon_security_definer_function_executable` (anon pode executar)
+Atualmente apenas **3 funções** estão executáveis por `anon`:
+- `find_room_by_invite_code` — **não é usada por anon no app** (todos os call-sites estão em páginas autenticadas: `Rooms.tsx`). Pode revogar de `anon`.
+- `get_public_rooms_ranking` — **não é chamada em lugar nenhum** no frontend (só `get_public_rooms_ranking_by_period` é usada). Pode revogar de `anon` (e até de `authenticated`, mas mantemos para não arriscar).
+- `get_public_rooms_ranking_by_period` — usada em `Explore.tsx`. Explore é página acessível sem login? Precisa ser pública.
+- `get_room_public_preview` — usada em `RoomPreview.tsx` (página de preview de convite, **acessível sem login**). Deve continuar pública.
 
-| # | Aviso | Importante? | Risco real |
-|---|-------|-------------|------------|
-| 1 | Stripe IDs visíveis ao dono da compra | **Sim, fácil** | Baixo, mas trivial corrigir. Frontend nunca lê esses campos. |
-| 2 | Rate limit em memória no `send-email` | **Sim, médio** | Real — atacante pode spammar reset de senha de qualquer email. |
-| 3 | Moderador pode virar owner por brecha de RLS | **Sim, alto** | Confirmado: as 2 policies `UPDATE` são PERMISSIVE (OR). Mod passa no USING da policy "membro" e no WITH CHECK da policy "mod" → escala para owner. |
-| 4 | Funções SECURITY DEFINER acessíveis ao `anon` | **Parcial** | 5 funções: 4 são intencionais (preview público de salas). 1 (`stop_time_entry`) NÃO deve ser anon. |
+**Decisão segura:** revogar `anon` de `find_room_by_invite_code` e `get_public_rooms_ranking`. Manter `get_public_rooms_ranking_by_period` e `get_room_public_preview` acessíveis a `anon` (são intencionalmente públicas — o linter vai continuar avisando sobre essas duas, mas vamos marcar como "ignored" com justificativa, pois são features públicas legítimas).
 
-Nenhuma correção quebra fluxo existente — todas as queries do frontend continuam funcionando.
+### 2. `SUPA_authenticated_security_definer_function_executable` (authenticated pode executar)
+Esse aviso é **informativo/genérico** — o linter sinaliza qualquer SECURITY DEFINER que `authenticated` possa executar. Praticamente todas as nossas RPCs precisam ser executáveis por usuários logados (é o padrão de uso do app: `get_my_rooms`, `join_public_room`, `consume_streak_freeze`, etc.). Cada função já valida `auth.uid()` e permissões internamente.
+
+**Decisão segura:** **ignorar este aviso** com justificativa registrada. Revogar a execução quebraria o app inteiro. As funções têm verificações internas adequadas.
+
+### 3. `SUPA_public_bucket_allows_listing` (bucket avatars permite listagem)
+A política atual em `storage.objects` para o bucket `avatars`:
+```
+SELECT: bucket_id = 'avatars'  → roles {anon, authenticated}
+```
+Isso permite `supabase.storage.from('avatars').list()` enumerar todos os arquivos. O app **só usa `getPublicUrl` e `upload`** (em `Settings.tsx`), nunca `.list()`. URLs públicas continuam funcionando mesmo sem permissão de SELECT na tabela `storage.objects` (servidas via CDN público).
+
+**Decisão segura:** substituir a política SELECT por uma que permita apenas o dono ver/listar os próprios arquivos:
+```sql
+DROP POLICY "Avatar images are publicly accessible" ON storage.objects;
+CREATE POLICY "Users can list own avatars" ON storage.objects
+  FOR SELECT TO authenticated
+  USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
+```
+URLs `getPublicUrl` continuam funcionando (servidas pelo endpoint `/storage/v1/object/public/...` que não exige RLS). Avatares continuam visíveis no app via `<img src={url}>`.
 
 ---
 
-## Plano de correção (1 migration única)
+## Plano de execução
 
-### Fix 1 — `streak_freeze_purchases`: esconder Stripe IDs do cliente
-
-Verifiquei: **nenhum código frontend lê `stripe_session_id` nem `stripe_payment_intent`**. Só o webhook (service-role) e admin-users (service-role) escrevem/leem.
-
-Trocar a policy SELECT para excluir essas colunas via REVOKE de coluna:
-```sql
-REVOKE SELECT (stripe_session_id, stripe_payment_intent) 
-  ON public.streak_freeze_purchases FROM authenticated, anon;
-```
-Usuário continua vendo `quantity`, `freezes_added`, `amount_cents`, `currency`, `created_at`. Nada quebra.
-
-### Fix 2 — `send-email`: rate limit persistente
-
-Substituir o `Map` em memória por uma tabela:
-```sql
-CREATE TABLE public.email_rate_limits (
-  email text PRIMARY KEY,
-  window_start timestamptz NOT NULL DEFAULT now(),
-  count int NOT NULL DEFAULT 0
-);
-ALTER TABLE public.email_rate_limits ENABLE ROW LEVEL SECURITY;
--- Sem policies: só service-role (edge function) acessa.
-```
-
-Atualizar `supabase/functions/send-email/index.ts` para usar a tabela com upsert atômico (mantém limite 3/10min, mas global em todas as instâncias). Validar formato do email antes de gerar link. Não muda fluxo do usuário.
-
-### Fix 3 — `room_members`: bloquear escalação de moderador
-
-A brecha é real porque as 2 policies UPDATE são PERMISSIVE (OR). Solução cirúrgica: adicionar policy **RESTRICTIVE** que bloqueia qualquer UPDATE em que `role` mude para `'owner'` ou que o owner seja rebaixado, exceto pelo próprio dono via função.
+### Migração SQL única
 
 ```sql
-CREATE POLICY "Block role escalation to owner"
-ON public.room_members
-AS RESTRICTIVE
-FOR UPDATE TO authenticated
-USING (true)
-WITH CHECK (
-  role = get_member_current_role(id)  -- role inalterada
-  OR (
-    -- mudanças de role permitidas só por owner, e nunca para 'owner'
-    is_room_owner(auth.uid(), room_id)
-    AND role IN ('member','moderator')
-    AND user_id <> auth.uid()
-  )
+-- 1. Revogar EXECUTE de anon em funções SECURITY DEFINER que não precisam ser públicas
+REVOKE EXECUTE ON FUNCTION public.find_room_by_invite_code(text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.get_public_rooms_ranking(text, text, text) FROM anon;
+
+-- 2. Fechar listagem do bucket avatars (mantendo getPublicUrl funcionando)
+DROP POLICY IF EXISTS "Avatar images are publicly accessible" ON storage.objects;
+
+CREATE POLICY "Users can list own avatars"
+ON storage.objects FOR SELECT TO authenticated
+USING (
+  bucket_id = 'avatars'
+  AND (storage.foldername(name))[1] = auth.uid()::text
 );
 ```
 
-Como é RESTRICTIVE, vale junto com as PERMISSIVE existentes (AND). Isso preserva o fluxo atual (mods podem mutar/kickar — não mexe em role; owners promovem via `set_member_role` RPC) e fecha a brecha de auto-promoção. Verifiquei: o frontend só faz `update({ notifications_enabled })` — esse caso passa pela primeira condição.
+### Marcar findings com justificativa
 
-### Fix 4 — Revogar `stop_time_entry` do `anon`
+- `SUPA_anon_security_definer_function_executable`: depois da migração restará apenas `get_public_rooms_ranking_by_period` e `get_room_public_preview` acessíveis por anon — **intencional** (Explore e RoomPreview são páginas públicas). Marcar como **ignored** com justificativa registrada na security memory.
+- `SUPA_authenticated_security_definer_function_executable`: **ignored** — todas as RPCs precisam ser chamáveis por usuários logados; cada função valida `auth.uid()` e regras de negócio internamente.
+- `SUPA_public_bucket_allows_listing`: marcar como **fixed** após a migração.
 
-Funções `SECURITY DEFINER` acessíveis a `anon` (visitante não logado):
-- `find_room_by_invite_code`, `get_public_rooms_ranking`, `get_public_rooms_ranking_by_period`, `get_room_public_preview` → **intencionais** (página pública de explorar / preview de sala). Mantém.
-- `stop_time_entry` → **não deveria** ser anon (criada na última migration). Função já valida `auth.uid() IS NULL`, mas é boa prática revogar.
+## Verificação de não-regressão
 
-```sql
-REVOKE EXECUTE ON FUNCTION public.stop_time_entry(uuid) FROM anon, public;
-GRANT EXECUTE ON FUNCTION public.stop_time_entry(uuid) TO authenticated;
-```
+- ✅ `Settings.tsx` (upload de avatar): `upload` (INSERT) e `getPublicUrl` (não exige SELECT na tabela) continuam ok.
+- ✅ Exibição de avatares no app: usa `avatar_url` salva no profile via `<img>` apontando para `/storage/v1/object/public/...` — não depende de RLS de SELECT.
+- ✅ `RoomPreview.tsx` (anon): usa `get_room_public_preview` e `get_member_public_stats`. A primeira continua pública. **Atenção:** `get_member_public_stats` hoje **não está acessível por anon** — verificar se RoomPreview é realmente acessível sem login. Se sim, é uma quebra preexistente, não causada por esta mudança.
+- ✅ `Explore.tsx`: usa `get_public_rooms_ranking_by_period` (continua acessível por anon) e `get_global_user_ranking` (apenas authenticated). Se Explore exige login, ok; se não, `get_global_user_ranking` já estava quebrada para anon.
+- ✅ Nenhum call-site usa `find_room_by_invite_code` ou `get_public_rooms_ranking` como anon.
 
-Não quebra nada — só usuário logado já chamava.
+## Arquivos afetados
 
----
-
-## Avisos que vou IGNORAR (justificativa)
-
-- **`SUPA_authenticated_security_definer_function_executable`**: as funções SECURITY DEFINER chamáveis por `authenticated` são todas intencionais (RPCs do app: `join_public_room`, `consume_streak_freeze`, etc). É padrão da arquitetura.
-- **`SUPA_auth_leaked_password_protection`**: precisa ser ativado pelo usuário no painel do Supabase (Auth → Password Protection). Não dá pra fazer via migration. Vou só lembrar o usuário.
-- **`SUPA_public_bucket_allows_listing`** (avatars): bucket público de avatares — listing é esperado. Pode ignorar OU adicionar policy mais estrita depois.
-- **`REALTIME_TOPIC_SCOPE_BYPASS`**: o app usa Postgres Changes (não Broadcast) nessas tabelas, então as RLS SELECT já protegem. Não é vulnerabilidade real.
-- **`INFO_LEAKAGE` (raw errors em edge functions)**: nível `info`. Pode-se sanear depois; não bloqueia segurança.
-
----
-
-## Entregáveis
-
-1. **1 migration** com: REVOKE de colunas, criação da tabela `email_rate_limits`, policy RESTRICTIVE em `room_members`, REVOKE de `stop_time_entry` para anon.
-2. **Edit** em `supabase/functions/send-email/index.ts` para usar tabela em vez de Map.
-3. **Marcar** os 4 findings como fixed (e ignorar os outros com justificativa) no painel de segurança.
-
-Nenhuma mudança no frontend é necessária.
+- Nova migração SQL (única).
+- Atualização da `@security-memory` documentando as ignorâncias justificadas.
+- Nenhuma mudança em código frontend ou edge functions.
