@@ -1,34 +1,41 @@
+
 ## Análise dos 3 avisos
 
-### 1. `SUPA_anon_security_definer_function_executable` (anon pode executar)
-Atualmente apenas **3 funções** estão executáveis por `anon`:
-- `find_room_by_invite_code` — **não é usada por anon no app** (todos os call-sites estão em páginas autenticadas: `Rooms.tsx`). Pode revogar de `anon`.
-- `get_public_rooms_ranking` — **não é chamada em lugar nenhum** no frontend (só `get_public_rooms_ranking_by_period` é usada). Pode revogar de `anon` (e até de `authenticated`, mas mantemos para não arriscar).
-- `get_public_rooms_ranking_by_period` — usada em `Explore.tsx`. Explore é página acessível sem login? Precisa ser pública.
-- `get_room_public_preview` — usada em `RoomPreview.tsx` (página de preview de convite, **acessível sem login**). Deve continuar pública.
+### 1. `study_rooms_invite_code_public_exposure` — REAL e precisa correção
 
-**Decisão segura:** revogar `anon` de `find_room_by_invite_code` e `get_public_rooms_ranking`. Manter `get_public_rooms_ranking_by_period` e `get_room_public_preview` acessíveis a `anon` (são intencionalmente públicas — o linter vai continuar avisando sobre essas duas, mas vamos marcar como "ignored" com justificativa, pois são features públicas legítimas).
-
-### 2. `SUPA_authenticated_security_definer_function_executable` (authenticated pode executar)
-Esse aviso é **informativo/genérico** — o linter sinaliza qualquer SECURITY DEFINER que `authenticated` possa executar. Praticamente todas as nossas RPCs precisam ser executáveis por usuários logados (é o padrão de uso do app: `get_my_rooms`, `join_public_room`, `consume_streak_freeze`, etc.). Cada função já valida `auth.uid()` e permissões internamente.
-
-**Decisão segura:** **ignorar este aviso** com justificativa registrada. Revogar a execução quebraria o app inteiro. As funções têm verificações internas adequadas.
-
-### 3. `SUPA_public_bucket_allows_listing` (bucket avatars permite listagem)
-A política atual em `storage.objects` para o bucket `avatars`:
+Testei como `anon` na API REST:
 ```
-SELECT: bucket_id = 'avatars'  → roles {anon, authenticated}
+GET /rest/v1/study_rooms?is_public=eq.true&select=invite_code,password_hash
+→ [{"invite_code":"687823","password_hash":null}]
 ```
-Isso permite `supabase.storage.from('avatars').list()` enumerar todos os arquivos. O app **só usa `getPublicUrl` e `upload`** (em `Settings.tsx`), nunca `.list()`. URLs públicas continuam funcionando mesmo sem permissão de SELECT na tabela `storage.objects` (servidas via CDN público).
 
-**Decisão segura:** substituir a política SELECT por uma que permita apenas o dono ver/listar os próprios arquivos:
-```sql
-DROP POLICY "Avatar images are publicly accessible" ON storage.objects;
-CREATE POLICY "Users can list own avatars" ON storage.objects
-  FOR SELECT TO authenticated
-  USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text);
-```
-URLs `getPublicUrl` continuam funcionando (servidas pelo endpoint `/storage/v1/object/public/...` que não exige RLS). Avatares continuam visíveis no app via `<img src={url}>`.
+**Confirmado vazamento.** A policy `Anyone can view public rooms` (SELECT para anon/authenticated com `is_public = true`) não restringe colunas, e os REVOKEs antigos de coluna não estão mais em vigor (foram perdidos em alguma migração posterior, provavelmente um `GRANT ALL` recriou).
+
+**Impacto:** qualquer pessoa sem login pode listar todas as salas públicas e obter `invite_code` + `password_hash` (bcrypt). O invite_code permite entrar via `join_room_by_invite_code` (mas RPC ainda exige senha se houver). Mesmo assim, é dado sensível que não deve ser exposto — quebra o controle de quem pode convidar.
+
+**Correção segura:** redefinir a policy para excluir as colunas sensíveis via VIEW + reaplicar REVOKE de coluna que persista. A forma mais robusta e que **não quebra nada** é manter a policy mas reaplicar REVOKE de coluna no role `anon` (e idealmente `authenticated`, já que o frontend autenticado usa `get_my_rooms` RPC, não SELECT direto nessas colunas).
+
+Análise de uso no frontend (verificada):
+- `useRooms.ts` → usa RPC `get_my_rooms` (não retorna invite_code/password_hash) ✅
+- `RoomDetail.tsx` → usa RPC `get_room_invite_code` (owner/mod) ✅
+- `Rooms.tsx` → usa RPC `find_room_by_invite_code` ✅
+- `RoomPreview.tsx` → usa RPC `get_room_public_preview` ✅
+- `CreateRoomDialog`, `EditGoalDialog`, `RoomSettingsTab`, `PinnedMessage`, `RoomFocusSession`, `useRoomInvitations` → fazem `INSERT`/`UPDATE` ou SELECT por `id` em colunas que **não são** `invite_code`/`password_hash` ✅
+- `Explore.tsx` → usa RPC `get_public_rooms_ranking_by_period` (já retorna `NULL::text` no campo invite_code) ✅
+
+**Conclusão:** nenhum SELECT direto do frontend lê `invite_code` ou `password_hash`. Pode revogar com segurança de `anon` E `authenticated`.
+
+### 2. `profiles_missing_public_select_for_rooms` — FALSO POSITIVO (já protegido)
+
+Testei: `GET /rest/v1/profiles?select=is_banned,plan_tier` como anon → `[]` (RLS bloqueia, só dono vê).
+
+As funções SECURITY DEFINER que retornam dados de profile (ex: `get_room_member_profiles`, `get_member_public_stats`) só expõem campos públicos curados (`display_name`, `avatar_url`, `plan_tier`, `avatar_flair`) — **não** retornam `is_banned`, `banned_reason`, `trial_ends_at`, `last_known_streak`. O `plan_tier` é exibido publicamente como badge (intencional) e não é considerado sensível.
+
+**Decisão:** marcar como **ignored** com justificativa. Nenhuma mudança de código.
+
+### 3. `SUPA_auth_leaked_password_protection` — Configuração do Supabase Auth
+
+Recurso do Supabase que checa senhas vazadas no HaveIBeenPwned no signup/reset. **Não pode ser ativado via SQL** — precisa ser ligado pelo usuário no Dashboard. Vou apenas documentar e deixar instruções; nada quebra.
 
 ---
 
@@ -37,37 +44,39 @@ URLs `getPublicUrl` continuam funcionando (servidas pelo endpoint `/storage/v1/o
 ### Migração SQL única
 
 ```sql
--- 1. Revogar EXECUTE de anon em funções SECURITY DEFINER que não precisam ser públicas
-REVOKE EXECUTE ON FUNCTION public.find_room_by_invite_code(text) FROM anon;
-REVOKE EXECUTE ON FUNCTION public.get_public_rooms_ranking(text, text, text) FROM anon;
+-- Revogar leitura das colunas sensíveis para anon e authenticated.
+-- Frontend só lê essas colunas via RPCs SECURITY DEFINER (que não usam role do caller).
+REVOKE SELECT (invite_code, password_hash) ON public.study_rooms FROM anon, authenticated;
 
--- 2. Fechar listagem do bucket avatars (mantendo getPublicUrl funcionando)
-DROP POLICY IF EXISTS "Avatar images are publicly accessible" ON storage.objects;
-
-CREATE POLICY "Users can list own avatars"
-ON storage.objects FOR SELECT TO authenticated
-USING (
-  bucket_id = 'avatars'
-  AND (storage.foldername(name))[1] = auth.uid()::text
-);
+-- Garantir que GRANT futuro implícito não devolva acesso: como GRANT ALL na tabela
+-- não inclui privilégios de coluna se já houver REVOKE explícito de coluna,
+-- isto persistirá. Mas para reforçar, removemos qualquer GRANT ALL pendente:
+-- (não fazemos REVOKE ALL na tabela porque quebraria SELECT das outras colunas)
 ```
 
-### Marcar findings com justificativa
+### Findings a marcar
 
-- `SUPA_anon_security_definer_function_executable`: depois da migração restará apenas `get_public_rooms_ranking_by_period` e `get_room_public_preview` acessíveis por anon — **intencional** (Explore e RoomPreview são páginas públicas). Marcar como **ignored** com justificativa registrada na security memory.
-- `SUPA_authenticated_security_definer_function_executable`: **ignored** — todas as RPCs precisam ser chamáveis por usuários logados; cada função valida `auth.uid()` e regras de negócio internamente.
-- `SUPA_public_bucket_allows_listing`: marcar como **fixed** após a migração.
+- `study_rooms_invite_code_public_exposure` → **fixed** após migração (com verificação curl).
+- `profiles_missing_public_select_for_rooms` → **ignored** (RLS já protege; SECURITY DEFINER expõem só campos públicos curados).
+- `SUPA_auth_leaked_password_protection` → **ignored** com nota pedindo ao usuário ativar manualmente no Dashboard (Auth > Policies > "Leaked password protection").
 
-## Verificação de não-regressão
+### Atualização da security memory
 
-- ✅ `Settings.tsx` (upload de avatar): `upload` (INSERT) e `getPublicUrl` (não exige SELECT na tabela) continuam ok.
-- ✅ Exibição de avatares no app: usa `avatar_url` salva no profile via `<img>` apontando para `/storage/v1/object/public/...` — não depende de RLS de SELECT.
-- ✅ `RoomPreview.tsx` (anon): usa `get_room_public_preview` e `get_member_public_stats`. A primeira continua pública. **Atenção:** `get_member_public_stats` hoje **não está acessível por anon** — verificar se RoomPreview é realmente acessível sem login. Se sim, é uma quebra preexistente, não causada por esta mudança.
-- ✅ `Explore.tsx`: usa `get_public_rooms_ranking_by_period` (continua acessível por anon) e `get_global_user_ranking` (apenas authenticated). Se Explore exige login, ok; se não, `get_global_user_ranking` já estava quebrada para anon.
-- ✅ Nenhum call-site usa `find_room_by_invite_code` ou `get_public_rooms_ranking` como anon.
+Adicionar regras:
+- `study_rooms.invite_code` e `study_rooms.password_hash`: SELECT revogado de anon/authenticated. Acesso só via RPCs `get_room_invite_code` (owner/mod) e `join_room_by_invite_code`. Nunca reconceder.
+- Profiles: SELECT direto é só do dono. Funções SECURITY DEFINER expõem somente campos curados (`display_name`, `avatar_url`, `plan_tier`, `avatar_flair`, `avatar_flair_color`). Nunca adicionar `is_banned`, `banned_reason`, `trial_ends_at`, `last_known_streak` em retorno público.
 
-## Arquivos afetados
+### Verificação pós-migração
 
-- Nova migração SQL (única).
-- Atualização da `@security-memory` documentando as ignorâncias justificadas.
-- Nenhuma mudança em código frontend ou edge functions.
+Re-rodar curl como anon para confirmar que `invite_code`/`password_hash` retornam `null` ou erro — e confirmar que `select=id,name,is_public` ainda funciona (Explore page).
+
+### Arquivos afetados
+
+- 1 nova migração SQL.
+- Atualização da `@security-memory`.
+- **Zero** mudanças em código frontend ou edge functions.
+
+### Sobre o item 3 (leaked password)
+
+Após aplicar, vou pedir para você ativar no Dashboard:
+`Auth → Settings → Password Security → Enable "Leaked password protection"`. É um clique e não afeta usuários existentes.
