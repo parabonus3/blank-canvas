@@ -104,12 +104,12 @@ export const STRIPE_PLANS = {
       "prod_U7AM9GTRJYqVNV",
     ],
     prices: {
-      monthly: "price_1TBJHYIF7aEwjBbZii0gpOdE",
-      yearly: "price_1TBJI7IF7aEwjBbZCvoQGwog",
+      monthly: "price_1TRgNQIF7aEwjBbZayhf8bsz",
+      yearly: "price_1TRgNQIF7aEwjBbZ0nPh8QDK",
     },
-    monthlyPrice: 24,
-    yearlyPrice: 179,
-    yearlyMonthlyEquivalent: 14.92,
+    monthlyPrice: 19.9,
+    yearlyPrice: 143,
+    yearlyMonthlyEquivalent: 11.92,
     features: [
       "everything_pro",
       "rooms_10",
