@@ -129,10 +129,10 @@ export type PlanTier = keyof typeof STRIPE_PLANS;
 // All assignable plan options for admin
 export const PLAN_OPTIONS = [
   { value: "free", label: "Free" },
-  { value: "pro_monthly", label: "Pro Mensal ($13/mês)", priceId: "price_1TBJG4IF7aEwjBbZdzr3DzRV" },
-  { value: "pro_yearly", label: "Pro Anual ($99/ano)", priceId: "price_1TBJGcIF7aEwjBbZxswWAoHk" },
-  { value: "premium_monthly", label: "Premium Mensal ($24/mês)", priceId: "price_1TBJHYIF7aEwjBbZii0gpOdE" },
-  { value: "premium_yearly", label: "Premium Anual ($179/ano)", priceId: "price_1TBJI7IF7aEwjBbZCvoQGwog" },
+  { value: "pro_monthly", label: "Pro Mensal ($9.90/mês)", priceId: "price_1TRgNQIF7aEwjBbZlhFZMuSc" },
+  { value: "pro_yearly", label: "Pro Anual ($95/ano)", priceId: "price_1TRgNQIF7aEwjBbZGAatgXtO" },
+  { value: "premium_monthly", label: "Premium Mensal ($19.90/mês)", priceId: "price_1TRgNQIF7aEwjBbZayhf8bsz" },
+  { value: "premium_yearly", label: "Premium Anual ($143/ano)", priceId: "price_1TRgNQIF7aEwjBbZ0nPh8QDK" },
 ] as const;
 
 export function getBillingInterval(priceId: string | null): "monthly" | "yearly" | null {
