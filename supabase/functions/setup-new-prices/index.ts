@@ -18,9 +18,7 @@ serve(async (req) => {
 
   try {
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!stripeKey || !supabaseUrl || !serviceRoleKey) throw new Error("Missing env");
+    if (!stripeKey) throw new Error("Missing STRIPE_SECRET_KEY");
 
     // Temporary one-shot: gated by a setup token instead of admin role,
     // because Lovable tool can't pass admin JWT. Will be deleted after run.
