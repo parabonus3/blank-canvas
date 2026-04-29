@@ -171,10 +171,27 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   );
 }
 
+const FALLBACK_SUBSCRIPTION: SubscriptionContextType = {
+  tier: "free",
+  billingInterval: null,
+  subscribed: false,
+  subscriptionEnd: null,
+  loading: false,
+  pendingChange: null,
+  isExpired: false,
+  refreshSubscription: async () => {},
+  hasFeature: () => false,
+  getMaxRooms: () => ROOM_LIMITS.free,
+  getMaxMembersPerRoom: () => MEMBER_LIMITS.free,
+};
+
 export function useSubscription() {
   const context = useContext(SubscriptionContext);
   if (!context) {
-    throw new Error("useSubscription must be used within SubscriptionProvider");
+    if (import.meta.env.DEV) {
+      console.warn("useSubscription used outside SubscriptionProvider — returning fallback.");
+    }
+    return FALLBACK_SUBSCRIPTION;
   }
   return context;
 }
