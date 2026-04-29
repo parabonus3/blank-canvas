@@ -34,12 +34,18 @@ const LEGACY_PRICES: Record<string, "monthly" | "yearly"> = {
   // v1 Pro
   "price_1T8vxKIF7aEwjBbZ0s2tjwZU": "monthly",
   "price_1T8vz5IF7aEwjBbZn7C7YRLa": "yearly",
+  // v2 Pro ($13/$99)
+  "price_1TBJG4IF7aEwjBbZdzr3DzRV": "monthly",
+  "price_1TBJGcIF7aEwjBbZxswWAoHk": "yearly",
   // v0 Premium
   "price_1T4SfZIF7aEwjBbZHQS9rWcG": "monthly",
   "price_1T4SfyIF7aEwjBbZrePYVAm8": "yearly",
   // v1 Premium
   "price_1T8w0mIF7aEwjBbZJn3LVHG0": "monthly",
   "price_1T8w1XIF7aEwjBbZ56jupbxP": "yearly",
+  // v2 Premium ($24/$179)
+  "price_1TBJHYIF7aEwjBbZii0gpOdE": "monthly",
+  "price_1TBJI7IF7aEwjBbZCvoQGwog": "yearly",
 };
 
 export const STRIPE_PLANS = {
