@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const log = (s: string, d?: any) => console.log(`[SETUP-NEW-PRICES] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
+const log = (s: string, d?: any) => console.log(`[SETUP-NEW-PRICES-V2] ${s}${d ? " - " + JSON.stringify(d) : ""}`);
 
 const PRO_MONTHLY_PRODUCT = "prod_U9cV4fuZjYahhc";
 const PRO_YEARLY_PRODUCT = "prod_U9cVTsdR19wOvY";
