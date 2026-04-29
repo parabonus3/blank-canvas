@@ -31,10 +31,16 @@ const tierIcons: Record<PlanTier, React.ReactNode> = {
 
 // Price hierarchy for upgrade/downgrade detection
 const PRICE_VALUES: Record<string, number> = {
-  [STRIPE_PLANS.pro.prices.monthly!]: 1300,
-  [STRIPE_PLANS.pro.prices.yearly!]: 9900,
-  [STRIPE_PLANS.premium.prices.monthly!]: 2400,
-  [STRIPE_PLANS.premium.prices.yearly!]: 17900,
+  // Current v3 prices
+  [STRIPE_PLANS.pro.prices.monthly!]: 990,
+  [STRIPE_PLANS.pro.prices.yearly!]: 9500,
+  [STRIPE_PLANS.premium.prices.monthly!]: 1990,
+  [STRIPE_PLANS.premium.prices.yearly!]: 14300,
+  // Legacy v2 prices (preserve hierarchy for existing subscribers)
+  "price_1TBJG4IF7aEwjBbZdzr3DzRV": 1300,
+  "price_1TBJGcIF7aEwjBbZxswWAoHk": 9900,
+  "price_1TBJHYIF7aEwjBbZii0gpOdE": 2400,
+  "price_1TBJI7IF7aEwjBbZCvoQGwog": 17900,
 };
 
 function getCurrentPriceId(tier: PlanTier, interval: "monthly" | "yearly" | null): string | null {
