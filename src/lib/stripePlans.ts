@@ -34,12 +34,18 @@ const LEGACY_PRICES: Record<string, "monthly" | "yearly"> = {
   // v1 Pro
   "price_1T8vxKIF7aEwjBbZ0s2tjwZU": "monthly",
   "price_1T8vz5IF7aEwjBbZn7C7YRLa": "yearly",
+  // v2 Pro ($13/$99)
+  "price_1TBJG4IF7aEwjBbZdzr3DzRV": "monthly",
+  "price_1TBJGcIF7aEwjBbZxswWAoHk": "yearly",
   // v0 Premium
   "price_1T4SfZIF7aEwjBbZHQS9rWcG": "monthly",
   "price_1T4SfyIF7aEwjBbZrePYVAm8": "yearly",
   // v1 Premium
   "price_1T8w0mIF7aEwjBbZJn3LVHG0": "monthly",
   "price_1T8w1XIF7aEwjBbZ56jupbxP": "yearly",
+  // v2 Premium ($24/$179)
+  "price_1TBJHYIF7aEwjBbZii0gpOdE": "monthly",
+  "price_1TBJI7IF7aEwjBbZCvoQGwog": "yearly",
 };
 
 export const STRIPE_PLANS = {
@@ -68,12 +74,12 @@ export const STRIPE_PLANS = {
       "prod_U7AJBjf96NNNx6",
     ],
     prices: {
-      monthly: "price_1TBJG4IF7aEwjBbZdzr3DzRV",
-      yearly: "price_1TBJGcIF7aEwjBbZxswWAoHk",
+      monthly: "price_1TRgNQIF7aEwjBbZlhFZMuSc",
+      yearly: "price_1TRgNQIF7aEwjBbZGAatgXtO",
     },
-    monthlyPrice: 13,
-    yearlyPrice: 99,
-    yearlyMonthlyEquivalent: 8.25,
+    monthlyPrice: 9.9,
+    yearlyPrice: 95,
+    yearlyMonthlyEquivalent: 7.92,
     features: [
       "everything_free",
       "unlimited_projects",
@@ -98,12 +104,12 @@ export const STRIPE_PLANS = {
       "prod_U7AM9GTRJYqVNV",
     ],
     prices: {
-      monthly: "price_1TBJHYIF7aEwjBbZii0gpOdE",
-      yearly: "price_1TBJI7IF7aEwjBbZCvoQGwog",
+      monthly: "price_1TRgNQIF7aEwjBbZayhf8bsz",
+      yearly: "price_1TRgNQIF7aEwjBbZ0nPh8QDK",
     },
-    monthlyPrice: 24,
-    yearlyPrice: 179,
-    yearlyMonthlyEquivalent: 14.92,
+    monthlyPrice: 19.9,
+    yearlyPrice: 143,
+    yearlyMonthlyEquivalent: 11.92,
     features: [
       "everything_pro",
       "rooms_10",
@@ -123,10 +129,10 @@ export type PlanTier = keyof typeof STRIPE_PLANS;
 // All assignable plan options for admin
 export const PLAN_OPTIONS = [
   { value: "free", label: "Free" },
-  { value: "pro_monthly", label: "Pro Mensal ($13/mês)", priceId: "price_1TBJG4IF7aEwjBbZdzr3DzRV" },
-  { value: "pro_yearly", label: "Pro Anual ($99/ano)", priceId: "price_1TBJGcIF7aEwjBbZxswWAoHk" },
-  { value: "premium_monthly", label: "Premium Mensal ($24/mês)", priceId: "price_1TBJHYIF7aEwjBbZii0gpOdE" },
-  { value: "premium_yearly", label: "Premium Anual ($179/ano)", priceId: "price_1TBJI7IF7aEwjBbZCvoQGwog" },
+  { value: "pro_monthly", label: "Pro Mensal ($9.90/mês)", priceId: "price_1TRgNQIF7aEwjBbZlhFZMuSc" },
+  { value: "pro_yearly", label: "Pro Anual ($95/ano)", priceId: "price_1TRgNQIF7aEwjBbZGAatgXtO" },
+  { value: "premium_monthly", label: "Premium Mensal ($19.90/mês)", priceId: "price_1TRgNQIF7aEwjBbZayhf8bsz" },
+  { value: "premium_yearly", label: "Premium Anual ($143/ano)", priceId: "price_1TRgNQIF7aEwjBbZ0nPh8QDK" },
 ] as const;
 
 export function getBillingInterval(priceId: string | null): "monthly" | "yearly" | null {
