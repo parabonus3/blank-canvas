@@ -150,15 +150,15 @@ export default function Achievements() {
 
   return (
     <MainLayout>
-       <div className="space-y-6 p-4 max-w-full min-w-0">
+       <div className="space-y-6 p-2 sm:p-4 max-w-full min-w-0">
          {/* Header */}
          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <Trophy className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2">
+              <Trophy className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
               {t('achievements.title')}
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base">
               {currentMilestone && (
                 <span className="inline-flex items-center gap-1">
                   <span>{currentMilestone.icon}</span>
@@ -168,11 +168,11 @@ export default function Achievements() {
             </p>
           </div>
          <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <Badge variant="secondary" className="text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-primary" />
+            <Badge variant="secondary" className="text-xs sm:text-base px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
+              <Sparkles className="h-3.5 w-3.5 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-primary" />
               {t('achievements.level')} {currentLevel}/366
             </Badge>
-            <Badge variant="outline" className="text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2">
+            <Badge variant="outline" className="text-xs sm:text-base px-2 sm:px-4 py-1 sm:py-2 whitespace-nowrap">
               {progress?.overallProgress.toFixed(1)}% {t('achievements.complete')}
             </Badge>
           </div>
@@ -380,54 +380,60 @@ export default function Achievements() {
            {/* Consistency Calendar */}
            <ConsistencyCalendar dailyData={dailyData} />
 
-           {/* Monthly Chart */}
-           <Card>
-             <CardHeader>
-               <CardTitle className="flex items-center gap-2 text-lg">
-                 <Calendar className="h-5 w-5 text-primary" />
-                 {t('achievements.monthly_progress')}
-               </CardTitle>
-             </CardHeader>
-             <CardContent className="h-[300px]">
-               {monthlyData && monthlyData.length > 0 ? (
-                 <ResponsiveContainer width="100%" height="100%">
-                   <BarChart data={monthlyData}>
-                     <XAxis dataKey="month" fontSize={12} tickLine={false} axisLine={false} />
-                     <YAxis fontSize={12} tickLine={false} axisLine={false} />
-                     <Tooltip 
-                       formatter={(value: number, name: string) => [
-                         `${value}h`, 
-                         name === 'hours' ? t('achievements.hours') : t('achievements.monthly_goal')
-                       ]}
-                       labelStyle={{ color: 'hsl(var(--foreground))' }}
-                       contentStyle={{ 
-                         backgroundColor: 'hsl(var(--background))', 
-                         border: '1px solid hsl(var(--border))',
-                         borderRadius: '8px'
-                       }}
-                     />
-                     <ReferenceLine 
-                       y={92} 
-                       stroke="hsl(var(--muted-foreground))" 
-                       strokeDasharray="3 3" 
-                       label={{ value: t('achievements.monthly_goal'), position: 'right', fontSize: 10 }}
-                     />
-                     <Bar dataKey="hours" radius={[4, 4, 0, 0]}>
-                       {monthlyData.map((entry, index) => (
-                         <Cell 
-                           key={`cell-${index}`} 
-                           fill={entry.hours >= 92 ? 'hsl(var(--primary))' : entry.hours > 0 ? 'hsl(var(--primary) / 0.6)' : 'hsl(var(--muted))'} 
-                         />
-                       ))}
-                     </Bar>
-                   </BarChart>
-                 </ResponsiveContainer>
-               ) : (
-                 <div className="h-full flex items-center justify-center text-muted-foreground">
-                   {t('achievements.no_data')}
-                 </div>
-               )}
-             </CardContent>
+            {/* Monthly Chart */}
+            <Card className="overflow-hidden">
+              <CardHeader className="px-3 sm:px-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  {t('achievements.monthly_progress')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-[220px] sm:h-[300px] px-1 sm:px-6 pb-3">
+                {monthlyData && monthlyData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+                      <XAxis 
+                        dataKey="month" 
+                        fontSize={10} 
+                        tickLine={false} 
+                        axisLine={false} 
+                        interval={0}
+                        tickFormatter={(v: string) => (v ? v.slice(0, 3) : v)}
+                      />
+                      <YAxis fontSize={10} tickLine={false} axisLine={false} width={28} />
+                      <Tooltip 
+                        formatter={(value: number, name: string) => [
+                          `${value}h`, 
+                          name === 'hours' ? t('achievements.hours') : t('achievements.monthly_goal')
+                        ]}
+                        labelStyle={{ color: 'hsl(var(--foreground))' }}
+                        contentStyle={{ 
+                          backgroundColor: 'hsl(var(--background))', 
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <ReferenceLine 
+                        y={92} 
+                        stroke="hsl(var(--muted-foreground))" 
+                        strokeDasharray="3 3" 
+                      />
+                      <Bar dataKey="hours" radius={[4, 4, 0, 0]}>
+                        {monthlyData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.hours >= 92 ? 'hsl(var(--primary))' : entry.hours > 0 ? 'hsl(var(--primary) / 0.6)' : 'hsl(var(--muted))'} 
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                    {t('achievements.no_data')}
+                  </div>
+                )}
+              </CardContent>
            </Card>
         </div>
       </div>

@@ -123,7 +123,7 @@ export function UnlockedAchievements({ currentLevel, onMilestoneClick, activeMil
                     transition={{ duration: 0.2 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-3 pt-0 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div className="p-3 pt-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                       {milestones.map((milestone) => {
                         const isUnlocked = milestone.level <= currentLevel;
                         const isCurrent = milestone.level === Math.floor(currentLevel);
