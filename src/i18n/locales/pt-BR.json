@@ -1301,5 +1301,21 @@
     "ticket_not_found": "Chamado não encontrado",
     "new_ticket_received": "Novo ticket de suporte recebido",
     "new_reply_received": "Nova resposta do cliente recebida"
+  },
+  "freeze_missions": {
+    "title": "Missões de Defensiva",
+    "subtitle": "Complete missões para ganhar defensivas extras e proteger sua sequência.",
+    "completed": "Concluída",
+    "monthly_cap": "Máximo de 6 defensivas por mês via missões.",
+    "completed_desc": "Você ganhou {{count}} defensiva(s)!",
+    "weekly_bronze_title": "Semanal Bronze",
+    "weekly_bronze_desc": "5 dias com pelo menos 1h estudada nesta semana",
+    "weekly_bronze_completed_title": "Missão Bronze concluída!",
+    "weekly_gold_title": "Semanal Ouro",
+    "weekly_gold_desc": "7 dias com pelo menos 2h estudadas nesta semana",
+    "weekly_gold_completed_title": "Missão Ouro concluída!",
+    "monthly_legendary_title": "Mensal Lendária",
+    "monthly_legendary_desc": "Estude todos os dias do mês (1h+) e some 80h+",
+    "monthly_legendary_completed_title": "Missão Lendária concluída!"
   }
 }
