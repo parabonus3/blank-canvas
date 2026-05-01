@@ -212,6 +212,36 @@ export type Database = {
         }
         Relationships: []
       }
+      freeze_missions: {
+        Row: {
+          completed_at: string
+          created_at: string
+          freezes_awarded: number
+          id: string
+          mission_type: string
+          period_key: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          freezes_awarded?: number
+          id?: string
+          mission_type: string
+          period_key: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          freezes_awarded?: number
+          id?: string
+          mission_type?: string
+          period_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
@@ -1350,6 +1380,13 @@ export type Database = {
       }
     }
     Functions: {
+      check_and_grant_freeze_missions: {
+        Args: never
+        Returns: {
+          freezes_granted: number
+          mission_type: string
+        }[]
+      }
       check_and_grant_streak_rescue: {
         Args: never
         Returns: {
@@ -1405,6 +1442,17 @@ export type Database = {
         }[]
       }
       generate_friend_code: { Args: never; Returns: string }
+      get_freeze_missions_progress: {
+        Args: never
+        Returns: {
+          completed: boolean
+          freezes_reward: number
+          mission_type: string
+          period_key: string
+          progress_current: number
+          progress_target: number
+        }[]
+      }
       get_friend_progress: {
         Args: { _user_id: string }
         Returns: {
