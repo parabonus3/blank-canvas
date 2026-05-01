@@ -79,7 +79,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
     }).length;
   }, [daysInMonth, dataMap]);
   
-  const dayNames = [
+  const dayNamesFull = [
     t('achievements.day_sun'),
     t('achievements.day_mon'),
     t('achievements.day_tue'),
@@ -88,41 +88,43 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
     t('achievements.day_fri'),
     t('achievements.day_sat')
   ];
+  const dayNamesShort = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
   
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between gap-2 min-w-0">
-          <CardTitle className="flex items-center gap-2 text-base sm:text-lg min-w-0 truncate">
+    <Card className="w-full overflow-hidden">
+      <CardHeader className="pb-2 px-3 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 min-w-0">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg min-w-0">
             <CalendarIcon className="h-5 w-5 text-primary flex-shrink-0" />
             <span className="truncate">{t('achievements.consistency_calendar')}</span>
           </CardTitle>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={previousMonth}>
+          <div className="flex items-center gap-1 self-end sm:self-auto">
+            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-9 sm:w-9" onClick={previousMonth}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="text-xs sm:text-sm font-medium min-w-[90px] sm:min-w-[120px] text-center truncate">
-              {formatInTz(currentDate, 'MMMM yyyy')}
+            <span className="text-xs sm:text-sm font-medium text-center whitespace-nowrap px-1">
+              {formatInTz(currentDate, 'MMM yyyy')}
             </span>
-            <Button variant="ghost" size="icon" onClick={nextMonth}>
+            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-9 sm:w-9" onClick={nextMonth}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-2 sm:px-6">
         {/* Day headers */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
-          {dayNames.map(day => (
-            <div key={day} className="text-center text-xs text-muted-foreground font-medium">
-              {day}
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
+          {dayNamesFull.map((day, i) => (
+            <div key={i} className="text-center text-[10px] sm:text-xs text-muted-foreground font-medium">
+              <span className="sm:hidden">{dayNamesShort[i]}</span>
+              <span className="hidden sm:inline">{day}</span>
             </div>
           ))}
         </div>
         
         {/* Calendar grid */}
         <TooltipProvider>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
             {Array.from({ length: startDayOfWeek }).map((_, i) => (
               <div key={`empty-${i}`} className="aspect-square" />
             ))}
@@ -137,7 +139,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
                   <TooltipTrigger asChild>
                     <div
                       className={cn(
-                        "aspect-square rounded-md flex items-center justify-center text-xs font-medium cursor-pointer transition-all hover:ring-2 hover:ring-primary/50",
+                        "aspect-square rounded-md flex items-center justify-center text-[10px] sm:text-xs font-medium cursor-pointer transition-all hover:ring-2 hover:ring-primary/50",
                         getColorClass(hours),
                         isToday(day) && "ring-2 ring-primary",
                         hours >= 3 && "text-primary-foreground"
