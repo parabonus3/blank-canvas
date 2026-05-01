@@ -1229,5 +1229,21 @@
     "ticket_not_found": "Тикет не найден",
     "new_ticket_received": "Получен новый тикет",
     "new_reply_received": "Получен новый ответ клиента"
+  },
+  "freeze_missions": {
+    "title": "Freeze Missions",
+    "subtitle": "Complete missions to earn extra freezes and protect your streak.",
+    "completed": "Completed",
+    "monthly_cap": "Maximum of 6 freezes per month via missions.",
+    "completed_desc": "You earned {{count}} freeze(s)!",
+    "weekly_bronze_title": "Weekly Bronze",
+    "weekly_bronze_desc": "5 days with at least 1h studied this week",
+    "weekly_bronze_completed_title": "Bronze mission completed!",
+    "weekly_gold_title": "Weekly Gold",
+    "weekly_gold_desc": "7 days with at least 2h studied this week",
+    "weekly_gold_completed_title": "Gold mission completed!",
+    "monthly_legendary_title": "Monthly Legendary",
+    "monthly_legendary_desc": "Study every day of the month (1h+) and total 80h+",
+    "monthly_legendary_completed_title": "Legendary mission completed!"
   }
 }
