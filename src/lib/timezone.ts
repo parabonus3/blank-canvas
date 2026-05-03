@@ -57,6 +57,102 @@ export function nowInTimezone(timezone: string = DEFAULT_TIMEZONE): Date {
 }
 
 /**
+ * Returns the timezone offset (in minutes) for a given UTC instant in the given IANA timezone.
+ * Positive when timezone is ahead of UTC.
+ */
+function getTimezoneOffsetMinutes(date: Date, timezone: string): number {
+  const tzDate = toTimezone(date, timezone); // fake-local representation
+  // tzDate.getTime() is interpreted as local browser time; difference vs real UTC instant gives offset
+  const utcAsLocal = new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+  return Math.round((tzDate.getTime() - utcAsLocal.getTime()) / 60000);
+}
+
+/**
+ * Build a real UTC Date from Y/M/D/h/m/s expressed in the given IANA timezone.
+ */
+function utcFromTzWallClock(
+  year: number,
+  month0: number,
+  day: number,
+  hour: number,
+  minute: number,
+  second: number,
+  timezone: string
+): Date {
+  // First guess: treat wall-clock as UTC, then adjust by tz offset at that approximate instant
+  const guess = new Date(Date.UTC(year, month0, day, hour, minute, second));
+  const offsetMin = getTimezoneOffsetMinutes(guess, timezone);
+  return new Date(guess.getTime() - offsetMin * 60000);
+}
+
+/**
+ * Returns the UTC instant that corresponds to 00:00:00 of the given date, in the user's timezone.
+ */
+export function startOfDayInTz(date: Date | string, timezone: string = DEFAULT_TIMEZONE): Date {
+  const local = toTimezone(date, timezone);
+  return utcFromTzWallClock(
+    local.getFullYear(),
+    local.getMonth(),
+    local.getDate(),
+    0, 0, 0,
+    timezone
+  );
+}
+
+/**
+ * Returns the UTC instant for 23:59:59.999 of the given date, in the user's timezone.
+ */
+export function endOfDayInTz(date: Date | string, timezone: string = DEFAULT_TIMEZONE): Date {
+  const local = toTimezone(date, timezone);
+  const start = utcFromTzWallClock(
+    local.getFullYear(),
+    local.getMonth(),
+    local.getDate() + 1,
+    0, 0, 0,
+    timezone
+  );
+  return new Date(start.getTime() - 1);
+}
+
+/**
+ * Returns the UTC instant that corresponds to the start of the week (Monday 00:00) in the user's timezone.
+ */
+export function startOfWeekInTz(date: Date | string, timezone: string = DEFAULT_TIMEZONE): Date {
+  const local = toTimezone(date, timezone);
+  // local.getDay(): 0=Sun..6=Sat. We want Monday as start of week.
+  const dayIdx = local.getDay();
+  const diff = dayIdx === 0 ? 6 : dayIdx - 1;
+  return utcFromTzWallClock(
+    local.getFullYear(),
+    local.getMonth(),
+    local.getDate() - diff,
+    0, 0, 0,
+    timezone
+  );
+}
+
+/**
+ * Returns the UTC instant for the first day of the month at 00:00 in the user's timezone.
+ */
+export function startOfMonthInTz(date: Date | string, timezone: string = DEFAULT_TIMEZONE): Date {
+  const local = toTimezone(date, timezone);
+  return utcFromTzWallClock(
+    local.getFullYear(),
+    local.getMonth(),
+    1,
+    0, 0, 0,
+    timezone
+  );
+}
+
+/**
  * Get all available IANA timezones grouped by region.
  */
 export function getGroupedTimezones(): Record<string, string[]> {
