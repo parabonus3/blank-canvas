@@ -10,13 +10,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { useTimeEntries } from "@/hooks/useTimeEntries";
 import { useProjects, useCategories } from "@/hooks/useProjects";
 import { useGoalsWithProgress } from "@/hooks/useGoals";
-import { startOfDay, endOfDay, startOfWeek, startOfMonth } from "date-fns";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Clock, Target, TrendingUp, Trophy, Timer, Filter, CalendarIcon, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { exportDashboardToPDF } from "@/lib/pdfExport";
 import { toast } from "sonner";
 import { useTimezone } from "@/hooks/useTimezone";
+import { startOfDayInTz, endOfDayInTz, startOfWeekInTz, startOfMonthInTz } from "@/lib/timezone";
 
 function formatDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600);
