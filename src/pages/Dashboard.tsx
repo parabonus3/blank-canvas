@@ -26,7 +26,7 @@ function formatDuration(seconds: number): string {
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { formatInTz, locale: dateLocale, toTz } = useTimezone();
+  const { formatInTz, locale: dateLocale, timezone } = useTimezone();
   const today = new Date();
   const [isExporting, setIsExporting] = useState(false);
   const [filter, setFilter] = useState<"all" | "normal" | "pomodoro">("all");
