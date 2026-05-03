@@ -123,11 +123,18 @@ export function InactivityCheckModal({ isRunning, isPaused, startTime, onPause, 
       }
     }, remaining + 100);
 
+    // Fallback: setInterval curto resiste melhor a throttling do browser quando a aba volta ao foreground.
+    // Garante que mesmo se o setTimeout for suspenso por horas em background, ao retornar a aba o check dispara em < 30s.
+    const intervalId = window.setInterval(() => {
+      checkInactivity();
+    }, 30000);
+
     return () => {
       if (scheduledTimeoutRef.current) {
         clearTimeout(scheduledTimeoutRef.current);
         scheduledTimeoutRef.current = null;
       }
+      clearInterval(intervalId);
     };
   }, [isRunning, isPaused, showModal, startTime]);
 
