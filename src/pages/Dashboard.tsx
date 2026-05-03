@@ -10,13 +10,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { useTimeEntries } from "@/hooks/useTimeEntries";
 import { useProjects, useCategories } from "@/hooks/useProjects";
 import { useGoalsWithProgress } from "@/hooks/useGoals";
-import { startOfDay, endOfDay, startOfWeek, startOfMonth } from "date-fns";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Clock, Target, TrendingUp, Trophy, Timer, Filter, CalendarIcon, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { exportDashboardToPDF } from "@/lib/pdfExport";
 import { toast } from "sonner";
 import { useTimezone } from "@/hooks/useTimezone";
+import { startOfDayInTz, endOfDayInTz, startOfWeekInTz, startOfMonthInTz } from "@/lib/timezone";
 
 function formatDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -26,7 +26,7 @@ function formatDuration(seconds: number): string {
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { formatInTz, locale: dateLocale, toTz } = useTimezone();
+  const { formatInTz, locale: dateLocale, timezone } = useTimezone();
   const today = new Date();
   const [isExporting, setIsExporting] = useState(false);
   const [filter, setFilter] = useState<"all" | "normal" | "pomodoro">("all");
@@ -54,20 +54,27 @@ export default function Dashboard() {
     return true;
   }) || [];
 
+  // Cortes de período no fuso horário do perfil (consistente com Conquistas/Streak)
+  const todayStartUtc = startOfDayInTz(today, timezone);
+  const weekStartUtc = startOfWeekInTz(today, timezone);
+  const monthStartUtc = startOfMonthInTz(today, timezone);
+
   // Filtrar entries por período selecionado
   const getEntriesByDateRange = () => {
     switch (dateRange) {
       case "today":
-        return filteredEntries.filter(e => new Date(e.start_time) >= startOfDay(today));
+        return filteredEntries.filter(e => new Date(e.start_time) >= todayStartUtc);
       case "week":
-        return filteredEntries.filter(e => new Date(e.start_time) >= startOfWeek(today, { weekStartsOn: 1 }));
+        return filteredEntries.filter(e => new Date(e.start_time) >= weekStartUtc);
       case "month":
-        return filteredEntries.filter(e => new Date(e.start_time) >= startOfMonth(today));
+        return filteredEntries.filter(e => new Date(e.start_time) >= monthStartUtc);
       case "custom":
         if (customStartDate && customEndDate) {
+          const startUtc = startOfDayInTz(customStartDate, timezone);
+          const endUtc = endOfDayInTz(customEndDate, timezone);
           return filteredEntries.filter(e => {
             const date = new Date(e.start_time);
-            return date >= startOfDay(customStartDate) && date <= endOfDay(customEndDate);
+            return date >= startUtc && date <= endUtc;
           });
         }
         return filteredEntries;
@@ -79,9 +86,9 @@ export default function Dashboard() {
   const rangeEntries = getEntriesByDateRange();
   const rangeTotal = rangeEntries.reduce((sum, e) => sum + (e.duration || 0), 0);
 
-  const todayEntries = filteredEntries.filter(e => new Date(e.start_time) >= startOfDay(today));
-  const weekEntries = filteredEntries.filter(e => new Date(e.start_time) >= startOfWeek(today, { weekStartsOn: 1 }));
-  const monthEntries = filteredEntries.filter(e => new Date(e.start_time) >= startOfMonth(today));
+  const todayEntries = filteredEntries.filter(e => new Date(e.start_time) >= todayStartUtc);
+  const weekEntries = filteredEntries.filter(e => new Date(e.start_time) >= weekStartUtc);
+  const monthEntries = filteredEntries.filter(e => new Date(e.start_time) >= monthStartUtc);
 
   const todayTotal = todayEntries.reduce((sum, e) => sum + (e.duration || 0), 0);
   const weekTotal = weekEntries.reduce((sum, e) => sum + (e.duration || 0), 0);
@@ -89,8 +96,8 @@ export default function Dashboard() {
 
   // Pomodoro specific stats (also respecting category filter and date range)
   const pomodoroEntries = rangeEntries.filter(e => e.is_pomodoro && e.pomodoro_type === 'work');
-  const todayPomodoros = pomodoroEntries.filter(e => new Date(e.start_time) >= startOfDay(today));
-  const weekPomodoros = pomodoroEntries.filter(e => new Date(e.start_time) >= startOfWeek(today, { weekStartsOn: 1 }));
+  const todayPomodoros = pomodoroEntries.filter(e => new Date(e.start_time) >= todayStartUtc);
+  const weekPomodoros = pomodoroEntries.filter(e => new Date(e.start_time) >= weekStartUtc);
 
   // Pie chart data - usando rangeEntries para respeitar filtro de período
   const projectTotals = projects?.map(project => {
