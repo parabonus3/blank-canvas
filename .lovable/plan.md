@@ -1,114 +1,76 @@
-## Objetivo
+## Diagnóstico
 
-1. Corrigir os problemas de responsividade da página `/achievements` (especialmente Calendário de Consistência e Progresso Mensal cortados no mobile 390px).
-2. Adicionar um sistema de **gamificação de defensivas** (streak freezes) por metas — inspirado no Duolingo, mas calibrado para não ficar fácil demais.
+Confirmei no banco. O usuário "Anônimo" (Felipe — `a5ff890f...`) tem **uma única time_entry** com:
 
----
+- `start_time`: 27/04 16:27
+- `end_time`: 29/04 22:20
+- `duration`: **53.88h** (193986s)
+- `paused_seconds`: **3** (zero pausa real)
+- wall time = duration → ou seja, o timer correu ininterrupto por 2 dias e 6 horas e foi finalizado normalmente, sem o modal de inatividade nunca ter aparecido / cortado o tempo.
 
-## Parte 1 — Correções de responsividade
+### Causa raiz (bug no `InactivityCheckModal`)
 
-### Diagnóstico
+O modal de inatividade depende de **3 mecanismos do navegador, todos falíveis**:
 
-Olhando as screenshots em viewport 390px e o código atual:
+1. **`setTimeout` agendado** para daqui a 2h (`linha 113`). Quando a aba fica em background por horas, browsers mobile e desktop **suspendem timers** (Chrome congela após ~5min em background, iOS Safari mata após bloqueio de tela). O timeout simplesmente **nunca dispara**.
+2. **`visibilitychange` / `focus`** (`linha 137`). Só roda se o usuário **voltar à aba**. Se ele fechou a aba/dormiu o computador/saiu do navegador sem voltar até o stop, nunca executa.
+3. **Sem heartbeat de servidor.** Toda a contagem de "inatividade" vive em `localStorage`. Não há nada server-side cortando sessão zumbi.
 
-- **`ConsistencyCalendar.tsx`** — o header do card tem ícone + título "Calendário de Consistência" + 2 botões icon (h-10 w-10) + um span com `min-w-[90px]` para "maio 2026". Esse `min-w` fixo somado aos botões força o card a ficar mais largo que a viewport, e como o calendário é `grid-cols-7`, as colunas Sex/Sáb são empurradas para fora (visível na screenshot: só Dom-Qui aparecem completos). Há também `overflow-x-hidden` no `<main>`, mas o conteúdo interno fica clipado em vez de re-fluir.
-- **`Achievements.tsx` / Progresso Mensal** — o `BarChart` está dentro de `<CardContent className="h-[300px]">` com `ResponsiveContainer width="100%"`. Mas `ReferenceLine` com `label={{ position: 'right' }}` reserva espaço, e o XAxis renderiza 12 meses lado a lado — com fonte 12 e padding default, isso satura em 350-360px e os meses Out/Nov/Dez ficam cortados (visível na screenshot: só Jan-Set). O problema também é o card do gráfico estar dentro de `grid lg:grid-cols-2` que no mobile vira coluna única, mas o gráfico interno não encolhe direito.
-- **Outros pontos menores**: header da página tem `Level X/366` + `XX% complete` que estouram em telas pequenas; cards de stats ok; árvore ok.
+Resultado: usuário começou timer, fechou a aba/saiu, e dias depois voltou e clicou Stop. O `stopTimer` calculou `end_time - start_time - paused_seconds` = 53.88h e gravou no banco como tempo legítimo.
 
-### Mudanças
-
-**`src/components/achievements/ConsistencyCalendar.tsx`**
-- Remover `min-w-[90px]` do mês — usar apenas `text-xs sm:text-sm whitespace-nowrap`.
-- Reduzir `Button size="icon"` para `size="sm" className="h-7 w-7"` no mobile.
-- Em mobile, mover o seletor de mês para uma linha abaixo do título (`flex-col sm:flex-row`) para liberar largura total ao calendário.
-- Reduzir `gap-1` para `gap-0.5` no grid, e células de calendário com `text-[10px] sm:text-xs`.
-- Garantir `w-full` no `<Card>` e remover qualquer min-width implícito.
-- Encurtar os nomes dos dias no mobile (ex.: "D, S, T, Q, Q, S, S" em xs, "Dom, Seg…" em sm+).
-
-**Card "Progresso Mensal" em `src/pages/Achievements.tsx`**
-- Reduzir altura no mobile: `h-[220px] sm:h-[300px]`.
-- Ajustar `XAxis` com `interval={0}`, `fontSize={10}`, e em mobile usar abreviação de 1 letra (`tickFormatter`) para caber 12 meses.
-- Remover o `label` do `ReferenceLine` no mobile (mantém só a linha tracejada) — passa para legenda textual abaixo do gráfico.
-- Adicionar `padding` esquerdo/direito mínimos no `BarChart` (`margin={{ left: -10, right: 4, top: 4, bottom: 0 }}`) para o YAxis encolher.
-
-**`src/pages/Achievements.tsx` (header e topo)**
-- Badges `Level X/366` e `XX% complete`: já tem `text-sm sm:text-lg`, mas adicionar `whitespace-nowrap` e quebrar para linha própria via `flex-wrap`.
-- Reduzir `p-4` da página principal para `p-2 sm:p-4`.
-
-**`src/components/achievements/UnlockedAchievements.tsx`**
-- Cards de milestone em mobile: `grid-cols-1 sm:grid-cols-2 md:grid-cols-3` (atualmente `grid-cols-2`, fica apertado com texto + check).
-
-**`src/components/achievements/TreePhaseIndicator.tsx`** — verificar se há overflow; se houver, aplicar `overflow-x-auto scrollbar-thin` horizontal scroll para fases.
-
-### Como validar
-- Abrir `/achievements` em viewport 390x844 e confirmar:
-  - Nenhum scroll horizontal na página.
-  - Calendário mostra todas as 7 colunas (Dom-Sáb) inteiras.
-  - Gráfico mensal mostra todos os 12 meses (Jan-Dez).
-  - Header não estoura.
+Adicionalmente: **não existe limite máximo de duração** ao salvar a entry, nem no client (`useTimeEntries.stopTimer`) nem no banco. Qualquer valor passa.
 
 ---
 
-## Parte 2 — Gamificação: defensivas por metas
+## Plano de correção
 
-### Sua ideia + refinamentos
+### 1. Limpeza dos dados (migration)
 
-Sua proposta: "2h por dia todos os dias da semana → 1 defensiva". Isso daria ~4-5/mês — você mesmo notou que pode ficar fácil. Aqui está uma versão mais equilibrada e estimulante:
+Truncar a entry inflada. Política: cap de 12h por sessão contínua sem confirmação. Vou setar `duration` = 12h (43200s) e ajustar `end_time` para `start_time + 12h`, mantendo a entry para o usuário ver, mas com valor razoável. Adicionar `notes` indicando ajuste automático.
 
-### Sistema proposto: "Missões de Defensiva"
+```sql
+UPDATE time_entries
+SET duration = 43200,
+    end_time = start_time + interval '12 hours',
+    notes = coalesce(notes,'') || ' [auto-ajustada: sessão sem verificação de presença]'
+WHERE id = 'c1ad41a4-23e0-4563-a851-b5d7b61ffd3d';
+```
 
-Em vez de **uma** regra única, criar **3 níveis de missão** que coexistem. Cada missão ganha defensivas, mas ficam mais difíceis. Total esperado: **2-3 defensivas/mês para usuário comprometido, 4-5 para usuário excepcional**.
+### 2. Defesa em profundidade — server-side cap (migration)
 
-| Missão | Critério | Recompensa | Frequência esperada |
-|---|---|---|---|
-| **Semanal Bronze** | 5 dias com ≥1h em uma semana (Seg-Dom) | +1 defensiva | ~3-4x/mês para usuário ativo |
-| **Semanal Ouro** | 7 dias com ≥2h na mesma semana | +1 defensiva extra (total +2 nessa semana) | ~1-2x/mês para usuário dedicado |
-| **Mensal Lendária** | Mês inteiro com ≥1h todos os dias E total ≥80h | +2 defensivas + badge | raro, ~1x/trimestre |
+Trigger `BEFORE INSERT OR UPDATE` em `time_entries` que rejeita / clampa qualquer `duration` líquido > **12h** (limite hard configurável). Razão: mesmo se o client falhar, o banco protege ranking e métricas.
 
-**Limite global**: máximo de **6 defensivas ganhas por mês** via missões (independente do plano), para não inflacionar e manter valor.
+```text
+duracao_liquida = end_time - start_time - paused_seconds
+if duracao_liquida > 12h: clampa para 12h e ajusta end_time
+```
 
-### Por que essa estrutura?
+### 3. Correções no client
 
-1. **Bronze é alcançável** → mantém engajamento de quem não consegue diariamente.
-2. **Ouro recompensa consistência real** (2h × 7 dias = 14h/semana, exigente mas factível).
-3. **Lendária** dá objetivo de longo prazo e feedback de orgulho.
-4. **Defensivas têm valor**: usuário não fica "rico" delas, então ainda há razão para comprar packs / assinar Premium.
-5. Funciona como o "loop de retenção" do Duolingo — sempre tem uma missão visível em progresso.
+**`src/components/InactivityCheckModal.tsx`**
+- Adicionar **checagem por `setInterval` curto** (a cada 30s) além do `setTimeout`. `setInterval` curto é menos suspendido em foreground e, ao voltar do background, dispara em catch-up.
+- No `visibilitychange` ao voltar, **se o gap for > 2h, descontar TODO o gap** como tempo fantasma (hoje só desconta o excedente além de 2h — lógica correta, mas só roda se o usuário voltar à aba). Já está OK aqui — o problema é não rodar nunca.
+- Adicionar listener no `beforeunload` / `pagehide` para **gravar timestamp de "última atividade visível"** no servidor (`time_entries.updated_at` via heartbeat).
 
-### Implementação
+**`src/hooks/useTimeEntries.ts` (stopTimer)**
+- Antes de gravar, calcular `duration` final e **clampar a 12h** se exceder, registrando em `notes`. Mostrar toast avisando o usuário.
+- Se `now - last_heartbeat > 2h` ao parar, descontar o gap.
 
-**Banco (Lovable Cloud / Supabase)**
-- Nova tabela `freeze_missions`:
-  - `id`, `user_id`, `mission_type` (`weekly_bronze` | `weekly_gold` | `monthly_legendary`), `period_key` (ex.: `2026-W18` ou `2026-05`), `completed_at`, `freezes_awarded`, `created_at`.
-  - Unique `(user_id, mission_type, period_key)` — impede dupla recompensa.
-- RPC `check_and_grant_freeze_missions()`:
-  - Calcula horas/dia da semana atual e do mês atual a partir de `time_entries`.
-  - Para cada missão elegível ainda não premiada na período atual, insere registro e incrementa `purchased_streak_freezes.balance` (ou cria coluna separada `earned_balance` para distinguir).
-  - Respeita teto mensal de 6.
-  - Retorna `[{ mission_type, freezes_granted }]`.
-- Novo hook `useFreezeMissions` que chama o RPC quando o usuário entra na página `/achievements` ou completa uma sessão de timer.
+**Heartbeat periódico (novo)**
+- A cada 60s enquanto `isRunning && !isPaused && !document.hidden`, dar UPDATE em `time_entries.updated_at`. Isso vira a "presença real" server-side.
+- Ao dar Stop, se `(end_time - last_updated_at) > 5min`, considerar tempo fantasma e descontar.
 
-**UI — novo componente `FreezeMissionsCard`** dentro de `Achievements.tsx`, perto da seção "Streak Freezes":
-- Lista as 3 missões com:
-  - Ícone, nome, descrição curta.
-  - Barra de progresso (ex.: "4/5 dias com 1h" para bronze).
-  - Estado: em progresso / concluída esta semana / bloqueada.
-- Toast + som (`playSuccess`) quando uma missão é concluída.
+### 4. Recompute de rankings/conquistas
 
-**i18n**: adicionar chaves em todos os locales (`pt-BR`, `en-US`, `es-ES`, etc.) — `freeze_missions.bronze_title`, `freeze_missions.gold_title`, etc.
-
-### Como validar
-- Forçar manualmente (via SQL) horas em `time_entries` para um usuário test e verificar que o RPC concede defensivas corretas e respeita o teto mensal.
-- Confirmar que o card de missões mostra progresso ao vivo.
+Após a UPDATE da entry, qualquer cache derivado (room rankings, user_achievements totals) é recomputado via RPCs já existentes na próxima query — não exige ação manual.
 
 ---
 
-## Sequência de execução
+## Detalhes técnicos
 
-1. Correções de responsividade (rápido, sem risco).
-2. Migração do banco + RPC para missões.
-3. Hook + componente UI das missões.
-4. i18n.
-5. QA visual em 390px e em desktop.
+- **Arquivos editados**: `src/components/InactivityCheckModal.tsx`, `src/hooks/useTimeEntries.ts`, `src/pages/Index.tsx` (registrar heartbeat).
+- **Migration nova**: trigger `enforce_time_entry_max_duration()` + UPDATE pontual da entry corrompida.
+- **Limite escolhido**: 12h por sessão contínua (cobre maratonas reais como concurso/dia de revisão extrema, mas barra zumbis de dias).
+- **Sem breaking change**: usuários com sessões ≤12h não são afetados.
 
-Nada quebra os fluxos atuais de defensivas (mensal por plano + compra avulsa) — o sistema novo é **aditivo**.
+Após aprovação eu implemento tudo em uma rodada.
