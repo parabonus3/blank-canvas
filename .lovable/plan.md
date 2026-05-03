@@ -1,76 +1,70 @@
-## Diagnóstico
+## Opção C — Corrigir Dashboard (timezone) + Ajustar lógica de Streak (freeze)
 
-Confirmei no banco. O usuário "Anônimo" (Felipe — `a5ff890f...`) tem **uma única time_entry** com:
+Dois problemas serão resolvidos juntos:
 
-- `start_time`: 27/04 16:27
-- `end_time`: 29/04 22:20
-- `duration`: **53.88h** (193986s)
-- `paused_seconds`: **3** (zero pausa real)
-- wall time = duration → ou seja, o timer correu ininterrupto por 2 dias e 6 horas e foi finalizado normalmente, sem o modal de inatividade nunca ter aparecido / cortado o tempo.
+1. **Dashboard** usa o horário do navegador (`new Date()`, `startOfDay`, `startOfWeek`, `startOfMonth`) para calcular Hoje / Esta semana / Este mês. Isso diverge das telas de Conquistas e Streak, que usam o `timezone` do perfil. Resultado: cards mostrando totais diferentes para o mesmo usuário dependendo de onde estão.
 
-### Causa raiz (bug no `InactivityCheckModal`)
-
-O modal de inatividade depende de **3 mecanismos do navegador, todos falíveis**:
-
-1. **`setTimeout` agendado** para daqui a 2h (`linha 113`). Quando a aba fica em background por horas, browsers mobile e desktop **suspendem timers** (Chrome congela após ~5min em background, iOS Safari mata após bloqueio de tela). O timeout simplesmente **nunca dispara**.
-2. **`visibilitychange` / `focus`** (`linha 137`). Só roda se o usuário **voltar à aba**. Se ele fechou a aba/dormiu o computador/saiu do navegador sem voltar até o stop, nunca executa.
-3. **Sem heartbeat de servidor.** Toda a contagem de "inatividade" vive em `localStorage`. Não há nada server-side cortando sessão zumbi.
-
-Resultado: usuário começou timer, fechou a aba/saiu, e dias depois voltou e clicou Stop. O `stopTimer` calculou `end_time - start_time - paused_seconds` = 53.88h e gravou no banco como tempo legítimo.
-
-Adicionalmente: **não existe limite máximo de duração** ao salvar a entry, nem no client (`useTimeEntries.stopTimer`) nem no banco. Qualquer valor passa.
+2. **Streak** considera um dia coberto por *streak freeze* como dia de streak. Hoje, um usuário sem **nenhum** `time_entry` pode aparecer com streak = 1 só porque um freeze foi consumido automaticamente. Streak deve **preservar** uma sequência existente, nunca **iniciar** uma do zero.
 
 ---
 
-## Plano de correção
+### Parte 1 — Dashboard respeitando o timezone do perfil
 
-### 1. Limpeza dos dados (migration)
+Arquivo: `src/pages/Dashboard.tsx`
 
-Truncar a entry inflada. Política: cap de 12h por sessão contínua sem confirmação. Vou setar `duration` = 12h (43200s) e ajustar `end_time` para `start_time + 12h`, mantendo a entry para o usuário ver, mas com valor razoável. Adicionar `notes` indicando ajuste automático.
+- Substituir o uso direto de `new Date()` / `startOfDay` / `startOfWeek` / `startOfMonth` pelo timezone do perfil via `useTimezone()` (já importado).
+- Calcular os limites de período convertendo "agora" para o timezone do usuário e gerando os cortes "início do dia/semana/mês" naquele timezone, depois reconvertendo para UTC para comparar com `start_time` (que é UTC no banco).
+- Aplicar essa lógica em:
+  - `todayEntries`, `weekEntries`, `monthEntries` (cards Hoje / Semana / Mês)
+  - `getEntriesByDateRange()` (filtro de período "today/week/month/custom")
+  - `todayPomodoros`, `weekPomodoros`
+- Adicionar um helper local (ou em `src/lib/timezone.ts`) `startOfDayInTz(date, tz)` / `startOfWeekInTz` / `startOfMonthInTz` que retorna um `Date` UTC representando o início do dia/semana/mês **no timezone do usuário**.
+- Custom range (`customStartDate`/`customEndDate`) também passa a interpretar as datas selecionadas como dia inteiro no timezone do perfil.
 
-```sql
-UPDATE time_entries
-SET duration = 43200,
-    end_time = start_time + interval '12 hours',
-    notes = coalesce(notes,'') || ' [auto-ajustada: sessão sem verificação de presença]'
-WHERE id = 'c1ad41a4-23e0-4563-a851-b5d7b61ffd3d';
-```
+Resultado: Hoje/Semana/Mês do Dashboard ficam consistentes com Conquistas, Streak e RPCs do servidor.
 
-### 2. Defesa em profundidade — server-side cap (migration)
+### Parte 2 — Streak não pode "nascer" de um freeze
 
-Trigger `BEFORE INSERT OR UPDATE` em `time_entries` que rejeita / clampa qualquer `duration` líquido > **12h** (limite hard configurável). Razão: mesmo se o client falhar, o banco protege ranking e métricas.
+Migration nova alterando `public.get_member_room_streak(_user_id uuid)`.
+
+Nova regra:
 
 ```text
-duracao_liquida = end_time - start_time - paused_seconds
-if duracao_liquida > 12h: clampa para 12h e ajusta end_time
+percorre dias de hoje para trás:
+  has_activity = existe time_entry concluído nesse dia
+  has_freeze   = freeze auto-usado nesse dia
+
+  se has_activity -> conta dia, segue
+  senão se has_freeze:
+        se streak atual já > 0  -> conta dia (preserva), segue
+        senão                   -> para (freeze não pode INICIAR)
+  senão -> para
 ```
 
-### 3. Correções no client
+Ou seja: um freeze só conta se já existir pelo menos um dia anterior com atividade real na sequência.
 
-**`src/components/InactivityCheckModal.tsx`**
-- Adicionar **checagem por `setInterval` curto** (a cada 30s) além do `setTimeout`. `setInterval` curto é menos suspendido em foreground e, ao voltar do background, dispara em catch-up.
-- No `visibilitychange` ao voltar, **se o gap for > 2h, descontar TODO o gap** como tempo fantasma (hoje só desconta o excedente além de 2h — lógica correta, mas só roda se o usuário voltar à aba). Já está OK aqui — o problema é não rodar nunca.
-- Adicionar listener no `beforeunload` / `pagehide` para **gravar timestamp de "última atividade visível"** no servidor (`time_entries.updated_at` via heartbeat).
+Também é avaliado o caso "hoje": se hoje não tem atividade nem freeze, o loop pula hoje e começa em ontem (comportamento atual já é assim — manter).
 
-**`src/hooks/useTimeEntries.ts` (stopTimer)**
-- Antes de gravar, calcular `duration` final e **clampar a 12h** se exceder, registrando em `notes`. Mostrar toast avisando o usuário.
-- Se `now - last_heartbeat > 2h` ao parar, descontar o gap.
+### Parte 3 — Limpeza dos dados afetados
 
-**Heartbeat periódico (novo)**
-- A cada 60s enquanto `isRunning && !isPaused && !document.hidden`, dar UPDATE em `time_entries.updated_at`. Isso vira a "presença real" server-side.
-- Ao dar Stop, se `(end_time - last_updated_at) > 5min`, considerar tempo fantasma e descontar.
+Após aplicar a função, qualquer "ghost streak" (usuários cujo streak atual só existe por causa de freezes sem nenhuma atividade real) automaticamente passa a retornar 0 — sem `UPDATE` necessário, já que a função é calculada on-the-fly.
 
-### 4. Recompute de rankings/conquistas
+Para `profiles.last_known_streak` (cache usado para detectar perdas de streak), recalcular para todos os usuários e atualizar para o valor real retornado pela nova função, evitando que o sistema dispare alertas falsos de "streak perdido".
 
-Após a UPDATE da entry, qualquer cache derivado (room rankings, user_achievements totals) é recomputado via RPCs já existentes na próxima query — não exige ação manual.
+### Detalhes técnicos
 
----
+**Arquivos a alterar:**
+- `src/pages/Dashboard.tsx` — passar a usar timezone do perfil em todos os cortes de período
+- `src/lib/timezone.ts` — adicionar helpers `startOfDayInTz`, `startOfWeekInTz`, `startOfMonthInTz`
+- Nova migration SQL:
+  - `CREATE OR REPLACE FUNCTION public.get_member_room_streak(...)` com a regra "freeze não inicia streak"
+  - `UPDATE public.profiles SET last_known_streak = public.get_member_room_streak(user_id)` para recalcular o cache
 
-## Detalhes técnicos
+**Sem mudanças em:** `useStreakFreeze`, `SidebarStreakWidget`, RPCs de salas (que usam outras funções), schema do banco.
 
-- **Arquivos editados**: `src/components/InactivityCheckModal.tsx`, `src/hooks/useTimeEntries.ts`, `src/pages/Index.tsx` (registrar heartbeat).
-- **Migration nova**: trigger `enforce_time_entry_max_duration()` + UPDATE pontual da entry corrompida.
-- **Limite escolhido**: 12h por sessão contínua (cobre maratonas reais como concurso/dia de revisão extrema, mas barra zumbis de dias).
-- **Sem breaking change**: usuários com sessões ≤12h não são afetados.
+**Compatibilidade:** A função mantém a mesma assinatura `(uuid) -> integer`, então nenhum chamador precisa ser ajustado.
 
-Após aprovação eu implemento tudo em uma rodada.
+### Validação após aplicar
+
+- Conferir no banco: usuários com streak >0 que **não** possuem nenhum `time_entry` devem retornar 0 pela função.
+- Conferir Dashboard: para um usuário em fuso diferente de São Paulo, "Hoje" deve bater com o dia local dele, não com o do navegador.
