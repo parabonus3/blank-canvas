@@ -84,9 +84,16 @@ export function AppSidebar() {
 
   return (
     <ShadcnSidebar collapsible="icon" className="border-r border-border/50">
-      <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
-          <img src={logo} alt="TimeZoni" className="h-10 w-10 shrink-0" />
+      <SidebarHeader className={cn(isCollapsed ? "p-2" : "p-4")}>
+        <div className={cn("flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
+          <img
+            src={logo}
+            alt="TimeZoni"
+            className={cn(
+              "shrink-0 object-contain",
+              isCollapsed ? "h-8 w-8" : "h-10 w-10"
+            )}
+          />
           {!isCollapsed && (
             <span className="font-bold text-lg tracking-tight">TimeZoni</span>
           )}
