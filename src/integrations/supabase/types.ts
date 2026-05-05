@@ -46,6 +46,109 @@ export type Database = {
           },
         ]
       }
+      annual_goal_progress: {
+        Row: {
+          goal_id: string
+          id: string
+          logged_at: string
+          note: string | null
+          user_id: string
+          value: number
+        }
+        Insert: {
+          goal_id: string
+          id?: string
+          logged_at?: string
+          note?: string | null
+          user_id: string
+          value?: number
+        }
+        Update: {
+          goal_id?: string
+          id?: string
+          logged_at?: string
+          note?: string | null
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "annual_goal_progress_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "annual_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      annual_goals: {
+        Row: {
+          archived: boolean
+          category_id: string | null
+          completed_at: string | null
+          created_at: string
+          current_value: number
+          description: string | null
+          frequency_period: string | null
+          goal_type: string
+          id: string
+          is_completed: boolean
+          position: number
+          target_value: number
+          title: string
+          unit: string | null
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          archived?: boolean
+          category_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          current_value?: number
+          description?: string | null
+          frequency_period?: string | null
+          goal_type: string
+          id?: string
+          is_completed?: boolean
+          position?: number
+          target_value?: number
+          title: string
+          unit?: string | null
+          updated_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          archived?: boolean
+          category_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          current_value?: number
+          description?: string | null
+          frequency_period?: string | null
+          goal_type?: string
+          id?: string
+          is_completed?: boolean
+          position?: number
+          target_value?: number
+          title?: string
+          unit?: string | null
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "annual_goals_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "life_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           color: string
@@ -359,6 +462,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      life_categories: {
+        Row: {
+          color: string
+          created_at: string
+          icon: string
+          id: string
+          name: string
+          position: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          name: string
+          position?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          name?: string
+          position?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       mind_maps: {
         Row: {
@@ -1424,6 +1560,10 @@ export type Database = {
         Args: { _amount: number; _user_id: string }
         Returns: undefined
       }
+      duplicate_goals_to_year: {
+        Args: { _from: number; _to: number }
+        Returns: number
+      }
       find_room_by_invite_code: {
         Args: { _code: string }
         Returns: {
@@ -1442,6 +1582,15 @@ export type Database = {
         }[]
       }
       generate_friend_code: { Args: never; Returns: string }
+      get_annual_goals_stats: {
+        Args: { _year: number }
+        Returns: {
+          categories_count: number
+          completed_goals: number
+          overall_progress: number
+          total_goals: number
+        }[]
+      }
       get_freeze_missions_progress: {
         Args: never
         Returns: {
@@ -1473,6 +1622,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_habit_period_count: { Args: { _goal_id: string }; Returns: number }
       get_member_best_session: { Args: { _user_id: string }; Returns: number }
       get_member_current_role: { Args: { _member_id: string }; Returns: string }
       get_member_profile_stats: {

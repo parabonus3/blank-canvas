@@ -1,372 +1,268 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { usePagination } from "@/hooks/usePagination";
-import { PaginationControls } from "@/components/PaginationControls";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { useGoalsWithProgress, useCreateGoal, useDeleteGoal } from "@/hooks/useGoals";
-import { useGoalHistory, useAddGoalToHistory, useGoalHistoryStats } from "@/hooks/useGoalHistory";
-import { useProjects } from "@/hooks/useProjects";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GridNav } from "@/components/ui/grid-nav";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Target, Trophy, CheckCircle2, Clock, ListChecks } from "lucide-react";
-import { format, addDays, startOfWeek, endOfWeek } from "date-fns";
-import { useTimezone } from "@/hooks/useTimezone";
-import { cn } from "@/lib/utils";
-import { GrowthTree } from "@/components/GrowthTree";
-import { useAnnualProgress } from "@/hooks/useAchievements";
-import { ChecklistList } from "@/components/checklist/ChecklistList";
-import { useChecklistHistory } from "@/hooks/useChecklists";
-import { usePagination as useChecklistPagination } from "@/hooks/usePagination";
-import { useSubscription } from "@/contexts/SubscriptionContext";
-import { Lock } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Target, Trophy, ListChecks, Folder, CheckCircle2, Lock, MoreVertical, Trash2, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useAnnualGoals, useAnnualGoalsStats, useLifeCategories, useDeleteCategory, useDuplicateGoalsToYear } from "@/hooks/useAnnualGoals";
+import { CreateCategoryDialog } from "@/components/goals/CreateCategoryDialog";
+import { CreateGoalDialog } from "@/components/goals/CreateGoalDialog";
+import { GoalCard } from "@/components/goals/GoalCard";
+import { ChecklistList } from "@/components/checklist/ChecklistList";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import * as Icons from "lucide-react";
+
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = [CURRENT_YEAR - 1, CURRENT_YEAR, CURRENT_YEAR + 1];
+
+function CategoryIcon({ name, className }: { name: string; className?: string }) {
+  const key = name.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join("");
+  const C = (Icons as any)[key] || Icons.Target;
+  return <C className={className} />;
+}
 
 export default function Goals() {
   const { t } = useTranslation();
   const { hasFeature } = useSubscription();
-  const { formatInTz } = useTimezone();
-  const { data: goals, isLoading } = useGoalsWithProgress();
-  const { data: projects } = useProjects();
-  const { data: goalHistory, isLoading: historyLoading } = useGoalHistory();
-  const createGoal = useCreateGoal();
-  const deleteGoal = useDeleteGoal();
-  const addToHistory = useAddGoalToHistory();
-  const historyStats = useGoalHistoryStats();
-  const { data: annualProgress } = useAnnualProgress();
-  const [historyProjectFilter, setHistoryProjectFilter] = useState("all");
-  const { data: checklistHistory = [], isLoading: checklistHistoryLoading } = useChecklistHistory(historyProjectFilter);
-  const checklistHistoryPagination = useChecklistPagination(checklistHistory, 12);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [projectId, setProjectId] = useState("");
-  const [targetHours, setTargetHours] = useState("1");
-  const [goalType, setGoalType] = useState<"daily" | "weekly">("daily");
-  const [activeTab, setActiveTab] = useState("active");
-  const historyPagination = usePagination(goalHistory || [], 12);
-
-  // Check for completed goals and move them to history
-  useEffect(() => {
-    if (goals) {
-      goals.forEach(goal => {
-        if (goal.status === "completed" && goal.progress >= 100) {
-          addToHistory.mutate({
-            project_id: goal.project_id,
-            goal_type: goal.goal_type,
-            target_minutes: goal.target_minutes,
-            achieved_minutes: goal.currentMinutes,
-            start_date: goal.start_date,
-            end_date: goal.end_date
-          }, {
-            onSuccess: () => {
-              deleteGoal.mutate(goal.id);
-            }
-          });
-        }
-      });
-    }
-  }, [goals]);
-
-  const handleCreate = async () => {
-    if (projectId && targetHours) {
-      const today = new Date();
-      let startDate: Date;
-      let endDate: Date;
-      
-      if (goalType === "daily") {
-        startDate = today;
-        endDate = addDays(today, 0); // Same day
-      } else {
-        startDate = startOfWeek(today, { weekStartsOn: 1 });
-        endDate = endOfWeek(today, { weekStartsOn: 1 });
-      }
-      
-      await createGoal.mutateAsync({
-        project_id: projectId,
-        target_minutes: parseInt(targetHours) * 60,
-        goal_type: goalType,
-        start_date: format(startDate, "yyyy-MM-dd"),
-        end_date: format(endDate, "yyyy-MM-dd"),
-      });
-      setDialogOpen(false);
-      setProjectId("");
-      setTargetHours("1");
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed": return "bg-primary";
-      case "on-track": return "bg-amber-500";
-      case "behind": return "bg-destructive";
-      default: return "bg-muted";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "completed": return t('goals.completed');
-      case "on-track": return t('goals.on_track');
-      case "behind": return t('goals.behind');
-      default: return "";
-    }
-  };
+  const [year, setYear] = useState(CURRENT_YEAR);
+  const [activeTab, setActiveTab] = useState("annual");
+  const { data: categories = [] } = useLifeCategories();
+  const { data: goals = [] } = useAnnualGoals(year);
+  const { data: stats } = useAnnualGoalsStats(year);
+  const deleteCategory = useDeleteCategory();
+  const duplicate = useDuplicateGoalsToYear();
 
   if (!hasFeature("goals")) {
     return (
       <MainLayout>
         <div className="flex flex-col items-center justify-center py-20 space-y-4 text-center">
           <Lock className="h-12 w-12 text-muted-foreground" />
-          <h2 className="text-2xl font-bold">{t('goals.title')}</h2>
-          <p className="text-muted-foreground max-w-md">{t('pricing.feature_locked_desc')}</p>
-          <Button asChild>
-            <Link to="/pricing">{t('rooms.upgrade_for_more')}</Link>
-          </Button>
+          <h2 className="text-2xl font-bold">{t("annual_goals.title")}</h2>
+          <p className="text-muted-foreground max-w-md">{t("pricing.feature_locked_desc")}</p>
+          <Button asChild><Link to="/pricing">{t("rooms.upgrade_for_more")}</Link></Button>
         </div>
       </MainLayout>
     );
   }
 
+  const goalsByCategory = (catId: string | null) => goals.filter((g) => g.category_id === catId);
+  const uncategorized = goalsByCategory(null);
+
+  // Category-level progress
+  const categoryProgress = (catId: string) => {
+    const list = goalsByCategory(catId);
+    if (!list.length) return 0;
+    const sum = list.reduce((acc, g) => acc + Math.min(100, (g.current_value / Math.max(1, g.target_value)) * 100), 0);
+    return sum / list.length;
+  };
+
   return (
     <MainLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">{t('goals.title')}</h1>
-            <p className="text-muted-foreground">{t('goals.subtitle')}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("annual_goals.title")} {year}</h1>
+            <p className="text-sm text-muted-foreground">{t("annual_goals.subtitle")}</p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="h-4 w-4 mr-2" />{t('goals.new_goal')}</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader><DialogTitle>{t('goals.create_goal')}</DialogTitle></DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label>{t('goals.project')}</Label>
-                  <Select value={projectId} onValueChange={setProjectId}>
-                    <SelectTrigger><SelectValue placeholder={t('timer.select_project')} /></SelectTrigger>
-                    <SelectContent>{projects?.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>{t('goals.type')}</Label>
-                  <Select value={goalType} onValueChange={(v) => setGoalType(v as "daily" | "weekly")}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="daily">{t('goals.daily')}</SelectItem>
-                      <SelectItem value="weekly">{t('goals.weekly')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>{t('goals.target_hours')}</Label>
-                  <Input type="number" min="1" value={targetHours} onChange={e => setTargetHours(e.target.value)} />
-                </div>
-                <Button onClick={handleCreate} disabled={!projectId || !targetHours}>{t('goals.create')}</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('goals.completed')}</CardTitle>
-              <Trophy className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{historyStats.totalCompleted}</div>
-              <p className="text-xs text-muted-foreground">{t('goals.history')}</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('goals.daily')}</CardTitle>
-              <Target className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{historyStats.dailyCompleted}</div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{t('goals.weekly')}</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{historyStats.weeklyCompleted}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
-            <CardContent className="p-4 flex items-center justify-center">
-              {annualProgress && (
-                <GrowthTree
-                  totalHours={annualProgress.totalHours}
-                  stage={annualProgress.stage}
-                  stageName={annualProgress.stageName}
-                  progress={annualProgress.progress}
-                  size="sm"
-                  showStats={false}
-                />
-              )}
-            </CardContent>
-          </Card>
+          <div className="flex flex-wrap items-center gap-2">
+            <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
+              <SelectTrigger className="w-[100px] h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {YEARS.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <CreateCategoryDialog
+              trigger={<Button variant="outline" size="sm"><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
+            />
+            <CreateGoalDialog
+              year={year}
+              categories={categories}
+              trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
+            />
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <GridNav
             items={[
-              { value: "active", label: t('goals.active'), icon: Target },
-              { value: "checklist", label: t('checklist.title'), icon: ListChecks },
-              { value: "history", label: t('goals.history'), icon: Trophy },
+              { value: "annual", label: t("annual_goals.tab_annual"), icon: Target },
+              { value: "checklist", label: t("checklist.title"), icon: ListChecks },
+              { value: "history", label: t("annual_goals.tab_history"), icon: Trophy },
             ]}
             value={activeTab}
             onChange={setActiveTab}
             columns="grid-cols-3"
           />
 
-          <TabsContent value="active" className="mt-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              {goals?.map(goal => (
-                <Card key={goal.id}>
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <div className="flex items-center gap-2">
-                      {goal.project?.category && <span className="w-3 h-3 rounded-full" style={{ backgroundColor: goal.project.category.color }} />}
-                      <CardTitle className="text-lg">{goal.project?.name}</CardTitle>
-                    </div>
-                    <Button variant="ghost" size="icon" onClick={() => deleteGoal.mutate(goal.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{goal.goal_type === "daily" ? t('goals.daily_goal') : t('goals.weekly_goal')}</span>
-                      <span className={cn("px-2 py-0.5 rounded-full text-xs text-white", getStatusColor(goal.status))}>{getStatusText(goal.status)}</span>
-                    </div>
-                    <Progress value={goal.progress} className="h-2" />
-                    <div className="flex justify-between text-sm">
-                      <span>{Math.floor(goal.currentMinutes / 60)}h {goal.currentMinutes % 60}m</span>
-                      <span className="text-muted-foreground">{t('goals.of')} {goal.target_minutes / 60}h</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {goals?.length === 0 && !isLoading && <p className="text-muted-foreground col-span-full text-center py-8">{t('goals.no_goals')}</p>}
+          <TabsContent value="annual" className="mt-4 space-y-6">
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Card className="p-4">
+                <div className="text-xs text-muted-foreground">{t("annual_goals.overall_progress")}</div>
+                <div className="text-2xl font-bold mt-1">{Math.round(stats?.overall_progress || 0)}%</div>
+                <Progress value={stats?.overall_progress || 0} className="h-1.5 mt-2" />
+              </Card>
+              <Card className="p-4">
+                <div className="text-xs text-muted-foreground">{t("annual_goals.goals_completed")}</div>
+                <div className="text-2xl font-bold mt-1">{stats?.completed_goals || 0}<span className="text-sm text-muted-foreground">/{stats?.total_goals || 0}</span></div>
+              </Card>
+              <Card className="p-4">
+                <div className="text-xs text-muted-foreground">{t("annual_goals.categories_count")}</div>
+                <div className="text-2xl font-bold mt-1">{stats?.categories_count || 0}</div>
+              </Card>
+              <Card className="p-4 bg-gradient-to-br from-primary/10 to-primary/5">
+                <div className="text-xs text-muted-foreground">{t("annual_goals.year")}</div>
+                <div className="text-2xl font-bold mt-1 flex items-center gap-1.5"><Sparkles className="h-5 w-5 text-primary" />{year}</div>
+              </Card>
             </div>
+
+            {/* Category progress bars */}
+            {categories.length > 0 && (
+              <Card className="p-4 space-y-3">
+                <h3 className="text-sm font-semibold">{t("annual_goals.progress_by_category")}</h3>
+                <div className="space-y-2.5">
+                  {categories.map((c) => {
+                    const pct = categoryProgress(c.id);
+                    return (
+                      <div key={c.id} className="space-y-1">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="flex items-center gap-1.5">
+                            <CategoryIcon name={c.icon} className="h-3.5 w-3.5" />
+                            <span className="font-medium">{c.name}</span>
+                            <span className="text-muted-foreground">({goalsByCategory(c.id).length})</span>
+                          </span>
+                          <span className="text-muted-foreground">{Math.round(pct)}%</span>
+                        </div>
+                        <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: c.color }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card>
+            )}
+
+            {/* Empty state */}
+            {categories.length === 0 && uncategorized.length === 0 && (
+              <Card className="p-10 text-center space-y-3">
+                <Folder className="h-10 w-10 mx-auto text-muted-foreground" />
+                <p className="text-muted-foreground">{t("annual_goals.no_categories")}</p>
+                <CreateCategoryDialog
+                  trigger={<Button><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
+                />
+              </Card>
+            )}
+
+            {/* Categories with goals */}
+            {categories.map((c) => {
+              const list = goalsByCategory(c.id);
+              return (
+                <div key={c.id} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${c.color}20`, color: c.color }}>
+                        <CategoryIcon name={c.icon} className="h-4 w-4" />
+                      </span>
+                      <h3 className="font-semibold">{c.name}</h3>
+                      <span className="text-xs text-muted-foreground">{list.length} {t("annual_goals.goals_label")}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CreateGoalDialog
+                        year={year}
+                        categories={categories}
+                        defaultCategoryId={c.id}
+                        trigger={<Button variant="ghost" size="sm"><Plus className="h-4 w-4" /></Button>}
+                      />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => {
+                              if (confirm(t("annual_goals.confirm_delete_category"))) deleteCategory.mutate(c.id);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" /> {t("common.delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                  {list.length === 0 ? (
+                    <p className="text-xs text-muted-foreground pl-10">{t("annual_goals.no_goals_in_category")}</p>
+                  ) : (
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {list.map((g) => <GoalCard key={g.id} goal={g} categoryColor={c.color} />)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Uncategorized */}
+            {uncategorized.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="font-semibold text-muted-foreground">{t("annual_goals.no_category")}</h3>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {uncategorized.map((g) => <GoalCard key={g.id} goal={g} />)}
+                </div>
+              </div>
+            )}
+
+            {/* Duplicate to next year */}
+            {goals.length > 0 && year === CURRENT_YEAR && (
+              <div className="pt-4 border-t">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (confirm(t("annual_goals.confirm_duplicate"))) {
+                      duplicate.mutate({ from: year, to: year + 1 });
+                    }
+                  }}
+                >
+                  {t("annual_goals.duplicate_to_next_year")}
+                </Button>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="checklist" className="mt-4">
             <ChecklistList />
           </TabsContent>
 
-          <TabsContent value="history" className="mt-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {historyPagination.paginatedItems.map(goal => (
-                <Card key={goal.id} className="bg-gradient-to-br from-primary/5 to-transparent">
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <div className="flex items-center gap-2">
-                      {goal.project?.category && <span className="w-3 h-3 rounded-full" style={{ backgroundColor: goal.project.category.color }} />}
-                      <CardTitle className="text-base">{goal.project?.name}</CardTitle>
-                    </div>
-                    <Badge variant="default" className="bg-primary">
-                      <CheckCircle2 className="h-3 w-3 mr-1" />
-                      {t('goals.completed')}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        {goal.goal_type === "daily" ? t('goals.daily_goal') : t('goals.weekly_goal')}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {formatInTz(new Date(goal.completed_at), "dd/MM/yyyy")}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>{t('goals.achieved')}: {Math.floor(goal.achieved_minutes / 60)}h {goal.achieved_minutes % 60}m</span>
-                      <span className="text-muted-foreground">{t('goals.target')}: {goal.target_minutes / 60}h</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {(!goalHistory || goalHistory.length === 0) && !historyLoading && (
-                <p className="text-muted-foreground col-span-full text-center py-8">{t('goals.no_history')}</p>
-              )}
-            </div>
-            {(goalHistory?.length || 0) > 0 && (
-              <PaginationControls
-                currentPage={historyPagination.currentPage}
-                totalPages={historyPagination.totalPages}
-                pageSize={historyPagination.pageSize}
-                totalItems={historyPagination.totalItems}
-                setCurrentPage={historyPagination.setCurrentPage}
-                setPageSize={historyPagination.setPageSize}
-                pageSizeOptions={[12, 24, 48]}
-              />
-            )}
-
-            {/* Checklist History */}
-            <>
-              <div className="flex items-center justify-between mt-6 mb-3">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <ListChecks className="h-5 w-5" />
-                  {t('checklist.completed_items')}
-                </h3>
-                <Select value={historyProjectFilter} onValueChange={setHistoryProjectFilter}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder={t("checklist.all_projects")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t("checklist.all_projects")}</SelectItem>
-                    {projects?.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {checklistHistory.length > 0 ? (
-                <>
-                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                    {checklistHistoryPagination.paginatedItems.map((item) => (
-                      <div key={item.id} className="rounded-lg border bg-gradient-to-br from-primary/5 to-transparent p-4 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium truncate">{item.title}</p>
-                          <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span>{item.period_type === 'daily' ? t('checklist.daily') : item.period_type === 'weekly' ? t('checklist.weekly') : item.period_type === 'monthly' ? t('checklist.monthly') : t('checklist.yearly')}</span>
-                          {item.project && <span>• {item.project.name}</span>}
-                          <span>• {formatInTz(new Date(item.completed_at), "dd/MM/yyyy")}</span>
-                        </div>
+          <TabsContent value="history" className="mt-4 space-y-3">
+            <h3 className="text-sm font-semibold">{t("annual_goals.completed_goals")}</h3>
+            {goals.filter((g) => g.is_completed).length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">{t("annual_goals.no_completed_yet")}</p>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {goals.filter((g) => g.is_completed).map((g) => {
+                  const cat = categories.find((c) => c.id === g.category_id);
+                  return (
+                    <Card key={g.id} className="p-4 bg-gradient-to-br from-primary/5 to-transparent">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle2 className="h-4 w-4 text-primary" />
+                        <span className="font-medium text-sm truncate">{g.title}</span>
                       </div>
-                    ))}
-                  </div>
-                  {checklistHistory.length > 12 && (
-                    <PaginationControls
-                      currentPage={checklistHistoryPagination.currentPage}
-                      totalPages={checklistHistoryPagination.totalPages}
-                      pageSize={checklistHistoryPagination.pageSize}
-                      totalItems={checklistHistoryPagination.totalItems}
-                      setCurrentPage={checklistHistoryPagination.setCurrentPage}
-                      setPageSize={checklistHistoryPagination.setPageSize}
-                      pageSizeOptions={[12, 24, 48]}
-                    />
-                  )}
-                </>
-              ) : (
-                <p className="text-muted-foreground text-center py-4 text-sm">{t('checklist.no_items')}</p>
-              )}
-            </>
+                      <div className="text-xs text-muted-foreground">
+                        {cat?.name || t("annual_goals.no_category")} • {g.completed_at && new Date(g.completed_at).toLocaleDateString()}
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
