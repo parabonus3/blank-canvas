@@ -97,19 +97,31 @@ export default function Index() {
     contextPause();
     playPauseSound();
     if (user) {
+      const pausedAtISO = new Date().toISOString();
       supabase
         .from("room_members")
-        .update({ is_timer_active: false, last_active_at: new Date().toISOString() } as any)
+        .update({ is_timer_active: false, last_active_at: pausedAtISO } as any)
         .eq("user_id", user.id)
         .then(() => {});
-      // Mark active time_entry as paused on server
-      supabase
-        .from("time_entries")
-        .update({ paused_at: new Date().toISOString() } as any)
-        .eq("user_id", user.id)
-        .is("end_time", null)
-        .or('is_pomodoro.is.null,is_pomodoro.eq.false')
-        .then(() => {});
+      // Mark active time_entry as paused on server — confiável (await + retry + fallback localStorage)
+      (async () => {
+        const tryPause = async () => {
+          const { error } = await supabase
+            .from("time_entries")
+            .update({ paused_at: pausedAtISO } as any)
+            .eq("user_id", user.id)
+            .is("end_time", null)
+            .or('is_pomodoro.is.null,is_pomodoro.eq.false');
+          return !error;
+        };
+        let ok = await tryPause();
+        if (!ok) ok = await tryPause();
+        if (!ok) {
+          try { localStorage.setItem("timezoni-pending-pause", pausedAtISO); } catch {}
+        } else {
+          try { localStorage.removeItem("timezoni-pending-pause"); } catch {}
+        }
+      })();
     }
   }, [contextPause, user]);
 
