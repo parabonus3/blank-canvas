@@ -97,19 +97,31 @@ export default function Index() {
     contextPause();
     playPauseSound();
     if (user) {
+      const pausedAtISO = new Date().toISOString();
       supabase
         .from("room_members")
-        .update({ is_timer_active: false, last_active_at: new Date().toISOString() } as any)
+        .update({ is_timer_active: false, last_active_at: pausedAtISO } as any)
         .eq("user_id", user.id)
         .then(() => {});
-      // Mark active time_entry as paused on server
-      supabase
-        .from("time_entries")
-        .update({ paused_at: new Date().toISOString() } as any)
-        .eq("user_id", user.id)
-        .is("end_time", null)
-        .or('is_pomodoro.is.null,is_pomodoro.eq.false')
-        .then(() => {});
+      // Mark active time_entry as paused on server — confiável (await + retry + fallback localStorage)
+      (async () => {
+        const tryPause = async () => {
+          const { error } = await supabase
+            .from("time_entries")
+            .update({ paused_at: pausedAtISO } as any)
+            .eq("user_id", user.id)
+            .is("end_time", null)
+            .or('is_pomodoro.is.null,is_pomodoro.eq.false');
+          return !error;
+        };
+        let ok = await tryPause();
+        if (!ok) ok = await tryPause();
+        if (!ok) {
+          try { localStorage.setItem("timezoni-pending-pause", pausedAtISO); } catch {}
+        } else {
+          try { localStorage.removeItem("timezoni-pending-pause"); } catch {}
+        }
+      })();
     }
   }, [contextPause, user]);
 
@@ -160,6 +172,56 @@ export default function Index() {
     const interval = setInterval(ping, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [user, activeEntry?.id, isPaused]);
+
+  // Server-side heartbeat in time_entries (every 60s + visibility/beforeunload)
+  // Garante que stop_time_entry consiga descontar tempo "fantasma" se o usuario sumir.
+  useEffect(() => {
+    if (!user || !activeEntry || isPaused) return;
+    const entryId = activeEntry.id;
+    const beat = () => {
+      (supabase as any).rpc("heartbeat_time_entry", { _entry_id: entryId }).then(() => {});
+    };
+    beat();
+    const interval = setInterval(beat, 60 * 1000);
+    const onVisible = () => { if (!document.hidden) beat(); };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", beat);
+    window.addEventListener("beforeunload", beat);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", beat);
+      window.removeEventListener("beforeunload", beat);
+    };
+  }, [user, activeEntry?.id, isPaused]);
+
+  // Reenvia pausa pendente (caso o request falhou na sessão anterior)
+  useEffect(() => {
+    if (!user) return;
+    const pending = (() => { try { return localStorage.getItem("timezoni-pending-pause"); } catch { return null; } })();
+    if (!pending) return;
+    (async () => {
+      const { error } = await supabase
+        .from("time_entries")
+        .update({ paused_at: pending } as any)
+        .eq("user_id", user.id)
+        .is("end_time", null)
+        .is("paused_at", null)
+        .or('is_pomodoro.is.null,is_pomodoro.eq.false');
+      if (!error) { try { localStorage.removeItem("timezoni-pending-pause"); } catch {} }
+    })();
+  }, [user]);
+
+  // Auto-pausa server-side de sessões abandonadas (chama na carga e quando volta o foco)
+  useEffect(() => {
+    if (!user) return;
+    const run = () => { (supabase as any).rpc("auto_pause_stale_entries").then(() => {}); };
+    run();
+    const onVisible = () => { if (!document.hidden) run(); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [user]);
+
   
   // Streak query
   const { data: streakRaw } = useQuery({

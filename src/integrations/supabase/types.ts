@@ -1310,6 +1310,7 @@ export type Database = {
           end_time: string | null
           id: string
           is_pomodoro: boolean | null
+          last_heartbeat_at: string | null
           notes: string | null
           paused_at: string | null
           paused_seconds: number
@@ -1325,6 +1326,7 @@ export type Database = {
           end_time?: string | null
           id?: string
           is_pomodoro?: boolean | null
+          last_heartbeat_at?: string | null
           notes?: string | null
           paused_at?: string | null
           paused_seconds?: number
@@ -1340,6 +1342,7 @@ export type Database = {
           end_time?: string | null
           id?: string
           is_pomodoro?: boolean | null
+          last_heartbeat_at?: string | null
           notes?: string | null
           paused_at?: string | null
           paused_seconds?: number
@@ -1516,6 +1519,7 @@ export type Database = {
       }
     }
     Functions: {
+      auto_pause_stale_entries: { Args: never; Returns: number }
       check_and_grant_freeze_missions: {
         Args: never
         Returns: {
@@ -1784,6 +1788,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      heartbeat_time_entry: { Args: { _entry_id: string }; Returns: boolean }
       is_room_member: {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
@@ -1820,6 +1825,7 @@ export type Database = {
           end_time: string | null
           id: string
           is_pomodoro: boolean | null
+          last_heartbeat_at: string | null
           notes: string | null
           paused_at: string | null
           paused_seconds: number
