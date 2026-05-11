@@ -1,63 +1,72 @@
-## Problema
+Do I know what the issue is? Sim.
 
-A streak do Nicky aparece como **0**, mas deveria ser **8** dias.
-
-Dados reais (hoje = 2026-05-11):
-- Estudou: 04, 05, 06, 07/mai
-- Freezes consumidos: 03, 08, 09, 10/mai
-- Hoje (11/mai): ainda não estudou
-
-A streak esperada cobre 03→10/mai (8 dias contínuos entre estudo + freeze). Hoje está "em andamento" — não deveria zerar nada.
-
-## Causa raiz
-
-A função `get_member_room_streak` tem dois bugs combinados:
-
-1. **Hoje sem atividade não é tratado como "em andamento"**: o loop começa em `CURRENT_DATE` e, se hoje não tem atividade nem freeze, o `_streak` fica em 0 e o loop avança para ontem com `_streak = 0`.
-
-2. **Freeze não consegue iniciar a streak**: o ramo `ELSIF _has_freeze` só incrementa se `_streak > 0`. Se `_streak = 0` e a data é anterior a hoje, faz `EXIT` — descartando o freeze que o `auto_consume_pending_freezes` já tinha aplicado.
-
-Resultado: a função consome corretamente os freezes pendentes, mas depois ignora todos eles ao calcular o número da streak.
-
-A lógica também era incompatível com a UI: o modal pinta o dia de azul (freeze usado), mas o contador grande mostra 0.
-
-## Solução
-
-Reescrever `get_member_room_streak` com regra simples e consistente com o que o usuário vê na timeline:
+O problema exato é que a função `stop_time_entry` está descontando “ghost time” quando o `last_heartbeat_at` não avança. No caso mais recente no banco:
 
 ```text
-Se HOJE tem atividade  → conta hoje, anda para trás
-Se HOJE não tem nada   → hoje está "em andamento", começa a contar a partir de ONTEM
-
-A partir desse ponto, andando para trás:
-  dia tem atividade OU freeze consumido  →  +1 na streak
-  dia não tem nem um nem outro            →  EXIT
+start_time:          20:36:27
+end_time:            20:54:58
+wall_seconds:        1110s  (~18m30s)
+last_heartbeat_at:   20:36:27
+paused_seconds:      990s
+saved duration:      120s   (2m)
 ```
 
-Isso garante:
-- Freezes (mensais e comprados) preservam a streak igual a estudar.
-- Não estudar hoje não zera a streak (continua "em andamento" como o Duolingo).
-- O número exibido bate exatamente com a contagem de bolinhas verdes + azuis contínuas na timeline.
+Ou seja: o usuário estudou mais de 17min, mas como o heartbeat ficou preso no início, o backend subtraiu tudo depois de 2min e salvou só 120s. Essa regra conflita com o comportamento esperado: o timer deve contar normalmente até uma pausa explícita ou até o alerta de inatividade de 2h.
 
-## Mudanças
+Plano de correção:
 
-### 1. Migração SQL
+1. Restaurar a regra principal do cronômetro
+   - `duration` salvo deve ser: `end_time - start_time - paused_seconds`.
+   - Remover o desconto automático de “sem heartbeat” do `stop_time_entry` para sessões normais.
+   - O heartbeat não pode reduzir o tempo de uma sessão ativa curta; ele deve ser só sinal auxiliar de abandono.
 
-Substituir o corpo de `public.get_member_room_streak(_user_id uuid)`:
+2. Corrigir a auto-pausa de segurança
+   - Trocar a regra atual que considera sessão abandonada após 15min e pausa em `last_heartbeat + 2min`.
+   - Nova regra: só auto-pausar depois de 2h sem confirmação/atividade relevante.
+   - Quando auto-pausar, marcar `paused_at` no ponto correto de 2h, não em 2min.
+   - Isso alinha com o fluxo esperado: “depois de 2h rodando, pausar e perguntar se a pessoa está”.
 
-- Continua chamando `auto_consume_pending_freezes(_user_id)` no início (já está correto).
-- Verifica atividade de hoje. Se não houver, recua `_check_date` para ontem antes do loop.
-- Loop único: para cada `_check_date`, se houver atividade OU se a data estiver em algum `streak_freezes.auto_used_dates` daquele usuário, soma 1 e recua um dia; senão, sai.
-- Mantém cap de 365 e `SECURITY DEFINER` + `search_path = public`.
+3. Alinhar frontend e backend para uma única fonte de verdade
+   - Manter o timer exibido calculado por `start_time - paused_seconds - paused_at`, como já é a intenção.
+   - Garantir que pause/resume atualize `paused_at` e `paused_seconds` de forma consistente.
+   - Ao parar, salvar pelo RPC server-authoritative, mas usando a mesma fórmula do timer exibido.
 
-### 2. Sem mudanças de código frontend
+4. Tratar o alerta de 2h corretamente
+   - O modal de inatividade deve pausar o timer após 2h.
+   - Se o usuário confirmar presença, o tempo segue normalmente a partir dali.
+   - O tempo parado enquanto aguardava confirmação entra em `paused_seconds`, então não infla o total.
+   - Se o usuário finalizar depois, o valor salvo deve bater com o que estava no cronômetro.
 
-A UI (`SidebarStreakWidget`, `StreakDetailModal`) e o hook `useStreakFreeze` já estão corretos — eles só consomem o valor retornado pela RPC. Assim que a função for corrigida, o widget volta a aparecer (hoje some quando streak = 0) e o modal mostra o número certo.
+5. Corrigir registros afetados pelo bug recente
+   - Identificar sessões onde `duration = 120` mas `wall_seconds` é muito maior e `paused_seconds` veio do desconto de heartbeat.
+   - Para sessões claramente afetadas, recalcular para `wall_seconds - pausas explícitas reais` quando houver evidência segura.
+   - No caso mostrado, a sessão recente deve voltar para aproximadamente 18m30s, não 2m.
 
-### 3. Validação pós-migração
+6. Validar com cenários críticos
+   - Sessão normal de 17–18min sem pause: salva 17–18min.
+   - Sessão com pause manual de 5min: desconta só os 5min.
+   - Sessão passando de 2h: pausa e pergunta presença.
+   - Usuário confirma presença: continua sem zerar nem perder tempo.
+   - Usuário abandona após o alerta: não continua inflando indefinidamente.
 
-- Rodar `SELECT get_member_room_streak('ef2c00f0-b986-47e3-887f-80b2c3527723')` → deve retornar **8**.
-- Conferir um usuário que estudou hoje (deve incluir hoje no total).
-- Conferir um usuário sem atividade há > 60 dias (deve retornar 0, sem erro).
+Arquivos/funções envolvidos:
 
-Posso aplicar a migração?
+```text
+src/pages/Index.tsx
+src/contexts/TimerContext.tsx
+src/components/InactivityCheckModal.tsx
+src/hooks/useTimeEntries.ts
+public.stop_time_entry
+public.auto_pause_stale_entries
+public.heartbeat_time_entry
+```
+
+Resultado esperado: o número exibido no cronômetro passa a ser o mesmo tempo salvo no histórico, e o sistema só desconta tempo quando houver pausa explícita ou pausa real de inatividade após 2h.
+
+<lov-actions>
+  <lov-open-history>View History</lov-open-history>
+</lov-actions>
+
+<lov-actions>
+<lov-link url="https://docs.lovable.dev/tips-tricks/troubleshooting">Troubleshooting docs</lov-link>
+</lov-actions>
