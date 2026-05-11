@@ -190,12 +190,14 @@ export function useStopTimer() {
   const { toast } = useToast();
   
   return useMutation({
-    mutationFn: async ({ entryId, roomId }: { entryId: string; pausedSeconds?: number; roomId?: string }) => {
-      // Server-authoritative stop: the RPC computes effective pause from
-      // paused_seconds + (now - paused_at) atomically, regardless of client state.
-      const { data: stopped, error: stopErr } = await (supabase as any).rpc("stop_time_entry", {
-        _entry_id: entryId,
-      });
+    mutationFn: async ({ entryId, roomId, clientSeconds }: { entryId: string; pausedSeconds?: number; roomId?: string; clientSeconds?: number }) => {
+      // Server-authoritative stop: when clientSeconds is provided, the RPC saves
+      // exactly what the user saw on the timer (capped by real wall time).
+      const rpcArgs: Record<string, unknown> = { _entry_id: entryId };
+      if (typeof clientSeconds === "number" && Number.isFinite(clientSeconds)) {
+        rpcArgs._client_seconds = Math.max(0, Math.floor(clientSeconds));
+      }
+      const { data: stopped, error: stopErr } = await (supabase as any).rpc("stop_time_entry", rpcArgs);
       if (stopErr) throw stopErr;
       if (!stopped) throw new Error("Entrada não encontrada");
 
