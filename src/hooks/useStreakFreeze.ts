@@ -117,6 +117,7 @@ export function useStreakFreeze() {
     const checkAndAutoUse = async () => {
       if (typeof window !== "undefined") localStorage.setItem(guardKey, "1");
       autoUsedRef.current = true;
+      const yesterdayStart = new Date(yesterday + "T00:00:00");
       const yesterdayEnd = new Date(yesterday + "T23:59:59");
 
       const { count } = await supabase
