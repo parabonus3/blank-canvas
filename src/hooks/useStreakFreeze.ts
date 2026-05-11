@@ -94,7 +94,7 @@ export function useStreakFreeze() {
     staleTime: 30000,
   });
 
-  const remaining = freezeData ? freezeData.total_granted - freezeData.used : granted;
+  const remaining = Math.max(0, freezeData ? freezeData.total_granted - freezeData.used : granted);
   const used = freezeData?.used ?? 0;
   const autoUsedDates: string[] = (freezeData?.auto_used_dates as string[]) ?? [];
   const purchasedBalance = purchasedRow?.balance ?? 0;
@@ -109,7 +109,14 @@ export function useStreakFreeze() {
     const yesterday = getYesterday();
     if (autoUsedDates.includes(yesterday)) return;
 
+    // Guard global por dia via localStorage para evitar disparos paralelos
+    // de múltiplas montagens do hook (sidebar + modal, StrictMode, etc).
+    const guardKey = `timezoni-freeze-checked-${user.id}-${yesterday}`;
+    if (typeof window !== "undefined" && localStorage.getItem(guardKey)) return;
+
     const checkAndAutoUse = async () => {
+      if (typeof window !== "undefined") localStorage.setItem(guardKey, "1");
+      autoUsedRef.current = true;
       const yesterdayStart = new Date(yesterday + "T00:00:00");
       const yesterdayEnd = new Date(yesterday + "T23:59:59");
 
