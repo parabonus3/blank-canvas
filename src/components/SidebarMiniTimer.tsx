@@ -127,7 +127,7 @@ export function SidebarMiniTimer() {
   const handleStop = (notes?: string, tagIds?: string[]) => {
     playStopSound();
     // Server-authoritative: a RPC stop_time_entry calcula a pausa real
-    stopTimer.mutate({ entryId: activeEntry.id }, {
+    stopTimer.mutate({ entryId: activeEntry.id, clientSeconds: elapsed }, {
       onSuccess: async (data) => {
         if (notes) {
           const { supabase } = await import("@/integrations/supabase/client");
