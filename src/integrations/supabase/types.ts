@@ -1519,6 +1519,10 @@ export type Database = {
       }
     }
     Functions: {
+      auto_consume_pending_freezes: {
+        Args: { _user_id: string }
+        Returns: undefined
+      }
       auto_pause_stale_entries: { Args: never; Returns: number }
       check_and_grant_freeze_missions: {
         Args: never
