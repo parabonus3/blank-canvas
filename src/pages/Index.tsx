@@ -92,6 +92,10 @@ export default function Index() {
     );
   }, [location.search]);
 
+  // Tracks the last in-flight pause/resume server sync, so handleStopConfirm can
+  // await it before calling stop_time_entry (avoids race that inflates duration).
+  const pauseSyncRef = useRef<Promise<unknown> | null>(null);
+
   // Wrap pause/resume to sync is_timer_active with room_members + paused_at on time_entries
   const handlePause = useCallback(() => {
     contextPause();
@@ -104,7 +108,7 @@ export default function Index() {
         .eq("user_id", user.id)
         .then(() => {});
       // Mark active time_entry as paused on server — confiável (await + retry + fallback localStorage)
-      (async () => {
+      const p = (async () => {
         const tryPause = async () => {
           const { error } = await supabase
             .from("time_entries")
@@ -122,6 +126,7 @@ export default function Index() {
           try { localStorage.removeItem("timezoni-pending-pause"); } catch {}
         }
       })();
+      pauseSyncRef.current = p;
     }
   }, [contextPause, user]);
 
@@ -135,7 +140,7 @@ export default function Index() {
         .eq("user_id", user.id)
         .then(() => {});
       // Resume on server: accumulate paused_seconds and clear paused_at
-      (async () => {
+      const p = (async () => {
         const { data: entry } = await supabase
           .from("time_entries")
           .select("id, paused_at, paused_seconds" as any)
@@ -155,6 +160,7 @@ export default function Index() {
             .eq("id", e.id);
         }
       })();
+      pauseSyncRef.current = p;
     }
   }, [contextResume, user]);
 
