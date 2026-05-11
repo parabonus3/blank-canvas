@@ -1,72 +1,68 @@
-Do I know what the issue is? Sim.
+## Diagnóstico: por que mostrou 28:02 mas salvou 28:36
 
-O problema exato é que a função `stop_time_entry` está descontando “ghost time” quando o `last_heartbeat_at` não avança. No caso mais recente no banco:
-
-```text
-start_time:          20:36:27
-end_time:            20:54:58
-wall_seconds:        1110s  (~18m30s)
-last_heartbeat_at:   20:36:27
-paused_seconds:      990s
-saved duration:      120s   (2m)
-```
-
-Ou seja: o usuário estudou mais de 17min, mas como o heartbeat ficou preso no início, o backend subtraiu tudo depois de 2min e salvou só 120s. Essa regra conflita com o comportamento esperado: o timer deve contar normalmente até uma pausa explícita ou até o alerta de inatividade de 2h.
-
-Plano de correção:
-
-1. Restaurar a regra principal do cronômetro
-   - `duration` salvo deve ser: `end_time - start_time - paused_seconds`.
-   - Remover o desconto automático de “sem heartbeat” do `stop_time_entry` para sessões normais.
-   - O heartbeat não pode reduzir o tempo de uma sessão ativa curta; ele deve ser só sinal auxiliar de abandono.
-
-2. Corrigir a auto-pausa de segurança
-   - Trocar a regra atual que considera sessão abandonada após 15min e pausa em `last_heartbeat + 2min`.
-   - Nova regra: só auto-pausar depois de 2h sem confirmação/atividade relevante.
-   - Quando auto-pausar, marcar `paused_at` no ponto correto de 2h, não em 2min.
-   - Isso alinha com o fluxo esperado: “depois de 2h rodando, pausar e perguntar se a pessoa está”.
-
-3. Alinhar frontend e backend para uma única fonte de verdade
-   - Manter o timer exibido calculado por `start_time - paused_seconds - paused_at`, como já é a intenção.
-   - Garantir que pause/resume atualize `paused_at` e `paused_seconds` de forma consistente.
-   - Ao parar, salvar pelo RPC server-authoritative, mas usando a mesma fórmula do timer exibido.
-
-4. Tratar o alerta de 2h corretamente
-   - O modal de inatividade deve pausar o timer após 2h.
-   - Se o usuário confirmar presença, o tempo segue normalmente a partir dali.
-   - O tempo parado enquanto aguardava confirmação entra em `paused_seconds`, então não infla o total.
-   - Se o usuário finalizar depois, o valor salvo deve bater com o que estava no cronômetro.
-
-5. Corrigir registros afetados pelo bug recente
-   - Identificar sessões onde `duration = 120` mas `wall_seconds` é muito maior e `paused_seconds` veio do desconto de heartbeat.
-   - Para sessões claramente afetadas, recalcular para `wall_seconds - pausas explícitas reais` quando houver evidência segura.
-   - No caso mostrado, a sessão recente deve voltar para aproximadamente 18m30s, não 2m.
-
-6. Validar com cenários críticos
-   - Sessão normal de 17–18min sem pause: salva 17–18min.
-   - Sessão com pause manual de 5min: desconta só os 5min.
-   - Sessão passando de 2h: pausa e pergunta presença.
-   - Usuário confirma presença: continua sem zerar nem perder tempo.
-   - Usuário abandona após o alerta: não continua inflando indefinidamente.
-
-Arquivos/funções envolvidos:
+A diferença de ~34s vem de uma desconexão entre o pause do cliente e o pause no servidor. O fluxo atual é assim:
 
 ```text
-src/pages/Index.tsx
-src/contexts/TimerContext.tsx
-src/components/InactivityCheckModal.tsx
-src/hooks/useTimeEntries.ts
-public.stop_time_entry
-public.auto_pause_stale_entries
-public.heartbeat_time_entry
+clica Pause   → contextPause() congela display em 28:02 (instantâneo, local)
+              → dispara UPDATE paused_at = now() em time_entries (assíncrono, fire-and-forget)
+              → user lê 28:02 no cronômetro
+              → clica Stop ainda olhando 28:02
+              → stop_time_entry roda no servidor
+                 - se o UPDATE de paused_at AINDA NÃO foi commitado, ou falhou,
+                   ou foi parar no localStorage "pending-pause",
+                   o servidor lê paused_at = NULL
+                 - duration = end_time - start_time = 28:36
 ```
 
-Resultado esperado: o número exibido no cronômetro passa a ser o mesmo tempo salvo no histórico, e o sistema só desconta tempo quando houver pausa explícita ou pausa real de inatividade após 2h.
+Resumindo, o display é “travado” no cliente no instante do clique, mas o servidor depende do UPDATE que pode chegar segundos depois (ou nunca, em caso de falha de rede). Como `stop_time_entry` reconstrói tudo do zero a partir de `paused_at`/`paused_seconds`, qualquer atraso/perda nesse update vira tempo a mais no salvo.
 
-<lov-actions>
-  <lov-open-history>View History</lov-open-history>
-</lov-actions>
+Outros cenários onde o mesmo bug aparece:
+- Clicou Pause → Stop em sequência rápida (race entre os dois requests).
+- Pause caiu na rede → ficou em `localStorage` pendente → Stop foi mais rápido que o retry.
+- Várias pausas/resumes seguidas: cada resume soma `now - paused_at` no servidor, mas `now` no servidor é diferente do `Date.now()` que o cliente usou no `pauseStartTime`. Cada operação adiciona alguns segundos de drift.
 
-<lov-actions>
-<lov-link url="https://docs.lovable.dev/tips-tricks/troubleshooting">Troubleshooting docs</lov-link>
-</lov-actions>
+## Plano de correção
+
+Princípio: o número que o usuário vê no cronômetro no instante em que clica Stop tem que ser exatamente o que é salvo. O servidor continua sendo a autoridade final para anti-fraude, mas usando o valor do cliente como “teto” confiável.
+
+1. Tornar o stop autoritativo a partir do display
+   - Frontend calcula `display_seconds` no exato clique em Stop (mesma fórmula que mostra na tela).
+   - Passa esse valor para `stop_time_entry(_entry_id, _client_seconds)`.
+   - O servidor calcula `wall = end_time - start_time` e usa:
+     `duration = LEAST(wall, GREATEST(0, _client_seconds))`
+     Assim o salvo é exatamente o que estava no cronômetro, e nunca pode ultrapassar o tempo real decorrido (limite anti-fraude).
+
+2. Garantir consistência do estado de pausa antes do stop
+   - No `handleStopConfirm`, antes do `stop_time_entry`, fazer flush:
+     - Se houver pausa pendente em `localStorage`, aplicar agora (await).
+     - Se acabou de pausar, aguardar a Promise do `paused_at` UPDATE concluir.
+   - Implementar via uma ref `pausePromiseRef` que guarda a última operação pendente; `handleStopConfirm` faz `await pausePromiseRef.current` antes de mutar o stop.
+
+3. Tornar o pause realmente confiável
+   - Trocar o `update().then()` por `await` dentro de uma Promise armazenada na ref.
+   - Manter o retry + fallback localStorage que já existe, mas devolvendo a Promise para quem precisar aguardar.
+   - Mesmo tratamento para resume.
+
+4. Backfill defensivo no servidor
+   - Atualizar `stop_time_entry` para aceitar `_client_seconds` opcional (default NULL).
+   - Quando `_client_seconds` vier preenchido: usar a fórmula nova (LEAST/GREATEST).
+   - Quando vier NULL: cair na lógica atual (compatibilidade com chamadas antigas, tipo SidebarMiniTimer/Pomodoro).
+   - Atualizar também `SidebarMiniTimer` para passar o display.
+
+5. Validação
+   - Pausa em 28:02 → Stop imediato → salvo: 28:02.
+   - Pausa, espera 1min, Stop → salvo: 28:02 (pausa conta como pausa).
+   - Sem pausa, Stop em 17:30 → salvo: 17:30.
+   - Várias pausas/resumes: salvo bate com display.
+   - Stop com rede ruim no pause: salvo bate com display, não infla.
+
+## Arquivos a alterar
+
+```text
+src/pages/Index.tsx              -- await pause antes do stop, passar display_seconds
+src/hooks/useTimeEntries.ts      -- useStopTimer aceita clientSeconds
+src/components/SidebarMiniTimer.tsx -- passar display_seconds no stop
+public.stop_time_entry            -- novo parâmetro opcional _client_seconds
+```
+
+Resultado: o tempo salvo é sempre exatamente o que o cronômetro mostrava no clique de Stop, dentro do limite físico do tempo real decorrido.
