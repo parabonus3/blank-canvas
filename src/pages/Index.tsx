@@ -378,13 +378,19 @@ export default function Index() {
     setShowStopDialog(true);
   };
 
-  const handleStopConfirm = (notes?: string, tagIds?: string[]) => {
+  const handleStopConfirm = async (notes?: string, tagIds?: string[]) => {
     if (activeEntry) {
       // Tocar som ANTES de qualquer trabalho assíncrono para preservar o user gesture do clique de confirmação.
       playStopSound();
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
-      // O servidor calcula a pausa real (paused_seconds + tempo desde paused_at) atomicamente.
-      stopTimer.mutate({ entryId: activeEntry.id, roomId }, {
+      // Snapshot do que o cronômetro mostra agora — fonte da verdade do usuário.
+      const clientSeconds = elapsed;
+      // Garante que qualquer pausa/resume em voo terminou antes do stop, evitando race no servidor.
+      if (pauseSyncRef.current) {
+        try { await pauseSyncRef.current; } catch {}
+        pauseSyncRef.current = null;
+      }
+      stopTimer.mutate({ entryId: activeEntry.id, roomId, clientSeconds }, {
         onSuccess: async (data) => {
           if (notes) {
             const { supabase } = await import("@/integrations/supabase/client");
