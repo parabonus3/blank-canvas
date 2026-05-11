@@ -94,7 +94,7 @@ export function useStreakFreeze() {
     staleTime: 30000,
   });
 
-  const remaining = freezeData ? freezeData.total_granted - freezeData.used : granted;
+  const remaining = Math.max(0, freezeData ? freezeData.total_granted - freezeData.used : granted);
   const used = freezeData?.used ?? 0;
   const autoUsedDates: string[] = (freezeData?.auto_used_dates as string[]) ?? [];
   const purchasedBalance = purchasedRow?.balance ?? 0;
