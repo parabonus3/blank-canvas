@@ -109,8 +109,14 @@ export function useStreakFreeze() {
     const yesterday = getYesterday();
     if (autoUsedDates.includes(yesterday)) return;
 
+    // Guard global por dia via localStorage para evitar disparos paralelos
+    // de múltiplas montagens do hook (sidebar + modal, StrictMode, etc).
+    const guardKey = `timezoni-freeze-checked-${user.id}-${yesterday}`;
+    if (typeof window !== "undefined" && localStorage.getItem(guardKey)) return;
+
     const checkAndAutoUse = async () => {
-      const yesterdayStart = new Date(yesterday + "T00:00:00");
+      if (typeof window !== "undefined") localStorage.setItem(guardKey, "1");
+      autoUsedRef.current = true;
       const yesterdayEnd = new Date(yesterday + "T23:59:59");
 
       const { count } = await supabase
