@@ -96,73 +96,52 @@ export default function Index() {
   // await it before calling stop_time_entry (avoids race that inflates duration).
   const pauseSyncRef = useRef<Promise<unknown> | null>(null);
 
-  // Wrap pause/resume to sync is_timer_active with room_members + paused_at on time_entries
+  // Pause via RPC: o servidor congela o snapshot exato exibido (clientSeconds).
   const handlePause = useCallback(() => {
+    // Snapshot ANTES de mudar o estado local — esse é o valor que o usuário vê.
+    const snapshot = elapsed;
     contextPause();
     playPauseSound();
-    if (user) {
-      const pausedAtISO = new Date().toISOString();
-      supabase
-        .from("room_members")
-        .update({ is_timer_active: false, last_active_at: pausedAtISO } as any)
-        .eq("user_id", user.id)
-        .then(() => {});
-      // Mark active time_entry as paused on server — confiável (await + retry + fallback localStorage)
-      const p = (async () => {
-        const tryPause = async () => {
-          const { error } = await supabase
-            .from("time_entries")
-            .update({ paused_at: pausedAtISO } as any)
-            .eq("user_id", user.id)
-            .is("end_time", null)
-            .or('is_pomodoro.is.null,is_pomodoro.eq.false');
-          return !error;
-        };
-        let ok = await tryPause();
-        if (!ok) ok = await tryPause();
-        if (!ok) {
-          try { localStorage.setItem("timezoni-pending-pause", pausedAtISO); } catch {}
-        } else {
-          try { localStorage.removeItem("timezoni-pending-pause"); } catch {}
-        }
-      })();
-      pauseSyncRef.current = p;
-    }
-  }, [contextPause, user]);
+    if (!user || !activeEntry) return;
+    const p = (async () => {
+      try {
+        await (supabase as any).rpc("pause_time_entry", {
+          _entry_id: activeEntry.id,
+          _client_seconds: Math.max(0, Math.floor(snapshot)),
+        });
+      } catch (e) {
+        console.error("pause_time_entry error:", e);
+      }
+      try {
+        await supabase
+          .from("room_members")
+          .update({ is_timer_active: false, last_active_at: new Date().toISOString() } as any)
+          .eq("user_id", user.id);
+      } catch {}
+    })();
+    pauseSyncRef.current = p;
+  }, [contextPause, user, activeEntry, elapsed]);
 
+  // Resume via RPC: o servidor soma o tempo realmente pausado em paused_seconds.
   const handleResume = useCallback(() => {
     contextResume();
     playTimerResume();
-    if (user) {
-      supabase
-        .from("room_members")
-        .update({ is_timer_active: true, last_active_at: new Date().toISOString() } as any)
-        .eq("user_id", user.id)
-        .then(() => {});
-      // Resume on server: accumulate paused_seconds and clear paused_at
-      const p = (async () => {
-        const { data: entry } = await supabase
-          .from("time_entries")
-          .select("id, paused_at, paused_seconds" as any)
-          .eq("user_id", user.id)
-          .is("end_time", null)
-          .or('is_pomodoro.is.null,is_pomodoro.eq.false')
-          .maybeSingle();
-        const e: any = entry;
-        if (e?.id && e?.paused_at) {
-          const addSec = Math.max(0, Math.floor((Date.now() - new Date(e.paused_at).getTime()) / 1000));
-          await supabase
-            .from("time_entries")
-            .update({
-              paused_at: null,
-              paused_seconds: (e.paused_seconds || 0) + addSec,
-            } as any)
-            .eq("id", e.id);
-        }
-      })();
-      pauseSyncRef.current = p;
-    }
-  }, [contextResume, user]);
+    if (!user || !activeEntry) return;
+    const p = (async () => {
+      try {
+        await (supabase as any).rpc("resume_time_entry", { _entry_id: activeEntry.id });
+      } catch (e) {
+        console.error("resume_time_entry error:", e);
+      }
+      try {
+        await supabase
+          .from("room_members")
+          .update({ is_timer_active: true, last_active_at: new Date().toISOString() } as any)
+          .eq("user_id", user.id);
+      } catch {}
+    })();
+    pauseSyncRef.current = p;
+  }, [contextResume, user, activeEntry]);
 
   // Presence heartbeat: while timer is running and not paused, refresh last_active_at every 5min
   useEffect(() => {
