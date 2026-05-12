@@ -1,68 +1,107 @@
-## Diagnóstico: por que mostrou 28:02 mas salvou 28:36
+## Diagnóstico
 
-A diferença de ~34s vem de uma desconexão entre o pause do cliente e o pause no servidor. O fluxo atual é assim:
+Sim — agora dá para afirmar o problema real.
 
-```text
-clica Pause   → contextPause() congela display em 28:02 (instantâneo, local)
-              → dispara UPDATE paused_at = now() em time_entries (assíncrono, fire-and-forget)
-              → user lê 28:02 no cronômetro
-              → clica Stop ainda olhando 28:02
-              → stop_time_entry roda no servidor
-                 - se o UPDATE de paused_at AINDA NÃO foi commitado, ou falhou,
-                   ou foi parar no localStorage "pending-pause",
-                   o servidor lê paused_at = NULL
-                 - duration = end_time - start_time = 28:36
-```
+1. O erro do botão de salvar/stop vem do banco: existem duas funções RPC com o mesmo nome:
+   - `stop_time_entry(_entry_id uuid)`
+   - `stop_time_entry(_entry_id uuid, _client_seconds integer DEFAULT NULL)`
 
-Resumindo, o display é “travado” no cliente no instante do clique, mas o servidor depende do UPDATE que pode chegar segundos depois (ou nunca, em caso de falha de rede). Como `stop_time_entry` reconstrói tudo do zero a partir de `paused_at`/`paused_seconds`, qualquer atraso/perda nesse update vira tempo a mais no salvo.
+   O Supabase/PostgREST não consegue escolher qual chamar e retorna exatamente o erro mostrado: “Could not choose the best candidate function”.
 
-Outros cenários onde o mesmo bug aparece:
-- Clicou Pause → Stop em sequência rápida (race entre os dois requests).
-- Pause caiu na rede → ficou em `localStorage` pendente → Stop foi mais rápido que o retry.
-- Várias pausas/resumes seguidas: cada resume soma `now - paused_at` no servidor, mas `now` no servidor é diferente do `Date.now()` que o cliente usou no `pauseStartTime`. Cada operação adiciona alguns segundos de drift.
+2. O salto para `02:00:00` acontece porque a lógica de inatividade/auto-pausa está tratando uma sessão antiga como abandonada e aplicando o limite de 2h. Isso só deveria acontecer quando o timer estava realmente rodando sem resposta. Se o usuário pausou em `00:00:05`, esse valor precisa ficar congelado e nunca virar 2h ao clicar em stop.
+
+3. Hoje o cálculo do timer está espalhado em mais de um lugar (`Index`, `SidebarMiniTimer`, `TimerContext`, modal de inatividade e RPCs). Isso cria corrida entre pause, heartbeat, auto-pausa e stop.
 
 ## Plano de correção
 
-Princípio: o número que o usuário vê no cronômetro no instante em que clica Stop tem que ser exatamente o que é salvo. O servidor continua sendo a autoridade final para anti-fraude, mas usando o valor do cliente como “teto” confiável.
+### 1. Corrigir o RPC de stop no banco
 
-1. Tornar o stop autoritativo a partir do display
-   - Frontend calcula `display_seconds` no exato clique em Stop (mesma fórmula que mostra na tela).
-   - Passa esse valor para `stop_time_entry(_entry_id, _client_seconds)`.
-   - O servidor calcula `wall = end_time - start_time` e usa:
-     `duration = LEAST(wall, GREATEST(0, _client_seconds))`
-     Assim o salvo é exatamente o que estava no cronômetro, e nunca pode ultrapassar o tempo real decorrido (limite anti-fraude).
+- Remover a sobrecarga ambígua de `stop_time_entry`.
+- Manter uma única função `public.stop_time_entry(_entry_id uuid, _client_seconds integer DEFAULT NULL)`.
+- Fazer essa função usar bloqueio da linha ativa para evitar corrida entre pause/resume/stop.
+- Regra principal:
+  - se `_client_seconds` veio do frontend, salvar exatamente esse valor, limitado apenas pelo tempo real máximo possível;
+  - se não vier, usar o cálculo seguro por `start_time`, `paused_seconds` e `paused_at`.
+- Garantir que o stop sempre limpe `paused_at`, grave `end_time`, grave `duration` e retorne a sessão finalizada.
 
-2. Garantir consistência do estado de pausa antes do stop
-   - No `handleStopConfirm`, antes do `stop_time_entry`, fazer flush:
-     - Se houver pausa pendente em `localStorage`, aplicar agora (await).
-     - Se acabou de pausar, aguardar a Promise do `paused_at` UPDATE concluir.
-   - Implementar via uma ref `pausePromiseRef` que guarda a última operação pendente; `handleStopConfirm` faz `await pausePromiseRef.current` antes de mutar o stop.
+### 2. Criar RPCs explícitos para pause e resume
 
-3. Tornar o pause realmente confiável
-   - Trocar o `update().then()` por `await` dentro de uma Promise armazenada na ref.
-   - Manter o retry + fallback localStorage que já existe, mas devolvendo a Promise para quem precisar aguardar.
-   - Mesmo tratamento para resume.
+Adicionar duas funções servidoras para parar de depender de updates soltos pelo frontend:
 
-4. Backfill defensivo no servidor
-   - Atualizar `stop_time_entry` para aceitar `_client_seconds` opcional (default NULL).
-   - Quando `_client_seconds` vier preenchido: usar a fórmula nova (LEAST/GREATEST).
-   - Quando vier NULL: cair na lógica atual (compatibilidade com chamadas antigas, tipo SidebarMiniTimer/Pomodoro).
-   - Atualizar também `SidebarMiniTimer` para passar o display.
+- `pause_time_entry(_entry_id uuid, _client_seconds integer)`
+  - congela a sessão no valor que estava aparecendo na tela;
+  - se o usuário pausou em 5s, o servidor passa a saber que a duração visível é 5s;
+  - se o timer já estiver pausado, não recalcula nem aumenta nada.
 
-5. Validação
-   - Pausa em 28:02 → Stop imediato → salvo: 28:02.
-   - Pausa, espera 1min, Stop → salvo: 28:02 (pausa conta como pausa).
-   - Sem pausa, Stop em 17:30 → salvo: 17:30.
-   - Várias pausas/resumes: salvo bate com display.
-   - Stop com rede ruim no pause: salvo bate com display, não infla.
+- `resume_time_entry(_entry_id uuid)`
+  - soma o tempo realmente pausado em `paused_seconds`;
+  - limpa `paused_at`;
+  - reinicia o heartbeat.
 
-## Arquivos a alterar
+Com isso, pause deixa de ser “um estado local frágil” e passa a ser um estado confiável do servidor.
+
+### 3. Centralizar o cálculo do tempo exibido
+
+- Criar uma única função/hook de cálculo do tempo exibido.
+- Usar essa mesma fonte em:
+  - tela principal do timer;
+  - mini timer da sidebar;
+  - fullscreen timer;
+  - diálogo de stop.
+- Remover cálculos duplicados que hoje podem divergir.
+
+A regra será:
 
 ```text
-src/pages/Index.tsx              -- await pause antes do stop, passar display_seconds
-src/hooks/useTimeEntries.ts      -- useStopTimer aceita clientSeconds
-src/components/SidebarMiniTimer.tsx -- passar display_seconds no stop
-public.stop_time_entry            -- novo parâmetro opcional _client_seconds
+Rodando:  agora - start_time - paused_seconds
+Pausado:  snapshot congelado no momento do pause
+Stop:     snapshot exibido no momento em que o usuário iniciou o stop
 ```
 
-Resultado: o tempo salvo é sempre exatamente o que o cronômetro mostrava no clique de Stop, dentro do limite físico do tempo real decorrido.
+### 4. Corrigir o comportamento do botão Stop
+
+- Ao clicar no botão vermelho de stop, capturar imediatamente o tempo exibido naquele instante.
+- O diálogo de notas/tags vai mostrar esse snapshot fixo.
+- Ao confirmar, salvar esse mesmo snapshot.
+- Se o timer estava pausado em `00:00:05`, o stop salva `5` segundos, mesmo que a sessão tenha ficado pausada por horas ou dias.
+- Se houver erro ao salvar, o diálogo não deve fingir que salvou nem limpar estado local de pause.
+
+### 5. Corrigir a inatividade de 2h
+
+- A checagem de inatividade só poderá atuar quando o timer estiver rodando.
+- Se o timer já estiver pausado, ela não deve abrir modal, não deve ajustar tempo e não deve transformar 5s em 2h.
+- Quando passar de 2h rodando sem confirmação, ela deve congelar a sessão em 2h via `pause_time_entry`, abrir o modal e só continuar se o usuário confirmar.
+
+### 6. Corrigir heartbeat sem quebrar o fluxo
+
+- Garantir que `heartbeat_time_entry` exista e esteja disponível para o cliente.
+- Se o heartbeat falhar, isso não pode impedir pause/stop.
+- A auto-pausa deve usar heartbeat apenas para detectar abandono real, nunca para sobrescrever uma pausa manual já existente.
+
+### 7. Corrigir o mini timer da sidebar
+
+- Trocar o cálculo independente do `SidebarMiniTimer` pela mesma lógica central usada na tela principal.
+- O botão de stop da sidebar também deve enviar o mesmo snapshot exibido, não recalcular no momento errado.
+
+### 8. Validar os cenários críticos
+
+Vou validar estes fluxos antes de concluir:
+
+- iniciar timer, pausar em 5s, esperar/recarregar, clicar stop → salva 5s;
+- iniciar timer e parar em 28:02 → salva 28:02;
+- abrir stop dialog e demorar para confirmar → salva o tempo do clique no stop, não um valor maior;
+- timer rodando por mais de 2h sem resposta → pausa em 2h e pergunta se o usuário está ali;
+- timer pausado por horas/dias → continua mostrando o mesmo tempo congelado;
+- erro de RPC ambígua desaparece porque só haverá uma função `stop_time_entry`.
+
+## Observação importante
+
+Depois da correção, o banco e o frontend passam a seguir uma regra simples: o valor salvo no `duration` será o mesmo valor visível para o usuário no momento de finalizar a sessão.
+
+<presentation-actions>
+  <presentation-open-history>View History</presentation-open-history>
+</presentation-actions>
+
+<presentation-actions>
+<presentation-link url="https://docs.lovable.dev/tips-tricks/troubleshooting">Troubleshooting docs</presentation-link>
+</presentation-actions>
