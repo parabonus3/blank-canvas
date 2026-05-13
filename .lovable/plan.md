@@ -1,107 +1,88 @@
-## Diagnóstico
 
-Sim — agora dá para afirmar o problema real.
+# Plano: timer 12h inteligente + sidebar + backgrounds Pro/Premium
 
-1. O erro do botão de salvar/stop vem do banco: existem duas funções RPC com o mesmo nome:
-   - `stop_time_entry(_entry_id uuid)`
-   - `stop_time_entry(_entry_id uuid, _client_seconds integer DEFAULT NULL)`
+## 1. Limite de 12h inteligente (aproveitando o check de 2h)
 
-   O Supabase/PostgREST não consegue escolher qual chamar e retorna exatamente o erro mostrado: “Could not choose the best candidate function”.
+**Situação atual:** trigger `enforce_time_entry_max_duration` corta qualquer sessão acima de 12h e adiciona nota "auto-ajustada". Isso pune quem realmente estudou >12h, mesmo confirmando presença a cada 2h.
 
-2. O salto para `02:00:00` acontece porque a lógica de inatividade/auto-pausa está tratando uma sessão antiga como abandonada e aplicando o limite de 2h. Isso só deveria acontecer quando o timer estava realmente rodando sem resposta. Se o usuário pausou em `00:00:05`, esse valor precisa ficar congelado e nunca virar 2h ao clicar em stop.
+**Lógica nova:**
+- Cada confirmação válida do `InactivityCheckModal` (botão "Estou aqui") atualiza `last_heartbeat_at` e incrementa um contador `confirmed_intervals` na entrada (nova coluna).
+- O trigger passa a calcular o **limite máximo dinâmico** = `2h × (1 + confirmed_intervals)`.
+  - 0 confirmações → corta em 2h (igual hoje quando o usuário esquece).
+  - 1 confirmação → permite até 4h.
+  - 5 confirmações → permite até 12h.
+  - 6+ confirmações → permite até 24h (novo teto absoluto de segurança).
+- Se ultrapassar o limite dinâmico, corta no limite e adiciona nota com explicação clara (ex: "ajustada para 8h: 3 confirmações de presença registradas").
+- Sessões longas legítimas (estudante real confirmando) passam a contabilizar corretamente.
 
-3. Hoje o cálculo do timer está espalhado em mais de um lugar (`Index`, `SidebarMiniTimer`, `TimerContext`, modal de inatividade e RPCs). Isso cria corrida entre pause, heartbeat, auto-pausa e stop.
+**Migration:**
+- Adicionar `confirmed_intervals INTEGER DEFAULT 0` em `time_entries`.
+- Nova RPC `confirm_presence_time_entry(_entry_id uuid)` que incrementa o contador e atualiza `last_heartbeat_at`.
+- Reescrever `enforce_time_entry_max_duration` com a fórmula dinâmica e teto de 24h.
+- Frontend: `InactivityCheckModal.onResume` chama a RPC ao confirmar.
 
-## Plano de correção
+## 2. Sidebar — Suporte depois de Planos
 
-### 1. Corrigir o RPC de stop no banco
-
-- Remover a sobrecarga ambígua de `stop_time_entry`.
-- Manter uma única função `public.stop_time_entry(_entry_id uuid, _client_seconds integer DEFAULT NULL)`.
-- Fazer essa função usar bloqueio da linha ativa para evitar corrida entre pause/resume/stop.
-- Regra principal:
-  - se `_client_seconds` veio do frontend, salvar exatamente esse valor, limitado apenas pelo tempo real máximo possível;
-  - se não vier, usar o cálculo seguro por `start_time`, `paused_seconds` e `paused_at`.
-- Garantir que o stop sempre limpe `paused_at`, grave `end_time`, grave `duration` e retorne a sessão finalizada.
-
-### 2. Criar RPCs explícitos para pause e resume
-
-Adicionar duas funções servidoras para parar de depender de updates soltos pelo frontend:
-
-- `pause_time_entry(_entry_id uuid, _client_seconds integer)`
-  - congela a sessão no valor que estava aparecendo na tela;
-  - se o usuário pausou em 5s, o servidor passa a saber que a duração visível é 5s;
-  - se o timer já estiver pausado, não recalcula nem aumenta nada.
-
-- `resume_time_entry(_entry_id uuid)`
-  - soma o tempo realmente pausado em `paused_seconds`;
-  - limpa `paused_at`;
-  - reinicia o heartbeat.
-
-Com isso, pause deixa de ser “um estado local frágil” e passa a ser um estado confiável do servidor.
-
-### 3. Centralizar o cálculo do tempo exibido
-
-- Criar uma única função/hook de cálculo do tempo exibido.
-- Usar essa mesma fonte em:
-  - tela principal do timer;
-  - mini timer da sidebar;
-  - fullscreen timer;
-  - diálogo de stop.
-- Remover cálculos duplicados que hoje podem divergir.
-
-A regra será:
-
-```text
-Rodando:  agora - start_time - paused_seconds
-Pausado:  snapshot congelado no momento do pause
-Stop:     snapshot exibido no momento em que o usuário iniciou o stop
+Em `src/components/layout/Sidebar.tsx`, na lista `navItems`, mover `support` para logo após `pricing`:
+```
+... settings, pricing, support, admin?, sac-agent?
 ```
 
-### 4. Corrigir o comportamento do botão Stop
+## 3. Backgrounds personalizáveis (perfil + sala) Pro/Premium
 
-- Ao clicar no botão vermelho de stop, capturar imediatamente o tempo exibido naquele instante.
-- O diálogo de notas/tags vai mostrar esse snapshot fixo.
-- Ao confirmar, salvar esse mesmo snapshot.
-- Se o timer estava pausado em `00:00:05`, o stop salva `5` segundos, mesmo que a sessão tenha ficado pausada por horas ou dias.
-- Se houver erro ao salvar, o diálogo não deve fingir que salvou nem limpar estado local de pause.
+**Conceito:** sistema de "wallpapers" análogo ao avatar_flair atual, com tiers.
 
-### 5. Corrigir a inatividade de 2h
+### 3a. Schema (migration)
+- `profiles.profile_background TEXT DEFAULT 'none'` — background do perfil do usuário.
+- `study_rooms.room_background TEXT DEFAULT 'none'` — background da sala definido pelo dono.
+- Atualizar as funções SECURITY DEFINER que retornam preview público de profile e room para incluir esses campos (somente o id do background, sem dados sensíveis).
 
-- A checagem de inatividade só poderá atuar quando o timer estiver rodando.
-- Se o timer já estiver pausado, ela não deve abrir modal, não deve ajustar tempo e não deve transformar 5s em 2h.
-- Quando passar de 2h rodando sem confirmação, ela deve congelar a sessão em 2h via `pause_time_entry`, abrir o modal e só continuar se o usuário confirmar.
+### 3b. Catálogo `src/lib/wallpapers.ts`
+Estrutura igual a `avatarFlairs.ts`:
+- `id`, `name`, `tier` (`free` | `pro` | `premium`), `preview` (gradient/pattern CSS), `className` ou render fn.
+- Free: 1–2 opções neutras.
+- Pro: ~6 opções (gradientes sólidos, padrões sutis).
+- Premium: todas (~14 opções, incluindo animadas: aurora, galáxia, partículas, mesh gradient).
+- Helper `getWallpaperById(id, tier)` faz fallback para `'none'` se o usuário não tem o tier necessário (defesa contra downgrade de plano).
 
-### 6. Corrigir heartbeat sem quebrar o fluxo
+### 3c. Componente `<Wallpaper background={id} className="...">`
+- Renderiza um `<div absolute inset-0 -z-10>` com o estilo do wallpaper.
+- Gradientes via tokens HSL do design system (sem cores hardcoded).
+- Animações leves com CSS (sem dependência nova). Premium pode ter 1–2 com Framer Motion já existente.
+- Sempre com overlay `bg-background/70 backdrop-blur-sm` para legibilidade do conteúdo.
 
-- Garantir que `heartbeat_time_entry` exista e esteja disponível para o cliente.
-- Se o heartbeat falhar, isso não pode impedir pause/stop.
-- A auto-pausa deve usar heartbeat apenas para detectar abandono real, nunca para sobrescrever uma pausa manual já existente.
+### 3d. Configuração do background do **perfil** (Settings)
+- Novo card `<ProfileBackgroundPicker>` em Settings, abaixo de `AvatarFlairPicker`.
+- Mostra grid de previews; trava opções acima do tier (igual ao flair picker).
+- Salva via `useUpdateProfile`.
 
-### 7. Corrigir o mini timer da sidebar
+### 3e. Configuração do background da **sala** (Room Settings)
+- Em `src/components/rooms/RoomSettingsTab.tsx`, novo card `<RoomBackgroundPicker>` visível apenas para o dono e somente se `tier !== 'free'`.
+- Free vê CTA de upgrade.
+- Salva via update em `study_rooms.room_background`.
 
-- Trocar o cálculo independente do `SidebarMiniTimer` pela mesma lógica central usada na tela principal.
-- O botão de stop da sidebar também deve enviar o mesmo snapshot exibido, não recalcular no momento errado.
+### 3f. Onde os backgrounds aparecem
+1. **Perfil em /explore** (`Explore.tsx`): nos cards de perfil público, renderiza `<Wallpaper>` no fundo do card quando o perfil é público e tem background definido. Mantém layout existente, apenas troca o `bg-card` por wallpaper + overlay.
+2. **Card de sala em /explore**: aplica `room_background` no fundo do card da sala. Cards de sala ficam com identidade visual do dono.
+3. **Dentro da sala** (`RoomDetail.tsx`): wallpaper como fundo da página da sala (full-bleed, atrás do conteúdo). Overlay garante contraste.
+4. **Modal de perfil de membro/amigo**: aplica wallpaper do perfil no header do modal (`MemberProfileModal`, `FriendProfileModal`).
 
-### 8. Validar os cenários críticos
+### 3g. Responsividade e segurança
+- Todos os wallpapers testados em viewport mobile (≤640px): gradientes/padrões escalam por `cover`; animações desativadas em `prefers-reduced-motion`.
+- Overlay garante que texto continue legível em qualquer wallpaper.
+- Validação no backend: trigger BEFORE INSERT/UPDATE em `profiles` e `study_rooms` que reseta o background para `'none'` se o `plan_tier` do dono não permitir o tier do wallpaper escolhido (proteção contra downgrade e manipulação client-side).
 
-Vou validar estes fluxos antes de concluir:
+## 4. i18n
+- Adicionar chaves em `pt-BR.json` e `en-US.json` para: `settings.profile_background.*`, `rooms.background.*`, `wallpapers.*` (nomes de cada wallpaper), badges Pro/Premium.
 
-- iniciar timer, pausar em 5s, esperar/recarregar, clicar stop → salva 5s;
-- iniciar timer e parar em 28:02 → salva 28:02;
-- abrir stop dialog e demorar para confirmar → salva o tempo do clique no stop, não um valor maior;
-- timer rodando por mais de 2h sem resposta → pausa em 2h e pergunta se o usuário está ali;
-- timer pausado por horas/dias → continua mostrando o mesmo tempo congelado;
-- erro de RPC ambígua desaparece porque só haverá uma função `stop_time_entry`.
+## 5. Ordem de execução
+1. Migration: `confirmed_intervals`, RPC `confirm_presence_time_entry`, novo trigger 12h dinâmico, colunas `profile_background`/`room_background`, trigger de validação por tier, atualizar funções SECURITY DEFINER de preview.
+2. Frontend timer: integrar RPC no `InactivityCheckModal.onResume`.
+3. Sidebar: reordenar Suporte.
+4. Wallpapers: criar `src/lib/wallpapers.ts` + `<Wallpaper>` + pickers.
+5. Aplicar wallpapers em Explore (perfis e salas), RoomDetail, modais de perfil.
+6. i18n e QA mobile.
 
-## Observação importante
-
-Depois da correção, o banco e o frontend passam a seguir uma regra simples: o valor salvo no `duration` será o mesmo valor visível para o usuário no momento de finalizar a sessão.
-
-<presentation-actions>
-  <presentation-open-history>View History</presentation-open-history>
-</presentation-actions>
-
-<presentation-actions>
-<presentation-link url="https://docs.lovable.dev/tips-tricks/troubleshooting">Troubleshooting docs</presentation-link>
-</presentation-actions>
+## Pontos para confirmar antes de implementar
+- Teto absoluto de 24h serve, ou prefere algo diferente (ex: sem teto se confirmar todas as 2h)?
+- Quer que o usuário Free também tenha 1–2 wallpapers (como tem flair "default"), ou Free fica sem opção alguma?
