@@ -653,6 +653,7 @@ export type Database = {
           pomodoro_long_break: number | null
           pomodoro_short_break: number | null
           pomodoro_work_duration: number | null
+          profile_background: string
           reminder_interval: number
           reminder_notification: boolean
           reminder_sound: boolean
@@ -687,6 +688,7 @@ export type Database = {
           pomodoro_long_break?: number | null
           pomodoro_short_break?: number | null
           pomodoro_work_duration?: number | null
+          profile_background?: string
           reminder_interval?: number
           reminder_notification?: boolean
           reminder_sound?: boolean
@@ -721,6 +723,7 @@ export type Database = {
           pomodoro_long_break?: number | null
           pomodoro_short_break?: number | null
           pomodoro_work_duration?: number | null
+          profile_background?: string
           reminder_interval?: number
           reminder_notification?: boolean
           reminder_sound?: boolean
@@ -1115,6 +1118,7 @@ export type Database = {
           owner_id: string
           password_hash: string | null
           pinned_message: string | null
+          room_background: string
           room_type: string
           rules: string | null
           slug: string | null
@@ -1139,6 +1143,7 @@ export type Database = {
           owner_id: string
           password_hash?: string | null
           pinned_message?: string | null
+          room_background?: string
           room_type?: string
           rules?: string | null
           slug?: string | null
@@ -1163,6 +1168,7 @@ export type Database = {
           owner_id?: string
           password_hash?: string | null
           pinned_message?: string | null
+          room_background?: string
           room_type?: string
           rules?: string | null
           slug?: string | null
@@ -1305,6 +1311,7 @@ export type Database = {
       }
       time_entries: {
         Row: {
+          confirmed_intervals: number
           created_at: string
           duration: number | null
           end_time: string | null
@@ -1321,6 +1328,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          confirmed_intervals?: number
           created_at?: string
           duration?: number | null
           end_time?: string | null
@@ -1337,6 +1345,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          confirmed_intervals?: number
           created_at?: string
           duration?: number | null
           end_time?: string | null
@@ -1524,6 +1533,10 @@ export type Database = {
         Returns: undefined
       }
       auto_pause_stale_entries: { Args: never; Returns: number }
+      background_allowed_for_tier: {
+        Args: { _bg: string; _tier: string }
+        Returns: boolean
+      }
       check_and_grant_freeze_missions: {
         Args: never
         Returns: {
@@ -1539,6 +1552,10 @@ export type Database = {
           last_streak: number
           new_streak: number
         }[]
+      }
+      confirm_presence_time_entry: {
+        Args: { _entry_id: string }
+        Returns: undefined
       }
       consume_streak_freeze: {
         Args: { _date: string }
@@ -1626,6 +1643,7 @@ export type Database = {
           display_name: string
           is_anonymous: boolean
           plan_tier: string
+          profile_background: string
           total_seconds: number
           user_id: string
         }[]
@@ -1654,6 +1672,7 @@ export type Database = {
           display_name: string
           is_stats_public: boolean
           plan_tier: string
+          profile_background: string
           total_seconds: number
         }[]
       }
@@ -1747,6 +1766,7 @@ export type Database = {
           display_name: string
           friend_code: string
           plan_tier: string
+          profile_background: string
           user_id: string
         }[]
       }
@@ -1768,6 +1788,7 @@ export type Database = {
           member_count: number
           name: string
           online_count: number
+          room_background: string
           room_id: string
           room_type: string
           studying_count: number
@@ -1818,6 +1839,7 @@ export type Database = {
       pause_time_entry: {
         Args: { _client_seconds?: number; _entry_id: string }
         Returns: {
+          confirmed_intervals: number
           created_at: string
           duration: number | null
           end_time: string | null
@@ -1844,6 +1866,7 @@ export type Database = {
       resume_time_entry: {
         Args: { _entry_id: string }
         Returns: {
+          confirmed_intervals: number
           created_at: string
           duration: number | null
           end_time: string | null
@@ -1874,6 +1897,7 @@ export type Database = {
       stop_time_entry: {
         Args: { _client_seconds?: number; _entry_id: string }
         Returns: {
+          confirmed_intervals: number
           created_at: string
           duration: number | null
           end_time: string | null
