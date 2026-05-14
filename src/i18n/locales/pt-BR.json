@@ -485,6 +485,15 @@
     "privacy_desc": "Controle quem pode ver suas estatísticas",
     "public_stats": "Estatísticas Públicas",
     "public_stats_desc": "Permitir que membros das salas vejam suas horas de estudo e progresso diário",
+    "profile_background": {
+      "title": "Fundo do perfil",
+      "description": "Aplique um fundo decorativo ao seu card no Explorar e nos modais de perfil. Disponível nos planos Pro e Premium.",
+      "none": "Nenhum",
+      "hint_pro": "Faça upgrade para Premium e desbloqueie fundos animados exclusivos.",
+      "hint_premium": "Você tem acesso a todos os fundos.",
+      "upgrade_title": "Personalize seu perfil",
+      "upgrade_desc": "Pro: 6 fundos elegantes • Premium: todos, incluindo aurora, galáxia e mais"
+    },
     "avatar_flair": {
       "title": "Estilo do Avatar",
       "badge_pro": "Pro",
