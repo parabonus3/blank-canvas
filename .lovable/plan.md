@@ -1,73 +1,79 @@
+## Diagnóstico
 
-## Diagnóstico — "novo dia" no Explorar
+Encontrei três causas principais para a regressão:
 
-Hoje, três RPCs (`get_public_rooms_ranking_by_period`, `get_room_daily_progress`, `get_global_user_ranking`) filtram por `CURRENT_DATE`. `CURRENT_DATE` no Postgres usa o **timezone do servidor (UTC)**, então:
+1. **Explorar quebrou por overload de RPC no Supabase**
+   - Agora existem duas versões simultâneas de `get_public_rooms_ranking_by_period`: uma com 4 parâmetros e outra com 5.
+   - Também existem duas versões de `get_global_user_ranking`: uma com 1 parâmetro e outra com 2.
+   - O frontend chama as versões antigas, e o PostgREST não consegue decidir qual função usar. O erro confirmado foi `PGRST203: Could not choose the best candidate function`.
+   - Resultado: salas e usuários ficam vazios ou falham ao respeitar filtros.
 
-- Para um usuário em São Paulo (UTC−3), o "novo dia" do ranking vira às **21:00 do dia anterior** (00:00 UTC).
-- Sessões feitas entre 21:00–23:59 SP "somem" do dia atual no Explorar e aparecem como dia novo cedo demais.
-- O mesmo se aplica a "semana" (offset de 3h também desloca o início).
+2. **Padrão America/Sao_Paulo ficou inadequado para Explorar global**
+   - A mudança anterior colocou `America/Sao_Paulo` como padrão de ranking global.
+   - Para um ranking público/global, isso cria uma referência regional demais.
+   - Melhor usar um padrão neutro e global: **UTC**, com aviso discreto no Explorar.
 
-### Decisão recomendada
+3. **Metas no Timer usam a tabela errada**
+   - O componente novo `ActiveGoalsStrip` usa `useGoalsWithProgress()`, que lê a tabela antiga `goals`.
+   - A tela atual de Metas usa `annual_goals`, `life_categories` e `annual_goal_progress`.
+   - O banco tem metas em `annual_goals`, mas `goals` está vazia. Por isso nada aparece no Timer/fullscreen.
 
-Para o **Explorar (rankings globais)**: usar um **fuso padrão único** (`America/Sao_Paulo`) para que o ranking seja igual para todos os usuários e justo (caso contrário, quem está em UTC+12 começa o dia 15h antes e domina o "today"). Mostrar isso de forma **discreta** abaixo das tabs: texto pequeno tipo *"Dia/semana baseados em America/Sao_Paulo (UTC−3)"*.
+## Plano de correção
 
-Para **progresso da sala** (`get_room_daily_progress`) e **metas/timer pessoais**: usar o **timezone do próprio usuário** (`profiles.timezone`), pois é experiência individual.
+### 1. Restaurar as RPCs de Explorar sem ambiguidade
 
-## Mudanças no banco (migration)
+Criar uma migração para:
 
-Substituir `CURRENT_DATE` por cálculo via timezone:
+- Remover as assinaturas antigas ambíguas:
+  - `get_public_rooms_ranking_by_period(text, text, text, text)`
+  - `get_global_user_ranking(text)`
+  - `get_room_daily_progress(uuid, text)`
+- Manter uma única assinatura por função:
+  - `get_public_rooms_ranking_by_period(_period, _category, _search, _country, _tz default 'UTC')`
+  - `get_global_user_ranking(_period, _tz default 'UTC')`
+  - `get_room_daily_progress(_room_id, _period, _tz default 'UTC')`
+- Preservar `SECURITY DEFINER`, `search_path = public` e os grants atuais para não quebrar acesso público intencional.
+- Trocar o helper para `start_of_day_in_tz('UTC')` por padrão.
 
-```sql
--- helper
-CREATE OR REPLACE FUNCTION public.start_of_day_in_tz(_tz text)
-RETURNS timestamptz LANGUAGE sql STABLE AS $$
-  SELECT date_trunc('day', (now() AT TIME ZONE _tz)) AT TIME ZONE _tz;
-$$;
-```
+### 2. Ajustar o frontend do Explorar
 
-Atualizar:
-1. `get_public_rooms_ranking_by_period` — receber `_tz text DEFAULT 'America/Sao_Paulo'` e trocar `CURRENT_DATE` por `start_of_day_in_tz(_tz)` e `start_of_day_in_tz(_tz) - INTERVAL '6 days'` para semana (semana = últimos 7 dias incluindo hoje no fuso).
-2. `get_global_user_ranking` — idem.
-3. `get_room_daily_progress` — receber `_tz` (frontend passa `profile.timezone`).
+- Passar `_tz: 'UTC'` explicitamente nas chamadas de:
+  - `get_public_rooms_ranking_by_period`
+  - `get_global_user_ranking`
+- Atualizar o aviso discreto para algo como:
+  - “Dia e semana baseados em UTC para manter o ranking global consistente.”
+- Conferir as traduções em `pt-BR` e `en-US` para não depender de fallback hardcoded.
 
-Manter assinatura compatível (parâmetro com default), sem quebrar chamadas existentes.
+### 3. Corrigir metas no Timer e fullscreen
 
-## Frontend — Explorar
+- Adaptar `ActiveGoalsStrip` para usar as metas atuais de `annual_goals`, não a tabela legada `goals`.
+- Exibir apenas metas:
+  - do ano atual;
+  - não arquivadas;
+  - não concluídas;
+  - com progresso abaixo de 100%.
+- Usar `life_categories.color` quando existir, mantendo visual discreto.
+- Para progresso:
+  - `current_value / target_value` para metas simples/progresso/hábito.
+- Manter o limite visual de até 3 metas + “+N”.
 
-- `src/pages/Explore.tsx`: abaixo das tabs de período, linha discreta `text-xs text-muted-foreground` com aviso do fuso padrão (i18n).
-- Não passar `_tz` nas chamadas do Explorar (usa default SP). Em `RoomGoalProgress` (sala), passar `_tz: profile.timezone`.
+### 4. Corrigir compatibilidade de progresso de sala
 
-## Frontend — Metas no Timer (discreto)
+- Em `RoomGoalProgress`, continuar passando o timezone do usuário quando for experiência da sala/pessoal.
+- Após remover a assinatura antiga, garantir que a chamada com `_tz` continue funcionando.
 
-Contexto: hoje `useGoalsWithProgress` retorna metas ativas com `progress`, `status` e dados do projeto. O usuário quer ver no `/` (Timer) e no `FullscreenTimer` apenas metas **em andamento** (excluir `status === "completed"`).
+### 5. Validar depois da implementação
 
-1. **Novo componente** `src/components/timer/ActiveGoalsStrip.tsx`:
-   - Lista compacta horizontal (chips) com: cor do projeto, nome curto, mini barra de progresso, `XX%`.
-   - Apenas metas com `progress < 100`.
-   - Limite visual: até 3 visíveis + "+N" se houver mais (tooltip/popover lista o resto).
-   - Estilo bem discreto: `text-xs`, fundo `bg-muted/40`, borda sutil. Sem títulos grandes.
-   - Mobile: scroll horizontal (`overflow-x-auto`, snap), chips menores.
+- Testar via chamada REST/Supabase que as RPCs não retornam mais `PGRST203`.
+- Verificar em `/explore`:
+  - salas aparecem;
+  - usuários aparecem quando houver dados no período;
+  - filtros `Agora`, `Hoje`, `Semana`, `Total` funcionam.
+- Verificar em `/timer` e fullscreen:
+  - metas de `annual_goals` aparecem discretamente;
+  - metas concluídas não aparecem;
+  - layout permanece responsivo.
 
-2. **Integração em `src/pages/Index.tsx`** (Timer): renderizar `ActiveGoalsStrip` logo abaixo do header do timer, recolhível em mobile (`hidden sm:flex` no chip extra, mas o strip aparece sempre). Esconder se nenhuma meta ativa.
+## Observação importante
 
-3. **Integração em `src/components/FullscreenTimer.tsx`**: render no rodapé/bottom com `opacity-60 hover:opacity-100`, posicionamento absoluto inferior central, mantendo o foco no relógio.
-
-4. **Filtro:** ambos usam `useGoalsWithProgress()` e filtram `status !== "completed"`.
-
-## Responsividade mobile
-
-- Strip: `flex gap-2 overflow-x-auto snap-x` em < `sm`, grid `flex-wrap` em ≥ `sm`.
-- Aviso de fuso no Explorar: `text-[11px]` em mobile, alinhado à direita das tabs ou abaixo.
-- FullscreenTimer: strip vira linha única com `max-w-[90vw]` e fonte menor.
-
-## Detalhes técnicos
-
-- Migration via supabase migration tool (CREATE OR REPLACE; mantém assinatura).
-- Não tocar em `src/integrations/supabase/types.ts`.
-- i18n: novas chaves `explore.timezone_notice`, `timer.active_goals`, `timer.goals_more`.
-- Sem mudanças em auth, RLS, ou regras de negócio fora do escopo.
-
-## Fora do escopo
-
-- Não alterar cálculo de streak (já usa timezone do usuário).
-- Não alterar tela de Goals (`/goals`) — apenas adicionar visualização discreta no Timer.
+Não vou mexer em regras de avatar, contorno de sala, RLS sensível ou permissões amplas de `study_rooms`. A correção fica limitada ao que quebrou: RPCs de ranking/fuso e fonte das metas exibidas no Timer.
