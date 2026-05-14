@@ -146,6 +146,12 @@ export default function Explore() {
           columns="grid-cols-4"
         />
 
+        {(period === "today" || period === "week") && (
+          <p className="text-[11px] text-muted-foreground/70 -mt-1">
+            {t("explore.timezone_notice", { defaultValue: "Dia e semana baseados em America/Sao_Paulo (UTC−3) para todos os usuários." })}
+          </p>
+        )}
+
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="hidden">
             <TabsTrigger value="rooms" />
