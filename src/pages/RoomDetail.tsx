@@ -371,7 +371,8 @@ export default function RoomDetail() {
             </TabsContent>
           )}
         </Tabs>
-      </div>
+        </div>
+      </RoomFrame>
 
       {room && (
         <InviteMemberDialog
