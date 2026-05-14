@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { MemberProfileModal } from "@/components/rooms/MemberProfileModal";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
+import { Wallpaper } from "@/components/Wallpaper";
 import { useQuery } from "@tanstack/react-query";
 
 const PRESENCE_WINDOW_MS = 2 * 60 * 60 * 1000 + 5 * 60 * 1000; // 2h05min
@@ -182,7 +183,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
             <div
               key={member.id}
               className={cn(
-                "relative flex items-center gap-3 p-3 pr-4 transition-all",
+                "relative overflow-hidden flex items-center gap-3 p-3 pr-4 transition-all rounded-xl",
                 isPremium ? "classroom-desk-premium" : isPro ? "classroom-desk-pro" : "classroom-desk",
                 !isMe && "cursor-pointer hover:scale-[1.02] hover:-translate-y-0.5",
                 isMe && !isPremium && !isPro && "ring-2 ring-primary/30",
@@ -190,6 +191,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
               )}
               onClick={() => handleMemberClick(member)}
             >
+              <Wallpaper background={(member as any).profile_background} variant="card" overlay={0.78} rounded />
               {isPremium && <span className="plan-ribbon plan-ribbon-premium">Premium</span>}
               {isPro && <span className="plan-ribbon plan-ribbon-pro">Pro</span>}
               {/* Avatar with plan ring */}
