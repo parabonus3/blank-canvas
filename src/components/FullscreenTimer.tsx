@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { X, Play, Pause, Square, SkipForward, Volume2, VolumeX, Flame } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ActiveGoalsStrip } from '@/components/timer/ActiveGoalsStrip';
 
 interface FullscreenTimerProps {
   mode: 'normal' | 'pomodoro';
@@ -162,6 +163,10 @@ export function FullscreenTimer({ mode, elapsed = 0, onClose, onPause, onResume,
           <span className={cn('text-sm sm:text-base font-medium', isRunning ? 'text-primary' : 'text-warning')}>
             {isPaused ? t('timer.paused') : t('timer.in_progress')}
           </span>
+        </div>
+
+        <div className="mt-6 sm:mt-8 opacity-60 hover:opacity-100 transition-opacity">
+          <ActiveGoalsStrip variant="fullscreen" />
         </div>
       </div>
 

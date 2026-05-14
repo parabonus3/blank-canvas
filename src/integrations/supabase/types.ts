@@ -1631,19 +1631,33 @@ export type Database = {
           hours_week: number
         }[]
       }
-      get_global_user_ranking: {
-        Args: { _period?: string }
-        Returns: {
-          avatar_flair: string
-          avatar_flair_color: string
-          avatar_url: string
-          display_name: string
-          is_anonymous: boolean
-          plan_tier: string
-          total_seconds: number
-          user_id: string
-        }[]
-      }
+      get_global_user_ranking:
+        | {
+            Args: { _period?: string }
+            Returns: {
+              avatar_flair: string
+              avatar_flair_color: string
+              avatar_url: string
+              display_name: string
+              is_anonymous: boolean
+              plan_tier: string
+              total_seconds: number
+              user_id: string
+            }[]
+          }
+        | {
+            Args: { _period?: string; _tz?: string }
+            Returns: {
+              avatar_flair: string
+              avatar_flair_color: string
+              avatar_url: string
+              display_name: string
+              is_anonymous: boolean
+              plan_tier: string
+              total_seconds: number
+              user_id: string
+            }[]
+          }
       get_habit_period_count: { Args: { _goal_id: string }; Returns: number }
       get_member_best_session: { Args: { _user_id: string }; Returns: number }
       get_member_current_role: { Args: { _member_id: string }; Returns: string }
@@ -1715,31 +1729,58 @@ export type Database = {
           total_seconds: number
         }[]
       }
-      get_public_rooms_ranking_by_period: {
-        Args: {
-          _category?: string
-          _country?: string
-          _period?: string
-          _search?: string
-        }
-        Returns: {
-          country: string
-          description: string
-          goal_hours: number
-          invite_code: string
-          is_public: boolean
-          member_count: number
-          name: string
-          online_count: number
-          period_seconds: number
-          room_background: string
-          room_id: string
-          room_type: string
-          slug: string
-          studying_count: number
-          total_seconds: number
-        }[]
-      }
+      get_public_rooms_ranking_by_period:
+        | {
+            Args: {
+              _category?: string
+              _country?: string
+              _period?: string
+              _search?: string
+            }
+            Returns: {
+              country: string
+              description: string
+              goal_hours: number
+              invite_code: string
+              is_public: boolean
+              member_count: number
+              name: string
+              online_count: number
+              period_seconds: number
+              room_background: string
+              room_id: string
+              room_type: string
+              slug: string
+              studying_count: number
+              total_seconds: number
+            }[]
+          }
+        | {
+            Args: {
+              _category?: string
+              _country?: string
+              _period?: string
+              _search?: string
+              _tz?: string
+            }
+            Returns: {
+              country: string
+              description: string
+              goal_hours: number
+              invite_code: string
+              is_public: boolean
+              member_count: number
+              name: string
+              online_count: number
+              period_seconds: number
+              room_background: string
+              room_id: string
+              room_type: string
+              slug: string
+              studying_count: number
+              total_seconds: number
+            }[]
+          }
       get_room_activity_heatmap: {
         Args: { _room_id: string }
         Returns: {
@@ -1747,12 +1788,19 @@ export type Database = {
           total_minutes: number
         }[]
       }
-      get_room_daily_progress: {
-        Args: { _period?: string; _room_id: string }
-        Returns: {
-          total_seconds_today: number
-        }[]
-      }
+      get_room_daily_progress:
+        | {
+            Args: { _period?: string; _room_id: string }
+            Returns: {
+              total_seconds_today: number
+            }[]
+          }
+        | {
+            Args: { _period?: string; _room_id: string; _tz?: string }
+            Returns: {
+              total_seconds_today: number
+            }[]
+          }
       get_room_invite_code: { Args: { _room_id: string }; Returns: string }
       get_room_member_profiles: {
         Args: { _room_id: string }
@@ -1890,6 +1938,7 @@ export type Database = {
         Args: { _member_user_id: string; _role: string; _room_id: string }
         Returns: undefined
       }
+      start_of_day_in_tz: { Args: { _tz: string }; Returns: string }
       stop_time_entry: {
         Args: { _client_seconds?: number; _entry_id: string }
         Returns: {
