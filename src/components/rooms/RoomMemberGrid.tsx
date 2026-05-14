@@ -191,7 +191,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
               )}
               onClick={() => handleMemberClick(member)}
             >
-              <Wallpaper background={(member as any).profile_background} variant="card" overlay={0.78} rounded />
+              
               {isPremium && <span className="plan-ribbon plan-ribbon-premium">Premium</span>}
               {isPro && <span className="plan-ribbon plan-ribbon-pro">Pro</span>}
               {/* Avatar with plan ring */}
