@@ -1,130 +1,137 @@
 import type { PlanTier } from "@/lib/stripePlans";
 
+/**
+ * Room Frame catalog (the column is still called `room_background` in Postgres for
+ * historical reasons, but visually these are now ANIMATED CONTOURS / BORDERS that
+ * wrap a room — they never paint the interior.
+ *
+ * IDs follow the prefix convention enforced by the trigger validate_room_background:
+ *   none | free-* | pro-* | premium-*
+ */
+
 export type WallpaperTier = "free" | "pro" | "premium";
 
 export interface WallpaperDef {
   id: string;
   tier: WallpaperTier;
-  /** Inline CSS background applied to the wallpaper layer. Uses HSL tokens via tailwind utilities elsewhere. */
-  background: string;
-  /** Optional extra CSS animation class name (defined in index.css) for premium animated wallpapers. */
+  /** CSS background applied to the OUTER border layer (the moldura).
+   *  For animated frames this should look good when its background-position shifts. */
+  borderBackground: string;
+  /** Optional CSS animation class name (defined in src/index.css) for animated frames. */
   animationClass?: string;
 }
 
-/**
- * Wallpaper catalog. IDs MUST follow the prefix convention:
- *   none | free-* | pro-* | premium-*
- * The Postgres triggers validate_profile_background / validate_room_background
- * enforce the same rule on the server.
- */
 export const WALLPAPERS: WallpaperDef[] = [
-  // -------- FREE (1 neutral option besides "none") --------
+  // -------- FREE --------
   {
     id: "free-mist",
     tier: "free",
-    background:
-      "linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%)",
+    borderBackground:
+      "linear-gradient(135deg, hsl(var(--border)) 0%, hsl(var(--muted)) 100%)",
   },
 
-  // -------- PRO (6 elegant gradients) --------
+  // -------- PRO (subtle moving gradients on the border) --------
   {
     id: "pro-twilight",
     tier: "pro",
-    background:
-      "linear-gradient(135deg, hsl(225 50% 18%) 0%, hsl(265 45% 28%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(225 60% 35%), hsl(265 60% 55%), hsl(225 60% 35%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "pro-sunrise",
     tier: "pro",
-    background:
-      "linear-gradient(135deg, hsl(20 85% 60%) 0%, hsl(340 75% 55%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(20 90% 60%), hsl(340 80% 60%), hsl(20 90% 60%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "pro-forest",
     tier: "pro",
-    background:
-      "linear-gradient(135deg, hsl(155 45% 22%) 0%, hsl(180 35% 35%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(155 55% 35%), hsl(180 50% 50%), hsl(155 55% 35%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "pro-rose",
     tier: "pro",
-    background:
-      "linear-gradient(135deg, hsl(340 70% 75%) 0%, hsl(15 80% 80%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(340 80% 70%), hsl(15 85% 75%), hsl(340 80% 70%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "pro-ocean",
     tier: "pro",
-    background:
-      "linear-gradient(135deg, hsl(210 70% 30%) 0%, hsl(195 60% 50%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(210 80% 45%), hsl(195 75% 60%), hsl(210 80% 45%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "pro-sand",
     tier: "pro",
-    background:
-      "linear-gradient(135deg, hsl(35 55% 75%) 0%, hsl(20 40% 60%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(35 70% 65%), hsl(20 60% 55%), hsl(35 70% 65%))",
+    animationClass: "frame-shimmer",
   },
 
-  // -------- PREMIUM (8 — animated mesh / aurora / galaxy) --------
+  // -------- PREMIUM (rotating conic gradients / aurora) --------
   {
     id: "premium-aurora",
     tier: "premium",
-    background:
-      "radial-gradient(at 20% 30%, hsl(155 80% 50% / 0.7), transparent 50%), radial-gradient(at 80% 70%, hsl(265 80% 60% / 0.7), transparent 55%), radial-gradient(at 50% 100%, hsl(195 90% 55% / 0.6), transparent 50%), hsl(225 50% 8%)",
-    animationClass: "wallpaper-aurora",
+    borderBackground:
+      "conic-gradient(from 0deg, hsl(155 80% 55%), hsl(195 85% 55%), hsl(265 80% 60%), hsl(155 80% 55%))",
+    animationClass: "frame-rotate",
   },
   {
     id: "premium-galaxy",
     tier: "premium",
-    background:
-      "radial-gradient(ellipse at 30% 20%, hsl(280 70% 35% / 0.9), transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(220 80% 25% / 0.95), transparent 60%), hsl(260 60% 6%)",
-    animationClass: "wallpaper-galaxy",
+    borderBackground:
+      "conic-gradient(from 0deg, hsl(280 75% 55%), hsl(220 80% 50%), hsl(335 70% 55%), hsl(280 75% 55%))",
+    animationClass: "frame-rotate",
   },
   {
     id: "premium-mesh",
     tier: "premium",
-    background:
-      "radial-gradient(at 0% 0%, hsl(15 90% 65% / 0.85), transparent 50%), radial-gradient(at 100% 0%, hsl(330 85% 65% / 0.85), transparent 50%), radial-gradient(at 0% 100%, hsl(45 95% 60% / 0.8), transparent 50%), radial-gradient(at 100% 100%, hsl(280 80% 65% / 0.85), transparent 50%), hsl(15 30% 95%)",
-    animationClass: "wallpaper-mesh",
+    borderBackground:
+      "conic-gradient(from 0deg, hsl(15 90% 65%), hsl(330 85% 65%), hsl(45 95% 60%), hsl(280 80% 65%), hsl(15 90% 65%))",
+    animationClass: "frame-rotate",
   },
   {
     id: "premium-noir-gold",
     tier: "premium",
-    background:
-      "linear-gradient(135deg, hsl(0 0% 5%) 0%, hsl(0 0% 10%) 50%, hsl(40 80% 35%) 100%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(0 0% 8%), hsl(40 80% 50%), hsl(0 0% 8%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "premium-flame",
     tier: "premium",
-    background:
-      "radial-gradient(at 50% 100%, hsl(15 95% 55% / 0.95), transparent 60%), radial-gradient(at 50% 80%, hsl(45 95% 60% / 0.7), transparent 50%), hsl(0 70% 12%)",
-    animationClass: "wallpaper-flame",
+    borderBackground:
+      "conic-gradient(from 0deg, hsl(15 95% 55%), hsl(45 95% 60%), hsl(0 90% 50%), hsl(15 95% 55%))",
+    animationClass: "frame-rotate",
   },
   {
     id: "premium-sakura",
     tier: "premium",
-    background:
-      "radial-gradient(at 25% 25%, hsl(340 80% 88% / 0.95), transparent 50%), radial-gradient(at 75% 75%, hsl(15 75% 85% / 0.9), transparent 55%), hsl(345 60% 96%)",
+    borderBackground:
+      "linear-gradient(110deg, hsl(340 85% 80%), hsl(15 80% 80%), hsl(340 85% 80%))",
+    animationClass: "frame-shimmer",
   },
   {
     id: "premium-emerald",
     tier: "premium",
-    background:
-      "linear-gradient(135deg, hsl(155 60% 12%) 0%, hsl(165 75% 30%) 50%, hsl(45 70% 55%) 100%)",
+    borderBackground:
+      "conic-gradient(from 0deg, hsl(155 70% 25%), hsl(165 80% 40%), hsl(45 75% 55%), hsl(155 70% 25%))",
+    animationClass: "frame-rotate",
   },
   {
     id: "premium-cosmos",
     tier: "premium",
-    background:
-      "radial-gradient(at 30% 40%, hsl(295 75% 55% / 0.85), transparent 50%), radial-gradient(at 70% 60%, hsl(195 85% 55% / 0.85), transparent 50%), radial-gradient(at 50% 90%, hsl(335 75% 60% / 0.7), transparent 50%), hsl(245 60% 8%)",
-    animationClass: "wallpaper-aurora",
+    borderBackground:
+      "conic-gradient(from 0deg, hsl(295 75% 55%), hsl(195 85% 55%), hsl(335 75% 60%), hsl(295 75% 55%))",
+    animationClass: "frame-rotate",
   },
 ];
-
-export const WALLPAPER_NONE: WallpaperDef = {
-  id: "none",
-  tier: "free",
-  background: "transparent",
-};
 
 export function getWallpapersForTier(tier: PlanTier): WallpaperDef[] {
   if (tier === "premium") return WALLPAPERS;
@@ -137,7 +144,6 @@ export function getWallpaperById(id: string | null | undefined): WallpaperDef | 
   return WALLPAPERS.find((w) => w.id === id) || null;
 }
 
-/** Defense-in-depth: returns null if the user's tier doesn't allow that wallpaper. */
 export function resolveWallpaper(
   id: string | null | undefined,
   tier: PlanTier,
