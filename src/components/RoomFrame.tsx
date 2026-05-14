@@ -67,7 +67,3 @@ export function RoomFrame({
   );
 }
 
-/** @deprecated use <RoomFrame> instead. Kept as a no-op shim for legacy imports. */
-export function Wallpaper(_: any) {
-  return null;
-}
