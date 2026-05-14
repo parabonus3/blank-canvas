@@ -207,8 +207,13 @@ export default function RoomDetail() {
 
   return (
     <MainLayout>
-      <div className="relative space-y-6">
-        <Wallpaper background={(room as any)?.room_background} variant="page" overlay={0.85} />
+      {/* Room wallpaper: fixed-position layer behind the entire content area */}
+      {(room as any)?.room_background && (room as any).room_background !== "none" && (
+        <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
+          <Wallpaper background={(room as any).room_background} variant="page" overlay={0.7} />
+        </div>
+      )}
+      <div className="relative z-[1] space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/rooms")}>
