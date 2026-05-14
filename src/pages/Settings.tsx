@@ -20,6 +20,7 @@ import { getDateLocale } from "@/lib/timezone";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarFlairPicker } from "@/components/settings/AvatarFlairPicker";
+import { ProfileBackgroundPicker } from "@/components/settings/ProfileBackgroundPicker";
 import { AvatarCropDialog } from "@/components/settings/AvatarCropDialog";
 
 const groupedTimezones = getGroupedTimezones();
@@ -252,6 +253,9 @@ export default function Settings() {
 
         {/* Avatar Flair Picker (Pro/Premium animated effects, Discord-style) */}
         <AvatarFlairPicker displayName={displayName} avatarUrl={avatarUrl} />
+
+        {/* Profile Background (wallpaper) Picker — visible to all, gated by tier */}
+        <ProfileBackgroundPicker />
 
         {/* Avatar crop dialog (zoom + reposition before upload) */}
         <AvatarCropDialog
