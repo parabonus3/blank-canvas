@@ -64,6 +64,7 @@ export default function Explore() {
         _category: category === "all" ? null : category,
         _search: search.trim() || null,
         _country: countryFilter === "all" ? null : countryFilter,
+        _tz: "UTC",
       });
       if (error) throw error;
       return (data || []) as any[];
@@ -77,6 +78,7 @@ export default function Explore() {
     queryFn: async () => {
       const { data, error } = await (supabase.rpc as any)("get_global_user_ranking", {
         _period: period,
+        _tz: "UTC",
       });
       if (error) throw error;
       return (data || []) as any[];
@@ -148,7 +150,7 @@ export default function Explore() {
 
         {(period === "today" || period === "week") && (
           <p className="text-[11px] text-muted-foreground/70 -mt-1">
-            {t("explore.timezone_notice", { defaultValue: "Dia e semana baseados em America/Sao_Paulo (UTC−3) para todos os usuários." })}
+            {t("explore.timezone_notice", { defaultValue: "Dia e semana baseados em UTC para manter o ranking global consistente." })}
           </p>
         )}
 
