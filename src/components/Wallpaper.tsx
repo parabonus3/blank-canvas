@@ -51,7 +51,7 @@ export function Wallpaper({
       <div
         aria-hidden
         className={cn(
-          "absolute inset-0 backdrop-blur-[2px]",
+          "absolute inset-0 z-0 pointer-events-none backdrop-blur-[2px]",
           rounded && "rounded-[inherit]",
         )}
         style={{ background: `hsl(var(--background) / ${overlayOpacity})` }}
