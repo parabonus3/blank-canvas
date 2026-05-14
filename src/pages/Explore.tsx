@@ -211,15 +211,18 @@ export default function Explore() {
 
                   const isPrivate = room.is_public === false;
                   return (
-                    <div
+                    <RoomFrame
                       key={room.room_id}
+                      background={!isPrivate ? room.room_background : null}
+                      rounded="rounded-xl"
+                      className={cn("transition-all hover:shadow-md", isPrivate && "opacity-90")}
+                    >
+                    <div
                       className={cn(
-                        "relative overflow-hidden rounded-xl border bg-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:shadow-md",
-                        isTop3 && "border-primary/30",
-                        isPrivate && "opacity-90"
+                        "relative overflow-hidden rounded-[inherit] p-4 flex flex-col sm:flex-row sm:items-center gap-4",
+                        isTop3 && "ring-1 ring-primary/30"
                       )}
                     >
-                      {!isPrivate && <Wallpaper background={room.room_background} variant="card" rounded />}
                       <div className="relative z-10 flex items-center gap-3 sm:w-12 shrink-0">
                         {isTop3 ? (
                           <span className="text-2xl">{medals[index]}</span>
@@ -282,6 +285,7 @@ export default function Explore() {
                         </Button>
                       )}
                     </div>
+                    </RoomFrame>
                   );
                 })}
               </div>
