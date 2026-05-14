@@ -76,8 +76,8 @@ export function AppSidebar() {
     { title: t('sidebar.achievements'), url: "/achievements", icon: Trophy },
     { title: t('sidebar.friends'), url: "/friends", icon: UserPlus },
     { title: t('sidebar.settings'), url: "/settings", icon: Settings },
-    { title: t('sidebar.support'), url: "/sac", icon: Headset },
     { title: t('sidebar.pricing'), url: "/pricing", icon: CreditCard },
+    { title: t('sidebar.support'), url: "/sac", icon: Headset },
     ...(isAdmin ? [{ title: t('sidebar.admin'), url: "/admin", icon: Shield }] : []),
     ...(isSacAgent ? [{ title: "SAC", url: "/sac/dashboard", icon: Headset }] : []),
   ];
