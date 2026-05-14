@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { MemberProfileModal } from "@/components/rooms/MemberProfileModal";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
-import { Wallpaper } from "@/components/Wallpaper";
+
 import { useQuery } from "@tanstack/react-query";
 
 const PRESENCE_WINDOW_MS = 2 * 60 * 60 * 1000 + 5 * 60 * 1000; // 2h05min
