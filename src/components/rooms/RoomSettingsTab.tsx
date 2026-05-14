@@ -322,7 +322,7 @@ export function RoomSettingsTab({ room, isOwner }: Props) {
 
       {/* Room background (wallpaper) — owner only */}
       {isOwner && (
-        <RoomBackgroundPicker
+        <RoomFramePicker
           roomId={room.id}
           currentBackground={(room as any).room_background}
         />
