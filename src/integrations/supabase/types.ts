@@ -653,7 +653,6 @@ export type Database = {
           pomodoro_long_break: number | null
           pomodoro_short_break: number | null
           pomodoro_work_duration: number | null
-          profile_background: string
           reminder_interval: number
           reminder_notification: boolean
           reminder_sound: boolean
@@ -688,7 +687,6 @@ export type Database = {
           pomodoro_long_break?: number | null
           pomodoro_short_break?: number | null
           pomodoro_work_duration?: number | null
-          profile_background?: string
           reminder_interval?: number
           reminder_notification?: boolean
           reminder_sound?: boolean
@@ -723,7 +721,6 @@ export type Database = {
           pomodoro_long_break?: number | null
           pomodoro_short_break?: number | null
           pomodoro_work_duration?: number | null
-          profile_background?: string
           reminder_interval?: number
           reminder_notification?: boolean
           reminder_sound?: boolean
@@ -1643,7 +1640,6 @@ export type Database = {
           display_name: string
           is_anonymous: boolean
           plan_tier: string
-          profile_background: string
           total_seconds: number
           user_id: string
         }[]
@@ -1672,7 +1668,6 @@ export type Database = {
           display_name: string
           is_stats_public: boolean
           plan_tier: string
-          profile_background: string
           total_seconds: number
         }[]
       }
@@ -1768,7 +1763,6 @@ export type Database = {
           display_name: string
           friend_code: string
           plan_tier: string
-          profile_background: string
           user_id: string
         }[]
       }

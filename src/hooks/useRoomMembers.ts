@@ -23,7 +23,7 @@ export interface RoomMember {
   plan_tier?: string;
   avatar_flair?: string | null;
   avatar_flair_color?: string | null;
-  profile_background?: string | null;
+  
 }
 
 export function useRoomMembers(roomId: string | undefined) {
@@ -86,7 +86,7 @@ export function useRoomMembers(roomId: string | undefined) {
           plan_tier: p?.plan_tier || "free",
           avatar_flair: p?.avatar_flair || "default",
           avatar_flair_color: p?.avatar_flair_color || null,
-          profile_background: p?.profile_background || "none",
+          
         };
       }) as RoomMember[];
     },

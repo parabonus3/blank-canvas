@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { RoomBackgroundPicker } from "@/components/rooms/RoomBackgroundPicker";
+import { RoomFramePicker } from "@/components/rooms/RoomFramePicker";
 
 interface Props {
   room: StudyRoom;
@@ -322,7 +322,7 @@ export function RoomSettingsTab({ room, isOwner }: Props) {
 
       {/* Room background (wallpaper) — owner only */}
       {isOwner && (
-        <RoomBackgroundPicker
+        <RoomFramePicker
           roomId={room.id}
           currentBackground={(room as any).room_background}
         />

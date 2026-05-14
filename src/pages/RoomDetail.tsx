@@ -23,7 +23,7 @@ import { RoomActivityFeed } from "@/components/rooms/RoomActivityFeed";
 import { RoomFocusSession } from "@/components/rooms/RoomFocusSession";
 import { RoomSettingsTab } from "@/components/rooms/RoomSettingsTab";
 import { RoomHeatmap } from "@/components/rooms/RoomHeatmap";
-import { Wallpaper } from "@/components/Wallpaper";
+import { RoomFrame } from "@/components/RoomFrame";
 import { RoomStreakBadge } from "@/components/rooms/RoomStreakBadge";
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { RoomAchievements } from "@/components/rooms/RoomAchievements";
@@ -205,15 +205,12 @@ export default function RoomDetail() {
     queryClient.invalidateQueries({ queryKey: ["roomMembers", id] });
   };
 
+  const roomFrame = (room as any)?.room_background as string | undefined;
+
   return (
     <MainLayout>
-      {/* Room wallpaper: fixed-position layer behind the entire content area */}
-      {(room as any)?.room_background && (room as any).room_background !== "none" && (
-        <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden>
-          <Wallpaper background={(room as any).room_background} variant="page" overlay={0.7} />
-        </div>
-      )}
-      <div className="relative z-[1] space-y-6">
+      <RoomFrame background={roomFrame} variant="page" rounded="rounded-2xl" className="block">
+        <div className="relative z-[1] space-y-6 p-4 sm:p-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/rooms")}>
@@ -374,7 +371,8 @@ export default function RoomDetail() {
             </TabsContent>
           )}
         </Tabs>
-      </div>
+        </div>
+      </RoomFrame>
 
       {room && (
         <InviteMemberDialog

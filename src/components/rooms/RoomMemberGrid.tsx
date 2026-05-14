@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { MemberProfileModal } from "@/components/rooms/MemberProfileModal";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
-import { Wallpaper } from "@/components/Wallpaper";
+
 import { useQuery } from "@tanstack/react-query";
 
 const PRESENCE_WINDOW_MS = 2 * 60 * 60 * 1000 + 5 * 60 * 1000; // 2h05min
@@ -191,7 +191,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
               )}
               onClick={() => handleMemberClick(member)}
             >
-              <Wallpaper background={(member as any).profile_background} variant="card" overlay={0.78} rounded />
+              
               {isPremium && <span className="plan-ribbon plan-ribbon-premium">Premium</span>}
               {isPro && <span className="plan-ribbon plan-ribbon-pro">Pro</span>}
               {/* Avatar with plan ring */}
