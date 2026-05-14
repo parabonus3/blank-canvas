@@ -1,88 +1,73 @@
+## Objetivo
 
-# Plano: timer 12h inteligente + sidebar + backgrounds Pro/Premium
+Reorganizar o sistema visual: remover totalmente o "fundo de perfil" do usuário, transformar o "fundo da sala" em **contorno animado** (frame/border) e garantir que o **estilo de avatar** já configurado em Configurações apareça consistentemente em Explorar, Salas e Amigos.
 
-## 1. Limite de 12h inteligente (aproveitando o check de 2h)
+---
 
-**Situação atual:** trigger `enforce_time_entry_max_duration` corta qualquer sessão acima de 12h e adiciona nota "auto-ajustada". Isso pune quem realmente estudou >12h, mesmo confirmando presença a cada 2h.
+## 1. Remover fundo de perfil do usuário
 
-**Lógica nova:**
-- Cada confirmação válida do `InactivityCheckModal` (botão "Estou aqui") atualiza `last_heartbeat_at` e incrementa um contador `confirmed_intervals` na entrada (nova coluna).
-- O trigger passa a calcular o **limite máximo dinâmico** = `2h × (1 + confirmed_intervals)`.
-  - 0 confirmações → corta em 2h (igual hoje quando o usuário esquece).
-  - 1 confirmação → permite até 4h.
-  - 5 confirmações → permite até 12h.
-  - 6+ confirmações → permite até 24h (novo teto absoluto de segurança).
-- Se ultrapassar o limite dinâmico, corta no limite e adiciona nota com explicação clara (ex: "ajustada para 8h: 3 confirmações de presença registradas").
-- Sessões longas legítimas (estudante real confirmando) passam a contabilizar corretamente.
+- Remover `ProfileBackgroundPicker` da página `Settings.tsx` e deletar o componente `src/components/settings/ProfileBackgroundPicker.tsx`.
+- Remover `profile_background` do tipo `Profile` (`useProfile.ts`) e de `RoomMember` (`useRoomMembers.ts`).
+- Remover renderização de wallpaper de perfil em:
+  - `RoomMemberGrid.tsx` (cards dos membros dentro da sala)
+  - `Explore.tsx` (cards de usuários no ranking)
+- Remover chaves i18n `settings.profile_background.*` em `pt-BR.json` e `en-US.json`.
+- **Migration**: dropar coluna `profiles.profile_background`, trigger `validate_profile_background` e ajustar RPCs (`get_room_member_profiles`, `get_public_rooms_ranking_by_period`, `get_room_public_preview`) para não retornarem mais esse campo.
 
-**Migration:**
-- Adicionar `confirmed_intervals INTEGER DEFAULT 0` em `time_entries`.
-- Nova RPC `confirm_presence_time_entry(_entry_id uuid)` que incrementa o contador e atualiza `last_heartbeat_at`.
-- Reescrever `enforce_time_entry_max_duration` com a fórmula dinâmica e teto de 24h.
-- Frontend: `InactivityCheckModal.onResume` chama a RPC ao confirmar.
+## 2. Transformar wallpaper de sala em contorno animado
 
-## 2. Sidebar — Suporte depois de Planos
+- Refatorar `src/lib/wallpapers.ts`: renomear catálogo para **Room Frames** (contornos). Manter tiers (free/pro/premium). Cada frame define apenas:
+  - cor/gradiente da borda
+  - animação (rotação de gradiente cônico, shimmer, pulse, aurora flow, etc.) aplicada **somente à borda**
+- Reescrever `src/components/Wallpaper.tsx` → renomear para `RoomFrame.tsx`. Renderizar um `<div>` de moldura com `padding` fino e `background` animado que envolve o conteúdo (técnica: gradiente animado no wrapper + `inset` sólido no filho com `bg-background`). Sem cobrir o interior da sala.
+- Adicionar/ajustar keyframes em `index.css`: `frame-rotate` (conic-gradient spin), `frame-shimmer`, `frame-aurora-flow`, `frame-pulse`. Remover keyframes antigos de fundo cheio (`wallpaper-aurora`, `wallpaper-galaxy`, `wallpaper-mesh`, `wallpaper-flame`) que não serão mais usados.
+- Em `RoomDetail.tsx`: remover wallpaper full-page; aplicar o `RoomFrame` envolvendo o container principal da sala (efeito moldura).
+- Em `Explore.tsx` (cards de salas) e `Rooms.tsx` (lista): aplicar `RoomFrame` como borda do card da sala.
+- Renomear no banco: manter coluna `study_rooms.room_background` (nome técnico) mas tratar como id do frame; atualizar trigger `validate_room_background` para validar contra a nova lista de ids (`frame-free-*`, `frame-pro-*`, `frame-premium-*`).
 
-Em `src/components/layout/Sidebar.tsx`, na lista `navItems`, mover `support` para logo após `pricing`:
+## 3. Renomear UI e i18n
+
+- `RoomBackgroundPicker.tsx` → `RoomFramePicker.tsx`. Preview agora mostra um quadrado com **apenas a borda animada**, interior neutro.
+- Chaves i18n: `rooms.background.*` → `rooms.frame.*` (título "Contorno da sala", descrição "Escolha um contorno animado para destacar sua sala").
+- Atualizar `RoomSettingsTab.tsx` para usar o novo picker.
+
+## 4. Garantir avatar flair consistente
+
+Já existe `AvatarFlair` em `src/components/avatar/AvatarFlair.tsx` e `resolveFlair()`. Auditar e padronizar uso:
+
+- **Explorar (`Explore.tsx`)**: tanto no ranking de usuários quanto nos cards de salas que mostram membros, envolver `<Avatar>` com `<AvatarFlair flairId={...} color={...}>`.
+- **Amigos (`FriendsList.tsx`, `FriendProfileModal.tsx`, `AddFriendDialog.tsx`)**: idem.
+- **Salas (`RoomMemberGrid.tsx`, `MemberProfileModal.tsx`, `RoomChat.tsx`, `RoomRankingSidebar.tsx`)**: confirmar que todos os avatares usam `AvatarFlair`.
+- Garantir que as RPCs que listam usuários retornam `avatar_flair` e `avatar_flair_color` (já retornam para membros de sala; verificar `get_public_rooms_ranking_by_period` e RPCs de amigos).
+
+---
+
+## Detalhes técnicos do contorno animado
+
+Estrutura padrão do `RoomFrame`:
+
+```text
+<div class="relative rounded-xl p-[2px] [animated-gradient-border]">
+  <div class="rounded-[inherit] bg-background">
+     {children}  ← conteúdo intocado
+  </div>
+</div>
 ```
-... settings, pricing, support, admin?, sac-agent?
-```
 
-## 3. Backgrounds personalizáveis (perfil + sala) Pro/Premium
+- Free: borda sólida sutil (sem animação).
+- Pro: gradiente linear animado (shimmer horizontal).
+- Premium: `conic-gradient` rotacionando 360° (spin) ou aurora flow multi-cor.
 
-**Conceito:** sistema de "wallpapers" análogo ao avatar_flair atual, com tiers.
+Performance: usar `will-change: background-position/transform` apenas quando animado; respeitar `motion-reduce`.
 
-### 3a. Schema (migration)
-- `profiles.profile_background TEXT DEFAULT 'none'` — background do perfil do usuário.
-- `study_rooms.room_background TEXT DEFAULT 'none'` — background da sala definido pelo dono.
-- Atualizar as funções SECURITY DEFINER que retornam preview público de profile e room para incluir esses campos (somente o id do background, sem dados sensíveis).
+---
 
-### 3b. Catálogo `src/lib/wallpapers.ts`
-Estrutura igual a `avatarFlairs.ts`:
-- `id`, `name`, `tier` (`free` | `pro` | `premium`), `preview` (gradient/pattern CSS), `className` ou render fn.
-- Free: 1–2 opções neutras.
-- Pro: ~6 opções (gradientes sólidos, padrões sutis).
-- Premium: todas (~14 opções, incluindo animadas: aurora, galáxia, partículas, mesh gradient).
-- Helper `getWallpaperById(id, tier)` faz fallback para `'none'` se o usuário não tem o tier necessário (defesa contra downgrade de plano).
+## Arquivos afetados (resumo)
 
-### 3c. Componente `<Wallpaper background={id} className="...">`
-- Renderiza um `<div absolute inset-0 -z-10>` com o estilo do wallpaper.
-- Gradientes via tokens HSL do design system (sem cores hardcoded).
-- Animações leves com CSS (sem dependência nova). Premium pode ter 1–2 com Framer Motion já existente.
-- Sempre com overlay `bg-background/70 backdrop-blur-sm` para legibilidade do conteúdo.
+**Deletar**: `src/components/settings/ProfileBackgroundPicker.tsx`
 
-### 3d. Configuração do background do **perfil** (Settings)
-- Novo card `<ProfileBackgroundPicker>` em Settings, abaixo de `AvatarFlairPicker`.
-- Mostra grid de previews; trava opções acima do tier (igual ao flair picker).
-- Salva via `useUpdateProfile`.
+**Renomear**: `Wallpaper.tsx` → `RoomFrame.tsx`; `RoomBackgroundPicker.tsx` → `RoomFramePicker.tsx`; `src/lib/wallpapers.ts` → `src/lib/roomFrames.ts`
 
-### 3e. Configuração do background da **sala** (Room Settings)
-- Em `src/components/rooms/RoomSettingsTab.tsx`, novo card `<RoomBackgroundPicker>` visível apenas para o dono e somente se `tier !== 'free'`.
-- Free vê CTA de upgrade.
-- Salva via update em `study_rooms.room_background`.
+**Editar**: `Settings.tsx`, `RoomSettingsTab.tsx`, `RoomDetail.tsx`, `Explore.tsx`, `Rooms.tsx`, `RoomMemberGrid.tsx`, `FriendsList.tsx`, `FriendProfileModal.tsx`, `useProfile.ts`, `useRoomMembers.ts`, `useRooms.ts`, `index.css`, locais pt-BR/en-US.
 
-### 3f. Onde os backgrounds aparecem
-1. **Perfil em /explore** (`Explore.tsx`): nos cards de perfil público, renderiza `<Wallpaper>` no fundo do card quando o perfil é público e tem background definido. Mantém layout existente, apenas troca o `bg-card` por wallpaper + overlay.
-2. **Card de sala em /explore**: aplica `room_background` no fundo do card da sala. Cards de sala ficam com identidade visual do dono.
-3. **Dentro da sala** (`RoomDetail.tsx`): wallpaper como fundo da página da sala (full-bleed, atrás do conteúdo). Overlay garante contraste.
-4. **Modal de perfil de membro/amigo**: aplica wallpaper do perfil no header do modal (`MemberProfileModal`, `FriendProfileModal`).
-
-### 3g. Responsividade e segurança
-- Todos os wallpapers testados em viewport mobile (≤640px): gradientes/padrões escalam por `cover`; animações desativadas em `prefers-reduced-motion`.
-- Overlay garante que texto continue legível em qualquer wallpaper.
-- Validação no backend: trigger BEFORE INSERT/UPDATE em `profiles` e `study_rooms` que reseta o background para `'none'` se o `plan_tier` do dono não permitir o tier do wallpaper escolhido (proteção contra downgrade e manipulação client-side).
-
-## 4. i18n
-- Adicionar chaves em `pt-BR.json` e `en-US.json` para: `settings.profile_background.*`, `rooms.background.*`, `wallpapers.*` (nomes de cada wallpaper), badges Pro/Premium.
-
-## 5. Ordem de execução
-1. Migration: `confirmed_intervals`, RPC `confirm_presence_time_entry`, novo trigger 12h dinâmico, colunas `profile_background`/`room_background`, trigger de validação por tier, atualizar funções SECURITY DEFINER de preview.
-2. Frontend timer: integrar RPC no `InactivityCheckModal.onResume`.
-3. Sidebar: reordenar Suporte.
-4. Wallpapers: criar `src/lib/wallpapers.ts` + `<Wallpaper>` + pickers.
-5. Aplicar wallpapers em Explore (perfis e salas), RoomDetail, modais de perfil.
-6. i18n e QA mobile.
-
-## Pontos para confirmar antes de implementar
-- Teto absoluto de 24h serve, ou prefere algo diferente (ex: sem teto se confirmar todas as 2h)?
-- Quer que o usuário Free também tenha 1–2 wallpapers (como tem flair "default"), ou Free fica sem opção alguma?
+**Migration**: drop `profile_background` + trigger; atualizar `validate_room_background` e RPCs relacionadas.
