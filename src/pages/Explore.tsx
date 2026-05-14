@@ -213,12 +213,13 @@ export default function Explore() {
                     <div
                       key={room.room_id}
                       className={cn(
-                        "rounded-xl border bg-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:shadow-md",
+                        "relative overflow-hidden rounded-xl border bg-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:shadow-md",
                         isTop3 && "border-primary/30",
                         isPrivate && "opacity-90"
                       )}
                     >
-                      <div className="flex items-center gap-3 sm:w-12 shrink-0">
+                      {!isPrivate && <Wallpaper background={room.room_background} variant="card" rounded />}
+                      <div className="relative z-10 flex items-center gap-3 sm:w-12 shrink-0">
                         {isTop3 ? (
                           <span className="text-2xl">{medals[index]}</span>
                         ) : (
