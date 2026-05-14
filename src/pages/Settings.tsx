@@ -20,7 +20,7 @@ import { getDateLocale } from "@/lib/timezone";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarFlairPicker } from "@/components/settings/AvatarFlairPicker";
-import { ProfileBackgroundPicker } from "@/components/settings/ProfileBackgroundPicker";
+
 import { AvatarCropDialog } from "@/components/settings/AvatarCropDialog";
 
 const groupedTimezones = getGroupedTimezones();
