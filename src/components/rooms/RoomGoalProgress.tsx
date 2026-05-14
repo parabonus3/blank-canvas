@@ -6,6 +6,7 @@ import { Target, PartyPopper } from "lucide-react";
 import { RoomMember } from "@/hooks/useRoomMembers";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { useTimezone } from "@/hooks/useTimezone";
 import confetti from "canvas-confetti";
 
 interface Props {
