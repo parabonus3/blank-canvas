@@ -407,6 +407,8 @@ export default function Index() {
           <p className="text-sm sm:text-base text-muted-foreground">{t('timer.subtitle')}</p>
         </div>
 
+        <ActiveGoalsStrip className="px-1" />
+
         {/* Streak Banner */}
         {streakData != null && (() => {
           const studiedToday = streakRaw?.studiedToday ?? false;
