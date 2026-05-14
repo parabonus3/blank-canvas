@@ -23,7 +23,7 @@ import { RoomActivityFeed } from "@/components/rooms/RoomActivityFeed";
 import { RoomFocusSession } from "@/components/rooms/RoomFocusSession";
 import { RoomSettingsTab } from "@/components/rooms/RoomSettingsTab";
 import { RoomHeatmap } from "@/components/rooms/RoomHeatmap";
-import { Wallpaper } from "@/components/Wallpaper";
+import { RoomFrame } from "@/components/RoomFrame";
 import { RoomStreakBadge } from "@/components/rooms/RoomStreakBadge";
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { RoomAchievements } from "@/components/rooms/RoomAchievements";
