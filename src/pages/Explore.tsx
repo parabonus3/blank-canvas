@@ -18,7 +18,6 @@ import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { useJoinPublicRoom } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
 import { RoomFrame } from "@/components/RoomFrame";
-import { AvatarFlair } from "@/components/avatar/AvatarFlair";
 
 const typeIcons: Record<string, any> = {
   study: GraduationCap,
@@ -316,18 +315,24 @@ export default function Explore() {
                   const medals = ["🥇", "🥈", "🥉"];
                   const isMe = u.user_id === user?.id;
                   const initials = u.is_anonymous ? "?" : (u.display_name || "U").charAt(0).toUpperCase();
+                  const tier = u.is_anonymous ? "free" : (u.plan_tier || "free");
+                  const isPremium = tier === "premium";
+                  const isPro = tier === "pro";
 
                   return (
                     <div
                       key={u.user_id}
                       className={cn(
-                        "relative overflow-hidden rounded-xl border bg-card p-4 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-md",
-                        isTop3 && "border-yellow-500/30",
-                        isMe && "ring-2 ring-primary/40 bg-primary/5"
+                        "relative overflow-hidden flex items-center gap-3 sm:gap-4 p-4 pr-5 transition-all rounded-xl hover:scale-[1.01] hover:-translate-y-0.5",
+                        isPremium ? "classroom-desk-premium" : isPro ? "classroom-desk-pro" : "classroom-desk",
+                        isMe && !isPremium && !isPro && "ring-2 ring-primary/40"
                       )}
                     >
+                      {isPremium && <span className="plan-ribbon plan-ribbon-premium">Premium</span>}
+                      {isPro && <span className="plan-ribbon plan-ribbon-pro">Pro</span>}
+
                       {/* Position */}
-                      <div className="w-8 shrink-0 text-center">
+                      <div className="w-8 shrink-0 text-center relative z-[1]">
                         {isTop3 ? (
                           <span className="text-2xl">{medals[index]}</span>
                         ) : (
@@ -335,14 +340,13 @@ export default function Explore() {
                         )}
                       </div>
 
-                      {/* Avatar with plan ring + flair */}
-                      <AvatarFlair
-                        tier={u.is_anonymous ? "free" : u.plan_tier}
-                        flairId={u.avatar_flair}
-                        compact
-                      >
-                        <PlanAvatarRing tier={u.is_anonymous ? "free" : u.plan_tier}>
-                          <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
+                      {/* Avatar with single flair */}
+                      <div className="relative shrink-0 z-[1]">
+                        <PlanAvatarRing tier={tier} flairId={u.avatar_flair} compact>
+                          <Avatar className={cn(
+                            "h-11 w-11 ring-2 ring-offset-1 ring-offset-transparent",
+                            tier !== "free" ? "ring-transparent" : isMe ? "ring-primary" : "ring-border"
+                          )}>
                             {u.avatar_url && !u.is_anonymous ? (
                               <AvatarImage src={u.avatar_url} alt={u.display_name || ""} />
                             ) : null}
@@ -354,14 +358,16 @@ export default function Explore() {
                             </AvatarFallback>
                           </Avatar>
                         </PlanAvatarRing>
-                      </AvatarFlair>
+                      </div>
 
                       {/* Name + badge */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0 relative z-[1]">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className={cn(
                             "font-semibold truncate",
-                            u.is_anonymous && "italic text-muted-foreground"
+                            isPremium && "font-extrabold bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(180,120,0,0.25)]",
+                            isPro && "font-extrabold bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent",
+                            !isPremium && !isPro && u.is_anonymous && "italic text-muted-foreground"
                           )}>
                             {u.is_anonymous ? t("explore.anonymous_user") : (u.display_name || t("explore.anonymous_user"))}
                           </span>
@@ -370,7 +376,7 @@ export default function Explore() {
                               {t("explore.your_position")}
                             </span>
                           )}
-                          {!u.is_anonymous && <PlanBadge tier={u.plan_tier} />}
+                          {!u.is_anonymous && <PlanBadge tier={tier} />}
                         </div>
                         {period === "now" && (
                           <p className="text-xs text-green-600 font-medium flex items-center gap-1 mt-0.5">
@@ -381,7 +387,7 @@ export default function Explore() {
                       </div>
 
                       {/* Hours */}
-                      <div className="text-right shrink-0">
+                      <div className="text-right shrink-0 relative z-[1]">
                         <span className="text-lg font-bold text-foreground">{formatHours(u.total_seconds || 0)}</span>
                       </div>
                     </div>
