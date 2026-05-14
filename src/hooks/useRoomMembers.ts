@@ -23,6 +23,7 @@ export interface RoomMember {
   plan_tier?: string;
   avatar_flair?: string | null;
   avatar_flair_color?: string | null;
+  profile_background?: string | null;
 }
 
 export function useRoomMembers(roomId: string | undefined) {
