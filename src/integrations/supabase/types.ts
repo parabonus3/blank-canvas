@@ -1731,11 +1731,11 @@ export type Database = {
           description: string
           goal_hours: number
           invite_code: string
-          is_public: boolean
           member_count: number
           name: string
           online_count: number
           period_seconds: number
+          room_background: string
           room_id: string
           room_type: string
           slug: string
