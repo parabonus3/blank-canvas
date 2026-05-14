@@ -26,7 +26,7 @@ export function ActiveGoalsStrip({ variant = "default", className }: ActiveGoals
   const isFs = variant === "fullscreen";
 
   const Chip = ({ g }: { g: (typeof active)[number] }) => {
-    const color = g.project?.category?.color || g.project?.color || "hsl(var(--primary))";
+    const color = g.project?.category?.color || "hsl(var(--primary))";
     const name = g.project?.name || "—";
     const pct = Math.round(g.progress);
     return (
