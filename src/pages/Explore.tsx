@@ -326,7 +326,6 @@ export default function Explore() {
                         isMe && "ring-2 ring-primary/40 bg-primary/5"
                       )}
                     >
-                      {!u.is_anonymous && <Wallpaper background={u.profile_background} variant="card" rounded />}
                       {/* Position */}
                       <div className="w-8 shrink-0 text-center">
                         {isTop3 ? (
@@ -336,20 +335,26 @@ export default function Explore() {
                         )}
                       </div>
 
-                      {/* Avatar with plan ring */}
-                      <PlanAvatarRing tier={u.is_anonymous ? "free" : u.plan_tier}>
-                        <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
-                          {u.avatar_url && !u.is_anonymous ? (
-                            <AvatarImage src={u.avatar_url} alt={u.display_name || ""} />
-                          ) : null}
-                          <AvatarFallback className={cn(
-                            "text-sm font-bold",
-                            u.is_anonymous ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"
-                          )}>
-                            {u.is_anonymous ? <Lock className="h-4 w-4" /> : initials}
-                          </AvatarFallback>
-                        </Avatar>
-                      </PlanAvatarRing>
+                      {/* Avatar with plan ring + flair */}
+                      <AvatarFlair
+                        tier={u.is_anonymous ? "free" : u.plan_tier}
+                        flairId={u.avatar_flair}
+                        compact
+                      >
+                        <PlanAvatarRing tier={u.is_anonymous ? "free" : u.plan_tier}>
+                          <Avatar className="h-10 w-10 sm:h-12 sm:w-12">
+                            {u.avatar_url && !u.is_anonymous ? (
+                              <AvatarImage src={u.avatar_url} alt={u.display_name || ""} />
+                            ) : null}
+                            <AvatarFallback className={cn(
+                              "text-sm font-bold",
+                              u.is_anonymous ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"
+                            )}>
+                              {u.is_anonymous ? <Lock className="h-4 w-4" /> : initials}
+                            </AvatarFallback>
+                          </Avatar>
+                        </PlanAvatarRing>
+                      </AvatarFlair>
 
                       {/* Name + badge */}
                       <div className="flex-1 min-w-0">
