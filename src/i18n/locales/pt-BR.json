@@ -1017,6 +1017,12 @@
     "manual_entry": "Ctrl+M para registro manual"
   },
   "rooms": {
+    "background": {
+      "title": "Fundo da sala",
+      "description": "Personalize o fundo exibido para todos os membros e nos cards do Explorar.",
+      "upgrade_title": "Personalize sua sala",
+      "upgrade_desc": "Apenas planos Pro e Premium podem definir um fundo personalizado para a sala."
+    },
     "title": "Salas de Estudo",
     "subtitle": "Colabore com amigos e acompanhem o tempo de estudo juntos",
     "create_room": "Criar Sala",

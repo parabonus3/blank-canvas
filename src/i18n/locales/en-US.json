@@ -962,6 +962,12 @@
     "manual_entry": "Ctrl+M for manual entry"
   },
   "rooms": {
+    "background": {
+      "title": "Room background",
+      "description": "Customize the wallpaper shown to every member and on Explore cards.",
+      "upgrade_title": "Customize your room",
+      "upgrade_desc": "Only Pro and Premium plans can set a custom room background."
+    },
     "title": "Study Rooms",
     "subtitle": "Collaborate with friends and track study time together",
     "create_room": "Create Room",
