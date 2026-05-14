@@ -17,7 +17,8 @@ import { JoinPasswordDialog } from "@/components/rooms/JoinPasswordDialog";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { useJoinPublicRoom } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
-import { Wallpaper } from "@/components/Wallpaper";
+import { RoomFrame } from "@/components/RoomFrame";
+import { AvatarFlair } from "@/components/avatar/AvatarFlair";
 
 const typeIcons: Record<string, any> = {
   study: GraduationCap,
