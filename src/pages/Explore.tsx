@@ -64,6 +64,7 @@ export default function Explore() {
         _category: category === "all" ? null : category,
         _search: search.trim() || null,
         _country: countryFilter === "all" ? null : countryFilter,
+        _tz: "UTC",
       });
       if (error) throw error;
       return (data || []) as any[];
