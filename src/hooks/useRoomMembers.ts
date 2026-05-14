@@ -86,6 +86,7 @@ export function useRoomMembers(roomId: string | undefined) {
           plan_tier: p?.plan_tier || "free",
           avatar_flair: p?.avatar_flair || "default",
           avatar_flair_color: p?.avatar_flair_color || null,
+          profile_background: p?.profile_background || "none",
         };
       }) as RoomMember[];
     },
