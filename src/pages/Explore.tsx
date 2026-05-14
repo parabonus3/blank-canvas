@@ -316,11 +316,12 @@ export default function Explore() {
                     <div
                       key={u.user_id}
                       className={cn(
-                        "rounded-xl border bg-card p-4 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-md",
+                        "relative overflow-hidden rounded-xl border bg-card p-4 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-md",
                         isTop3 && "border-yellow-500/30",
                         isMe && "ring-2 ring-primary/40 bg-primary/5"
                       )}
                     >
+                      {!u.is_anonymous && <Wallpaper background={u.profile_background} variant="card" rounded />}
                       {/* Position */}
                       <div className="w-8 shrink-0 text-center">
                         {isTop3 ? (
