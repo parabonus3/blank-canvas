@@ -28,6 +28,7 @@ export interface Profile {
   onboarding_completed: boolean;
   avatar_flair: string;
   avatar_flair_color: string | null;
+  profile_background: string;
   created_at: string;
   updated_at: string;
 }

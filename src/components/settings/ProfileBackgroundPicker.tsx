@@ -42,12 +42,12 @@ export function ProfileBackgroundPicker() {
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
 
-  const current = profile?.profile_background || "none";
+  const current = (profile as any)?.profile_background || "none";
   const [selected, setSelected] = useState<string>(current);
 
   useEffect(() => {
-    setSelected(profile?.profile_background || "none");
-  }, [profile?.profile_background]);
+    setSelected((profile as any)?.profile_background || "none");
+  }, [(profile as any)?.profile_background]);
 
   const allowedSet = new Set(getWallpapersForTier(tier).map((w) => w.id));
   const isFree = tier === "free";
