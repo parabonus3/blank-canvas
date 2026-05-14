@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useSaveTimeEntryTags } from "@/hooks/useTags";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { ActiveGoalsStrip } from "@/components/timer/ActiveGoalsStrip";
 import { useProjects } from "@/hooks/useProjects";
 import { useActiveTimeEntry, useStartTimer, useStopTimer } from "@/hooks/useTimeEntries";
 import { useProfile } from "@/hooks/useProfile";
