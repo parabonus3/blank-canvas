@@ -28,17 +28,20 @@ function fireConfetti() {
 
 export function RoomGoalProgress({ goalHours, goalLabel, members, isChalkboard = false, roomId }: Props) {
   const { t } = useTranslation();
+  const { timezone } = useTimezone();
   const [showCelebration, setShowCelebration] = useState(false);
   const [prevPercent, setPrevPercent] = useState(0);
   const firedRef = useRef(false);
 
   // Use daily progress RPC when roomId is available
   const { data: dailyData } = useQuery({
-    queryKey: ["roomDailyProgress", roomId],
+    queryKey: ["roomDailyProgress", roomId, timezone],
     queryFn: async () => {
       if (!roomId) return null;
       const { data, error } = await (supabase.rpc as any)("get_room_daily_progress", {
         _room_id: roomId,
+        _period: "today",
+        _tz: timezone,
       });
       if (error) throw error;
       return data?.[0] || data;
