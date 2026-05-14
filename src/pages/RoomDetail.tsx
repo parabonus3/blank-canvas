@@ -207,7 +207,8 @@ export default function RoomDetail() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="relative space-y-6">
+        <Wallpaper background={(room as any)?.room_background} variant="page" overlay={0.85} />
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/rooms")}>
