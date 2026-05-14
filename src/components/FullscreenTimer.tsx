@@ -164,6 +164,10 @@ export function FullscreenTimer({ mode, elapsed = 0, onClose, onPause, onResume,
             {isPaused ? t('timer.paused') : t('timer.in_progress')}
           </span>
         </div>
+
+        <div className="mt-6 sm:mt-8 opacity-60 hover:opacity-100 transition-opacity">
+          <ActiveGoalsStrip variant="fullscreen" />
+        </div>
       </div>
 
       {/* Controls */}
