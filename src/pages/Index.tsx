@@ -629,6 +629,7 @@ export default function Index() {
           isRunning={isRunning}
           isPaused={isPaused}
           startTime={activeEntry ? new Date(activeEntry.start_time).getTime() : null}
+          entryId={activeEntry?.id ?? null}
           onPause={handlePause}
           onResume={handleResume}
           onAdjustPaused={addPausedSeconds}
