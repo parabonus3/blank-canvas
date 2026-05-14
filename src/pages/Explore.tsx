@@ -17,6 +17,7 @@ import { JoinPasswordDialog } from "@/components/rooms/JoinPasswordDialog";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { useJoinPublicRoom } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
+import { Wallpaper } from "@/components/Wallpaper";
 
 const typeIcons: Record<string, any> = {
   study: GraduationCap,
@@ -212,12 +213,13 @@ export default function Explore() {
                     <div
                       key={room.room_id}
                       className={cn(
-                        "rounded-xl border bg-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:shadow-md",
+                        "relative overflow-hidden rounded-xl border bg-card p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-all hover:shadow-md",
                         isTop3 && "border-primary/30",
                         isPrivate && "opacity-90"
                       )}
                     >
-                      <div className="flex items-center gap-3 sm:w-12 shrink-0">
+                      {!isPrivate && <Wallpaper background={room.room_background} variant="card" rounded />}
+                      <div className="relative z-10 flex items-center gap-3 sm:w-12 shrink-0">
                         {isTop3 ? (
                           <span className="text-2xl">{medals[index]}</span>
                         ) : (
@@ -314,11 +316,12 @@ export default function Explore() {
                     <div
                       key={u.user_id}
                       className={cn(
-                        "rounded-xl border bg-card p-4 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-md",
+                        "relative overflow-hidden rounded-xl border bg-card p-4 flex items-center gap-3 sm:gap-4 transition-all hover:shadow-md",
                         isTop3 && "border-yellow-500/30",
                         isMe && "ring-2 ring-primary/40 bg-primary/5"
                       )}
                     >
+                      {!u.is_anonymous && <Wallpaper background={u.profile_background} variant="card" rounded />}
                       {/* Position */}
                       <div className="w-8 shrink-0 text-center">
                         {isTop3 ? (

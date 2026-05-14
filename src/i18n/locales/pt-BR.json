@@ -485,6 +485,15 @@
     "privacy_desc": "Controle quem pode ver suas estatísticas",
     "public_stats": "Estatísticas Públicas",
     "public_stats_desc": "Permitir que membros das salas vejam suas horas de estudo e progresso diário",
+    "profile_background": {
+      "title": "Fundo do perfil",
+      "description": "Aplique um fundo decorativo ao seu card no Explorar e nos modais de perfil. Disponível nos planos Pro e Premium.",
+      "none": "Nenhum",
+      "hint_pro": "Faça upgrade para Premium e desbloqueie fundos animados exclusivos.",
+      "hint_premium": "Você tem acesso a todos os fundos.",
+      "upgrade_title": "Personalize seu perfil",
+      "upgrade_desc": "Pro: 6 fundos elegantes • Premium: todos, incluindo aurora, galáxia e mais"
+    },
     "avatar_flair": {
       "title": "Estilo do Avatar",
       "badge_pro": "Pro",
@@ -1008,6 +1017,12 @@
     "manual_entry": "Ctrl+M para registro manual"
   },
   "rooms": {
+    "background": {
+      "title": "Fundo da sala",
+      "description": "Personalize o fundo exibido para todos os membros e nos cards do Explorar.",
+      "upgrade_title": "Personalize sua sala",
+      "upgrade_desc": "Apenas planos Pro e Premium podem definir um fundo personalizado para a sala."
+    },
     "title": "Salas de Estudo",
     "subtitle": "Colabore com amigos e acompanhem o tempo de estudo juntos",
     "create_room": "Criar Sala",

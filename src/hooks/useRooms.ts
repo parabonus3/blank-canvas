@@ -25,6 +25,7 @@ export interface StudyRoom {
   rules?: string | null;
   chat_mode?: string;
   country?: string | null;
+  room_background?: string | null;
 }
 
 export function useRooms() {

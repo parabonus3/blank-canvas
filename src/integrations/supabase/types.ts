@@ -1697,6 +1697,7 @@ export type Database = {
           name: string
           owner_id: string
           pinned_message: string
+          room_background: string
           room_type: string
           rules: string
           slug: string

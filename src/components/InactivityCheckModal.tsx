@@ -34,6 +34,7 @@ interface Props {
   isRunning: boolean;
   isPaused: boolean;
   startTime: number | null; // ms - timer start time, null when not running
+  entryId?: string | null;  // active time_entry id, used to credit a confirmed presence interval
   onPause: () => void;
   onResume: () => void;
   onAdjustPaused: (extraSeconds: number) => void;
@@ -49,7 +50,7 @@ export function initInactivityCheck(startTime: number) {
   saveState({ startTime, lastConfirmedAt: startTime });
 }
 
-export function InactivityCheckModal({ isRunning, isPaused, startTime, onPause, onResume, onAdjustPaused }: Props) {
+export function InactivityCheckModal({ isRunning, isPaused, startTime, entryId, onPause, onResume, onAdjustPaused }: Props) {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState(COUNTDOWN_DURATION);
@@ -169,6 +170,13 @@ export function InactivityCheckModal({ isRunning, isPaused, startTime, onPause, 
     const state = loadState();
     const startT = state?.startTime ?? Date.now();
     saveState({ startTime: startT, lastConfirmedAt: Date.now() });
+    // Server-side: credit a confirmed presence interval to the active entry,
+    // which raises the dynamic max duration cap (2h * (1 + confirmed_intervals), up to 24h).
+    if (entryId) {
+      try {
+        await (supabase.rpc as any)("confirm_presence_time_entry", { _entry_id: entryId });
+      } catch {}
+    }
     // Heartbeat to server: confirm presence in any active room membership
     try {
       const { data: { user } } = await supabase.auth.getUser();
