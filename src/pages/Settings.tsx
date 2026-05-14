@@ -254,8 +254,6 @@ export default function Settings() {
         {/* Avatar Flair Picker (Pro/Premium animated effects, Discord-style) */}
         <AvatarFlairPicker displayName={displayName} avatarUrl={avatarUrl} />
 
-        {/* Profile Background (wallpaper) Picker — visible to all, gated by tier */}
-        <ProfileBackgroundPicker />
 
         {/* Avatar crop dialog (zoom + reposition before upload) */}
         <AvatarCropDialog
