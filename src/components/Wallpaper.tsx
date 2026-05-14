@@ -32,17 +32,21 @@ export function Wallpaper({
   const overlayOpacity =
     overlay ?? (variant === "page" ? 0.55 : 0.7);
 
+  // Animated wallpapers shift background-position, so we need a backgroundSize > 100%
+  // to make the motion visible. Static wallpapers stay at "cover".
+  const bgSize = def.animationClass ? "200% 200%" : "cover";
+
   return (
     <>
       <div
         aria-hidden
         className={cn(
-          "absolute inset-0 motion-reduce:!animate-none",
+          "absolute inset-0 z-0 pointer-events-none motion-reduce:!animate-none",
           rounded && "rounded-[inherit]",
           def.animationClass,
           className,
         )}
-        style={{ background: def.background, backgroundSize: "cover" }}
+        style={{ background: def.background, backgroundSize: bgSize }}
       />
       <div
         aria-hidden
