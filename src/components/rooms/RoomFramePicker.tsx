@@ -24,18 +24,25 @@ function PreviewSwatch({ def }: { def: WallpaperDef | null }) {
   return (
     <div
       className={cn(
-        "h-16 w-full rounded-lg border border-border/60 overflow-hidden relative",
+        "h-16 w-full rounded-lg overflow-hidden relative",
+        def ? "p-[3px]" : "border border-border/60",
         def?.animationClass,
       )}
-      style={{
-        background: def?.background ?? "hsl(var(--muted))",
-        backgroundSize: "cover",
-      }}
-    />
+      style={
+        def
+          ? {
+              background: def.borderBackground,
+              backgroundSize: def.animationClass ? "300% 300%" : "100% 100%",
+            }
+          : undefined
+      }
+    >
+      <div className="h-full w-full rounded-[inherit] bg-card" />
+    </div>
   );
 }
 
-export function RoomBackgroundPicker({ roomId, currentBackground }: Props) {
+export function RoomFramePicker({ roomId, currentBackground }: Props) {
   const { t } = useTranslation();
   const { tier } = useSubscription();
   const queryClient = useQueryClient();
