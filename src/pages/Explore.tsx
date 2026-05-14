@@ -78,6 +78,7 @@ export default function Explore() {
     queryFn: async () => {
       const { data, error } = await (supabase.rpc as any)("get_global_user_ranking", {
         _period: period,
+        _tz: "UTC",
       });
       if (error) throw error;
       return (data || []) as any[];
