@@ -524,36 +524,21 @@
   transition: box-shadow 0.3s, transform 0.2s;
 }
 
-/* ============== Wallpaper animations (premium tier) ============== */
-@keyframes wallpaper-aurora-shift {
-  0%, 100% { background-position: 0% 0%, 100% 100%, 50% 100%, 0 0; }
-  50%      { background-position: 30% 20%, 70% 80%, 60% 90%, 0 0; }
+/* ============== Room frame animations (animated contour only) ============== */
+@keyframes frame-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
-.wallpaper-aurora {
-  animation: wallpaper-aurora-shift 18s ease-in-out infinite;
-}
-
-@keyframes wallpaper-galaxy-rotate {
-  0%   { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
-  50%  { transform: scale(1.05) rotate(2deg); filter: hue-rotate(20deg); }
-  100% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
-}
-.wallpaper-galaxy {
-  animation: wallpaper-galaxy-rotate 24s ease-in-out infinite;
+.frame-shimmer {
+  animation: frame-shimmer 4s linear infinite;
 }
 
-@keyframes wallpaper-mesh-shift {
-  0%, 100% { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0 0; }
-  50%      { background-position: 20% 10%, 80% 20%, 10% 80%, 90% 90%, 0 0; }
+@keyframes frame-rotate {
+  0%   { background-position: 0% 0%; filter: hue-rotate(0deg); }
+  50%  { background-position: 100% 100%; filter: hue-rotate(30deg); }
+  100% { background-position: 0% 0%; filter: hue-rotate(0deg); }
 }
-.wallpaper-mesh {
-  animation: wallpaper-mesh-shift 20s ease-in-out infinite;
+.frame-rotate {
+  animation: frame-rotate 8s linear infinite;
 }
 
-@keyframes wallpaper-flame-flicker {
-  0%, 100% { opacity: 1; transform: scale(1) translateY(0); }
-  50%      { opacity: 0.92; transform: scale(1.03) translateY(-2px); }
-}
-.wallpaper-flame {
-  animation: wallpaper-flame-flicker 4s ease-in-out infinite;
-}
