@@ -1,61 +1,73 @@
+import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { getWallpaperById, type WallpaperDef } from "@/lib/wallpapers";
 
-interface WallpaperProps {
-  /** Wallpaper id from src/lib/wallpapers.ts ("none" or null = nothing rendered) */
+interface RoomFrameProps {
+  /** Frame id from src/lib/wallpapers.ts ("none" / null / undefined renders no frame) */
   background?: string | null;
-  /** Visual variant. "card" = subtle for use as card background; "page" = full-bleed. */
-  variant?: "card" | "page";
-  /** Overlay strength (0-1). Higher = more readable text, less wallpaper visibility. */
-  overlay?: number;
+  /** Frame thickness in pixels. Default 2. */
+  thickness?: number;
+  /** Border radius class to mirror the wrapped element (e.g. "rounded-xl"). */
+  rounded?: string;
   className?: string;
-  /** When provided, render the wallpaper definition directly (used by pickers for previews). */
-  forceDef?: WallpaperDef | null;
-  rounded?: boolean;
+  children: ReactNode;
+  /** When true (page mode), make the frame thicker for full-screen room hero. */
+  variant?: "card" | "page";
 }
 
 /**
- * Decorative wallpaper layer. Renders nothing when background is "none" or unknown.
- * Always pair with content that has its own readable surface (overlay handles contrast).
+ * RoomFrame — wraps content with an animated CONTOUR only.
+ * The interior never gets a background fill; it always uses the host's bg-card / bg-background.
+ * Free / unknown ids render a normal `border` so layout is not affected.
  */
-export function Wallpaper({
+export function RoomFrame({
   background,
-  variant = "card",
-  overlay,
+  thickness,
+  rounded = "rounded-xl",
   className,
-  forceDef,
-  rounded,
-}: WallpaperProps) {
-  const def = forceDef ?? getWallpaperById(background);
-  if (!def) return null;
+  children,
+  variant = "card",
+}: RoomFrameProps) {
+  const def: WallpaperDef | null = getWallpaperById(background);
 
-  const overlayOpacity =
-    overlay ?? (variant === "page" ? 0.55 : 0.7);
+  if (!def) {
+    return (
+      <div className={cn(rounded, "border bg-card", className)}>{children}</div>
+    );
+  }
 
-  // Animated wallpapers shift background-position, so we need a backgroundSize > 100%
-  // to make the motion visible. Static wallpapers stay at "cover".
-  const bgSize = def.animationClass ? "200% 200%" : "cover";
+  const t = thickness ?? (variant === "page" ? 3 : 2);
+  const animated = def.animationClass;
 
   return (
-    <>
+    <div
+      className={cn(
+        "relative isolate",
+        rounded,
+        animated && "motion-reduce:[animation:none]",
+        className,
+      )}
+      style={{
+        padding: t,
+        background: def.borderBackground,
+        backgroundSize: animated ? "300% 300%" : "100% 100%",
+      }}
+      data-frame={def.id}
+    >
       <div
         aria-hidden
-        className={cn(
-          "absolute inset-0 z-0 pointer-events-none motion-reduce:!animate-none",
-          rounded && "rounded-[inherit]",
-          def.animationClass,
-          className,
-        )}
-        style={{ background: def.background, backgroundSize: bgSize }}
+        className={cn("absolute inset-0 -z-10", rounded, animated)}
+        style={{
+          background: def.borderBackground,
+          backgroundSize: animated ? "300% 300%" : "100% 100%",
+        }}
       />
-      <div
-        aria-hidden
-        className={cn(
-          "absolute inset-0 z-0 pointer-events-none backdrop-blur-[2px]",
-          rounded && "rounded-[inherit]",
-        )}
-        style={{ background: `hsl(var(--background) / ${overlayOpacity})` }}
-      />
-    </>
+      <div className={cn(rounded, "bg-card relative")}>{children}</div>
+    </div>
   );
+}
+
+/** @deprecated use <RoomFrame> instead. Kept as a no-op shim for legacy imports. */
+export function Wallpaper(_: any) {
+  return null;
 }
