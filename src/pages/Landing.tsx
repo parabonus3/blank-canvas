@@ -528,6 +528,20 @@ function StreaksSection() {
 /*  GOALS TIMELINE                                                     */
 /* ------------------------------------------------------------------ */
 
+function TimelineMonth({ progress, index, label }: { progress: MotionValue<number>; index: number; label: string }) {
+  const scale = useTransform(progress, [index / 12, (index + 1) / 12], [0.6, 1]);
+  const opacity = useTransform(progress, [index / 12, (index + 1) / 12], [0.3, 1]);
+  return (
+    <div className="flex flex-col items-center gap-3 py-8">
+      <motion.div
+        style={{ scale, opacity }}
+        className="h-3 w-3 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary))]"
+      />
+      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
 function GoalsTimeline() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 20%"] });
@@ -550,18 +564,9 @@ function GoalsTimeline() {
             className="absolute left-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-primary via-accent to-primary shadow-[0_0_12px_hsl(var(--primary))]"
           />
           <div className="grid grid-cols-6 gap-2 sm:grid-cols-12">
-            {months.map((m, i) => {
-              const active = useTransform(scrollYProgress, [i / 12, (i + 1) / 12], [0, 1]);
-              return (
-                <div key={m} className="flex flex-col items-center gap-3 py-8">
-                  <motion.div
-                    style={{ scale: useTransform(active, [0, 1], [0.6, 1]), opacity: useTransform(active, [0, 1], [0.3, 1]) }}
-                    className="h-3 w-3 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary))]"
-                  />
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{m}</span>
-                </div>
-              );
-            })}
+            {months.map((m, i) => (
+              <TimelineMonth key={m} progress={scrollYProgress} index={i} label={m} />
+            ))}
           </div>
         </div>
       </div>
