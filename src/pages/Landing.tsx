@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, MotionValue, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowRight,
   Brain,
@@ -230,6 +230,15 @@ function OrbitingTimer() {
 /*  MANIFESTO                                                          */
 /* ------------------------------------------------------------------ */
 
+function ManifestoWord({ progress, start, end, word }: { progress: MotionValue<number>; start: number; end: number; word: string }) {
+  const o = useTransform(progress, [start, end], [0.15, 1]);
+  return (
+    <motion.span style={{ opacity: o }} className="inline-block pr-[0.25em]">
+      {word}
+    </motion.span>
+  );
+}
+
 function Manifesto() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
@@ -243,15 +252,9 @@ function Manifesto() {
         </p>
         <h2 className="font-display text-3xl font-medium leading-[1.15] tracking-tight sm:text-5xl md:text-6xl">
           {words.map((w, i) => {
-            const start = i / words.length;
-            const end = start + 1 / words.length;
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            const o = useTransform(scrollYProgress, [0.1 + start * 0.6, 0.1 + end * 0.6], [0.15, 1]);
-            return (
-              <motion.span key={i} style={{ opacity: o }} className="inline-block pr-[0.25em]">
-                {w}
-              </motion.span>
-            );
+            const start = 0.1 + (i / words.length) * 0.6;
+            const end = 0.1 + ((i + 1) / words.length) * 0.6;
+            return <ManifestoWord key={i} progress={scrollYProgress} start={start} end={end} word={w} />;
           })}
         </h2>
       </div>
