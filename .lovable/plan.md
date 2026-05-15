@@ -1,79 +1,110 @@
-## Diagnóstico
+# Plano: Nova Landing Page Premium do TimeZoni
 
-Encontrei três causas principais para a regressão:
+Substituir `src/pages/Landing.tsx` por uma landing page cinematográfica em PT-BR, nível Awwwards, mantendo a paleta Midnight Cyan atual e tipografia Sora + Manrope.
 
-1. **Explorar quebrou por overload de RPC no Supabase**
-   - Agora existem duas versões simultâneas de `get_public_rooms_ranking_by_period`: uma com 4 parâmetros e outra com 5.
-   - Também existem duas versões de `get_global_user_ranking`: uma com 1 parâmetro e outra com 2.
-   - O frontend chama as versões antigas, e o PostgREST não consegue decidir qual função usar. O erro confirmado foi `PGRST203: Could not choose the best candidate function`.
-   - Resultado: salas e usuários ficam vazios ou falham ao respeitar filtros.
+## Stack visual
+- **React + Tailwind + Framer Motion** (já no projeto)
+- **Lenis** (`@studio-freight/lenis`) para smooth scroll global
+- **Sora** (display) + **Manrope** (body) via Google Fonts no `index.html`
+- Paleta atual cyan/teal do design system (sem alterar tokens; apenas adiciona gradientes e luzes)
 
-2. **Padrão America/Sao_Paulo ficou inadequado para Explorar global**
-   - A mudança anterior colocou `America/Sao_Paulo` como padrão de ranking global.
-   - Para um ranking público/global, isso cria uma referência regional demais.
-   - Melhor usar um padrão neutro e global: **UTC**, com aviso discreto no Explorar.
+## Estrutura de seções (scroll-driven)
 
-3. **Metas no Timer usam a tabela errada**
-   - O componente novo `ActiveGoalsStrip` usa `useGoalsWithProgress()`, que lê a tabela antiga `goals`.
-   - A tela atual de Metas usa `annual_goals`, `life_categories` e `annual_goal_progress`.
-   - O banco tem metas em `annual_goals`, mas `goals` está vazia. Por isso nada aparece no Timer/fullscreen.
+1. **Hero cinematográfico**
+   - Fundo: gradient mesh animado + partículas + cursor glow (radial-gradient seguindo mouse)
+   - Headline grande em Sora: "O futuro da sua rotina começa agora."
+   - Subheadline + CTAs ("Começar grátis" / "Ver demo")
+   - Mock de relógio/timer 3D-feel central com anéis orbitando (SVG + Framer)
+   - Badge "Novo · Disponível globalmente"
 
-## Plano de correção
+2. **Manifesto** (full-bleed, tipografia gigante)
+   - Texto progressivo revelado por palavra com `useScroll` + `useTransform`
+   - "Tempo é a única moeda que não volta. O TimeZoni te devolve controle sobre ela."
 
-### 1. Restaurar as RPCs de Explorar sem ambiguidade
+3. **Live Dashboard Preview** (parallax)
+   - Mock de dashboard glassmorphism montando em tempo real (cards entram em sequência)
+   - Números contando (`motion.span` + animação de count-up)
+   - Streak, horas focadas hoje, meta semanal, calendário
 
-Criar uma migração para:
+4. **Features Grid Bento** (6–8 cards)
+   - Timer Pro, Metas Anuais, Streaks/Defensivas, Salas de Estudo, Fusos Globais, Sons Ambiente, Mapas Mentais, Estatísticas
+   - Cards glass com hover tilt sutil + ícone Lucide animado
 
-- Remover as assinaturas antigas ambíguas:
-  - `get_public_rooms_ranking_by_period(text, text, text, text)`
-  - `get_global_user_ranking(text)`
-  - `get_room_daily_progress(uuid, text)`
-- Manter uma única assinatura por função:
-  - `get_public_rooms_ranking_by_period(_period, _category, _search, _country, _tz default 'UTC')`
-  - `get_global_user_ranking(_period, _tz default 'UTC')`
-  - `get_room_daily_progress(_room_id, _period, _tz default 'UTC')`
-- Preservar `SECURITY DEFINER`, `search_path = public` e os grants atuais para não quebrar acesso público intencional.
-- Trocar o helper para `start_of_day_in_tz('UTC')` por padrão.
+5. **Streaks & Consistência** (split-screen)
+   - Esquerda: heatmap-calendário interativo animado
+   - Direita: copy sobre disciplina, defensivas, gamificação premium
 
-### 2. Ajustar o frontend do Explorar
+6. **Metas Anuais** (timeline interativa)
+   - Linha do tempo horizontal com marcos do ano expandindo no scroll
+   - Barras de progresso animadas
 
-- Passar `_tz: 'UTC'` explicitamente nas chamadas de:
-  - `get_public_rooms_ranking_by_period`
-  - `get_global_user_ranking`
-- Atualizar o aviso discreto para algo como:
-  - “Dia e semana baseados em UTC para manter o ranking global consistente.”
-- Conferir as traduções em `pt-BR` e `en-US` para não depender de fallback hardcoded.
+7. **Salas & Tempo Real**
+   - Mock de sala com avatares "ao vivo" pulsando
+   - Texto sobre sincronização e foco compartilhado
 
-### 3. Corrigir metas no Timer e fullscreen
+8. **Fusos Globais**
+   - Globo SVG com pontos pulsando em diferentes timezones
+   - "De Tóquio a São Paulo, sua rotina sempre no ritmo certo."
 
-- Adaptar `ActiveGoalsStrip` para usar as metas atuais de `annual_goals`, não a tabela legada `goals`.
-- Exibir apenas metas:
-  - do ano atual;
-  - não arquivadas;
-  - não concluídas;
-  - com progresso abaixo de 100%.
-- Usar `life_categories.color` quando existir, mantendo visual discreto.
-- Para progresso:
-  - `current_value / target_value` para metas simples/progresso/hábito.
-- Manter o limite visual de até 3 metas + “+N”.
+9. **Pricing** (reutilizar `<PricingSection />` existente, com wrapper visual novo)
 
-### 4. Corrigir compatibilidade de progresso de sala
+10. **CTA final + Footer**
+    - CTA gigante glass com glow
+    - Footer minimalista com links, idiomas, social
 
-- Em `RoomGoalProgress`, continuar passando o timezone do usuário quando for experiência da sala/pessoal.
-- Após remover a assinatura antiga, garantir que a chamada com `_tz` continue funcionando.
+## Animações & técnicas
+- **Lenis**: hook global em `App.tsx` ou no próprio Landing (escopo só na landing para não quebrar app interno)
+- **Framer Motion**: `useScroll`, `useTransform`, `motion.div` com `whileInView`, `whileHover`, layout animations
+- **Parallax** por seção via `useTransform(scrollYProgress, ...)`
+- **Cursor glow**: div fixed com `mix-blend-mode: screen` seguindo mouse
+- **Count-up**: hook com `animate()` da Framer
+- **Glassmorphism**: `backdrop-blur-xl bg-white/5 border border-white/10`
+- **Reduced motion**: respeitar `prefers-reduced-motion` desabilitando Lenis e parallax
 
-### 5. Validar depois da implementação
+## Responsividade
+- Mobile-first: hero stack vertical, bento vira coluna única, timeline vira vertical, parallax reduzido
+- Breakpoints Tailwind padrão (`sm md lg xl`)
+- Touch: desabilitar cursor glow em `pointer: coarse`
 
-- Testar via chamada REST/Supabase que as RPCs não retornam mais `PGRST203`.
-- Verificar em `/explore`:
-  - salas aparecem;
-  - usuários aparecem quando houver dados no período;
-  - filtros `Agora`, `Hoje`, `Semana`, `Total` funcionam.
-- Verificar em `/timer` e fullscreen:
-  - metas de `annual_goals` aparecem discretamente;
-  - metas concluídas não aparecem;
-  - layout permanece responsivo.
+## Arquivos
 
-## Observação importante
+**Novos:**
+- `src/pages/Landing.tsx` — reescrito do zero
+- `src/components/landing/LenisProvider.tsx` — wrapper smooth scroll
+- `src/components/landing/CursorGlow.tsx`
+- `src/components/landing/Hero.tsx`
+- `src/components/landing/Manifesto.tsx`
+- `src/components/landing/DashboardPreview.tsx`
+- `src/components/landing/FeaturesBento.tsx`
+- `src/components/landing/StreaksSection.tsx`
+- `src/components/landing/GoalsTimeline.tsx`
+- `src/components/landing/RoomsSection.tsx`
+- `src/components/landing/GlobeSection.tsx`
+- `src/components/landing/CtaFinal.tsx`
+- `src/components/landing/LandingFooter.tsx`
+- `src/components/landing/LandingNav.tsx`
+- `src/hooks/useCountUp.ts`
 
-Não vou mexer em regras de avatar, contorno de sala, RLS sensível ou permissões amplas de `study_rooms`. A correção fica limitada ao que quebrou: RPCs de ranking/fuso e fonte das metas exibidas no Timer.
+**Mantidos:**
+- `src/components/landing/PricingSection.tsx` (reutilizado)
+- Rotas, auth, design tokens — inalterados
+
+**Editados:**
+- `index.html` — adicionar Google Fonts (Sora, Manrope)
+- `tailwind.config.ts` — registrar `font-display: Sora` e `font-sans: Manrope` (apenas adição, não substitui defaults globais — aplicado via classes na landing)
+- `package.json` — adicionar `lenis`
+
+## Detalhes técnicos
+- Lenis instanciado só dentro de `<Landing>` via `useEffect`, destruído no unmount, para não afetar `/timer`, `/explore`, etc.
+- Todas as cores via tokens HSL do design system (`hsl(var(--primary))`, `hsl(var(--background))`)
+- Gradientes premium definidos inline (`linear-gradient(135deg, hsl(var(--primary)/0.15), transparent)`)
+- Imagens/mocks: SVG inline + componentes React, sem assets externos pesados
+- SEO: `<title>`, meta description, Open Graph atualizados na própria página com `useEffect`
+- Performance: `loading="lazy"`, `will-change` apenas onde necessário, animações em `transform`/`opacity`
+
+## Copy (PT-BR, exemplos)
+- Hero: **"Domine seu tempo. Construa sua rotina. Viva no presente."**
+- Manifesto: **"Cada segundo conta uma história. Conte uma que vale a pena."**
+- CTA final: **"Comece hoje. Seu eu de amanhã agradece."**
+
+Pronto para implementar quando aprovar.
