@@ -1,84 +1,36 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "@/contexts/AuthContext";
+import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  Clock, Timer, Headphones, Target, BarChart3, Trophy, AlertTriangle, Eye, Zap,
+  UserPlus, Settings2, TrendingUp, Music, FileText, Globe, Flame, Calendar,
+  Sparkles, ArrowRight, CheckCircle2, Activity,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { Clock, Timer, Headphones, Target, BarChart3, Trophy, AlertTriangle, Eye, Zap, UserPlus, Settings2, TrendingUp, Music, FileText, Globe } from "lucide-react";
 import { PricingSection } from "@/components/landing/PricingSection";
-import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
+import { useLenis } from "@/hooks/useLenis";
+import { Reveal, Magnetic, SpotlightCursor, ScrollProgress, CountUp, Tilt } from "@/components/landing/primitives";
 import logo from "@/assets/logo.png";
 
-// Framer Motion helpers
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-function MotionSection({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <motion.section
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
-      variants={staggerContainer}
-      className={className}
-    >
-      {children}
-    </motion.section>
-  );
-}
-
-// Animated SVG Clock Component
-function AnimatedClock() {
-  return (
-    <div className="relative">
-      <div className="absolute inset-0 animate-pulse-slow">
-        <svg className="w-full h-full" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="90" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.5" opacity="0.3" />
-          <circle cx="100" cy="100" r="80" fill="none" stroke="hsl(var(--primary))" strokeWidth="0.5" opacity="0.2" />
-        </svg>
-      </div>
-      <svg className="w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 relative z-10" viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="70" fill="hsl(var(--background))" stroke="hsl(var(--primary))" strokeWidth="2" opacity="0.8" />
-        {[...Array(12)].map((_, i) => {
-          const angle = (i * 30 - 90) * (Math.PI / 180);
-          const x1 = 100 + 55 * Math.cos(angle);
-          const y1 = 100 + 55 * Math.sin(angle);
-          const x2 = 100 + 65 * Math.cos(angle);
-          const y2 = 100 + 65 * Math.sin(angle);
-          return (
-            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="hsl(var(--primary))" strokeWidth={i % 3 === 0 ? "3" : "1.5"} opacity="0.6" />
-          );
-        })}
-        <line x1="100" y1="100" x2="100" y2="55" stroke="hsl(var(--foreground))" strokeWidth="4" strokeLinecap="round" style={{ transformOrigin: "100px 100px", animation: "rotate-slow 43200s linear infinite" }} />
-        <line x1="100" y1="100" x2="100" y2="40" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" style={{ transformOrigin: "100px 100px", animation: "rotate-slow 3600s linear infinite" }} />
-        <line x1="100" y1="100" x2="100" y2="35" stroke="hsl(var(--accent))" strokeWidth="1.5" strokeLinecap="round" style={{ transformOrigin: "100px 100px", animation: "rotate-slow 60s linear infinite" }} />
-        <circle cx="100" cy="100" r="6" fill="hsl(var(--primary))" />
-        <circle cx="100" cy="100" r="3" fill="hsl(var(--background))" />
-      </svg>
-    </div>
-  );
-}
-
-// Floating Particles
+/* ============================================================ */
+/*  PARTICLES                                                   */
+/* ============================================================ */
 function FloatingParticles() {
-  const particles = useMemo(() =>
-    [...Array(20)].map((_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      size: Math.random() * 4 + 2,
-      delay: Math.random() * 20,
-      duration: 15 + Math.random() * 10,
-    })), []
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 22 }, (_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        size: Math.random() * 3 + 2,
+        delay: Math.random() * 20,
+        duration: 16 + Math.random() * 12,
+      })),
+    []
   );
-
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((p) => (
@@ -88,8 +40,8 @@ function FloatingParticles() {
           style={{
             left: p.left,
             top: p.top,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
+            width: p.size,
+            height: p.size,
             animationDelay: `${p.delay}s`,
             animationDuration: `${p.duration}s`,
           }}
@@ -99,7 +51,206 @@ function FloatingParticles() {
   );
 }
 
-// Problem Section
+/* ============================================================ */
+/*  HERO                                                        */
+/* ============================================================ */
+function AnimatedClock() {
+  const { scrollY } = useScroll();
+  const rotate = useTransform(scrollY, [0, 800], [0, 60]);
+  const scale = useTransform(scrollY, [0, 600], [1, 0.85]);
+  const opacity = useTransform(scrollY, [0, 500], [1, 0.4]);
+
+  return (
+    <motion.div style={{ rotate, scale, opacity }} className="relative">
+      <svg className="w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64" viewBox="0 0 200 200">
+        <defs>
+          <radialGradient id="clockGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="hsl(189 94% 50%)" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="hsl(189 94% 50%)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="95" fill="url(#clockGlow)" />
+        <circle cx="100" cy="100" r="72" fill="hsl(222 47% 4% / 0.6)" stroke="hsl(189 94% 50% / 0.4)" strokeWidth="1" />
+        {Array.from({ length: 60 }).map((_, i) => {
+          const angle = (i * 6 - 90) * (Math.PI / 180);
+          const isHour = i % 5 === 0;
+          const r1 = isHour ? 58 : 62;
+          const r2 = 68;
+          return (
+            <line
+              key={i}
+              x1={100 + r1 * Math.cos(angle)}
+              y1={100 + r1 * Math.sin(angle)}
+              x2={100 + r2 * Math.cos(angle)}
+              y2={100 + r2 * Math.sin(angle)}
+              stroke={isHour ? "hsl(189 94% 70%)" : "hsl(210 40% 96% / 0.3)"}
+              strokeWidth={isHour ? 2 : 0.8}
+            />
+          );
+        })}
+        <motion.line
+          x1="100" y1="100" x2="100" y2="55"
+          stroke="hsl(210 40% 96%)" strokeWidth="3" strokeLinecap="round"
+          style={{ originX: "100px", originY: "100px" }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.line
+          x1="100" y1="100" x2="100" y2="40"
+          stroke="hsl(189 94% 60%)" strokeWidth="2" strokeLinecap="round"
+          style={{ originX: "100px", originY: "100px" }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        />
+        <circle cx="100" cy="100" r="5" fill="hsl(189 94% 60%)" />
+      </svg>
+    </motion.div>
+  );
+}
+
+function Hero() {
+  const { t } = useTranslation();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
+  const tagline = `${t("landing.tagline_1")} ${t("landing.tagline_2")}`;
+  const words = tagline.split(" ");
+
+  return (
+    <div ref={heroRef} className="relative min-h-screen overflow-hidden">
+      <div className="absolute inset-0 landing-gradient" />
+      <div className="absolute inset-0 grid-bg" />
+      <SpotlightCursor />
+      <FloatingParticles />
+
+      <div className="absolute top-4 right-4 z-30">
+        <LanguageSwitcher variant="ghost" className="text-white/80 hover:text-white hover:bg-white/5" />
+      </div>
+
+      <motion.div
+        style={{ y: titleY, opacity: titleOpacity }}
+        className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full glass text-xs sm:text-sm text-white/80"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+          </span>
+          {t("landing.hero_eyebrow")}
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.1 }} className="mb-8">
+          <AnimatedClock />
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex items-center gap-2 mb-6">
+          <img src={logo} alt="TimeZoni" className="h-9 w-9 sm:h-11 sm:w-11" />
+          <span className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight">TimeZoni</span>
+        </motion.div>
+
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight max-w-4xl mb-5 leading-[1.05]">
+          {words.map((w, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.7, delay: 0.4 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              className={`inline-block mr-[0.25em] ${i >= Math.floor(words.length / 2) ? "text-gradient-cyan" : "text-white"}`}
+            >
+              {w}
+            </motion.span>
+          ))}
+        </h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.7 }}
+          className="text-sm sm:text-base md:text-lg text-white/60 max-w-xl mb-9 px-4"
+        >
+          {t("landing.hero_subtitle")}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.05, duration: 0.7 }}
+          className="flex flex-col sm:flex-row gap-3 w-full max-w-sm sm:max-w-none sm:w-auto px-4 sm:px-0"
+        >
+          <Magnetic>
+            <Button asChild size="lg" className="w-full sm:w-auto px-7 h-12 text-sm sm:text-base bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold shadow-[0_10px_40px_-10px_hsl(189_94%_50%/0.6)]">
+              <Link to="/auth" className="flex items-center gap-2">
+                {t("landing.cta_start")} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </Magnetic>
+          <Magnetic strength={0.2}>
+            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto px-7 h-12 text-sm sm:text-base bg-white/5 border-white/15 text-white hover:bg-white/10 hover:text-white">
+              <Link to="/auth">{t("landing.cta_login")}</Link>
+            </Button>
+          </Magnetic>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 text-[10px] sm:text-xs tracking-widest uppercase"
+        >
+          <span>{t("landing.scroll_hint")}</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.8 }}
+            className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent"
+          />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ============================================================ */
+/*  MARQUEE                                                     */
+/* ============================================================ */
+function MarqueeValues() {
+  const { t } = useTranslation();
+  const items = [
+    t("landing.marquee_focus"),
+    t("landing.marquee_discipline"),
+    t("landing.marquee_streaks"),
+    t("landing.marquee_goals"),
+    t("landing.marquee_time"),
+    t("landing.marquee_evolution"),
+  ];
+  const all = [...items, ...items, ...items];
+  return (
+    <div className="relative py-10 border-y border-white/5 overflow-hidden">
+      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#07090f] to-transparent z-10" />
+      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#07090f] to-transparent z-10" />
+      <div className="flex animate-marquee gap-12 w-max">
+        {all.map((label, i) => (
+          <div key={i} className="flex items-center gap-12">
+            <span className="font-display text-2xl sm:text-4xl font-light text-white/30 hover:text-cyan-400/80 transition-colors whitespace-nowrap">
+              {label}
+            </span>
+            <span className="text-cyan-500/40 text-2xl">◆</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================ */
+/*  PROBLEM                                                     */
+/* ============================================================ */
 function ProblemSection() {
   const { t } = useTranslation();
   const problems = [
@@ -107,278 +258,475 @@ function ProblemSection() {
     { icon: AlertTriangle, titleKey: "landing.problem_2_title", descKey: "landing.problem_2_desc" },
     { icon: Eye, titleKey: "landing.problem_3_title", descKey: "landing.problem_3_desc" },
   ];
-
   return (
-    <MotionSection className="px-4 py-16 sm:py-24 bg-white">
-      <div className="max-w-4xl mx-auto text-center">
-        <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-10 sm:mb-14">
-          {t("landing.problem_title")}
-        </motion.h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+    <section className="relative px-4 py-24 sm:py-32">
+      <div className="max-w-6xl mx-auto">
+        <Reveal className="text-center mb-16">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400/80">01 — {t("landing.problem_eyebrow")}</span>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mt-4 max-w-3xl mx-auto">
+            {t("landing.problem_title")}
+          </h2>
+        </Reveal>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {problems.map((p, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              transition={{ duration: 0.5 }}
-              className="p-5 sm:p-6 rounded-2xl bg-white border border-gray-200 shadow-sm text-left hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-            >
-              <div className="p-2.5 rounded-lg bg-red-50 w-fit mb-4">
-                <p.icon className="h-5 w-5 text-red-500" />
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{t(p.titleKey)}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{t(p.descKey)}</p>
-            </motion.div>
+            <Reveal key={i} delay={i * 0.1}>
+              <Tilt className="h-full">
+                <div className="h-full p-7 rounded-2xl glass hover:border-cyan-500/30 transition-all duration-500 group">
+                  <div className="inline-flex p-3 rounded-xl bg-cyan-500/10 mb-5 group-hover:bg-cyan-500/15 transition-colors">
+                    <p.icon className="h-5 w-5 text-cyan-400" />
+                  </div>
+                  <h3 className="font-display text-lg sm:text-xl font-semibold text-white mb-2.5">{t(p.titleKey)}</h3>
+                  <p className="text-sm text-white/55 leading-relaxed">{t(p.descKey)}</p>
+                </div>
+              </Tilt>
+            </Reveal>
           ))}
         </div>
       </div>
-    </MotionSection>
+    </section>
   );
 }
 
-// Solution Section
+/* ============================================================ */
+/*  SOLUTION                                                    */
+/* ============================================================ */
 function SolutionSection() {
   const { t } = useTranslation();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 30%"] });
+
+  const sentence = t("landing.solution_subtitle");
+  const words = sentence.split(" ");
+
   return (
-    <MotionSection className="px-4 py-16 sm:py-24 bg-gray-50">
-      <div className="max-w-3xl mx-auto text-center">
-        <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-50 border border-cyan-200 mb-6">
-          <Zap className="h-4 w-4 text-primary" />
-          <span className="text-xs sm:text-sm font-medium text-primary">{t("landing.solution_title")}</span>
-        </motion.div>
-        <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          {t("landing.solution_title")}
-        </motion.h2>
-        <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="text-sm sm:text-base md:text-lg text-gray-500 max-w-xl mx-auto">
-          {t("landing.solution_subtitle")}
-        </motion.p>
+    <section ref={ref} className="relative px-4 py-28 sm:py-40">
+      <div className="absolute inset-0 aurora-bg opacity-50" />
+      <div className="relative max-w-5xl mx-auto text-center">
+        <Reveal>
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400/80">02 — {t("landing.solution_eyebrow")}</span>
+          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold text-white mt-6 mb-8 leading-[1.05]">
+            {t("landing.solution_title")}
+          </h2>
+        </Reveal>
+        <p className="font-display text-xl sm:text-3xl md:text-4xl font-light leading-tight max-w-4xl mx-auto">
+          {words.map((w, i) => {
+            const start = i / words.length;
+            const end = start + 1 / words.length;
+            const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1]);
+            return (
+              <motion.span key={i} style={{ opacity }} className="inline-block mr-[0.25em] text-white">
+                {w}
+              </motion.span>
+            );
+          })}
+        </p>
       </div>
-    </MotionSection>
+    </section>
   );
 }
 
-// Features Section
-function FeaturesSection() {
+/* ============================================================ */
+/*  DASHBOARD SHOWCASE                                          */
+/* ============================================================ */
+function DashboardShowcase() {
+  const { t } = useTranslation();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const progress = useTransform(scrollYProgress, [0.1, 0.6], [0, 100]);
+  const timerScale = useTransform(scrollYProgress, [0, 0.5], [0.92, 1]);
+
+  return (
+    <section ref={ref} className="relative px-4 py-24 sm:py-32">
+      <div className="max-w-7xl mx-auto">
+        <Reveal className="text-center mb-14">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400/80">03 — {t("landing.dashboard_eyebrow")}</span>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mt-4 max-w-3xl mx-auto">
+            {t("landing.dashboard_showcase_title")}
+          </h2>
+          <p className="text-white/55 text-sm sm:text-base mt-4 max-w-xl mx-auto">{t("landing.dashboard_showcase_subtitle")}</p>
+        </Reveal>
+
+        <motion.div style={{ scale: timerScale }} className="relative">
+          <div className="absolute -inset-px rounded-3xl bg-gradient-to-r from-cyan-500/30 via-cyan-400/20 to-teal-500/30 blur-2xl opacity-60" />
+          <div className="relative rounded-3xl glass-strong glow-cyan p-5 sm:p-8 overflow-hidden">
+            {/* top row */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/60" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+                <div className="w-3 h-3 rounded-full bg-green-500/60" />
+              </div>
+              <div className="font-mono text-[10px] sm:text-xs text-white/40 tracking-widest uppercase">timezoni.app/timer</div>
+              <div className="w-12" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              {/* Big timer */}
+              <div className="lg:col-span-2 p-6 sm:p-10 rounded-2xl bg-gradient-to-br from-slate-900/80 to-slate-950/80 border border-cyan-500/10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl" />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Activity className="h-4 w-4 text-cyan-400 animate-pulse" />
+                    <span className="text-xs font-mono uppercase tracking-widest text-cyan-400/80">{t("landing.dashboard_focus_active")}</span>
+                  </div>
+                  <div className="font-display text-6xl sm:text-8xl font-bold tabular-nums text-white tracking-tight">
+                    <LiveTimer />
+                  </div>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex justify-between text-xs text-white/50">
+                      <span>{t("landing.dashboard_today_goal")}</span>
+                      <motion.span>{useTransform(progress, (v) => `${Math.round(v)}%`)}</motion.span>
+                    </div>
+                    <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                      <motion.div style={{ width: useTransform(progress, (v) => `${v}%`) }} className="h-full bg-gradient-to-r from-cyan-500 to-teal-400 rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right stack */}
+              <div className="space-y-5">
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Flame className="h-4 w-4 text-orange-400" />
+                    <span className="text-xs font-mono uppercase tracking-widest text-orange-400/80">{t("landing.dashboard_streak")}</span>
+                  </div>
+                  <div className="font-display text-4xl font-bold text-white"><CountUp to={47} /> <span className="text-base font-normal text-white/40">{t("landing.dashboard_days")}</span></div>
+                </div>
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-transparent border border-cyan-500/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="h-4 w-4 text-cyan-400" />
+                    <span className="text-xs font-mono uppercase tracking-widest text-cyan-400/80">{t("landing.dashboard_weekly")}</span>
+                  </div>
+                  <div className="font-display text-4xl font-bold text-white"><CountUp to={32} suffix="h" /></div>
+                </div>
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="h-4 w-4 text-emerald-400" />
+                    <span className="text-xs font-mono uppercase tracking-widest text-emerald-400/80">{t("landing.dashboard_growth")}</span>
+                  </div>
+                  <div className="font-display text-4xl font-bold text-white">+<CountUp to={28} suffix="%" /></div>
+                </div>
+              </div>
+            </div>
+
+            {/* heatmap */}
+            <div className="mt-6 p-5 rounded-2xl bg-slate-950/50 border border-white/5">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-cyan-400" />
+                  <span className="text-xs font-mono uppercase tracking-widest text-white/60">{t("landing.dashboard_consistency")}</span>
+                </div>
+                <span className="text-[10px] text-white/30 font-mono">12 weeks</span>
+              </div>
+              <Heatmap />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function LiveTimer() {
+  const [seconds, setSeconds] = useMemoTimer();
+  const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
+  const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, "0");
+  const s = (seconds % 60).toString().padStart(2, "0");
+  return <span>{h}:{m}:{s}</span>;
+}
+function useMemoTimer(): [number, (n: number) => void] {
+  const ref = useRef(7234);
+  const force = useRef(0);
+  const setN = (n: number) => { ref.current = n; };
+  useEffect(() => {
+    const id = setInterval(() => { ref.current += 1; force.current++; setN(ref.current); }, 1000);
+    return () => clearInterval(id);
+  }, []);
+  // re-render via dummy state
+  const [, setX] = (require("react") as typeof import("react")).useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setX((x) => x + 1), 1000);
+    return () => clearInterval(id);
+  }, [setX]);
+  return [ref.current, setN];
+}
+
+function Heatmap() {
+  const cells = useMemo(() => Array.from({ length: 12 * 7 }, () => Math.random()), []);
+  return (
+    <div className="grid grid-rows-7 grid-flow-col gap-1.5">
+      {cells.map((v, i) => {
+        const intensity = v;
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.6 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.008, duration: 0.4 }}
+            className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-[3px]"
+            style={{
+              background: intensity < 0.2
+                ? "hsl(217 33% 17%)"
+                : `hsl(189 94% ${30 + intensity * 35}% / ${0.4 + intensity * 0.6})`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============================================================ */
+/*  FEATURES BENTO                                              */
+/* ============================================================ */
+function FeaturesBento() {
   const { t } = useTranslation();
   const features = [
-    { icon: Timer, titleKey: "landing.feature_smart_timer_title", descKey: "landing.feature_smart_timer_desc", accent: "primary" },
-    { icon: Target, titleKey: "landing.feature_pomodoro_title", descKey: "landing.feature_pomodoro_desc", accent: "accent" },
-    { icon: Headphones, titleKey: "landing.feature_sounds_title", descKey: "landing.feature_sounds_desc_full", accent: "primary" },
-    { icon: BarChart3, titleKey: "landing.feature_goals_title", descKey: "landing.feature_goals_desc", accent: "accent" },
-    { icon: FileText, titleKey: "landing.feature_history_title", descKey: "landing.feature_history_desc_full", accent: "primary" },
-    { icon: Trophy, titleKey: "landing.feature_achievements_title", descKey: "landing.feature_achievements_desc", accent: "accent" },
+    { icon: Timer, titleKey: "landing.feature_smart_timer_title", descKey: "landing.feature_smart_timer_desc", span: "md:col-span-2" },
+    { icon: Target, titleKey: "landing.feature_pomodoro_title", descKey: "landing.feature_pomodoro_desc" },
+    { icon: Headphones, titleKey: "landing.feature_sounds_title", descKey: "landing.feature_sounds_desc_full" },
+    { icon: BarChart3, titleKey: "landing.feature_goals_title", descKey: "landing.feature_goals_desc", span: "md:col-span-2" },
+    { icon: FileText, titleKey: "landing.feature_history_title", descKey: "landing.feature_history_desc_full" },
+    { icon: Trophy, titleKey: "landing.feature_achievements_title", descKey: "landing.feature_achievements_desc", span: "md:col-span-2" },
   ];
-
   return (
-    <MotionSection className="px-4 py-16 sm:py-24 bg-white">
-      <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <section className="relative px-4 py-24 sm:py-32">
+      <div className="max-w-6xl mx-auto">
+        <Reveal className="text-center mb-14">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400/80">04 — {t("landing.features_eyebrow")}</span>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mt-4">{t("landing.features_title")}</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {features.map((f, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              transition={{ duration: 0.5 }}
-              className="p-5 sm:p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-primary/40 hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-            >
-              <div className={`p-2.5 rounded-lg ${f.accent === "primary" ? "bg-cyan-50" : "bg-teal-50"} w-fit mb-4`}>
-                <f.icon className={`h-5 w-5 ${f.accent === "primary" ? "text-primary" : "text-accent"}`} />
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{t(f.titleKey)}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{t(f.descKey)}</p>
-            </motion.div>
+            <Reveal key={i} delay={(i % 3) * 0.08} className={f.span ?? ""}>
+              <Tilt className="h-full">
+                <div className="group h-full min-h-[220px] p-7 rounded-2xl glass hover:border-cyan-500/40 transition-all duration-500 relative overflow-hidden">
+                  <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  <div className="relative">
+                    <div className="inline-flex p-3 rounded-xl bg-cyan-500/10 mb-5 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-500">
+                      <f.icon className="h-5 w-5 text-cyan-400" />
+                    </div>
+                    <h3 className="font-display text-lg sm:text-xl font-semibold text-white mb-2.5">{t(f.titleKey)}</h3>
+                    <p className="text-sm text-white/55 leading-relaxed">{t(f.descKey)}</p>
+                  </div>
+                </div>
+              </Tilt>
+            </Reveal>
           ))}
         </div>
       </div>
-    </MotionSection>
+    </section>
   );
 }
 
-// How It Works Section
-function HowItWorksSection() {
+/* ============================================================ */
+/*  HOW IT WORKS - TIMELINE                                     */
+/* ============================================================ */
+function HowItWorksTimeline() {
   const { t } = useTranslation();
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 30%"] });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
   const steps = [
-    { icon: UserPlus, num: "1", titleKey: "landing.how_step_1_title", descKey: "landing.how_step_1_desc" },
-    { icon: Settings2, num: "2", titleKey: "landing.how_step_2_title", descKey: "landing.how_step_2_desc" },
-    { icon: TrendingUp, num: "3", titleKey: "landing.how_step_3_title", descKey: "landing.how_step_3_desc" },
+    { icon: UserPlus, num: "01", titleKey: "landing.how_step_1_title", descKey: "landing.how_step_1_desc" },
+    { icon: Settings2, num: "02", titleKey: "landing.how_step_2_title", descKey: "landing.how_step_2_desc" },
+    { icon: TrendingUp, num: "03", titleKey: "landing.how_step_3_title", descKey: "landing.how_step_3_desc" },
   ];
 
   return (
-    <MotionSection className="px-4 py-16 sm:py-24 bg-gray-50">
+    <section ref={ref} className="relative px-4 py-24 sm:py-32">
       <div className="max-w-4xl mx-auto">
-        <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 text-center mb-10 sm:mb-14">
-          {t("landing.how_title")}
-        </motion.h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+        <Reveal className="text-center mb-16">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400/80">05 — {t("landing.how_eyebrow")}</span>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mt-4">{t("landing.how_title")}</h2>
+        </Reveal>
+
+        <div className="relative pl-12 sm:pl-16">
+          <div className="absolute left-4 sm:left-6 top-2 bottom-2 w-px bg-white/10" />
+          <motion.div style={{ height: lineHeight }} className="absolute left-4 sm:left-6 top-2 w-px bg-gradient-to-b from-cyan-400 via-cyan-300 to-transparent" />
+
           {steps.map((s, i) => (
-            <motion.div key={i} variants={fadeUp} transition={{ duration: 0.5, delay: i * 0.15 }} className="text-center">
-              <div className="relative mx-auto w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-cyan-50 border-2 border-primary/30 flex items-center justify-center mb-4">
-                <span className="text-xl sm:text-2xl font-bold text-primary">{s.num}</span>
+            <Reveal key={i} delay={i * 0.1} className="relative pb-14 last:pb-0">
+              <div className="absolute -left-12 sm:-left-16 top-0 flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 rounded-full glass-strong border border-cyan-500/40">
+                <s.icon className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-400" />
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{t(s.titleKey)}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{t(s.descKey)}</p>
-            </motion.div>
+              <div className="font-mono text-xs text-cyan-400/60 mb-2">{s.num}</div>
+              <h3 className="font-display text-xl sm:text-2xl font-semibold text-white mb-2">{t(s.titleKey)}</h3>
+              <p className="text-sm sm:text-base text-white/55 leading-relaxed max-w-xl">{t(s.descKey)}</p>
+            </Reveal>
           ))}
         </div>
       </div>
-    </MotionSection>
+    </section>
   );
 }
 
-// Stats Section
+/* ============================================================ */
+/*  STATS                                                       */
+/* ============================================================ */
 function StatsSection() {
   const { t } = useTranslation();
   const stats = [
-    { icon: Music, value: t("landing.stats_sounds"), label: t("landing.stats_sounds_label") },
-    { icon: Target, value: t("landing.stats_pomodoro"), label: t("landing.stats_pomodoro_label") },
-    { icon: FileText, value: t("landing.stats_export"), label: t("landing.stats_export_label") },
-    { icon: Globe, value: t("landing.stats_languages"), label: t("landing.stats_languages_label") },
+    { icon: Music, value: 14, suffix: "+", label: t("landing.stats_sounds_label") },
+    { icon: Target, label: t("landing.stats_pomodoro_label"), text: t("landing.stats_pomodoro") },
+    { icon: FileText, label: t("landing.stats_export_label"), text: t("landing.stats_export") },
+    { icon: Globe, value: 12, label: t("landing.stats_languages_label") },
   ];
-
   return (
-    <MotionSection className="px-4 py-16 sm:py-24 bg-white">
-      <div className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+    <section className="relative px-4 py-24 sm:py-32 border-t border-white/5">
+      <div className="absolute inset-0 aurora-bg opacity-30" />
+      <div className="relative max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {stats.map((s, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              transition={{ duration: 0.5 }}
-              className="text-center p-5 sm:p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-            >
-              <s.icon className="h-5 w-5 text-primary mx-auto mb-3" />
-              <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{s.value}</div>
-              <div className="text-xs sm:text-sm text-gray-400">{s.label}</div>
-            </motion.div>
+            <Reveal key={i} delay={i * 0.08}>
+              <div className="p-7 rounded-2xl glass h-full">
+                <s.icon className="h-5 w-5 text-cyan-400 mb-4" />
+                <div className="font-display text-4xl sm:text-5xl font-bold text-gradient-cyan mb-2">
+                  {s.value !== undefined ? <CountUp to={s.value} suffix={s.suffix} /> : s.text}
+                </div>
+                <div className="text-xs sm:text-sm text-white/50">{s.label}</div>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
-    </MotionSection>
+    </section>
   );
 }
 
-// Final CTA Section
-function FinalCTASection() {
+/* ============================================================ */
+/*  GLOBAL TIMEZONES                                            */
+/* ============================================================ */
+function GlobalTimezones() {
+  const { t } = useTranslation();
+  const cities = [
+    { name: "São Paulo", offset: -3, x: "32%", y: "68%" },
+    { name: "New York", offset: -5, x: "25%", y: "40%" },
+    { name: "London", offset: 0, x: "48%", y: "32%" },
+    { name: "Tokyo", offset: 9, x: "82%", y: "44%" },
+    { name: "Sydney", offset: 11, x: "88%", y: "75%" },
+  ];
+  return (
+    <section className="relative px-4 py-24 sm:py-32">
+      <div className="max-w-6xl mx-auto">
+        <Reveal className="text-center mb-14">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-cyan-400/80">06 — {t("landing.timezones_eyebrow")}</span>
+          <h2 className="font-display text-3xl sm:text-5xl font-bold text-white mt-4 max-w-3xl mx-auto">{t("landing.timezones_title")}</h2>
+          <p className="text-white/55 text-sm sm:text-base mt-4 max-w-xl mx-auto">{t("landing.timezones_subtitle")}</p>
+        </Reveal>
+
+        <Reveal>
+          <div className="relative aspect-[2/1] rounded-3xl glass-strong overflow-hidden">
+            <div className="absolute inset-0 grid-bg opacity-50" />
+            <svg viewBox="0 0 200 100" className="absolute inset-0 w-full h-full opacity-20">
+              <ellipse cx="100" cy="50" rx="95" ry="45" fill="none" stroke="hsl(189 94% 50%)" strokeWidth="0.3" />
+              <ellipse cx="100" cy="50" rx="60" ry="30" fill="none" stroke="hsl(189 94% 50%)" strokeWidth="0.3" />
+              <line x1="5" y1="50" x2="195" y2="50" stroke="hsl(189 94% 50%)" strokeWidth="0.3" />
+              <line x1="100" y1="5" x2="100" y2="95" stroke="hsl(189 94% 50%)" strokeWidth="0.3" />
+            </svg>
+            {cities.map((c, i) => (
+              <motion.div
+                key={c.name}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.15, duration: 0.6 }}
+                style={{ left: c.x, top: c.y }}
+                className="absolute -translate-x-1/2 -translate-y-1/2"
+              >
+                <div className="relative">
+                  <div className="absolute inset-0 w-3 h-3 rounded-full bg-cyan-400 animate-ping opacity-75" />
+                  <div className="relative w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_20px_hsl(189_94%_50%/0.8)]" />
+                </div>
+                <div className="absolute top-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] sm:text-xs text-white/80 font-mono">
+                  {c.name}
+                  <div className="text-cyan-400/60 text-center">UTC{c.offset >= 0 ? `+${c.offset}` : c.offset}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================ */
+/*  FINAL CTA                                                   */
+/* ============================================================ */
+function FinalCTA() {
   const { t } = useTranslation();
   return (
-    <motion.section
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
-      variants={staggerContainer}
-      className="relative z-10 px-4 py-16 sm:py-24 landing-bg"
-    >
-      <div className="max-w-2xl mx-auto text-center">
-        <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
-          {t("landing.final_cta_title")}
-        </motion.h2>
-        <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="text-sm sm:text-base text-white/60 mb-8 max-w-lg mx-auto">
-          {t("landing.final_cta_subtitle")}
-        </motion.p>
-        <motion.div variants={fadeUp} transition={{ duration: 0.5 }}>
-          <Button
-            asChild
-            size="lg"
-            className="px-8 py-6 text-base sm:text-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
-          >
-            <Link to="/auth">{t("landing.final_cta_button")}</Link>
-          </Button>
-        </motion.div>
+    <section className="relative px-4 py-32 sm:py-40 overflow-hidden">
+      <div className="absolute inset-0 aurora-bg animate-aurora" />
+      <div className="absolute inset-0 grid-bg opacity-40" />
+      <div className="relative max-w-3xl mx-auto text-center">
+        <Reveal>
+          <Sparkles className="h-8 w-8 text-cyan-400 mx-auto mb-6" />
+          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            {t("landing.final_cta_title")}
+          </h2>
+          <p className="text-sm sm:text-base text-white/60 mb-10 max-w-xl mx-auto">{t("landing.final_cta_subtitle")}</p>
+          <Magnetic>
+            <Button asChild size="lg" className="px-8 h-14 text-sm sm:text-base bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold shadow-[0_20px_60px_-15px_hsl(189_94%_50%/0.7)]">
+              <Link to="/auth" className="flex items-center gap-2">
+                {t("landing.final_cta_button")} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </Magnetic>
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-white/40">
+            <CheckCircle2 className="h-3.5 w-3.5 text-cyan-400" />
+            {t("landing.trial_badge")}
+          </div>
+        </Reveal>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
+/* ============================================================ */
+/*  ROOT                                                        */
+/* ============================================================ */
 export default function Landing() {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  useLenis();
 
   useEffect(() => {
-    if (!loading && user) {
-      navigate("/timer");
-    }
+    if (!loading && user) navigate("/timer");
   }, [user, loading, navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse">
-          <Clock className="h-12 w-12 text-primary" />
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-[#07090f]">
+        <Clock className="h-12 w-12 text-cyan-400 animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* === DARK HERO === */}
-      <div className="relative landing-bg">
-        <div className="absolute inset-0 landing-gradient" />
-
-        <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
-          <LanguageSwitcher variant="ghost" className="text-white hover:bg-white/10" />
-        </div>
-
-        <FloatingParticles />
-
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-3 sm:px-4">
-          <div className="mb-4 sm:mb-8 animate-fade-in">
-            <AnimatedClock />
-          </div>
-
-          <div className="flex items-center gap-2 mb-3 sm:mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <img src={logo} alt="TimeZoni" className="h-9 w-9 sm:h-14 sm:w-14" />
-            <span className="text-lg sm:text-2xl font-bold tracking-tight text-white">TimeZoni</span>
-          </div>
-
-          <div className="text-center max-w-xl mx-auto mb-5 sm:mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-2 sm:mb-4">
-              <span className="text-white">{t("landing.hero_tagline")}</span>
-            </h1>
-            <p className="text-xs sm:text-base md:text-lg text-white/70 max-w-md mx-auto px-3">
-              {t("landing.hero_subtitle")}
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 mb-6 animate-fade-in w-full max-w-xs sm:max-w-none sm:w-auto px-2 sm:px-0" style={{ animationDelay: "0.3s" }}>
-            <Button
-              asChild
-              size="lg"
-              className="w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
-            >
-              <Link to="/auth">{t("landing.cta_start")}</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-lg border-border/50 hover:bg-muted/50"
-            >
-              <Link to="/auth">{t("landing.cta_login")}</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* === LIGHT SECTIONS (clean cut, no gradient) === */}
-      <div className="landing-light-body">
-        <ProblemSection />
-        <SolutionSection />
-        <FeaturesSection />
-        <HowItWorksSection />
-        <StatsSection />
-      </div>
-
-      {/* === DARK CLOSING (clean cut) === */}
-      <div className="landing-bg">
-        <FinalCTASection />
-        <PricingSection />
-        {/* Support button */}
-        <div className="text-center pb-8">
-          <Link to="/sac/new" className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1">
-            <Headphones className="h-4 w-4" />
-            {t("sidebar.support")}
-          </Link>
-        </div>
+    <div className="landing-root min-h-screen relative overflow-x-hidden">
+      <ScrollProgress />
+      <Hero />
+      <MarqueeValues />
+      <ProblemSection />
+      <SolutionSection />
+      <DashboardShowcase />
+      <FeaturesBento />
+      <HowItWorksTimeline />
+      <StatsSection />
+      <GlobalTimezones />
+      <FinalCTA />
+      <PricingSection />
+      <div className="text-center pb-10">
+        <Link to="/sac/new" className="text-sm text-white/40 hover:text-cyan-400 transition-colors inline-flex items-center gap-1.5">
+          <Headphones className="h-4 w-4" />
+          {t("sidebar.support")}
+        </Link>
       </div>
     </div>
   );
