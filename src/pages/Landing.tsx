@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -429,24 +429,15 @@ function DashboardShowcase() {
 }
 
 function LiveTimer() {
-  const [seconds, setSeconds] = (require as any); // placeholder
-  return <LiveTimerImpl />;
-}
-function LiveTimerImpl() {
-  const [s, setS] = useStateNum(7234);
+  const [s, setS] = useState(7234);
   useEffect(() => {
     const id = setInterval(() => setS((v) => v + 1), 1000);
     return () => clearInterval(id);
-  }, [setS]);
+  }, []);
   const h = Math.floor(s / 3600).toString().padStart(2, "0");
   const m = Math.floor((s % 3600) / 60).toString().padStart(2, "0");
   const sec = (s % 60).toString().padStart(2, "0");
   return <span>{h}:{m}:{sec}</span>;
-}
-function useStateNum(init: number) {
-  const ref = useRef(init);
-  const [, force] = (function useTick() { return [0, (() => {})] as const; })();
-  return [ref.current, (fn: (v: number) => number) => { ref.current = fn(ref.current); }] as const;
 }
 
 function Heatmap() {
