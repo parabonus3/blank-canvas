@@ -1,79 +1,134 @@
-## Diagnóstico
+## Redesign Landing TimeZoni — Awwwards Premium
 
-Encontrei três causas principais para a regressão:
+### Objetivo
+Reconstruir `src/pages/Landing.tsx` (+ seções) num experience cinematográfico, mantendo **todas as i18n keys atuais** (pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN, ru-RU, ar-SA, id-ID) e adicionando novas keys apenas onde precisar de novos textos — sempre nos 12 idiomas.
 
-1. **Explorar quebrou por overload de RPC no Supabase**
-   - Agora existem duas versões simultâneas de `get_public_rooms_ranking_by_period`: uma com 4 parâmetros e outra com 5.
-   - Também existem duas versões de `get_global_user_ranking`: uma com 1 parâmetro e outra com 2.
-   - O frontend chama as versões antigas, e o PostgREST não consegue decidir qual função usar. O erro confirmado foi `PGRST203: Could not choose the best candidate function`.
-   - Resultado: salas e usuários ficam vazios ou falham ao respeitar filtros.
+### Stack visual
+- **Paleta**: ciano atual da marca (`#06b6d4` / `#22d3ee`) sobre base escura `#0a0e1a → #0f172a`, com glassmorphism e gradientes aurora sutis em ciano.
+- **Tipografia**: Sora (headings) + Manrope (body) via Google Fonts em `index.html`.
+- **Animações**: Framer Motion (já instalado) + **Lenis** (nova dep, ~10kb) para smooth scroll global.
+- **Sem libs pesadas**: nada de Three.js / GSAP / Locomotive. Tudo via Motion + CSS para garantir 60fps.
 
-2. **Padrão America/Sao_Paulo ficou inadequado para Explorar global**
-   - A mudança anterior colocou `America/Sao_Paulo` como padrão de ranking global.
-   - Para um ranking público/global, isso cria uma referência regional demais.
-   - Melhor usar um padrão neutro e global: **UTC**, com aviso discreto no Explorar.
+### Estrutura de seções (rolagem narrativa)
 
-3. **Metas no Timer usam a tabela errada**
-   - O componente novo `ActiveGoalsStrip` usa `useGoalsWithProgress()`, que lê a tabela antiga `goals`.
-   - A tela atual de Metas usa `annual_goals`, `life_categories` e `annual_goal_progress`.
-   - O banco tem metas em `annual_goals`, mas `goals` está vazia. Por isso nada aparece no Timer/fullscreen.
+```text
+1. HERO cinematográfico
+   - Smooth scroll Lenis ativo
+   - Background: grid animado + aurora gradient + spotlight que segue o cursor
+   - Título com reveal por palavra (stagger), subtítulo com fade-up
+   - Relógio 3D em SVG/Motion com parallax no scroll
+   - CTAs com magnetic hover + ripple
 
-## Plano de correção
+2. MARQUEE de valores (scroll horizontal infinito)
+   - "Foco · Disciplina · Streaks · Metas · Tempo · Evolução"
 
-### 1. Restaurar as RPCs de Explorar sem ambiguidade
+3. PROBLEM (3 cards glassmorphism)
+   - Reveal escalonado on scroll, tilt 3D suave no hover
 
-Criar uma migração para:
+4. SOLUTION manifesto
+   - Texto grande tipo Linear, palavras destacadas em ciano que "acendem" no scroll
 
-- Remover as assinaturas antigas ambíguas:
-  - `get_public_rooms_ranking_by_period(text, text, text, text)`
-  - `get_global_user_ranking(text)`
-  - `get_room_daily_progress(uuid, text)`
-- Manter uma única assinatura por função:
-  - `get_public_rooms_ranking_by_period(_period, _category, _search, _country, _tz default 'UTC')`
-  - `get_global_user_ranking(_period, _tz default 'UTC')`
-  - `get_room_daily_progress(_room_id, _period, _tz default 'UTC')`
-- Preservar `SECURITY DEFINER`, `search_path = public` e os grants atuais para não quebrar acesso público intencional.
-- Trocar o helper para `start_of_day_in_tz('UTC')` por padrão.
+5. DASHBOARD LIVE (showcase principal)
+   - Mock do app montando em tempo real ao scrollar:
+     timer rodando, números contando (CountUp), barra de progresso preenchendo,
+     calendário heatmap surgindo célula a célula, streak flame pulsando
+   - Sticky scroll: dashboard fixa enquanto features explicativas passam ao lado
 
-### 2. Ajustar o frontend do Explorar
+6. FEATURES bento grid (6 cards assimétricos)
+   - Cada card com micro-animação própria (timer, pomodoro tomato, waveform sons,
+     gráfico metas, lista history, troféu achievements)
+   - Hover: glow ciano + scale + shadow
 
-- Passar `_tz: 'UTC'` explicitamente nas chamadas de:
-  - `get_public_rooms_ranking_by_period`
-  - `get_global_user_ranking`
-- Atualizar o aviso discreto para algo como:
-  - “Dia e semana baseados em UTC para manter o ranking global consistente.”
-- Conferir as traduções em `pt-BR` e `en-US` para não depender de fallback hardcoded.
+7. HOW IT WORKS — timeline vertical animada
+   - Linha desenhada via SVG path stroke-dasharray no scroll
+   - 3 steps com ícones que "ligam" quando entram no viewport
 
-### 3. Corrigir metas no Timer e fullscreen
+8. STATS — números gigantes contando
+   - Intersection observer dispara CountUp
 
-- Adaptar `ActiveGoalsStrip` para usar as metas atuais de `annual_goals`, não a tabela legada `goals`.
-- Exibir apenas metas:
-  - do ano atual;
-  - não arquivadas;
-  - não concluídas;
-  - com progresso abaixo de 100%.
-- Usar `life_categories.color` quando existir, mantendo visual discreto.
-- Para progresso:
-  - `current_value / target_value` para metas simples/progresso/hábito.
-- Manter o limite visual de até 3 metas + “+N”.
+9. GLOBAL TIMEZONES showcase
+   - Globo SVG simples com pulses em cidades + relógios de fusos
 
-### 4. Corrigir compatibilidade de progresso de sala
+10. FINAL CTA
+    - Aurora gradient pulsando, botão magnetic
+    - Link discreto para SAC mantido
 
-- Em `RoomGoalProgress`, continuar passando o timezone do usuário quando for experiência da sala/pessoal.
-- Após remover a assinatura antiga, garantir que a chamada com `_tz` continue funcionando.
+11. PRICingSection (mantida, só re-skin de wrapper para combinar com novo dark)
+```
 
-### 5. Validar depois da implementação
+### Microinterações globais
+- **Magnetic buttons** (CTAs principais): hook custom `useMagnetic`
+- **Spotlight cursor** no hero: gradient radial que segue mouse
+- **Scroll progress bar** fina no topo
+- **Reveal on scroll**: utilitário `<Reveal>` com `whileInView` (já padrão Motion)
+- **Parallax** em camadas do hero via `useScroll` + `useTransform`
+- **Tilt 3D** nos cards via mouse position → rotateX/rotateY
+- **Number counters** com `useMotionValue` + `animate()`
 
-- Testar via chamada REST/Supabase que as RPCs não retornam mais `PGRST203`.
-- Verificar em `/explore`:
-  - salas aparecem;
-  - usuários aparecem quando houver dados no período;
-  - filtros `Agora`, `Hoje`, `Semana`, `Total` funcionam.
-- Verificar em `/timer` e fullscreen:
-  - metas de `annual_goals` aparecem discretamente;
-  - metas concluídas não aparecem;
-  - layout permanece responsivo.
+### Performance
+- Lenis configurado com `lerp: 0.1`, `wheelMultiplier: 1`
+- `prefers-reduced-motion` desativa Lenis e animações pesadas
+- Lazy-load das seções abaixo da fold via `loading="lazy"` em imagens
+- Sem bibliotecas de canvas/WebGL → mantém bundle leve e mobile-friendly
 
-## Observação importante
+### Responsividade
+- Mobile-first: hero stacked, marquee mais lento, bento vira coluna única, sticky dashboard vira carrossel horizontal snap
+- Touch: desativa parallax cursor, mantém scroll reveal
+- Testar em 375px, 768px, 1280px, 1920px
 
-Não vou mexer em regras de avatar, contorno de sala, RLS sensível ou permissões amplas de `study_rooms`. A correção fica limitada ao que quebrou: RPCs de ranking/fuso e fonte das metas exibidas no Timer.
+### Arquitetura de arquivos
+
+```text
+src/pages/Landing.tsx                  (orquestra + Lenis provider)
+src/components/landing/
+  ├─ HeroSection.tsx                   (novo, cinematográfico)
+  ├─ MarqueeValues.tsx                 (novo)
+  ├─ ProblemSection.tsx                (extrair + redesign)
+  ├─ SolutionSection.tsx               (extrair + redesign)
+  ├─ DashboardShowcase.tsx             (novo, sticky scroll)
+  ├─ FeaturesBento.tsx                 (substitui FeaturesSection)
+  ├─ HowItWorksTimeline.tsx            (substitui HowItWorksSection)
+  ├─ StatsCounter.tsx                  (substitui StatsSection)
+  ├─ GlobalTimezones.tsx               (novo)
+  ├─ FinalCTA.tsx                      (extrair + redesign)
+  ├─ PricingSection.tsx                (mantida, re-skin leve)
+  └─ primitives/
+      ├─ Reveal.tsx                    (wrapper whileInView)
+      ├─ MagneticButton.tsx
+      ├─ SpotlightCursor.tsx
+      ├─ ScrollProgress.tsx
+      ├─ CountUp.tsx
+      └─ TiltCard.tsx
+src/hooks/
+  ├─ useLenis.ts                       (novo)
+  └─ useMagnetic.ts                    (novo)
+src/index.css                          (adiciona tokens: --aurora, --glass-*, fontes Sora/Manrope, scroll-behavior)
+index.html                             (Google Fonts Sora + Manrope preconnect)
+```
+
+### i18n
+- **Manter 100%** das keys atuais usadas no Landing (`landing.*`, `sidebar.support`).
+- **Novas keys** a adicionar nos 12 arquivos `src/i18n/locales/*.json`:
+  - `landing.hero_eyebrow` ("O futuro da produtividade")
+  - `landing.marquee_*` (6 termos)
+  - `landing.dashboard_showcase_title/subtitle` + 3 feature labels
+  - `landing.timezones_title/subtitle`
+  - `landing.scroll_hint` ("Role para descobrir")
+- Tradução nativa pt-BR + en-US, demais idiomas com tradução fiel (sem placeholders).
+
+### Dependências
+- `+ lenis` (npm). Sem outras adições.
+
+### Detalhes técnicos
+- Lenis integrado via `useEffect` em `Landing.tsx` com cleanup; desativado se `matchMedia('(prefers-reduced-motion: reduce)').matches`.
+- `useScroll` do Motion compartilhado com Lenis via raf (`lenis.on('scroll', ScrollTrigger?.update)` não necessário — Motion lê window scroll nativamente).
+- Tokens novos em `index.css`:
+  - `--aurora: radial-gradient(ellipse at top, hsl(189 94% 43% / 0.25), transparent 60%)`
+  - `--glass-bg: hsl(217 33% 17% / 0.4)`, `--glass-border: hsl(189 94% 43% / 0.15)`
+  - `.font-display { font-family: 'Sora', sans-serif }`, `body { font-family: 'Manrope', sans-serif }`
+- Sem mudanças no backend, rotas, auth ou app interno. `useEffect` que redireciona logado para `/timer` é preservado.
+
+### Fora do escopo
+- App autenticado (`/timer`, `/rooms`, etc.)
+- Páginas `/auth`, `/pricing` standalone, `/sac/*`
+- Backend, RPCs, migrations
