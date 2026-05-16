@@ -292,14 +292,11 @@ function ProblemSection() {
 /* ============================================================ */
 function SolutionSection() {
   const { t } = useTranslation();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 30%"] });
-
   const sentence = t("landing.solution_subtitle");
   const words = sentence.split(" ");
 
   return (
-    <section ref={ref} className="relative px-4 py-28 sm:py-40">
+    <section className="relative px-4 py-28 sm:py-40">
       <div className="absolute inset-0 aurora-bg opacity-50" />
       <div className="relative max-w-5xl mx-auto text-center">
         <Reveal>
@@ -309,16 +306,18 @@ function SolutionSection() {
           </h2>
         </Reveal>
         <p className="font-display text-xl sm:text-3xl md:text-4xl font-light leading-tight max-w-4xl mx-auto">
-          {words.map((w, i) => {
-            const start = i / words.length;
-            const end = start + 1 / words.length;
-            const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1]);
-            return (
-              <motion.span key={i} style={{ opacity }} className="inline-block mr-[0.25em] text-white">
-                {w}
-              </motion.span>
-            );
-          })}
+          {words.map((w, i) => (
+            <motion.span
+              key={`${w}-${i}`}
+              initial={{ opacity: 0.2 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: i * 0.04, duration: 0.6 }}
+              className="inline-block mr-[0.25em] text-white"
+            >
+              {w}
+            </motion.span>
+          ))}
         </p>
       </div>
     </section>
