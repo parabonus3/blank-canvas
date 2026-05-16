@@ -429,27 +429,24 @@ function DashboardShowcase() {
 }
 
 function LiveTimer() {
-  const [seconds, setSeconds] = useMemoTimer();
-  const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
-  const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, "0");
-  const s = (seconds % 60).toString().padStart(2, "0");
-  return <span>{h}:{m}:{s}</span>;
+  const [seconds, setSeconds] = (require as any); // placeholder
+  return <LiveTimerImpl />;
 }
-function useMemoTimer(): [number, (n: number) => void] {
-  const ref = useRef(7234);
-  const force = useRef(0);
-  const setN = (n: number) => { ref.current = n; };
+function LiveTimerImpl() {
+  const [s, setS] = useStateNum(7234);
   useEffect(() => {
-    const id = setInterval(() => { ref.current += 1; force.current++; setN(ref.current); }, 1000);
+    const id = setInterval(() => setS((v) => v + 1), 1000);
     return () => clearInterval(id);
-  }, []);
-  // re-render via dummy state
-  const [, setX] = (require("react") as typeof import("react")).useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setX((x) => x + 1), 1000);
-    return () => clearInterval(id);
-  }, [setX]);
-  return [ref.current, setN];
+  }, [setS]);
+  const h = Math.floor(s / 3600).toString().padStart(2, "0");
+  const m = Math.floor((s % 3600) / 60).toString().padStart(2, "0");
+  const sec = (s % 60).toString().padStart(2, "0");
+  return <span>{h}:{m}:{sec}</span>;
+}
+function useStateNum(init: number) {
+  const ref = useRef(init);
+  const [, force] = (function useTick() { return [0, (() => {})] as const; })();
+  return [ref.current, (fn: (v: number) => number) => { ref.current = fn(ref.current); }] as const;
 }
 
 function Heatmap() {
