@@ -332,6 +332,8 @@ function DashboardShowcase() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const progress = useTransform(scrollYProgress, [0.1, 0.6], [0, 100]);
+  const progressWidth = useTransform(progress, (v) => `${v}%`);
+  const progressLabel = useTransform(progress, (v) => `${Math.round(v)}%`);
   const timerScale = useTransform(scrollYProgress, [0, 0.5], [0.92, 1]);
 
   return (
@@ -374,10 +376,10 @@ function DashboardShowcase() {
                   <div className="mt-6 space-y-2">
                     <div className="flex justify-between text-xs text-white/50">
                       <span>{t("landing.dashboard_today_goal")}</span>
-                      <motion.span>{useTransform(progress, (v) => `${Math.round(v)}%`)}</motion.span>
+                      <motion.span>{progressLabel}</motion.span>
                     </div>
                     <div className="h-2 rounded-full bg-white/5 overflow-hidden">
-                      <motion.div style={{ width: useTransform(progress, (v) => `${v}%`) }} className="h-full bg-gradient-to-r from-cyan-500 to-teal-400 rounded-full" />
+                      <motion.div style={{ width: progressWidth }} className="h-full bg-gradient-to-r from-cyan-500 to-teal-400 rounded-full" />
                     </div>
                   </div>
                 </div>
