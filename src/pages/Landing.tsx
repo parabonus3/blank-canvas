@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useTime, useMotionTemplate } from "framer-motion";
 import {
   Clock, Timer, Headphones, Target, BarChart3, Trophy, AlertTriangle, Eye, Zap,
   UserPlus, Settings2, TrendingUp, Music, FileText, Globe, Flame, Calendar,
