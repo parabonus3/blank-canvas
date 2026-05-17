@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useTime, useMotionTemplate } from "framer-motion";
 import {
   Clock, Timer, Headphones, Target, BarChart3, Trophy, AlertTriangle, Eye, Zap,
   UserPlus, Settings2, TrendingUp, Music, FileText, Globe, Flame, Calendar,
@@ -56,53 +56,107 @@ function FloatingParticles() {
 /* ============================================================ */
 function AnimatedClock() {
   const { scrollY } = useScroll();
-  const rotate = useTransform(scrollY, [0, 800], [0, 8]);
+  const scrollRotate = useTransform(scrollY, [0, 800], [0, 6]);
   const scale = useTransform(scrollY, [0, 600], [1, 0.92]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0.45]);
+  const opacity = useTransform(scrollY, [0, 500], [1, 0.5]);
 
   const reduced = typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    if (reduced) return;
-    let raf = 0;
-    const tick = () => {
-      setNow(new Date());
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [reduced]);
+  // Tempo contínuo via motion value (sem re-render do React → smooth a 60fps)
+  const time = useTime();
+  const baseMs = useMemo(() => Date.now(), []);
 
-  const ms = now.getMilliseconds();
-  const s = now.getSeconds() + ms / 1000;
-  const m = now.getMinutes() + s / 60;
-  const h = (now.getHours() % 12) + m / 60;
+  // Rotações reais do relógio (graus) derivadas do time motion value
+  const hourDeg = useTransform(time, (t) => {
+    const ms = baseMs + t;
+    const d = new Date(ms);
+    return ((d.getHours() % 12) + d.getMinutes() / 60 + d.getSeconds() / 3600) * 30;
+  });
+  const minDeg = useTransform(time, (t) => {
+    const ms = baseMs + t;
+    const d = new Date(ms);
+    return (d.getMinutes() + d.getSeconds() / 60) * 6;
+  });
+  // Ponteiro de segundos com tick suave (ease-out por segundo, sensação mecânica fina)
+  const secDeg = useTransform(time, (t) => {
+    const ms = baseMs + t;
+    const d = new Date(ms);
+    const sub = d.getMilliseconds() / 1000;
+    const eased = sub < 0.22 ? Math.pow(sub / 0.22, 0.55) : 1;
+    return (d.getSeconds() + eased) * 6;
+  });
 
-  // tick suave com leve overshoot: easing por sub-segundo
-  const sub = ms / 1000;
-  const eased = sub < 0.18 ? sub / 0.18 : 1; // chega rápido e descansa
-  const secDeg = (Math.floor(s) + eased) * 6;
-  const minDeg = m * 6;
-  const hourDeg = h * 30;
+  // Anéis decorativos girando suavemente
+  const ringSlow = useTransform(time, (t) => (t / 40000) * 360);
+  const ringMid = useTransform(time, (t) => -(t / 22000) * 360);
+  const ringFast = useTransform(time, (t) => (t / 9000) * 360);
 
-  const handStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const };
+  // Sweep "radar" — arco transparente girando atrás dos ponteiros
+  const sweepRotate = useTransform(time, (t) => (t / 6000) * 360);
+
+  // Aura ambiente que respira (hue shift sutil)
+  const auraHue = useTransform(time, (t) => 185 + Math.sin(t / 2400) * 12);
+  const auraOpacity = useTransform(time, (t) => 0.55 + Math.sin(t / 1800) * 0.2);
+
+  const hourStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: hourDeg };
+  const minStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: minDeg };
+  const secStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: secDeg };
+  const ringSlowStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: ringSlow };
+  const ringMidStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: ringMid };
+  const ringFastStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: ringFast };
+  const sweepStyle = { transformOrigin: "100px 100px", transformBox: "view-box" as const, rotate: sweepRotate };
+
+  // Halo conic atrás do SVG (CSS, fora do view-box)
+  const haloBg = useMotionTemplate`conic-gradient(from ${sweepRotate}deg, hsl(189 94% 55% / 0.0) 0deg, hsl(189 94% 60% / 0.35) 60deg, hsl(189 94% 55% / 0) 140deg, hsl(180 90% 70% / 0.25) 240deg, hsl(189 94% 55% / 0) 360deg)`;
 
   return (
-    <motion.div style={{ rotate, scale, opacity }} className="relative">
-      <svg className="w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64" viewBox="0 0 200 200" overflow="visible">
+    <motion.div style={{ rotate: scrollRotate, scale, opacity }} className="relative">
+      {/* Halo conic premium atrás do mostrador */}
+      {!reduced && (
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 rounded-full blur-2xl"
+          style={{ background: haloBg, opacity: auraOpacity }}
+        />
+      )}
+
+      <svg className="relative w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64" viewBox="0 0 200 200" overflow="visible">
         <defs>
           <radialGradient id="clockGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="hsl(189 94% 50%)" stopOpacity="0.45" />
+            <stop offset="0%" stopColor="hsl(189 94% 55%)" stopOpacity="0.55" />
+            <stop offset="70%" stopColor="hsl(189 94% 50%)" stopOpacity="0.05" />
             <stop offset="100%" stopColor="hsl(189 94% 50%)" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="dialFill" cx="50%" cy="40%" r="65%">
+            <stop offset="0%" stopColor="hsl(217 33% 12%)" />
+            <stop offset="100%" stopColor="hsl(222 47% 4%)" />
           </radialGradient>
           <linearGradient id="hourHand" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="hsl(210 40% 98%)" />
-            <stop offset="100%" stopColor="hsl(210 30% 75%)" />
+            <stop offset="100%" stopColor="hsl(210 30% 70%)" />
+          </linearGradient>
+          <linearGradient id="minHand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(210 40% 100%)" />
+            <stop offset="100%" stopColor="hsl(210 30% 80%)" />
+          </linearGradient>
+          <linearGradient id="secHand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(180 100% 75%)" />
+            <stop offset="100%" stopColor="hsl(189 94% 55%)" />
+          </linearGradient>
+          <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(189 94% 60%)" stopOpacity="0" />
+            <stop offset="100%" stopColor="hsl(189 94% 60%)" stopOpacity="0.55" />
           </linearGradient>
           <filter id="secGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="1.4" result="b" />
+            <feGaussianBlur stdDeviation="1.6" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="b" />
             <feMerge>
               <feMergeNode in="b" />
               <feMergeNode in="SourceGraphic" />
@@ -110,22 +164,40 @@ function AnimatedClock() {
           </filter>
         </defs>
 
-        {/* Glow respirando */}
+        {/* Glow ambiente */}
         <motion.circle
-          cx="100" cy="100" r="95" fill="url(#clockGlow)"
-          animate={reduced ? undefined : { opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+          cx="100" cy="100" r="98" fill="url(#clockGlow)"
+          animate={reduced ? undefined : { opacity: [0.75, 1, 0.75] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Aro externo sutil */}
-        <circle cx="100" cy="100" r="78" fill="none" stroke="hsl(189 94% 50% / 0.15)" strokeWidth="0.5" />
-        <circle cx="100" cy="100" r="72" fill="hsl(222 47% 4% / 0.6)" stroke="hsl(189 94% 50% / 0.4)" strokeWidth="1" />
+        {/* Anéis decorativos concêntricos girando */}
+        <motion.g style={ringSlowStyle}>
+          <circle cx="100" cy="100" r="88" fill="none" stroke="hsl(189 94% 60% / 0.18)" strokeWidth="0.4" strokeDasharray="2 6" />
+        </motion.g>
+        <motion.g style={ringMidStyle}>
+          <circle cx="100" cy="100" r="83" fill="none" stroke="hsl(189 94% 70% / 0.22)" strokeWidth="0.5" strokeDasharray="1 4" />
+        </motion.g>
+        <motion.g style={ringFastStyle}>
+          <circle cx="100" cy="100" r="78" fill="none" stroke="hsl(189 94% 55% / 0.3)" strokeWidth="0.4" strokeDasharray="0.5 3" />
+        </motion.g>
+
+        {/* Mostrador */}
+        <circle cx="100" cy="100" r="72" fill="url(#dialFill)" stroke="hsl(189 94% 50% / 0.45)" strokeWidth="1" />
+        <circle cx="100" cy="100" r="72" fill="none" stroke="hsl(189 94% 70% / 0.08)" strokeWidth="3" filter="url(#softGlow)" />
+
+        {/* Sweep radar */}
+        {!reduced && (
+          <motion.g style={sweepStyle}>
+            <path d="M 100 100 L 168 100 A 68 68 0 0 0 130 41 Z" fill="url(#sweep)" opacity="0.35" />
+          </motion.g>
+        )}
 
         {/* Marcadores */}
         {Array.from({ length: 60 }).map((_, i) => {
           const angle = (i * 6 - 90) * (Math.PI / 180);
           const isHour = i % 5 === 0;
-          const r1 = isHour ? 58 : 62;
+          const r1 = isHour ? 56 : 62;
           const r2 = 68;
           return (
             <line
@@ -134,57 +206,62 @@ function AnimatedClock() {
               y1={100 + r1 * Math.sin(angle)}
               x2={100 + r2 * Math.cos(angle)}
               y2={100 + r2 * Math.sin(angle)}
-              stroke={isHour ? "hsl(189 94% 75%)" : "hsl(210 40% 96% / 0.28)"}
-              strokeWidth={isHour ? 2 : 0.7}
+              stroke={isHour ? "hsl(189 94% 78%)" : "hsl(210 40% 96% / 0.28)"}
+              strokeWidth={isHour ? 2.2 : 0.7}
               strokeLinecap="round"
             />
           );
         })}
 
-        {/* Pontos orbitais */}
-        {!reduced && [
-          { r: 70, dur: 14, color: "hsl(189 94% 65%)", size: 1.6, offset: 0 },
-          { r: 65, dur: 22, color: "hsl(189 94% 70% / 0.7)", size: 1.2, offset: 120 },
-          { r: 74, dur: 9, color: "hsl(180 90% 75%)", size: 1, offset: 240 },
-        ].map((o, i) => (
-          <motion.g
-            key={i}
-            style={handStyle}
-            initial={{ rotate: o.offset }}
-            animate={{ rotate: o.offset + 360 }}
-            transition={{ duration: o.dur, repeat: Infinity, ease: "linear" }}
+        {/* Numerais sutis em 12/3/6/9 */}
+        {[
+          { x: 100, y: 48, label: "12" },
+          { x: 152, y: 104, label: "3" },
+          { x: 100, y: 158, label: "6" },
+          { x: 48, y: 104, label: "9" },
+        ].map((n) => (
+          <text
+            key={n.label}
+            x={n.x} y={n.y}
+            textAnchor="middle"
+            fontSize="7"
+            fontFamily="'Sora', sans-serif"
+            fontWeight={500}
+            fill="hsl(189 94% 80% / 0.55)"
+            letterSpacing="0.5"
           >
-            <circle cx="100" cy={100 - o.r} r={o.size} fill={o.color} />
-          </motion.g>
+            {n.label}
+          </text>
         ))}
 
         {/* Ponteiro da hora */}
-        <g style={{ ...handStyle, transform: `rotate(${hourDeg}deg)` }}>
-          <line x1="100" y1="108" x2="100" y2="68" stroke="url(#hourHand)" strokeWidth="4" strokeLinecap="round" />
-        </g>
+        <motion.g style={hourStyle}>
+          <line x1="100" y1="112" x2="100" y2="68" stroke="url(#hourHand)" strokeWidth="4.5" strokeLinecap="round" />
+          <circle cx="100" cy="68" r="2" fill="hsl(210 40% 98%)" />
+        </motion.g>
 
         {/* Ponteiro dos minutos */}
-        <g style={{ ...handStyle, transform: `rotate(${minDeg}deg)` }}>
-          <line x1="100" y1="110" x2="100" y2="50" stroke="hsl(210 40% 98%)" strokeWidth="2.5" strokeLinecap="round" />
-        </g>
+        <motion.g style={minStyle}>
+          <line x1="100" y1="114" x2="100" y2="50" stroke="url(#minHand)" strokeWidth="2.8" strokeLinecap="round" />
+        </motion.g>
 
-        {/* Ponteiro dos segundos */}
-        <g style={{ ...handStyle, transform: `rotate(${secDeg}deg)` }}>
+        {/* Ponteiro dos segundos com glow */}
+        <motion.g style={secStyle}>
           <line
-            x1="100" y1="115" x2="100" y2="42"
-            stroke="hsl(189 94% 60%)" strokeWidth="1.4" strokeLinecap="round"
+            x1="100" y1="118" x2="100" y2="42"
+            stroke="url(#secHand)" strokeWidth="1.5" strokeLinecap="round"
             filter="url(#secGlow)"
           />
-          <circle cx="100" cy="42" r="2.2" fill="hsl(189 94% 65%)" filter="url(#secGlow)" />
-        </g>
+          <circle cx="100" cy="42" r="2.6" fill="hsl(180 100% 75%)" filter="url(#secGlow)" />
+        </motion.g>
 
         {/* Núcleo pulsante */}
         <motion.circle
-          cx="100" cy="100" r="4.5" fill="hsl(189 94% 60%)"
-          animate={reduced ? undefined : { r: [4.2, 5.4, 4.2] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+          cx="100" cy="100" r="4.8" fill="hsl(189 94% 60%)" filter="url(#secGlow)"
+          animate={reduced ? undefined : { r: [4.4, 5.6, 4.4] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         />
-        <circle cx="100" cy="100" r="1.4" fill="hsl(222 47% 4%)" />
+        <circle cx="100" cy="100" r="1.6" fill="hsl(222 47% 4%)" />
       </svg>
     </motion.div>
   );
