@@ -1,37 +1,115 @@
-## Problema
+## Objetivo
 
-No `AnimatedClock` (src/pages/Landing.tsx, linhas 57–109) os ponteiros são `<motion.line>` com `style={{ originX: "100px", originY: "100px" }}`. Em SVG, `originX/originY` do framer-motion são interpretados como fração do bounding box do próprio elemento — e uma `<line>` vertical tem largura 0. Resultado: o pivô fica fora do centro do relógio e o ponteiro "voa" para fora do mostrador ao girar.
+Tornar a página **Metas** mais fácil de usar: permitir editar metas existentes, oferecer **templates** prontos para metas comuns (leitura, finanças, oração, estudo, exercício, água, escrita, idiomas), adicionar **tooltips** explicativos em todos os campos e garantir layout 100% responsivo — tudo traduzido em todas as 12 línguas.
 
-Além disso, a animação atual é só "girar em loop linear", sem hierarquia visual nem refinamento.
+---
 
-## Correção técnica
+## 1. Editar metas existentes
 
-Trocar o pivô para algo confiável em SVG:
+Atualmente `GoalCard` só permite excluir e logar progresso. Vamos adicionar:
 
-- Envolver cada ponteiro em um `<motion.g>` e rotacionar o grupo.
-- Aplicar `style={{ transformOrigin: "100px 100px", transformBox: "view-box" }}` (suporte cross-browser para SVG aninhado).
-- Manter as `<line>` desenhadas a partir de `(100,100)` para cima, sem `originX/originY` em pixel.
+- Botão "Editar" no menu de cada card (transformar trash em `DropdownMenu` com Editar / Excluir).
+- Novo componente `EditGoalDialog` (baseado no `CreateGoalDialog`) que permite alterar: título, descrição, categoria, alvo (`target_value`), unidade, frequência. Tipo da meta **não** será editável (evita inconsistência de dados).
+- Para metas de progresso/habit, permitir também **ajustar manualmente o valor atual** (`current_value`) — útil quando o usuário esquece de logar.
+- Usa o hook já existente `useUpdateAnnualGoal`.
 
-Isso garante que o pivô seja exatamente o centro do mostrador e os ponteiros nunca saiam do relógio.
+## 2. Templates de metas (Quick Start)
 
-## Melhorias da animação (Apple/B&O level, sem libs novas)
+Novo arquivo `src/lib/goalTemplates.ts` com catálogo de templates organizados por área. Cada template traz: id, ícone, categoria sugerida, tipo (`simple`/`progress`/`habit`), título padrão, unidade, alvo padrão, descrição, e — quando aplicável — **subtipo "Livro"** com lista de livros populares + número real de páginas.
 
-1. **Hora real**: ler `new Date()` e calcular ângulos iniciais reais (h/m/s) — relógio começa "vivo", não em 12:00.
-2. **Ponteiro de segundos com tick suave**: substituir `ease: linear` por uma animação por `requestAnimationFrame` que avança ~6° por segundo com pequeno overshoot (spring sutil) — sensação de mecanismo fino, não relógio digital.
-3. **Hierarquia visual dos ponteiros**:
-   - Hora: mais curto (y2≈70), grosso, branco quente, com leve gradiente.
-   - Minuto: médio (y2≈48), branco puro.
-   - Segundos: fino, ciano, com glow sutil (`filter: drop-shadow`).
-4. **Anel orbital**: 3 pontos pequenos ciano percorrendo a borda em velocidades diferentes (parallax circular), reforçando "tempo em movimento".
-5. **Pulso central**: o círculo central pulsa de 5→5.6 em loop respiratório (3s, easeInOut).
-6. **Glow respirando**: opacidade do `radialGradient` oscila levemente (0.35↔0.5) sincronizada com o pulso.
-7. **Parallax no scroll mais sutil**: reduzir rotate global de 60° → 8° e scale 1→0.92 (evita sensação de "tombando").
-8. **Reduced motion**: se `prefers-reduced-motion`, congelar ponteiros na hora atual e desligar pulse/orbital.
+Catálogo proposto:
 
-## Arquivos
+**📖 Leitura**
+- Ler um livro específico → escolher de catálogo (Bíblia 1189pg, Dom Casmurro 256, Harry Potter 1 223, Atomic Habits 320, O Pequeno Príncipe 96, etc.) **ou** digitar nome+páginas manualmente. Vira meta `progress` com unidade "páginas".
+- Ler N livros por ano → `progress` unidade "livros".
+- Ler 30 min/dia → `habit` semanal.
 
-- `src/pages/Landing.tsx`: reescrever apenas a função `AnimatedClock` (linhas 57–109). Nenhuma outra seção, rota, i18n ou backend muda.
+**💰 Finanças**
+- Economizar valor (R$/$/€) → `progress` unidade da moeda escolhida.
+- Quitar dívida → `progress`.
+- Investir mensalmente → `habit` mensal.
 
-## Fora do escopo
+**🙏 Espiritualidade**
+- Ler a Bíblia em 1 ano → preset 1189 páginas com sugestão de ~3,3pg/dia.
+- Orar todos os dias → `habit` semanal (7x).
+- Devocional diário → `habit`.
+- Jejum semanal → `habit`.
 
-Outras seções do Landing, traduções, libs novas, mudanças no app autenticado.
+**📚 Estudo**
+- Estudar idioma N horas → `progress` unidade "horas".
+- Completar curso → `simple`.
+- Praticar idioma diariamente → `habit`.
+
+**🏃 Saúde**
+- Beber 2L água/dia → `habit` diário (renderizado como semanal 7x).
+- Treinar Nx/semana → `habit` semanal.
+- Correr N km → `progress`.
+- Meditar diariamente → `habit`.
+
+**✍️ Hábitos pessoais**
+- Escrever no diário → `habit`.
+- Dormir 8h → `habit`.
+
+### UX dos templates
+
+No `CreateGoalDialog`, no topo, abas: **Template** (default) | **Personalizada**.
+
+- Aba Template: grid de cards visuais agrupados por área (com busca). Ao clicar em "Ler a Bíblia", abre passo 2 com campos pré-preenchidos editáveis. Para "Ler livro específico", há um `Combobox` com livros populares + opção "Outro livro" que revela campos título+páginas.
+- Aba Personalizada: o formulário atual (refinado com tooltips).
+- Templates apenas pré-preenchem; o usuário pode mudar tudo antes de criar.
+
+## 3. Tooltips em todos os campos
+
+Componente helper `<FieldLabel label tooltip>` que renderiza `<Label>` + ícone `HelpCircle` com `Tooltip` do shadcn. Aplicar em:
+
+- Tipo de meta (explicar Simples vs Progresso vs Frequência com exemplos)
+- Título, Categoria, Alvo, Unidade, Frequência, Descrição
+- No card: tooltip nos botões +1/+5/+10 e no input de quantidade
+
+## 4. Internacionalização
+
+Adicionar em todas as 12 locales (pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ar-SA, ja-JP, ko-KR, zh-CN, ru-RU, id-ID) sob `annual_goals`:
+
+- `tooltips.*` — textos explicativos de cada campo
+- `templates.categories.*` — Leitura, Finanças, Espiritualidade, Estudo, Saúde, Hábitos
+- `templates.items.*` — título e descrição de cada template
+- `templates.books.*` — nomes dos livros populares (mantém autor original)
+- `edit_goal`, `tab_template`, `tab_custom`, `search_template`, `other_book`, `book_name`, `book_pages`, `adjust_current_value`, etc.
+
+Livros e moedas ficam em catálogo único; só traduzimos rótulos genéricos.
+
+## 5. Responsividade mobile
+
+- `CreateGoalDialog` vira `Sheet` (bottom sheet) em telas <640px para ocupar tela inteira e facilitar rolagem.
+- Grid de templates: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`.
+- Cards de tipo de meta empilham em 1 coluna no mobile (já fazem, manter).
+- Botões +1/+5/+10 no `GoalCard` viram `flex-wrap` com tamanho mínimo confortável (h-9 no mobile).
+- Tooltips em mobile: trocar por `Popover` ao toque (helper detecta `useIsMobile`).
+- Header do `Goals.tsx`: ações já fazem `flex-wrap`, manter.
+
+---
+
+## Estrutura técnica
+
+```text
+src/
+  lib/goalTemplates.ts              ← catálogo + tipos
+  components/goals/
+    CreateGoalDialog.tsx            ← refator: abas + tooltips + responsive sheet
+    EditGoalDialog.tsx              ← NOVO
+    GoalCard.tsx                    ← + DropdownMenu (Editar/Excluir) + tooltips
+    GoalTemplatePicker.tsx          ← NOVO: grid agrupado + busca
+    BookPicker.tsx                  ← NOVO: combobox de livros populares
+    FieldLabel.tsx                  ← NOVO: label+tooltip helper
+  i18n/locales/*.json               ← novas chaves em todas as 12 línguas
+```
+
+Nenhuma mudança de banco é necessária — o schema atual (`goal_type`, `target_value`, `current_value`, `unit`, `frequency_period`, `description`) já suporta todos os templates.
+
+---
+
+## Fora de escopo (não vou mexer)
+
+- Animação do relógio na landing (já está pronta).
+- Lógica de RPC/triggers do Supabase.
+- Outras páginas (Dashboard, Rooms, etc.).

@@ -6,28 +6,29 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, TrendingUp, Repeat, Trash2, Plus } from "lucide-react";
-import { AnnualGoal, useDeleteAnnualGoal, useLogGoalProgress, useToggleSimpleGoal, useHabitPeriodCount } from "@/hooks/useAnnualGoals";
+import { CheckCircle2, TrendingUp, Repeat, Trash2, Plus, MoreVertical, Pencil } from "lucide-react";
+import { AnnualGoal, useDeleteAnnualGoal, useLogGoalProgress, useToggleSimpleGoal, useHabitPeriodCount, LifeCategory } from "@/hooks/useAnnualGoals";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { EditGoalDialog } from "./EditGoalDialog";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 
-interface Props { goal: AnnualGoal; categoryColor?: string }
+interface Props { goal: AnnualGoal; categoryColor?: string; categories?: LifeCategory[] }
 
-export function GoalCard({ goal, categoryColor }: Props) {
+export function GoalCard({ goal, categoryColor, categories = [] }: Props) {
   const { t } = useTranslation();
   const del = useDeleteAnnualGoal();
   const logProgress = useLogGoalProgress();
   const toggle = useToggleSimpleGoal();
   const [customValue, setCustomValue] = useState("");
+  const [editOpen, setEditOpen] = useState(false);
 
   const progressPct = Math.min(100, (goal.current_value / Math.max(1, goal.target_value)) * 100);
-
   const habitCount = useHabitPeriodCount(goal.id, goal.goal_type === "habit");
 
-  const fireCelebration = () => {
-    confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
-  };
+  const fireCelebration = () => confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
 
   const handleSimpleToggle = async () => {
     const newComplete = !goal.is_completed;
@@ -69,10 +70,10 @@ export function GoalCard({ goal, categoryColor }: Props) {
               <TypeIcon className="h-4 w-4 mt-1 text-primary shrink-0" />
             )}
             <div className="min-w-0 flex-1">
-              <h4 className={cn("font-medium text-sm truncate", goal.is_completed && "line-through text-muted-foreground")}>
+              <h4 className={cn("font-medium text-sm break-words", goal.is_completed && "line-through text-muted-foreground")}>
                 {goal.title}
               </h4>
-              {goal.description && <p className="text-xs text-muted-foreground line-clamp-1">{goal.description}</p>}
+              {goal.description && <p className="text-xs text-muted-foreground line-clamp-2">{goal.description}</p>}
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -81,9 +82,26 @@ export function GoalCard({ goal, categoryColor }: Props) {
                 {t("annual_goals.completed")}
               </Badge>
             )}
-            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => del.mutate(goal.id)}>
-              <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7">
+                  <MoreVertical className="h-3.5 w-3.5 text-muted-foreground" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                  <Pencil className="h-3.5 w-3.5 mr-2" /> {t("common.edit")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-destructive"
+                  onClick={() => {
+                    if (confirm(t("annual_goals.confirm_delete_goal"))) del.mutate(goal.id);
+                  }}
+                >
+                  <Trash2 className="h-3.5 w-3.5 mr-2" /> {t("common.delete")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -97,25 +115,33 @@ export function GoalCard({ goal, categoryColor }: Props) {
               <span className="text-muted-foreground">{progressPct.toFixed(0)}%</span>
             </div>
             {!goal.is_completed && (
-              <div className="flex items-center gap-1.5 flex-wrap">
-                {[1, 5, 10].map((n) => (
-                  <Button key={n} size="sm" variant="outline" className="h-8 px-2.5 text-xs" onClick={() => handleAdd(n)}>
-                    +{n}
-                  </Button>
-                ))}
-                <div className="flex items-center gap-1 flex-1 min-w-[120px]">
-                  <Input
-                    type="number"
-                    placeholder={t("annual_goals.quick_add")}
-                    value={customValue}
-                    onChange={(e) => setCustomValue(e.target.value)}
-                    className="h-8 text-xs"
-                  />
-                  <Button size="icon" variant="default" className="h-8 w-8 shrink-0" onClick={handleCustomAdd}>
-                    <Plus className="h-3.5 w-3.5" />
-                  </Button>
+              <TooltipProvider delayDuration={300}>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {[1, 5, 10].map((n) => (
+                    <Tooltip key={n}>
+                      <TooltipTrigger asChild>
+                        <Button size="sm" variant="outline" className="h-9 sm:h-8 px-3 sm:px-2.5 text-xs" onClick={() => handleAdd(n)}>
+                          +{n}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-xs">{t("annual_goals.tooltips.quick_add_n", { n, unit: goal.unit || "" })}</TooltipContent>
+                    </Tooltip>
+                  ))}
+                  <div className="flex items-center gap-1 flex-1 min-w-[120px]">
+                    <Input
+                      type="number"
+                      placeholder={t("annual_goals.quick_add")}
+                      value={customValue}
+                      onChange={(e) => setCustomValue(e.target.value)}
+                      className="h-9 sm:h-8 text-xs"
+                      aria-label={t("annual_goals.tooltips.quick_add_custom")}
+                    />
+                    <Button size="icon" variant="default" className="h-9 w-9 sm:h-8 sm:w-8 shrink-0" onClick={handleCustomAdd}>
+                      <Plus className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </TooltipProvider>
             )}
           </>
         )}
@@ -132,12 +158,20 @@ export function GoalCard({ goal, categoryColor }: Props) {
               </span>
             </div>
             {!goal.is_completed && (
-              <Button size="sm" className="w-full h-8" onClick={() => handleAdd(1)}>
+              <Button size="sm" className="w-full h-9 sm:h-8" onClick={() => handleAdd(1)}>
                 <Plus className="h-3.5 w-3.5 mr-1" /> {t("annual_goals.log_today")}
               </Button>
             )}
           </>
         )}
+
+        <EditGoalDialog
+          goal={goal}
+          categories={categories}
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          trigger={<span />}
+        />
       </Card>
     </motion.div>
   );
