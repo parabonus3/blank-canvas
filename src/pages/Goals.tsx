@@ -202,7 +202,7 @@ export default function Goals() {
                     <p className="text-xs text-muted-foreground pl-10">{t("annual_goals.no_goals_in_category")}</p>
                   ) : (
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {list.map((g) => <GoalCard key={g.id} goal={g} categoryColor={c.color} />)}
+                      {list.map((g) => <GoalCard key={g.id} goal={g} categoryColor={c.color} categories={categories} />)}
                     </div>
                   )}
                 </div>
@@ -214,7 +214,7 @@ export default function Goals() {
               <div className="space-y-3">
                 <h3 className="font-semibold text-muted-foreground">{t("annual_goals.no_category")}</h3>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {uncategorized.map((g) => <GoalCard key={g.id} goal={g} />)}
+                  {uncategorized.map((g) => <GoalCard key={g.id} goal={g} categories={categories} />)}
                 </div>
               </div>
             )}
