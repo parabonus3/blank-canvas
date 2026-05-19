@@ -1321,6 +1321,133 @@
     "confirm_delete_category": "Удалить эту категорию?",
     "confirm_delete_goal": "Удалить эту цель?",
     "confirm_duplicate": "Скопировать все активные цели на следующий год?",
-    "quick_add": "Кол"
+    "quick_add": "Кол",
+    "edit_goal": "Изменить цель",
+    "tab_template": "Шаблоны",
+    "tab_custom": "Своя",
+    "create_custom": "Создать свою цель",
+    "back_to_templates": "К шаблонам",
+    "search_template": "Поиск шаблонов…",
+    "title_placeholder": "Напр.: Прочитать 12 книг",
+    "unit_placeholder": "страницы, книги, км, ₽…",
+    "adjust_current_value": "Подправить текущее значение",
+    "choose_book": "Выбрать книгу",
+    "book_popular": "Популярные",
+    "book_custom": "Другая книга",
+    "search_book": "Название или автор…",
+    "book_name": "Название книги",
+    "book_pages": "Всего страниц",
+    "use_book": "Использовать эту книгу",
+    "tooltips": {
+      "goal_type": "Simple = done or not. Progress = accumulate toward a target (e.g. pages, $). Frequency = repeated per week/month (e.g. pray 7×/week).",
+      "title": "Short, clear name. e.g. \"Read Atomic Habits\".",
+      "category": "Groups goals by life area. Optional.",
+      "target": "Total amount to reach by year end.",
+      "unit": "Unit of the target: pages, books, hours, $, km…",
+      "frequency": "When the count resets (e.g. 7× per week).",
+      "description": "Personal notes shown on the card.",
+      "current_value": "How much you've already done. Useful if you forgot to log.",
+      "book_name": "Used as the goal title.",
+      "book_pages": "Book's total pages — becomes the goal target.",
+      "quick_add_n": "Add +{{n}} {{unit}} to progress",
+      "quick_add_custom": "Add custom amount"
+    },
+    "templates": {
+      "all": "Все",
+      "no_results": "Шаблонов нет.",
+      "categories": {
+        "reading": "Чтение",
+        "finance": "Финансы",
+        "spirituality": "Духовность",
+        "study": "Учёба",
+        "health": "Здоровье",
+        "habits": "Привычки"
+      },
+      "units": {
+        "pages": "страниц",
+        "books": "книг",
+        "hours": "часов",
+        "km": "км",
+        "chapters": "глав"
+      },
+      "items": {
+        "read_specific_book": {
+          "title": "Read a specific book",
+          "desc": "Track pages until you finish the book."
+        },
+        "read_n_books": {
+          "title": "Read several books this year",
+          "desc": "Set how many books you want to read in 12 months."
+        },
+        "read_daily": {
+          "title": "Read 30 min a day",
+          "desc": "Build a daily reading habit."
+        },
+        "save_money": {
+          "title": "Save money",
+          "desc": "Set aside an amount over the year."
+        },
+        "pay_debt": {
+          "title": "Pay off a debt",
+          "desc": "Track how much you've paid."
+        },
+        "invest_monthly": {
+          "title": "Invest every month",
+          "desc": "Recurring monthly contribution."
+        },
+        "read_bible": {
+          "title": "Read the Bible in 1 year",
+          "desc": "1189 chapters — about 3 per day."
+        },
+        "pray_daily": {
+          "title": "Pray every day",
+          "desc": "Keep your prayer routine."
+        },
+        "devotional_daily": {
+          "title": "Daily devotional",
+          "desc": "Set aside reflection time each day."
+        },
+        "fasting_weekly": {
+          "title": "Fast once a week",
+          "desc": "Weekly spiritual discipline."
+        },
+        "study_hours": {
+          "title": "Study X hours this year",
+          "desc": "Accumulate focused study hours."
+        },
+        "learn_language": {
+          "title": "Practice a language daily",
+          "desc": "Daily consistency leads to fluency."
+        },
+        "finish_course": {
+          "title": "Finish a course",
+          "desc": "Mark as done when complete."
+        },
+        "drink_water": {
+          "title": "Drink 2L of water daily",
+          "desc": "Hydration as a daily habit."
+        },
+        "workout": {
+          "title": "Work out 4×/week",
+          "desc": "Stay consistent with training."
+        },
+        "run_km": {
+          "title": "Run X km this year",
+          "desc": "Pile up kilometers across the year."
+        },
+        "meditate": {
+          "title": "Meditate daily",
+          "desc": "Practice mindfulness every day."
+        },
+        "journal": {
+          "title": "Journal regularly",
+          "desc": "Record your day."
+        },
+        "sleep_8h": {
+          "title": "Sleep 8h a night",
+          "desc": "Prioritize your rest."
+        }
+      }
+    }
   }
 }

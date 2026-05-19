@@ -341,7 +341,134 @@
     "confirm_delete_category": "Excluir esta categoria? As metas perderão a vinculação.",
     "confirm_delete_goal": "Excluir esta meta?",
     "confirm_duplicate": "Duplicar todas as metas ativas para o próximo ano?",
-    "quick_add": "Qtd"
+    "quick_add": "Qtd",
+    "edit_goal": "Editar meta",
+    "tab_template": "Templates",
+    "tab_custom": "Personalizada",
+    "create_custom": "Criar meta personalizada",
+    "back_to_templates": "Voltar para templates",
+    "search_template": "Buscar template…",
+    "title_placeholder": "Ex: Ler 12 livros",
+    "unit_placeholder": "páginas, livros, km, $…",
+    "adjust_current_value": "Ajustar valor atual",
+    "choose_book": "Escolher livro",
+    "book_popular": "Populares",
+    "book_custom": "Outro livro",
+    "search_book": "Buscar livro ou autor…",
+    "book_name": "Nome do livro",
+    "book_pages": "Total de páginas",
+    "use_book": "Usar este livro",
+    "tooltips": {
+      "goal_type": "Simples = feito ou não. Progresso = acumula até um alvo (ex.: páginas, R$). Frequência = repete por semana/mês (ex.: orar 7x/semana).",
+      "title": "Nome curto e claro. Ex.: \"Ler Atomic Habits\".",
+      "category": "Agrupa metas por área da vida. Opcional.",
+      "target": "Quantidade total a alcançar até o fim do ano.",
+      "unit": "Unidade do alvo: páginas, livros, horas, R$, km…",
+      "frequency": "Em qual período a contagem reinicia (ex.: 7x por semana).",
+      "description": "Notas pessoais. Aparecem no card.",
+      "current_value": "Quanto você já fez. Útil se esqueceu de registrar.",
+      "book_name": "O nome aparecerá como título da meta.",
+      "book_pages": "Total de páginas do livro — vira o alvo da meta.",
+      "quick_add_n": "Adicionar +{{n}} {{unit}} ao progresso",
+      "quick_add_custom": "Adicionar quantidade personalizada"
+    },
+    "templates": {
+      "all": "Todos",
+      "no_results": "Nenhum template encontrado.",
+      "categories": {
+        "reading": "Leitura",
+        "finance": "Finanças",
+        "spirituality": "Espiritualidade",
+        "study": "Estudo",
+        "health": "Saúde",
+        "habits": "Hábitos"
+      },
+      "units": {
+        "pages": "páginas",
+        "books": "livros",
+        "hours": "horas",
+        "km": "km",
+        "chapters": "capítulos"
+      },
+      "items": {
+        "read_specific_book": {
+          "title": "Ler um livro específico",
+          "desc": "Acompanhe páginas lidas até concluir o livro."
+        },
+        "read_n_books": {
+          "title": "Ler vários livros este ano",
+          "desc": "Defina quantos livros quer ler em 12 meses."
+        },
+        "read_daily": {
+          "title": "Ler 30 min por dia",
+          "desc": "Crie o hábito de leitura diária."
+        },
+        "save_money": {
+          "title": "Economizar dinheiro",
+          "desc": "Junte um valor ao longo do ano."
+        },
+        "pay_debt": {
+          "title": "Quitar uma dívida",
+          "desc": "Acompanhe quanto já pagou."
+        },
+        "invest_monthly": {
+          "title": "Investir todo mês",
+          "desc": "Aporte mensal recorrente."
+        },
+        "read_bible": {
+          "title": "Ler a Bíblia em 1 ano",
+          "desc": "1189 capítulos — cerca de 3 por dia."
+        },
+        "pray_daily": {
+          "title": "Orar todos os dias",
+          "desc": "Mantenha sua rotina de oração."
+        },
+        "devotional_daily": {
+          "title": "Devocional diário",
+          "desc": "Reserve um tempo de reflexão por dia."
+        },
+        "fasting_weekly": {
+          "title": "Jejuar 1x por semana",
+          "desc": "Disciplina espiritual semanal."
+        },
+        "study_hours": {
+          "title": "Estudar X horas este ano",
+          "desc": "Acumule horas de estudo focado."
+        },
+        "learn_language": {
+          "title": "Praticar idioma todo dia",
+          "desc": "Consistência diária para fluência."
+        },
+        "finish_course": {
+          "title": "Concluir um curso",
+          "desc": "Marque como concluído quando terminar."
+        },
+        "drink_water": {
+          "title": "Beber 2L de água por dia",
+          "desc": "Hidratação como hábito diário."
+        },
+        "workout": {
+          "title": "Treinar 4x por semana",
+          "desc": "Mantenha consistência nos treinos."
+        },
+        "run_km": {
+          "title": "Correr X km este ano",
+          "desc": "Acumule quilometragem ao longo do ano."
+        },
+        "meditate": {
+          "title": "Meditar diariamente",
+          "desc": "Pratique mindfulness todo dia."
+        },
+        "journal": {
+          "title": "Escrever no diário",
+          "desc": "Registre seu dia regularmente."
+        },
+        "sleep_8h": {
+          "title": "Dormir 8h por noite",
+          "desc": "Priorize seu descanso."
+        }
+      }
+    }
   },
   "history": {
     "title": "Histórico",

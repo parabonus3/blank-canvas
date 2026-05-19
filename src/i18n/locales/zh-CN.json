@@ -1321,6 +1321,133 @@
     "confirm_delete_category": "删除此分类？",
     "confirm_delete_goal": "删除此目标？",
     "confirm_duplicate": "将所有活跃目标复制到明年？",
-    "quick_add": "数量"
+    "quick_add": "数量",
+    "edit_goal": "编辑目标",
+    "tab_template": "模板",
+    "tab_custom": "自定义",
+    "create_custom": "创建自定义目标",
+    "back_to_templates": "返回模板",
+    "search_template": "搜索模板…",
+    "title_placeholder": "例如:读 12 本书",
+    "unit_placeholder": "页、本、km、¥…",
+    "adjust_current_value": "调整当前值",
+    "choose_book": "选择书籍",
+    "book_popular": "热门",
+    "book_custom": "其他书",
+    "search_book": "搜索书名或作者…",
+    "book_name": "书名",
+    "book_pages": "总页数",
+    "use_book": "使用此书",
+    "tooltips": {
+      "goal_type": "Simple = done or not. Progress = accumulate toward a target (e.g. pages, $). Frequency = repeated per week/month (e.g. pray 7×/week).",
+      "title": "Short, clear name. e.g. \"Read Atomic Habits\".",
+      "category": "Groups goals by life area. Optional.",
+      "target": "Total amount to reach by year end.",
+      "unit": "Unit of the target: pages, books, hours, $, km…",
+      "frequency": "When the count resets (e.g. 7× per week).",
+      "description": "Personal notes shown on the card.",
+      "current_value": "How much you've already done. Useful if you forgot to log.",
+      "book_name": "Used as the goal title.",
+      "book_pages": "Book's total pages — becomes the goal target.",
+      "quick_add_n": "Add +{{n}} {{unit}} to progress",
+      "quick_add_custom": "Add custom amount"
+    },
+    "templates": {
+      "all": "全部",
+      "no_results": "未找到模板。",
+      "categories": {
+        "reading": "阅读",
+        "finance": "财务",
+        "spirituality": "灵性",
+        "study": "学习",
+        "health": "健康",
+        "habits": "习惯"
+      },
+      "units": {
+        "pages": "页",
+        "books": "本",
+        "hours": "小时",
+        "km": "公里",
+        "chapters": "章"
+      },
+      "items": {
+        "read_specific_book": {
+          "title": "Read a specific book",
+          "desc": "Track pages until you finish the book."
+        },
+        "read_n_books": {
+          "title": "Read several books this year",
+          "desc": "Set how many books you want to read in 12 months."
+        },
+        "read_daily": {
+          "title": "Read 30 min a day",
+          "desc": "Build a daily reading habit."
+        },
+        "save_money": {
+          "title": "Save money",
+          "desc": "Set aside an amount over the year."
+        },
+        "pay_debt": {
+          "title": "Pay off a debt",
+          "desc": "Track how much you've paid."
+        },
+        "invest_monthly": {
+          "title": "Invest every month",
+          "desc": "Recurring monthly contribution."
+        },
+        "read_bible": {
+          "title": "Read the Bible in 1 year",
+          "desc": "1189 chapters — about 3 per day."
+        },
+        "pray_daily": {
+          "title": "Pray every day",
+          "desc": "Keep your prayer routine."
+        },
+        "devotional_daily": {
+          "title": "Daily devotional",
+          "desc": "Set aside reflection time each day."
+        },
+        "fasting_weekly": {
+          "title": "Fast once a week",
+          "desc": "Weekly spiritual discipline."
+        },
+        "study_hours": {
+          "title": "Study X hours this year",
+          "desc": "Accumulate focused study hours."
+        },
+        "learn_language": {
+          "title": "Practice a language daily",
+          "desc": "Daily consistency leads to fluency."
+        },
+        "finish_course": {
+          "title": "Finish a course",
+          "desc": "Mark as done when complete."
+        },
+        "drink_water": {
+          "title": "Drink 2L of water daily",
+          "desc": "Hydration as a daily habit."
+        },
+        "workout": {
+          "title": "Work out 4×/week",
+          "desc": "Stay consistent with training."
+        },
+        "run_km": {
+          "title": "Run X km this year",
+          "desc": "Pile up kilometers across the year."
+        },
+        "meditate": {
+          "title": "Meditate daily",
+          "desc": "Practice mindfulness every day."
+        },
+        "journal": {
+          "title": "Journal regularly",
+          "desc": "Record your day."
+        },
+        "sleep_8h": {
+          "title": "Sleep 8h a night",
+          "desc": "Prioritize your rest."
+        }
+      }
+    }
   }
 }
