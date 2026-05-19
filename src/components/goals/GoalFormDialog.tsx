@@ -72,7 +72,7 @@ export function GoalFormDialog(props: Props) {
     setUnit("");
     setType("simple");
     setFrequency("weekly");
-    setCategoryId(props.mode === "edit" ? "" : ((props as CreateProps).defaultCategoryId || "none"));
+    setCategoryId((props as CreateProps).defaultCategoryId || "none");
   }, [open, isEdit]);
 
   const applyTemplate = (tpl: GoalTemplate) => {
