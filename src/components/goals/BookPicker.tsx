@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { POPULAR_BOOKS, BookOption } from "@/lib/goalTemplates";
+import { POPULAR_BOOKS, BookOption, BOOK_GENRES, BookGenre } from "@/lib/goalTemplates";
 import { Book, Search } from "lucide-react";
 import { FieldLabel } from "./FieldLabel";
+import { cn } from "@/lib/utils";
 
 interface Props {
   onPick: (title: string, pages: number) => void;
@@ -16,14 +17,17 @@ interface Props {
 export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Props) {
   const { t } = useTranslation();
   const [mode, setMode] = useState<"popular" | "custom">("popular");
+  const [genre, setGenre] = useState<BookGenre | "all">("all");
   const [search, setSearch] = useState("");
   const [customTitle, setCustomTitle] = useState(defaultTitle);
   const [customPages, setCustomPages] = useState(String(defaultPages));
 
-  const filtered = POPULAR_BOOKS.filter((b) =>
-    b.title.toLowerCase().includes(search.toLowerCase()) ||
-    (b.author || "").toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = POPULAR_BOOKS.filter((b) => {
+    if (genre !== "all" && b.genre !== genre) return false;
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return b.title.toLowerCase().includes(q) || (b.author || "").toLowerCase().includes(q);
+  });
 
   return (
     <div className="space-y-3">
@@ -43,8 +47,47 @@ export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Pr
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("annual_goals.search_book")} className="pl-8 h-9" />
           </div>
-          <div className="grid grid-cols-1 gap-1.5 max-h-[40vh] overflow-y-auto pr-1">
-            {filtered.map((b: BookOption) => (
+
+          {/* Genre pills — horizontal scroll on mobile */}
+          <div className="-mx-1 px-1 overflow-x-auto scrollbar-hide">
+            <div className="flex gap-1.5 min-w-max pb-1">
+              <button
+                type="button"
+                onClick={() => setGenre("all")}
+                className={cn(
+                  "text-xs h-7 px-2.5 rounded-md whitespace-nowrap transition-colors",
+                  genre === "all" ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-accent"
+                )}
+              >
+                {t("annual_goals.templates.all")}
+              </button>
+              {BOOK_GENRES.map((g) => {
+                const Icon = g.icon;
+                const isActive = genre === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => setGenre(g.id)}
+                    className={cn(
+                      "text-xs h-7 px-2.5 rounded-md whitespace-nowrap inline-flex items-center gap-1 transition-colors",
+                      isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-accent"
+                    )}
+                  >
+                    <Icon className="h-3 w-3" />
+                    {t(`annual_goals.book_genres.${g.id}`)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-[50vh] overflow-y-auto pr-1">
+            {filtered.length === 0 ? (
+              <p className="text-xs text-muted-foreground text-center py-6 col-span-full">
+                {t("annual_goals.templates.no_results")}
+              </p>
+            ) : filtered.map((b: BookOption) => (
               <Card
                 key={b.id}
                 className="p-2.5 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
@@ -55,7 +98,7 @@ export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Pr
                     <div className="text-sm font-medium truncate">{b.title}</div>
                     {b.author && <div className="text-[11px] text-muted-foreground truncate">{b.author}</div>}
                   </div>
-                  <div className="text-xs text-muted-foreground shrink-0">{b.pages} {t("annual_goals.templates.units.pages")}</div>
+                  <div className="text-xs text-muted-foreground shrink-0">{b.pages}p</div>
                 </div>
               </Card>
             ))}

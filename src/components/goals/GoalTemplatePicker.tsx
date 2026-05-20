@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { GOAL_TEMPLATES, TEMPLATE_CATEGORIES, GoalTemplate, TemplateCategory } from "@/lib/goalTemplates";
 import { cn } from "@/lib/utils";
@@ -27,6 +26,9 @@ export function GoalTemplatePicker({ onPick }: Props) {
     });
   }, [search, tab, t]);
 
+  const countFor = (cat: TemplateCategory | "all") =>
+    cat === "all" ? GOAL_TEMPLATES.length : GOAL_TEMPLATES.filter((t) => t.category === cat).length;
+
   return (
     <div className="space-y-3">
       <div className="relative">
@@ -39,57 +41,72 @@ export function GoalTemplatePicker({ onPick }: Props) {
         />
       </div>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
-        <TabsList className="w-full flex-wrap h-auto justify-start gap-1 bg-transparent p-0">
-          <TabsTrigger value="all" className="text-xs h-7 px-2.5 data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
+      {/* Category pills — horizontal scroll on mobile, wrap on desktop */}
+      <div className="-mx-1 px-1 overflow-x-auto sm:overflow-visible scrollbar-hide">
+        <div className="flex sm:flex-wrap gap-1.5 min-w-max sm:min-w-0 pb-1">
+          <button
+            type="button"
+            onClick={() => setTab("all")}
+            className={cn(
+              "text-xs h-7 px-2.5 rounded-md whitespace-nowrap inline-flex items-center gap-1 transition-colors",
+              tab === "all" ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-accent"
+            )}
+          >
             {t("annual_goals.templates.all")}
-          </TabsTrigger>
+            <span className="text-[10px] opacity-70">({countFor("all")})</span>
+          </button>
           {TEMPLATE_CATEGORIES.map((c) => {
             const Icon = c.icon;
+            const isActive = tab === c.id;
             return (
-              <TabsTrigger key={c.id} value={c.id} className="text-xs h-7 px-2.5 gap-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setTab(c.id)}
+                className={cn(
+                  "text-xs h-7 px-2.5 rounded-md whitespace-nowrap inline-flex items-center gap-1 transition-colors",
+                  isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-accent"
+                )}
+              >
                 <Icon className="h-3 w-3" />
                 {t(`annual_goals.templates.categories.${c.id}`)}
-              </TabsTrigger>
+                <span className="text-[10px] opacity-70">({countFor(c.id)})</span>
+              </button>
             );
           })}
-        </TabsList>
+        </div>
+      </div>
 
-        <TabsContent value={tab} className="mt-3">
-          {filtered.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-6">{t("annual_goals.templates.no_results")}</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[55vh] overflow-y-auto pr-1">
-              {filtered.map((tpl) => {
-                const Icon = tpl.icon;
-                return (
-                  <Card
-                    key={tpl.id}
-                    onClick={() => onPick(tpl)}
-                    className={cn(
-                      "p-3 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors group"
-                    )}
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <span className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium leading-tight">
-                          {t(`annual_goals.templates.items.${tpl.i18nKey}.title`, tpl.defaultTitle)}
-                        </div>
-                        <div className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">
-                          {t(`annual_goals.templates.items.${tpl.i18nKey}.desc`, "")}
-                        </div>
-                      </div>
+      {filtered.length === 0 ? (
+        <p className="text-xs text-muted-foreground text-center py-6">{t("annual_goals.templates.no_results")}</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-[55vh] overflow-y-auto pr-1">
+          {filtered.map((tpl) => {
+            const Icon = tpl.icon;
+            return (
+              <Card
+                key={tpl.id}
+                onClick={() => onPick(tpl)}
+                className="p-3 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors group"
+              >
+                <div className="flex items-start gap-2.5">
+                  <span className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium leading-tight">
+                      {t(`annual_goals.templates.items.${tpl.i18nKey}.title`, tpl.defaultTitle)}
                     </div>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+                    <div className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">
+                      {t(`annual_goals.templates.items.${tpl.i18nKey}.desc`, "")}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
