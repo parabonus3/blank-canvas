@@ -16,6 +16,8 @@ interface Props {
 export function FieldLabel({ label, tooltip, htmlFor, className, required }: Props) {
   const isMobile = useIsMobile();
 
+  const tooltipClass = "text-xs leading-relaxed max-w-[min(280px,calc(100vw-32px))] break-words z-50";
+
   return (
     <div className={cn("flex items-center gap-1.5 mb-1.5", className)}>
       <Label htmlFor={htmlFor} className="text-sm">
@@ -25,11 +27,21 @@ export function FieldLabel({ label, tooltip, htmlFor, className, required }: Pro
         isMobile ? (
           <Popover>
             <PopoverTrigger asChild>
-              <button type="button" aria-label="Info" className="text-muted-foreground hover:text-foreground">
+              <button type="button" aria-label="Info" className="text-muted-foreground hover:text-foreground touch-manipulation">
                 <HelpCircle className="h-3.5 w-3.5" />
               </button>
             </PopoverTrigger>
-            <PopoverContent side="top" className="text-xs max-w-[260px]">{tooltip}</PopoverContent>
+            <PopoverContent
+              side="top"
+              align="start"
+              sideOffset={6}
+              collisionPadding={16}
+              avoidCollisions
+              sticky="always"
+              className={tooltipClass}
+            >
+              {tooltip}
+            </PopoverContent>
           </Popover>
         ) : (
           <TooltipProvider delayDuration={150}>
@@ -39,7 +51,16 @@ export function FieldLabel({ label, tooltip, htmlFor, className, required }: Pro
                   <HelpCircle className="h-3.5 w-3.5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-[260px] text-xs">{tooltip}</TooltipContent>
+              <TooltipContent
+                side="top"
+                align="start"
+                sideOffset={6}
+                collisionPadding={16}
+                avoidCollisions
+                className={tooltipClass}
+              >
+                {tooltip}
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )
