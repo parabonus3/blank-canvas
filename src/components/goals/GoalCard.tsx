@@ -124,7 +124,7 @@ export function GoalCard({ goal, categoryColor, categories = [] }: Props) {
                           +{n}
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent className="text-xs">{t("annual_goals.tooltips.quick_add_n", { n, unit: goal.unit || "" })}</TooltipContent>
+                      <TooltipContent className="text-xs" collisionPadding={12} sideOffset={4}>{t("annual_goals.tooltips.quick_add_n", { n, unit: goal.unit || "" })}</TooltipContent>
                     </Tooltip>
                   ))}
                   <div className="flex items-center gap-1 flex-1 min-w-[120px]">

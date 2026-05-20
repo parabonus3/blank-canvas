@@ -7,9 +7,10 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GridNav } from "@/components/ui/grid-nav";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Target, Trophy, ListChecks, Folder, CheckCircle2, Lock, MoreVertical, Trash2, Sparkles } from "lucide-react";
+import { Plus, Target, Trophy, ListChecks, Folder, CheckCircle2, MoreVertical, Trash2, Sparkles, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAnnualGoals, useAnnualGoalsStats, useLifeCategories, useDeleteCategory, useDuplicateGoalsToYear } from "@/hooks/useAnnualGoals";
 import { CreateCategoryDialog } from "@/components/goals/CreateCategoryDialog";
 import { CreateGoalDialog } from "@/components/goals/CreateGoalDialog";
@@ -17,6 +18,7 @@ import { GoalCard } from "@/components/goals/GoalCard";
 import { ChecklistList } from "@/components/checklist/ChecklistList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import * as Icons from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR - 1, CURRENT_YEAR, CURRENT_YEAR + 1];
@@ -29,7 +31,7 @@ function CategoryIcon({ name, className }: { name: string; className?: string })
 
 export default function Goals() {
   const { t } = useTranslation();
-  const { hasFeature } = useSubscription();
+  const { tier, getMaxAnnualGoals, getMaxLifeCategories } = useSubscription();
   const [year, setYear] = useState(CURRENT_YEAR);
   const [activeTab, setActiveTab] = useState("annual");
   const { data: categories = [] } = useLifeCategories();
@@ -38,18 +40,65 @@ export default function Goals() {
   const deleteCategory = useDeleteCategory();
   const duplicate = useDuplicateGoalsToYear();
 
-  if (!hasFeature("goals")) {
+  const maxGoals = getMaxAnnualGoals();
+  const maxCategories = getMaxLifeCategories();
+  const goalsCount = goals.length;
+  const categoriesCount = categories.length;
+  const isFree = tier === "free";
+  const goalsLimitReached = goalsCount >= maxGoals;
+  const categoriesLimitReached = categoriesCount >= maxCategories;
+
+  const GoalsQuotaButton = ({ defaultCategoryId }: { defaultCategoryId?: string | null } = {}) => {
+    if (goalsLimitReached) {
+      return (
+        <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild size="sm" variant="outline" className="border-primary/30">
+                <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+              {t("annual_goals.limit_reached_goals", { max: maxGoals })}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
     return (
-      <MainLayout>
-        <div className="flex flex-col items-center justify-center py-20 space-y-4 text-center">
-          <Lock className="h-12 w-12 text-muted-foreground" />
-          <h2 className="text-2xl font-bold">{t("annual_goals.title")}</h2>
-          <p className="text-muted-foreground max-w-md">{t("pricing.feature_locked_desc")}</p>
-          <Button asChild><Link to="/pricing">{t("rooms.upgrade_for_more")}</Link></Button>
-        </div>
-      </MainLayout>
+      <CreateGoalDialog
+        year={year}
+        categories={categories}
+        defaultCategoryId={defaultCategoryId ?? undefined}
+        trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
+      />
     );
-  }
+  };
+
+  const CategoryQuotaButton = ({ size = "sm" as "sm" | "default" }) => {
+    if (categoriesLimitReached) {
+      return (
+        <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild size={size} variant="outline" className="border-primary/30">
+                <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+              {t("annual_goals.limit_reached_categories", { max: maxCategories })}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+    return (
+      <CreateCategoryDialog
+        trigger={<Button variant="outline" size={size}><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
+      />
+    );
+  };
+
 
   const goalsByCategory = (catId: string | null) => goals.filter((g) => g.category_id === catId);
   const uncategorized = goalsByCategory(null);
@@ -67,9 +116,33 @@ export default function Goals() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
+          <div className="space-y-1">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("annual_goals.title")} {year}</h1>
             <p className="text-sm text-muted-foreground">{t("annual_goals.subtitle")}</p>
+            {isFree && (
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px] sm:text-xs pt-0.5">
+                <span className={cn(
+                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border",
+                  goalsLimitReached ? "border-primary/40 bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                )}>
+                  <Target className="h-3 w-3" />
+                  {t("annual_goals.quota_goals", { used: goalsCount, max: maxGoals })}
+                </span>
+                <span className={cn(
+                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border",
+                  categoriesLimitReached ? "border-primary/40 bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                )}>
+                  <Folder className="h-3 w-3" />
+                  {t("annual_goals.quota_categories", { used: categoriesCount, max: maxCategories })}
+                </span>
+                {(goalsLimitReached || categoriesLimitReached) && (
+                  <Link to="/pricing" className="inline-flex items-center gap-1 text-primary hover:underline font-medium">
+                    <Crown className="h-3 w-3" />
+                    {t("annual_goals.upgrade_unlock")}
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
@@ -78,16 +151,11 @@ export default function Goals() {
                 {YEARS.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
-            <CreateCategoryDialog
-              trigger={<Button variant="outline" size="sm"><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
-            />
-            <CreateGoalDialog
-              year={year}
-              categories={categories}
-              trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
-            />
+            <CategoryQuotaButton />
+            <GoalsQuotaButton />
           </div>
         </div>
+
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <GridNav
@@ -155,9 +223,7 @@ export default function Goals() {
               <Card className="p-10 text-center space-y-3">
                 <Folder className="h-10 w-10 mx-auto text-muted-foreground" />
                 <p className="text-muted-foreground">{t("annual_goals.no_categories")}</p>
-                <CreateCategoryDialog
-                  trigger={<Button><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
-                />
+                <div className="flex justify-center"><CategoryQuotaButton size="default" /></div>
               </Card>
             )}
 
@@ -175,12 +241,27 @@ export default function Goals() {
                       <span className="text-xs text-muted-foreground">{list.length} {t("annual_goals.goals_label")}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <CreateGoalDialog
-                        year={year}
-                        categories={categories}
-                        defaultCategoryId={c.id}
-                        trigger={<Button variant="ghost" size="sm"><Plus className="h-4 w-4" /></Button>}
-                      />
+                      {goalsLimitReached ? (
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button asChild variant="ghost" size="sm">
+                                <Link to="/pricing"><Crown className="h-4 w-4 text-primary" /></Link>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+                              {t("annual_goals.limit_reached_goals", { max: maxGoals })}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <CreateGoalDialog
+                          year={year}
+                          categories={categories}
+                          defaultCategoryId={c.id}
+                          trigger={<Button variant="ghost" size="sm"><Plus className="h-4 w-4" /></Button>}
+                        />
+                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button>

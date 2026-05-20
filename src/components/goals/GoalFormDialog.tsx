@@ -5,9 +5,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, TrendingUp, Repeat, Sparkles, ArrowLeft, BookOpen } from "lucide-react";
+import { CheckCircle2, TrendingUp, Repeat, Sparkles, ArrowLeft, BookOpen, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -148,20 +147,19 @@ export function GoalFormDialog(props: Props) {
       )}
 
       {!isEdit && step === "templates" && (
-        <Tabs defaultValue="templates" className="w-full">
-          <TabsList className="grid grid-cols-2 w-full">
-            <TabsTrigger value="templates"><Sparkles className="h-3.5 w-3.5 mr-1.5" />{t("annual_goals.tab_template")}</TabsTrigger>
-            <TabsTrigger value="custom" onClick={() => setStep("form")}>{t("annual_goals.tab_custom")}</TabsTrigger>
-          </TabsList>
-          <TabsContent value="templates" className="mt-3">
-            <GoalTemplatePicker onPick={applyTemplate} />
-            <div className="mt-3 pt-3 border-t">
-              <Button variant="outline" className="w-full" onClick={() => setStep("form")}>
-                {t("annual_goals.create_custom")}
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Sparkles className="h-4 w-4 text-primary shrink-0" />
+            <span>{t("annual_goals.pick_template_or_custom")}</span>
+          </div>
+          <GoalTemplatePicker onPick={applyTemplate} />
+          <div className="pt-3 border-t">
+            <Button variant="outline" className="w-full" onClick={() => setStep("form")}>
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
+              {t("annual_goals.create_custom")}
+            </Button>
+          </div>
+        </div>
       )}
 
       {!isEdit && step === "book" && (

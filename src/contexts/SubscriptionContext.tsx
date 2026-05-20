@@ -26,7 +26,12 @@ interface SubscriptionContextType extends SubscriptionState {
   hasFeature: (feature: string) => boolean;
   getMaxRooms: () => number;
   getMaxMembersPerRoom: () => number;
+  getMaxAnnualGoals: () => number;
+  getMaxLifeCategories: () => number;
 }
+
+export const FREE_GOALS_LIMIT = 3;
+export const FREE_CATEGORIES_LIMIT = 3;
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
 
@@ -157,15 +162,23 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     if (state.tier === "pro") {
       return feature !== "achievements" && feature !== "advanced_analytics" && feature !== "export_pdf" && feature !== "priority_support";
     }
-    // Free tier
-    return !["unlimited_projects", "all_sounds", "goals", "export_csv", "achievements", "advanced_analytics", "export_pdf", "priority_support"].includes(feature);
+    // Free tier — goals liberadas (com limite gerenciado via getMaxAnnualGoals / getMaxLifeCategories)
+    return !["unlimited_projects", "all_sounds", "export_csv", "achievements", "advanced_analytics", "export_pdf", "priority_support"].includes(feature);
   }, [state.tier]);
 
   const getMaxRooms = useCallback(() => ROOM_LIMITS[state.tier], [state.tier]);
   const getMaxMembersPerRoom = useCallback(() => MEMBER_LIMITS[state.tier], [state.tier]);
+  const getMaxAnnualGoals = useCallback(
+    () => (state.tier === "free" ? FREE_GOALS_LIMIT : Infinity),
+    [state.tier]
+  );
+  const getMaxLifeCategories = useCallback(
+    () => (state.tier === "free" ? FREE_CATEGORIES_LIMIT : Infinity),
+    [state.tier]
+  );
 
   return (
-    <SubscriptionContext.Provider value={{ ...state, refreshSubscription: checkSubscription, hasFeature, getMaxRooms, getMaxMembersPerRoom }}>
+    <SubscriptionContext.Provider value={{ ...state, refreshSubscription: checkSubscription, hasFeature, getMaxRooms, getMaxMembersPerRoom, getMaxAnnualGoals, getMaxLifeCategories }}>
       {children}
     </SubscriptionContext.Provider>
   );
@@ -183,6 +196,8 @@ const FALLBACK_SUBSCRIPTION: SubscriptionContextType = {
   hasFeature: () => false,
   getMaxRooms: () => ROOM_LIMITS.free,
   getMaxMembersPerRoom: () => MEMBER_LIMITS.free,
+  getMaxAnnualGoals: () => FREE_GOALS_LIMIT,
+  getMaxLifeCategories: () => FREE_CATEGORIES_LIMIT,
 };
 
 export function useSubscription() {
