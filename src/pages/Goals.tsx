@@ -223,9 +223,7 @@ export default function Goals() {
               <Card className="p-10 text-center space-y-3">
                 <Folder className="h-10 w-10 mx-auto text-muted-foreground" />
                 <p className="text-muted-foreground">{t("annual_goals.no_categories")}</p>
-                <CreateCategoryDialog
-                  trigger={<Button><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
-                />
+                <div className="flex justify-center"><CategoryQuotaButton size="default" /></div>
               </Card>
             )}
 
@@ -243,12 +241,27 @@ export default function Goals() {
                       <span className="text-xs text-muted-foreground">{list.length} {t("annual_goals.goals_label")}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <CreateGoalDialog
-                        year={year}
-                        categories={categories}
-                        defaultCategoryId={c.id}
-                        trigger={<Button variant="ghost" size="sm"><Plus className="h-4 w-4" /></Button>}
-                      />
+                      {goalsLimitReached ? (
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button asChild variant="ghost" size="sm">
+                                <Link to="/pricing"><Crown className="h-4 w-4 text-primary" /></Link>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+                              {t("annual_goals.limit_reached_goals", { max: maxGoals })}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        <CreateGoalDialog
+                          year={year}
+                          categories={categories}
+                          defaultCategoryId={c.id}
+                          trigger={<Button variant="ghost" size="sm"><Plus className="h-4 w-4" /></Button>}
+                        />
+                      )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="h-4 w-4" /></Button>
