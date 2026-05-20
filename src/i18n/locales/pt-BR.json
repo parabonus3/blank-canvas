@@ -381,14 +381,29 @@
         "spirituality": "Espiritualidade",
         "study": "Estudo",
         "health": "Saúde",
-        "habits": "Hábitos"
+        "habits": "Hábitos",
+        "family": "Família",
+        "career": "Carreira",
+        "hobbies": "Hobbies",
+        "travel": "Viagens",
+        "mindfulness": "Bem-estar",
+        "productivity": "Produtividade"
       },
       "units": {
         "pages": "páginas",
         "books": "livros",
         "hours": "horas",
         "km": "km",
-        "chapters": "capítulos"
+        "chapters": "capítulos",
+        "verses": "versículos",
+        "friends": "amigos",
+        "reviews": "resenhas",
+        "artworks": "obras",
+        "photos": "fotos",
+        "cities": "cidades",
+        "hikes": "trilhas",
+        "kg": "kg",
+        "percent": "%"
       },
       "items": {
         "read_specific_book": {
@@ -466,8 +481,239 @@
         "sleep_8h": {
           "title": "Dormir 8h por noite",
           "desc": "Priorize seu descanso."
+        },
+        "audiobook_yearly": {
+          "title": "Ouvir N audiolivros",
+          "desc": "Audio também conta — defina uma meta anual."
+        },
+        "book_reviews": {
+          "title": "Resenhar os livros lidos",
+          "desc": "Uma resenha por livro concluído."
+        },
+        "screen_to_book": {
+          "title": "Trocar 1h de tela por leitura",
+          "desc": "Substitua tela por livro diariamente."
+        },
+        "emergency_fund": {
+          "title": "Reserva de emergência (6 meses)",
+          "desc": "6× seus gastos mensais."
+        },
+        "out_of_red": {
+          "title": "Sair do vermelho",
+          "desc": "Chegar ao saldo positivo este ano."
+        },
+        "learn_finance_skill": {
+          "title": "Aprender 1 habilidade financeira",
+          "desc": "Investir, orçamento, impostos — escolha uma."
+        },
+        "cut_expenses": {
+          "title": "Cortar gastos supérfluos",
+          "desc": "Revisar assinaturas todo mês."
+        },
+        "tithe_monthly": {
+          "title": "Dízimo / oferta mensal",
+          "desc": "Doe todo mês com consistência."
+        },
+        "bible_audio_year": {
+          "title": "Ouvir a Bíblia (áudio)",
+          "desc": "Plano em áudio para o ano."
+        },
+        "proverbs_daily": {
+          "title": "1 capítulo de Provérbios/dia",
+          "desc": "31 capítulos — um por dia do mês."
+        },
+        "memorize_verses": {
+          "title": "Decorar versículos",
+          "desc": "1 versículo por semana — 52 no ano."
+        },
+        "small_group": {
+          "title": "Participar de pequeno grupo",
+          "desc": "Comunidade também é disciplina."
+        },
+        "evangelize": {
+          "title": "Evangelizar 1 pessoa/mês",
+          "desc": "Crie a coragem e o hábito."
+        },
+        "spiritual_retreat": {
+          "title": "Fazer um retiro espiritual",
+          "desc": "Pause, reorganize, respire."
+        },
+        "get_certification": {
+          "title": "Tirar uma certificação",
+          "desc": "Escolha uma e conclua."
+        },
+        "weekly_article": {
+          "title": "1 artigo técnico por semana",
+          "desc": "Mantenha-se afiado na sua área."
+        },
+        "private_lessons": {
+          "title": "Aulas particulares",
+          "desc": "Aulas semanais sobre o que importa."
+        },
+        "solve_problems": {
+          "title": "Resolver N problemas/semana",
+          "desc": "LeetCode, ENEM, matemática — você escolhe."
+        },
+        "weight_target": {
+          "title": "Atingir peso ideal",
+          "desc": "Acompanhe kg perdidos ou ganhos."
+        },
+        "daily_steps": {
+          "title": "10.000 passos/dia",
+          "desc": "Mova-se todos os dias."
+        },
+        "no_alcohol_soda": {
+          "title": "Sem álcool / refrigerante",
+          "desc": "Sequência diária. Reinicia se falhar."
+        },
+        "annual_checkup": {
+          "title": "Check-up anual",
+          "desc": "Não pule o básico."
+        },
+        "yoga_stretch": {
+          "title": "Yoga / alongamento",
+          "desc": "Três sessões por semana."
+        },
+        "wake_up_early": {
+          "title": "Acordar cedo",
+          "desc": "Ganhe a manhã."
+        },
+        "no_phone_morning": {
+          "title": "Sem celular na 1ª hora",
+          "desc": "Proteja sua atenção logo cedo."
+        },
+        "gratitude": {
+          "title": "Listar 3 gratidões/dia",
+          "desc": "Treine a mente para enxergar o bem."
+        },
+        "weekly_date": {
+          "title": "Encontro semanal com o cônjuge",
+          "desc": "Marque na agenda. Apareça."
+        },
+        "call_parents": {
+          "title": "Ligar para os pais 1x/sem",
+          "desc": "5 minutos bastam. Só ligue."
+        },
+        "play_with_kids": {
+          "title": "Brincar com os filhos 30min/dia",
+          "desc": "Atenção total, todo dia."
+        },
+        "reconnect_friends": {
+          "title": "Reencontrar 5 amigos",
+          "desc": "Procure quem está com saudade."
+        },
+        "family_dinner": {
+          "title": "Jantar em família",
+          "desc": "Pelo menos 5x na semana, juntos."
+        },
+        "get_promotion": {
+          "title": "Conseguir promoção / novo emprego",
+          "desc": "Movimento grande de carreira."
+        },
+        "salary_raise": {
+          "title": "Aumentar a renda em X%",
+          "desc": "Defina um número e faça um plano."
+        },
+        "update_portfolio": {
+          "title": "Atualizar portfólio / LinkedIn",
+          "desc": "Esteja achável. Esteja pronto."
+        },
+        "networking_weekly": {
+          "title": "Networking semanal",
+          "desc": "1 café, mensagem ou evento por semana."
+        },
+        "launch_side_project": {
+          "title": "Lançar um side project",
+          "desc": "Publique. Pronto > perfeito."
+        },
+        "learn_instrument": {
+          "title": "Aprender um instrumento",
+          "desc": "Horas de prática — defina o alvo."
+        },
+        "paint_draw": {
+          "title": "Pintar / desenhar N obras",
+          "desc": "Crie arte com consistência."
+        },
+        "play_music": {
+          "title": "Tocar música",
+          "desc": "Mínimo três sessões por semana."
+        },
+        "write_book": {
+          "title": "Escrever um livro ou conto",
+          "desc": "Conclua o primeiro rascunho este ano."
+        },
+        "new_recipe": {
+          "title": "Cozinhar uma receita nova",
+          "desc": "Uma receita nova por semana."
+        },
+        "photography": {
+          "title": "Tirar N fotos este ano",
+          "desc": "Registre a vida com intenção."
+        },
+        "new_cities": {
+          "title": "Conhecer N cidades novas",
+          "desc": "Expanda seu mapa."
+        },
+        "international_trip": {
+          "title": "1 viagem internacional",
+          "desc": "Planeje. Reserve. Vá."
+        },
+        "hike_mountain": {
+          "title": "Trilhas / montanhas",
+          "desc": "Saia para a natureza."
+        },
+        "camping": {
+          "title": "Acampar",
+          "desc": "Pelo menos uma vez por mês."
+        },
+        "therapy_weekly": {
+          "title": "Terapia semanal",
+          "desc": "Saúde mental é saúde."
+        },
+        "breath_daily": {
+          "title": "Respiração consciente diária",
+          "desc": "5 minutos de respiração."
+        },
+        "digital_detox": {
+          "title": "Detox digital mensal",
+          "desc": "Um dia sem telas, por mês."
+        },
+        "nature_walk": {
+          "title": "Caminhar na natureza",
+          "desc": "2x por semana, sem celular."
+        },
+        "weekly_pomodoros": {
+          "title": "N pomodoros por semana",
+          "desc": "Blocos focados — acompanhe."
+        },
+        "inbox_zero": {
+          "title": "Inbox zero diário",
+          "desc": "Processe o email, não reaja a ele."
+        },
+        "weekly_planning": {
+          "title": "Planejamento de domingo",
+          "desc": "Planeje a semana antes de começar."
+        },
+        "deep_work": {
+          "title": "Bloco de deep work diário",
+          "desc": "Um bloco focado sem distrações."
         }
       }
+    },
+    "pick_template_or_custom": "Escolha um template — ou role para baixo e crie do zero.",
+    "upgrade_for_more": "Liberar mais",
+    "upgrade_unlock": "Liberar ilimitado",
+    "quota_goals": "{{used}}/{{max}} metas",
+    "quota_categories": "{{used}}/{{max}} categorias",
+    "limit_reached_goals": "Plano grátis: até {{max}} metas. Faça upgrade para criar mais.",
+    "limit_reached_categories": "Plano grátis: até {{max}} categorias. Faça upgrade para criar mais.",
+    "book_genres": {
+      "christian": "Cristãos",
+      "fantasy": "Fantasia",
+      "classic": "Clássicos",
+      "personal": "Pessoal",
+      "business": "Negócios",
+      "history": "História"
     }
   },
   "history": {
