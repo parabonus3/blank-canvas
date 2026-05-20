@@ -18,6 +18,7 @@ import { GoalCard } from "@/components/goals/GoalCard";
 import { ChecklistList } from "@/components/checklist/ChecklistList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import * as Icons from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEARS = [CURRENT_YEAR - 1, CURRENT_YEAR, CURRENT_YEAR + 1];
