@@ -7,9 +7,10 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GridNav } from "@/components/ui/grid-nav";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Target, Trophy, ListChecks, Folder, CheckCircle2, Lock, MoreVertical, Trash2, Sparkles } from "lucide-react";
+import { Plus, Target, Trophy, ListChecks, Folder, CheckCircle2, MoreVertical, Trash2, Sparkles, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAnnualGoals, useAnnualGoalsStats, useLifeCategories, useDeleteCategory, useDuplicateGoalsToYear } from "@/hooks/useAnnualGoals";
 import { CreateCategoryDialog } from "@/components/goals/CreateCategoryDialog";
 import { CreateGoalDialog } from "@/components/goals/CreateGoalDialog";
@@ -29,7 +30,7 @@ function CategoryIcon({ name, className }: { name: string; className?: string })
 
 export default function Goals() {
   const { t } = useTranslation();
-  const { hasFeature } = useSubscription();
+  const { tier, getMaxAnnualGoals, getMaxLifeCategories } = useSubscription();
   const [year, setYear] = useState(CURRENT_YEAR);
   const [activeTab, setActiveTab] = useState("annual");
   const { data: categories = [] } = useLifeCategories();
@@ -38,18 +39,65 @@ export default function Goals() {
   const deleteCategory = useDeleteCategory();
   const duplicate = useDuplicateGoalsToYear();
 
-  if (!hasFeature("goals")) {
+  const maxGoals = getMaxAnnualGoals();
+  const maxCategories = getMaxLifeCategories();
+  const goalsCount = goals.length;
+  const categoriesCount = categories.length;
+  const isFree = tier === "free";
+  const goalsLimitReached = goalsCount >= maxGoals;
+  const categoriesLimitReached = categoriesCount >= maxCategories;
+
+  const GoalsQuotaButton = ({ defaultCategoryId }: { defaultCategoryId?: string | null } = {}) => {
+    if (goalsLimitReached) {
+      return (
+        <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild size="sm" variant="outline" className="border-primary/30">
+                <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+              {t("annual_goals.limit_reached_goals", { max: maxGoals })}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
     return (
-      <MainLayout>
-        <div className="flex flex-col items-center justify-center py-20 space-y-4 text-center">
-          <Lock className="h-12 w-12 text-muted-foreground" />
-          <h2 className="text-2xl font-bold">{t("annual_goals.title")}</h2>
-          <p className="text-muted-foreground max-w-md">{t("pricing.feature_locked_desc")}</p>
-          <Button asChild><Link to="/pricing">{t("rooms.upgrade_for_more")}</Link></Button>
-        </div>
-      </MainLayout>
+      <CreateGoalDialog
+        year={year}
+        categories={categories}
+        defaultCategoryId={defaultCategoryId ?? undefined}
+        trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
+      />
     );
-  }
+  };
+
+  const CategoryQuotaButton = ({ size = "sm" as "sm" | "default" }) => {
+    if (categoriesLimitReached) {
+      return (
+        <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild size={size} variant="outline" className="border-primary/30">
+                <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+              {t("annual_goals.limit_reached_categories", { max: maxCategories })}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+    return (
+      <CreateCategoryDialog
+        trigger={<Button variant="outline" size={size}><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
+      />
+    );
+  };
+
 
   const goalsByCategory = (catId: string | null) => goals.filter((g) => g.category_id === catId);
   const uncategorized = goalsByCategory(null);
