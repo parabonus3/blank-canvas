@@ -115,9 +115,33 @@ export default function Goals() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
+          <div className="space-y-1">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("annual_goals.title")} {year}</h1>
             <p className="text-sm text-muted-foreground">{t("annual_goals.subtitle")}</p>
+            {isFree && (
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px] sm:text-xs pt-0.5">
+                <span className={cn(
+                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border",
+                  goalsLimitReached ? "border-primary/40 bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                )}>
+                  <Target className="h-3 w-3" />
+                  {t("annual_goals.quota_goals", { used: goalsCount, max: maxGoals })}
+                </span>
+                <span className={cn(
+                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border",
+                  categoriesLimitReached ? "border-primary/40 bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                )}>
+                  <Folder className="h-3 w-3" />
+                  {t("annual_goals.quota_categories", { used: categoriesCount, max: maxCategories })}
+                </span>
+                {(goalsLimitReached || categoriesLimitReached) && (
+                  <Link to="/pricing" className="inline-flex items-center gap-1 text-primary hover:underline font-medium">
+                    <Crown className="h-3 w-3" />
+                    {t("annual_goals.upgrade_unlock")}
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
@@ -126,16 +150,11 @@ export default function Goals() {
                 {YEARS.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
-            <CreateCategoryDialog
-              trigger={<Button variant="outline" size="sm"><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
-            />
-            <CreateGoalDialog
-              year={year}
-              categories={categories}
-              trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
-            />
+            <CategoryQuotaButton />
+            <GoalsQuotaButton />
           </div>
         </div>
+
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <GridNav
