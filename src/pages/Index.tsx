@@ -332,6 +332,8 @@ export default function Index() {
   useEffect(() => {
     if (isRunning && profile?.autoplay_on_timer && profile?.ambient_sound && !hasAutoPlayed.current) {
       const timer = setTimeout(() => {
+        // Respeitar o volume salvo nas configurações antes de tocar
+        ambientSound.setVolume(profile.ambient_volume ?? 0.5);
         ambientSound.play(profile.ambient_sound!);
         hasAutoPlayed.current = true;
       }, 500);
@@ -341,7 +343,7 @@ export default function Index() {
     if (!isRunning) {
       hasAutoPlayed.current = false;
     }
-  }, [isRunning, profile?.autoplay_on_timer, profile?.ambient_sound]);
+  }, [isRunning, profile?.autoplay_on_timer, profile?.ambient_sound, profile?.ambient_volume]);
 
   const handleStart = () => {
     if (selectedProject) {

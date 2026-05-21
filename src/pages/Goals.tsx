@@ -117,7 +117,7 @@ export default function Goals() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("annual_goals.title")} {year}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t("annual_goals.title")}</h1>
             <p className="text-sm text-muted-foreground">{t("annual_goals.subtitle")}</p>
             {isFree && (
               <div className="flex flex-wrap items-center gap-1.5 text-[11px] sm:text-xs pt-0.5">
