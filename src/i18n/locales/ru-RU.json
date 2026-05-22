@@ -854,7 +854,14 @@
     "buy_total": "{{count}} защит за ${{price}}",
     "buy_button": "Купить сейчас",
     "purchase_success": "Защиты добавлены!",
-    "purchase_cancel": "Покупка отменена"
+    "purchase_cancel": "Покупка отменена",
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "week_of": "Неделя с {{date}}",
+    "tooltip_studied": "{{date}} — Учился",
+    "tooltip_freeze": "{{date}} — Защита использована",
+    "tooltip_missed": "{{date}} — Нет активности",
+    "tooltip_future": "{{date}} — Предстоящий"
   },
   "tags": {
     "title": "Теги",

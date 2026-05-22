@@ -854,7 +854,14 @@
     "buy_total": "${{price}}에 {{count}}개",
     "buy_button": "지금 구매",
     "purchase_success": "보호가 추가되었습니다!",
-    "purchase_cancel": "구매가 취소되었습니다"
+    "purchase_cancel": "구매가 취소되었습니다",
+    "today": "오늘",
+    "yesterday": "어제",
+    "week_of": "{{date}} 주간",
+    "tooltip_studied": "{{date}} — 학습함",
+    "tooltip_freeze": "{{date}} — 보호 사용",
+    "tooltip_missed": "{{date}} — 활동 없음",
+    "tooltip_future": "{{date}} — 예정"
   },
   "tags": {
     "title": "태그",

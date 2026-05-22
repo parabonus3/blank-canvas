@@ -854,7 +854,14 @@
     "buy_total": "{{count}}个护盾 ${{price}}",
     "buy_button": "立即购买",
     "purchase_success": "护盾已添加!",
-    "purchase_cancel": "购买已取消"
+    "purchase_cancel": "购买已取消",
+    "today": "今天",
+    "yesterday": "昨天",
+    "week_of": "{{date}} 当周",
+    "tooltip_studied": "{{date}} — 已学习",
+    "tooltip_freeze": "{{date}} — 已使用护盾",
+    "tooltip_missed": "{{date}} — 无活动",
+    "tooltip_future": "{{date}} — 即将到来"
   },
   "tags": {
     "title": "标签",

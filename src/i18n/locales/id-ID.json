@@ -854,7 +854,14 @@
     "buy_total": "{{count}} pelindung seharga ${{price}}",
     "buy_button": "Beli sekarang",
     "purchase_success": "Pelindung ditambahkan!",
-    "purchase_cancel": "Pembelian dibatalkan"
+    "purchase_cancel": "Pembelian dibatalkan",
+    "today": "Hari ini",
+    "yesterday": "Kemarin",
+    "week_of": "Minggu {{date}}",
+    "tooltip_studied": "{{date}} — Belajar",
+    "tooltip_freeze": "{{date}} — Perisai digunakan",
+    "tooltip_missed": "{{date}} — Tidak ada aktivitas",
+    "tooltip_future": "{{date}} — Mendatang"
   },
   "tags": {
     "title": "Label",

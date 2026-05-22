@@ -854,7 +854,14 @@
     "buy_total": "{{count}} protections pour ${{price}}",
     "buy_button": "Acheter maintenant",
     "purchase_success": "Protections ajoutées !",
-    "purchase_cancel": "Achat annulé"
+    "purchase_cancel": "Achat annulé",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "week_of": "Semaine du {{date}}",
+    "tooltip_studied": "{{date}} — Étudié",
+    "tooltip_freeze": "{{date}} — Bouclier utilisé",
+    "tooltip_missed": "{{date}} — Aucune activité",
+    "tooltip_future": "{{date}} — À venir"
   },
   "tags": {
     "title": "Étiquettes",

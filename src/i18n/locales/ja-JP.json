@@ -854,7 +854,14 @@
     "buy_total": "${{price}}で{{count}}個",
     "buy_button": "今すぐ購入",
     "purchase_success": "プロテクトを追加しました!",
-    "purchase_cancel": "購入をキャンセルしました"
+    "purchase_cancel": "購入をキャンセルしました",
+    "today": "今日",
+    "yesterday": "昨日",
+    "week_of": "{{date}}の週",
+    "tooltip_studied": "{{date}} — 学習しました",
+    "tooltip_freeze": "{{date}} — フリーズ使用",
+    "tooltip_missed": "{{date}} — 活動なし",
+    "tooltip_future": "{{date}} — 今後"
   },
   "tags": {
     "title": "タグ",

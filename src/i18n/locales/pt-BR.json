@@ -1278,7 +1278,14 @@
     "buy_total": "{{count}} defensivas por ${{price}}",
     "buy_button": "Comprar agora",
     "purchase_success": "Defensivas adicionadas!",
-    "purchase_cancel": "Compra cancelada"
+    "purchase_cancel": "Compra cancelada",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "week_of": "Semana de {{date}}",
+    "tooltip_studied": "{{date}} — Estudou",
+    "tooltip_freeze": "{{date}} — Defensiva usada",
+    "tooltip_missed": "{{date}} — Sem atividade",
+    "tooltip_future": "{{date}} — Futuro"
   },
   "pagination": {
     "previous": "Anterior",
