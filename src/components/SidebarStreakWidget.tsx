@@ -62,12 +62,14 @@ export function SidebarStreakWidget() {
 
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
+      // Consider a session as "studied today" if it ended today (covers sessions
+      // that started yesterday and crossed midnight).
       const { count } = await supabase
         .from("time_entries")
         .select("id", { count: "exact", head: true })
         .eq("user_id", user.id)
         .not("end_time", "is", null)
-        .gte("start_time", todayStart.toISOString());
+        .gte("end_time", todayStart.toISOString());
 
       return { streak: (streak || 0) as number, studiedToday: (count || 0) > 0 };
     },

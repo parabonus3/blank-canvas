@@ -1,36 +1,21 @@
-## Diagnóstico
+## Problema identificado
 
-Não é bug — é **leitura confusa do calendário**.
+O widget de streak na sidebar mostra "Estude hoje para manter sua sequência" em laranja mesmo quando o usuário já estudou hoje.
 
-No `StreakDetailModal.tsx`, a timeline mostra os últimos 7 dias **do mais antigo (esquerda) ao mais recente (direita)**. Hoje é **sexta-feira (22/05/2026)**, então:
+**Causa raiz:** em `src/components/SidebarStreakWidget.tsx` (linhas 63-70), a consulta que decide `studiedToday` filtra por `start_time >= todayStart` (meia-noite local).
 
-```text
-sáb.   dom.   seg.   ter.   qua.   qui.   sex.
-16/05  17/05  18/05  19/05  20/05  21/05  22/05  ← hoje
-🛡️     ✅     ✅     ✅     ✅     ✅     ✅
-```
+No caso atual o usuário fez uma sessão que **começou às 23:41 de 21/05 e terminou às 00:06 de 22/05**. O `end_time` é hoje, mas o `start_time` é ontem — então a query devolve `count = 0` e o widget acha que ele não estudou hoje, ficando laranja com `atRisk = true`.
 
-O `sáb.` com escudo azul não é o sábado **de amanhã** — é **sábado, 16/05**, há 6 dias.
+## Correção
 
-Confirmei no banco (`time_entries` do seu usuário):
-- 15/05 (sex) — sessão registrada ✅
-- **16/05 (sáb) — nenhuma sessão** → defensiva auto-aplicada (correto)
-- 17/05 (dom) — sessão registrada ✅
+1. **`SidebarStreakWidget.tsx`** — trocar o filtro para considerar uma sessão como "estudou hoje" se **qualquer parte dela** cair em hoje no fuso local:
+   - filtrar por `end_time >= todayStart` (já é `not null`), em vez de `start_time >= todayStart`.
+   - Isso cobre sessões que atravessam a meia-noite e mantém o comportamento normal (sessões iniciadas e finalizadas hoje continuam contando).
 
-Ou seja: a sexta que aparece no card (`sex.`) **é hoje** e está verde (estudou). A defensiva foi usada no sábado passado, quando de fato não houve atividade. A lógica está certa, mas o rótulo só com o nome do dia da semana cria a ilusão de que `sáb.` é o sábado mais próximo no futuro.
+2. **`StreakDetailModal.tsx`** — aplicar a mesma lógica na query `streakStudiedDates`: marcar como "studied" tanto o dia do `start_time` quanto o dia do `end_time` (em horário local), para que o calendário fique consistente com o widget e mostre o quadradinho verde no dia em que a sessão terminou.
 
-## Plano (apenas UI, sem mudar lógica)
+3. Usar o fuso do usuário (`useTimezone`) ao calcular o dia local em vez de `toISOString()` (UTC), evitando que sessões noturnas fiquem registradas em outro dia para quem está em fusos distantes do UTC.
 
-Tornar a timeline auto-explicativa para nunca mais gerar essa confusão:
+## Sem mudanças de UI
 
-1. **Adicionar a data abreviada** abaixo do nome do dia em cada célula (`16/5`, `17/5`, …, `22/5`). Mantém os 7 dias na mesma largura, só vira `weekday` + `dd/mm` em duas linhas.
-2. **Destacar "hoje"** explicitamente: rótulo `Hoje` em vez de `sex.` na última célula, com cor `primary` para deixar claro qual é o ponto de referência.
-3. **Marcar "ontem"** com rótulo `Ontem` (mesma ideia, só na penúltima célula).
-4. **Tooltip ao passar o mouse / tocar** em cada bolinha mostrando data completa + status (`Sábado, 16 de maio — Defensiva usada`). Reaproveita o `Tooltip` do shadcn já presente no projeto.
-5. **Histórico (30 dias)**: quando expandido, separar em grupos por semana com cabeçalho `Semana de dd/mm` para evitar fila contínua difícil de ler.
-
-### Arquivos a alterar
-- `src/components/StreakDetailModal.tsx` — render das células + tooltip + agrupamento no histórico.
-- `src/i18n/locales/*.json` (12 arquivos) — novas chaves `streak.today`, `streak.yesterday`, `streak.week_of`, `streak.tooltip_studied`, `streak.tooltip_freeze`, `streak.tooltip_missed`.
-
-Sem alteração em hooks, RPCs ou lógica de defensiva — apenas apresentação. Mantém responsividade (as células passam de `w-8 h-8` para `w-9 h-9 sm:w-10 sm:h-10` para caber a data sem quebrar no mobile).
+Cores, copy, layout e i18n permanecem iguais. Apenas a lógica de detecção de "estudou hoje" é ajustada. Mobile e desktop herdam a correção automaticamente (o widget é o mesmo).

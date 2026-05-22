@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTimezone } from "@/hooks/useTimezone";
 import {
   Dialog,
   DialogContent,
@@ -33,8 +34,27 @@ interface StreakDetailModalProps {
 
 type DayStatus = "studied" | "freeze" | "missed" | "future";
 
-function getDateString(date: Date): string {
-  return date.toISOString().split("T")[0];
+function tzDateString(date: Date, tz: string): string {
+  // YYYY-MM-DD in the given timezone (en-CA always returns ISO-like format)
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+function addDays(isoDate: string, delta: number): string {
+  const [y, m, d] = isoDate.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  dt.setUTCDate(dt.getUTCDate() + delta);
+  return dt.toISOString().split("T")[0];
+}
+
+function isoToDate(isoDate: string): Date {
+  // Date object at noon UTC — safe for weekday/day-month formatting
+  const [y, m, d] = isoDate.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
 }
 
 export function StreakDetailModal({
@@ -49,30 +69,34 @@ export function StreakDetailModal({
 }: StreakDetailModalProps) {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const { timezone } = useTimezone();
   const [showHistory, setShowHistory] = useState(false);
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const daysToShow = showHistory ? 30 : 7;
   const locale = i18n.language || "en";
 
   const { data: studiedDates } = useQuery({
-    queryKey: ["streakStudiedDates", user?.id, daysToShow],
+    queryKey: ["streakStudiedDates", user?.id, daysToShow, timezone],
     queryFn: async () => {
       if (!user) return new Set<string>();
       const startDate = new Date();
-      startDate.setDate(startDate.getDate() - daysToShow);
+      startDate.setDate(startDate.getDate() - daysToShow - 1);
       startDate.setHours(0, 0, 0, 0);
 
       const { data } = await supabase
         .from("time_entries")
-        .select("start_time")
+        .select("start_time, end_time")
         .eq("user_id", user.id)
         .not("end_time", "is", null)
-        .gte("start_time", startDate.toISOString())
+        .gte("end_time", startDate.toISOString())
         .order("start_time", { ascending: false });
 
       const dates = new Set<string>();
       data?.forEach((entry) => {
-        dates.add(new Date(entry.start_time).toISOString().split("T")[0]);
+        // Mark BOTH the day the session started AND the day it ended (in user TZ),
+        // so sessions crossing midnight count for the day they finished.
+        if (entry.start_time) dates.add(tzDateString(new Date(entry.start_time), timezone));
+        if (entry.end_time) dates.add(tzDateString(new Date(entry.end_time), timezone));
       });
       return dates;
     },
@@ -81,19 +105,13 @@ export function StreakDetailModal({
   });
 
   const freezeSet = new Set(autoUsedDates);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayStr = getDateString(today);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = getDateString(yesterday);
+  const todayStr = tzDateString(new Date(), timezone);
+  const yesterdayStr = addDays(todayStr, -1);
 
   const days: { date: Date; dateStr: string; status: DayStatus }[] = [];
   for (let i = daysToShow - 1; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    d.setHours(0, 0, 0, 0);
-    const dateStr = getDateString(d);
+    const dateStr = addDays(todayStr, -i);
+    const d = isoToDate(dateStr);
 
     let status: DayStatus;
     if (dateStr > todayStr) {
@@ -109,6 +127,7 @@ export function StreakDetailModal({
     }
     days.push({ date: d, dateStr, status });
   }
+
 
   const weekdayShort = (date: Date) =>
     date.toLocaleDateString(locale, { weekday: "short" }).replace(".", "");
@@ -194,7 +213,7 @@ export function StreakDetailModal({
       const date = new Date(d);
       const day = (date.getDay() + 6) % 7; // Mon=0
       date.setDate(date.getDate() - day);
-      return getDateString(date);
+      return date.toISOString().split("T")[0];
     };
     const map = new Map<string, typeof days>();
     for (const item of days) {
