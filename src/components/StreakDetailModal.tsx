@@ -213,7 +213,7 @@ export function StreakDetailModal({
       const date = new Date(d);
       const day = (date.getDay() + 6) % 7; // Mon=0
       date.setDate(date.getDate() - day);
-      return getDateString(date);
+      return date.toISOString().split("T")[0];
     };
     const map = new Map<string, typeof days>();
     for (const item of days) {
