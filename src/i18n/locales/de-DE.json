@@ -854,7 +854,14 @@
     "buy_total": "{{count}} Schutz für ${{price}}",
     "buy_button": "Jetzt kaufen",
     "purchase_success": "Schutz hinzugefügt!",
-    "purchase_cancel": "Kauf abgebrochen"
+    "purchase_cancel": "Kauf abgebrochen",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "week_of": "Woche vom {{date}}",
+    "tooltip_studied": "{{date}} — Gelernt",
+    "tooltip_freeze": "{{date}} — Schutz benutzt",
+    "tooltip_missed": "{{date}} — Keine Aktivität",
+    "tooltip_future": "{{date}} — Bevorstehend"
   },
   "tags": {
     "title": "Tags",

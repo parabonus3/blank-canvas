@@ -854,7 +854,14 @@
     "buy_total": "{{count}} defensas por ${{price}}",
     "buy_button": "Comprar ahora",
     "purchase_success": "¡Defensas añadidas!",
-    "purchase_cancel": "Compra cancelada"
+    "purchase_cancel": "Compra cancelada",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "week_of": "Semana del {{date}}",
+    "tooltip_studied": "{{date}} — Estudió",
+    "tooltip_freeze": "{{date}} — Defensa usada",
+    "tooltip_missed": "{{date}} — Sin actividad",
+    "tooltip_future": "{{date}} — Próximo"
   },
   "tags": {
     "title": "Etiquetas",

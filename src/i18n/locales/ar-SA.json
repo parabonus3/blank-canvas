@@ -854,7 +854,14 @@
     "buy_total": "{{count}} دروع مقابل ${{price}}",
     "buy_button": "اشتر الآن",
     "purchase_success": "تمت إضافة الدروع!",
-    "purchase_cancel": "تم إلغاء الشراء"
+    "purchase_cancel": "تم إلغاء الشراء",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "week_of": "أسبوع {{date}}",
+    "tooltip_studied": "{{date}} — درس",
+    "tooltip_freeze": "{{date}} — تم استخدام الدرع",
+    "tooltip_missed": "{{date}} — لا نشاط",
+    "tooltip_future": "{{date}} — قادم"
   },
   "tags": {
     "title": "العلامات",

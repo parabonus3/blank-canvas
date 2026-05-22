@@ -1276,7 +1276,14 @@
     "buy_total": "{{count}} freezes for ${{price}}",
     "buy_button": "Buy now",
     "purchase_success": "Freezes added!",
-    "purchase_cancel": "Purchase cancelled"
+    "purchase_cancel": "Purchase cancelled",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "week_of": "Week of {{date}}",
+    "tooltip_studied": "{{date}} — Studied",
+    "tooltip_freeze": "{{date}} — Freeze used",
+    "tooltip_missed": "{{date}} — No activity",
+    "tooltip_future": "{{date}} — Upcoming"
   },
   "pagination": {
     "previous": "Previous",

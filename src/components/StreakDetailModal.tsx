@@ -10,6 +10,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Flame, Shield, CheckCircle2, XCircle, ChevronDown, Gem, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BuyFreezesDialog } from "@/components/BuyFreezesDialog";
@@ -26,14 +32,6 @@ interface StreakDetailModalProps {
 }
 
 type DayStatus = "studied" | "freeze" | "missed" | "future";
-
-function getDayName(date: Date, locale: string): string {
-  return date.toLocaleDateString(locale, { weekday: "short" });
-}
-
-function getDayNumber(date: Date): number {
-  return date.getDate();
-}
 
 function getDateString(date: Date): string {
   return date.toISOString().split("T")[0];
@@ -54,6 +52,7 @@ export function StreakDetailModal({
   const [showHistory, setShowHistory] = useState(false);
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const daysToShow = showHistory ? 30 : 7;
+  const locale = i18n.language || "en";
 
   const { data: studiedDates } = useQuery({
     queryKey: ["streakStudiedDates", user?.id, daysToShow],
@@ -83,7 +82,11 @@ export function StreakDetailModal({
 
   const freezeSet = new Set(autoUsedDates);
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const todayStr = getDateString(today);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = getDateString(yesterday);
 
   const days: { date: Date; dateStr: string; status: DayStatus }[] = [];
   for (let i = daysToShow - 1; i >= 0; i--) {
@@ -100,14 +103,113 @@ export function StreakDetailModal({
     } else if (freezeSet.has(dateStr)) {
       status = "freeze";
     } else if (dateStr === todayStr) {
-      status = studiedDates?.has(dateStr) ? "studied" : "future";
+      status = "future";
     } else {
       status = "missed";
     }
     days.push({ date: d, dateStr, status });
   }
 
-  const locale = i18n.language || "en";
+  const weekdayShort = (date: Date) =>
+    date.toLocaleDateString(locale, { weekday: "short" }).replace(".", "");
+  const dayMonth = (date: Date) =>
+    date.toLocaleDateString(locale, { day: "numeric", month: "numeric" });
+  const fullDate = (date: Date) =>
+    date.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" });
+
+  const tooltipFor = (status: DayStatus, date: Date) => {
+    const d = fullDate(date);
+    if (status === "studied") return t("streak.tooltip_studied", { date: d });
+    if (status === "freeze") return t("streak.tooltip_freeze", { date: d });
+    if (status === "missed") return t("streak.tooltip_missed", { date: d });
+    return t("streak.tooltip_future", { date: d });
+  };
+
+  const labelFor = (date: Date, dateStr: string) => {
+    if (dateStr === todayStr) return t("streak.today");
+    if (dateStr === yesterdayStr) return t("streak.yesterday");
+    return weekdayShort(date);
+  };
+
+  // Group days into weeks for history view
+  const renderDay = ({ date, dateStr, status }: { date: Date; dateStr: string; status: DayStatus }) => {
+    const isToday = dateStr === todayStr;
+    const isYesterday = dateStr === yesterdayStr;
+    return (
+      <Tooltip key={dateStr}>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            className="flex flex-col items-center gap-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md p-0.5"
+          >
+            <span
+              className={cn(
+                "text-[10px] font-medium leading-tight",
+                isToday ? "text-primary font-bold" : "text-muted-foreground",
+                isYesterday && "text-foreground/80"
+              )}
+            >
+              {labelFor(date, dateStr)}
+            </span>
+            <div
+              className={cn(
+                "w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all",
+                status === "studied" && "bg-green-500/20 ring-2 ring-green-500",
+                status === "freeze" && "bg-blue-500/20 ring-2 ring-blue-500 animate-pulse",
+                status === "missed" && "bg-destructive/10 ring-2 ring-destructive/40",
+                status === "future" && "bg-muted ring-1 ring-border",
+                isToday && "ring-offset-2 ring-offset-background"
+              )}
+            >
+              {status === "studied" && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+              {status === "freeze" && <Shield className="h-4 w-4 text-blue-500" />}
+              {status === "missed" && <XCircle className="h-3.5 w-3.5 text-destructive/60" />}
+              {status === "future" && (
+                <span className="text-[10px] font-medium text-muted-foreground">
+                  {date.getDate()}
+                </span>
+              )}
+            </div>
+            <span
+              className={cn(
+                "text-[9px] tabular-nums leading-tight",
+                isToday ? "text-primary font-semibold" : "text-muted-foreground/70"
+              )}
+            >
+              {dayMonth(date)}
+            </span>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={6} collisionPadding={12} className="max-w-[min(260px,calc(100vw-32px))] text-xs">
+          {tooltipFor(status, date)}
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
+  // For history (30 days), chunk by ISO week start (Monday)
+  const weekChunks: { label: string; items: typeof days }[] = [];
+  if (showHistory) {
+    const weekKey = (d: Date) => {
+      const date = new Date(d);
+      const day = (date.getDay() + 6) % 7; // Mon=0
+      date.setDate(date.getDate() - day);
+      return getDateString(date);
+    };
+    const map = new Map<string, typeof days>();
+    for (const item of days) {
+      const k = weekKey(item.date);
+      if (!map.has(k)) map.set(k, []);
+      map.get(k)!.push(item);
+    }
+    for (const [k, items] of map) {
+      const start = new Date(k);
+      weekChunks.push({
+        label: t("streak.week_of", { date: dayMonth(start) }),
+        items,
+      });
+    }
+  }
 
   return (
     <>
@@ -130,37 +232,29 @@ export function StreakDetailModal({
             </span>
           </div>
 
-          {/* Timeline grid */}
-          <div className="mt-4">
-            <div className={cn("grid gap-1.5 grid-cols-7")}>
-              {days.map(({ date, dateStr, status }) => (
-                <div key={dateStr} className="flex flex-col items-center gap-0.5">
-                  <span className="text-[10px] text-muted-foreground font-medium">
-                    {getDayName(date, locale)}
-                  </span>
-                  <div
-                    className={cn(
-                      "w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all",
-                      status === "studied" && "bg-green-500/20 ring-2 ring-green-500",
-                      status === "freeze" && "bg-blue-500/20 ring-2 ring-blue-500 animate-pulse",
-                      status === "missed" && "bg-destructive/10 ring-2 ring-destructive/40",
-                      status === "future" && "bg-muted ring-1 ring-border",
-                      dateStr === todayStr && "ring-offset-2 ring-offset-background"
-                    )}
-                  >
-                    {status === "studied" && <CheckCircle2 className="h-4 w-4 text-green-500" />}
-                    {status === "freeze" && <Shield className="h-4 w-4 text-blue-500" />}
-                    {status === "missed" && <XCircle className="h-3.5 w-3.5 text-destructive/60" />}
-                    {status === "future" && (
-                      <span className="text-[10px] font-medium text-muted-foreground">
-                        {getDayNumber(date)}
-                      </span>
-                    )}
-                  </div>
+          {/* Timeline */}
+          <TooltipProvider delayDuration={150}>
+            <div className="mt-4">
+              {!showHistory ? (
+                <div className="grid gap-1 grid-cols-7">
+                  {days.map(renderDay)}
                 </div>
-              ))}
+              ) : (
+                <div className="space-y-3">
+                  {weekChunks.map((wk) => (
+                    <div key={wk.label}>
+                      <div className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wide">
+                        {wk.label}
+                      </div>
+                      <div className="grid gap-1 grid-cols-7">
+                        {wk.items.map(renderDay)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          </TooltipProvider>
 
           {/* Legend */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-3 text-xs text-muted-foreground">
