@@ -16,14 +16,20 @@ interface Props {
 }
 
 export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [mode, setMode] = useState<"popular" | "custom">("popular");
   const [genre, setGenre] = useState<BookGenre | "all">("all");
   const [search, setSearch] = useState("");
   const [customTitle, setCustomTitle] = useState(defaultTitle);
   const [customPages, setCustomPages] = useState(String(defaultPages));
 
-  const filtered = POPULAR_BOOKS.filter((b) => {
+  // Read localized book list from i18n (returnObjects). Fall back to PT-BR catalog.
+  const localized = i18n.getResource(i18n.language, "translation", "annual_goals.books_list") as BookOption[] | undefined;
+  const enFallback = i18n.getResource("en-US", "translation", "annual_goals.books_list") as BookOption[] | undefined;
+  const books: BookOption[] = (localized && localized.length ? localized : enFallback && enFallback.length ? enFallback : POPULAR_BOOKS) as BookOption[];
+
+  const filtered = books.filter((b) => {
+
     if (genre !== "all" && b.genre !== genre) return false;
     if (!search.trim()) return true;
     const q = search.toLowerCase();
