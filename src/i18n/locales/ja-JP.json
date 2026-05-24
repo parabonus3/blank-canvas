@@ -1701,6 +1701,176 @@
       "personal": "自己啓発",
       "business": "ビジネス",
       "history": "歴史"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "聖書",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "ナルニア国物語",
+        "author": "C.S. ルイス",
+        "pages": 800,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "ホビットの冒険",
+        "author": "J.R.R. トールキン",
+        "pages": 480,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "指輪物語",
+        "author": "J.R.R. トールキン",
+        "pages": 1500,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "ハリー・ポッターと賢者の石",
+        "author": "J.K. ローリング",
+        "pages": 462,
+        "genre": "fantasy"
+      },
+      {
+        "id": "norwegian-wood",
+        "title": "ノルウェイの森",
+        "author": "村上春樹",
+        "pages": 552,
+        "genre": "classic"
+      },
+      {
+        "id": "kafka-shore",
+        "title": "海辺のカフカ",
+        "author": "村上春樹",
+        "pages": 1080,
+        "genre": "classic"
+      },
+      {
+        "id": "1q84",
+        "title": "1Q84",
+        "author": "村上春樹",
+        "pages": 1700,
+        "genre": "classic"
+      },
+      {
+        "id": "kokoro",
+        "title": "こころ",
+        "author": "夏目漱石",
+        "pages": 320,
+        "genre": "classic"
+      },
+      {
+        "id": "botchan",
+        "title": "坊っちゃん",
+        "author": "夏目漱石",
+        "pages": 208,
+        "genre": "classic"
+      },
+      {
+        "id": "ningen-shikkaku",
+        "title": "人間失格",
+        "author": "太宰治",
+        "pages": 160,
+        "genre": "classic"
+      },
+      {
+        "id": "rashomon",
+        "title": "羅生門",
+        "author": "芥川龍之介",
+        "pages": 192,
+        "genre": "classic"
+      },
+      {
+        "id": "yukiguni",
+        "title": "雪国",
+        "author": "川端康成",
+        "pages": 224,
+        "genre": "classic"
+      },
+      {
+        "id": "suspect-x",
+        "title": "容疑者Xの献身",
+        "author": "東野圭吾",
+        "pages": 416,
+        "genre": "classic"
+      },
+      {
+        "id": "convenience-store-woman",
+        "title": "コンビニ人間",
+        "author": "村田沙耶香",
+        "pages": 168,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "星の王子さま",
+        "author": "サン=テグジュペリ",
+        "pages": 144,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984年",
+        "author": "ジョージ・オーウェル",
+        "pages": 480,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "ジェームズ・クリアー式 複利で伸びる1つの習慣",
+        "author": "ジェームズ・クリアー",
+        "pages": 328,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "習慣の力",
+        "author": "チャールズ・デュヒッグ",
+        "pages": 416,
+        "genre": "personal"
+      },
+      {
+        "id": "kirawareru-yuuki",
+        "title": "嫌われる勇気",
+        "author": "岸見一郎・古賀史健",
+        "pages": 296,
+        "genre": "personal"
+      },
+      {
+        "id": "shichi-shuukan",
+        "title": "完訳 7つの習慣",
+        "author": "スティーブン・R・コヴィー",
+        "pages": 560,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "金持ち父さん 貧乏父さん",
+        "author": "ロバート・キヨサキ",
+        "pages": 296,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "サイコロジー・オブ・マネー",
+        "author": "モーガン・ハウセル",
+        "pages": 320,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "サピエンス全史",
+        "author": "ユヴァル・ノア・ハラリ",
+        "pages": 600,
+        "genre": "history"
+      }
+    ]
   }
 }

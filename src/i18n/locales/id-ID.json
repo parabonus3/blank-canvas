@@ -1701,6 +1701,176 @@
       "personal": "Pengembangan diri",
       "business": "Bisnis",
       "history": "Sejarah"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "Alkitab",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "purpose-driven",
+        "title": "The Purpose Driven Life",
+        "author": "Rick Warren",
+        "pages": 336,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "Seri Narnia",
+        "author": "C.S. Lewis",
+        "pages": 768,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "pages": 310,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "The Lord of the Rings",
+        "author": "J.R.R. Tolkien",
+        "pages": 1216,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "Harry Potter dan Batu Bertuah",
+        "author": "J.K. Rowling",
+        "pages": 384,
+        "genre": "fantasy"
+      },
+      {
+        "id": "bumi-manusia",
+        "title": "Bumi Manusia",
+        "author": "Pramoedya Ananta Toer",
+        "pages": 535,
+        "genre": "classic"
+      },
+      {
+        "id": "anak-semua-bangsa",
+        "title": "Anak Semua Bangsa",
+        "author": "Pramoedya Ananta Toer",
+        "pages": 539,
+        "genre": "classic"
+      },
+      {
+        "id": "laskar-pelangi",
+        "title": "Laskar Pelangi",
+        "author": "Andrea Hirata",
+        "pages": 529,
+        "genre": "classic"
+      },
+      {
+        "id": "ayat-ayat-cinta",
+        "title": "Ayat-Ayat Cinta",
+        "author": "Habiburrahman El Shirazy",
+        "pages": 420,
+        "genre": "classic"
+      },
+      {
+        "id": "perahu-kertas",
+        "title": "Perahu Kertas",
+        "author": "Dee Lestari",
+        "pages": 444,
+        "genre": "classic"
+      },
+      {
+        "id": "negeri-5-menara",
+        "title": "Negeri 5 Menara",
+        "author": "Ahmad Fuadi",
+        "pages": 423,
+        "genre": "classic"
+      },
+      {
+        "id": "rentang-kisah",
+        "title": "Rentang Kisah",
+        "author": "Gita Savitri Devi",
+        "pages": 208,
+        "genre": "classic"
+      },
+      {
+        "id": "tentang-kamu",
+        "title": "Tentang Kamu",
+        "author": "Tere Liye",
+        "pages": 524,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "Pangeran Kecil",
+        "author": "Antoine de Saint-Exupéry",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "George Orwell",
+        "pages": 328,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "Atomic Habits",
+        "author": "James Clear",
+        "pages": 352,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "The Power of Habit",
+        "author": "Charles Duhigg",
+        "pages": 408,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "Sebuah Seni untuk Bersikap Bodo Amat",
+        "author": "Mark Manson",
+        "pages": 246,
+        "genre": "personal"
+      },
+      {
+        "id": "filosofi-teras",
+        "title": "Filosofi Teras",
+        "author": "Henry Manampiring",
+        "pages": 320,
+        "genre": "personal"
+      },
+      {
+        "id": "berani-tidak-disukai",
+        "title": "Berani Tidak Disukai",
+        "author": "Ichiro Kishimi",
+        "pages": 336,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "Rich Dad Poor Dad",
+        "author": "Robert Kiyosaki",
+        "pages": 336,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "The Psychology of Money",
+        "author": "Morgan Housel",
+        "pages": 256,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "Sapiens: Riwayat Singkat Umat Manusia",
+        "author": "Yuval Noah Harari",
+        "pages": 528,
+        "genre": "history"
+      }
+    ]
   }
 }
