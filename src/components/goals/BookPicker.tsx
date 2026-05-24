@@ -23,10 +23,11 @@ export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Pr
   const [customTitle, setCustomTitle] = useState(defaultTitle);
   const [customPages, setCustomPages] = useState(String(defaultPages));
 
-  // Read localized book list from i18n (returnObjects). Fall back to PT-BR catalog.
-  const localized = i18n.getResource(i18n.language, "translation", "annual_goals.books_list") as BookOption[] | undefined;
-  const enFallback = i18n.getResource("en-US", "translation", "annual_goals.books_list") as BookOption[] | undefined;
-  const books: BookOption[] = (localized && localized.length ? localized : enFallback && enFallback.length ? enFallback : POPULAR_BOOKS) as BookOption[];
+  // Read localized book list from i18n. Falls back through i18next's resolution chain;
+  // if absent we use the bundled PT-BR catalog as ultimate fallback.
+  const localized = t("annual_goals.books_list", { returnObjects: true, defaultValue: [] as BookOption[] }) as BookOption[];
+  const books: BookOption[] = Array.isArray(localized) && localized.length > 0 ? localized : POPULAR_BOOKS;
+
 
   const filtered = books.filter((b) => {
 
