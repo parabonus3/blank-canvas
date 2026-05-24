@@ -16,7 +16,7 @@ interface Props {
 }
 
 export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Props) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [mode, setMode] = useState<"popular" | "custom">("popular");
   const [genre, setGenre] = useState<BookGenre | "all">("all");
   const [search, setSearch] = useState("");
