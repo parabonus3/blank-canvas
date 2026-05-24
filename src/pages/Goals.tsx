@@ -167,8 +167,8 @@ export default function Goals() {
                 {YEARS.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
-            <CategoryQuotaButton />
-            <GoalsQuotaButton />
+            <CategoryQuotaButton limitReached={categoriesLimitReached} maxCategories={maxCategories} />
+            <GoalsQuotaButton year={year} categories={categories} limitReached={goalsLimitReached} maxGoals={maxGoals} />
           </div>
         </div>
 
