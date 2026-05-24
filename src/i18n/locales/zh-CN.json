@@ -1701,6 +1701,176 @@
       "personal": "个人成长",
       "business": "商业",
       "history": "历史"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "圣经",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "纳尼亚传奇",
+        "author": "C.S. 路易斯",
+        "pages": 736,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "霍比特人",
+        "author": "J.R.R. 托尔金",
+        "pages": 336,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "魔戒",
+        "author": "J.R.R. 托尔金",
+        "pages": 1380,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "哈利·波特与魔法石",
+        "author": "J.K. 罗琳",
+        "pages": 320,
+        "genre": "fantasy"
+      },
+      {
+        "id": "three-body",
+        "title": "三体",
+        "author": "刘慈欣",
+        "pages": 302,
+        "genre": "fantasy"
+      },
+      {
+        "id": "huozhe",
+        "title": "活着",
+        "author": "余华",
+        "pages": 191,
+        "genre": "classic"
+      },
+      {
+        "id": "xiongdi",
+        "title": "兄弟",
+        "author": "余华",
+        "pages": 651,
+        "genre": "classic"
+      },
+      {
+        "id": "weicheng",
+        "title": "围城",
+        "author": "钱钟书",
+        "pages": 359,
+        "genre": "classic"
+      },
+      {
+        "id": "ah-q",
+        "title": "阿Q正传",
+        "author": "鲁迅",
+        "pages": 200,
+        "genre": "classic"
+      },
+      {
+        "id": "honglou-meng",
+        "title": "红楼梦",
+        "author": "曹雪芹",
+        "pages": 1606,
+        "genre": "classic"
+      },
+      {
+        "id": "xiyou-ji",
+        "title": "西游记",
+        "author": "吴承恩",
+        "pages": 1248,
+        "genre": "classic"
+      },
+      {
+        "id": "shuihu-zhuan",
+        "title": "水浒传",
+        "author": "施耐庵",
+        "pages": 1280,
+        "genre": "classic"
+      },
+      {
+        "id": "sanguo-yanyi",
+        "title": "三国演义",
+        "author": "罗贯中",
+        "pages": 1052,
+        "genre": "classic"
+      },
+      {
+        "id": "bai-nian",
+        "title": "百年孤独",
+        "author": "加西亚·马尔克斯",
+        "pages": 360,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "小王子",
+        "author": "圣埃克苏佩里",
+        "pages": 132,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "乔治·奥威尔",
+        "pages": 304,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "掌控习惯",
+        "author": "詹姆斯·克利尔",
+        "pages": 320,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "习惯的力量",
+        "author": "查尔斯·杜希格",
+        "pages": 332,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "重塑幸福",
+        "author": "马克·曼森",
+        "pages": 256,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "富爸爸,穷爸爸",
+        "author": "罗伯特·清崎",
+        "pages": 273,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "金钱心理学",
+        "author": "摩根·豪泽尔",
+        "pages": 304,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "人类简史",
+        "author": "尤瓦尔·赫拉利",
+        "pages": 440,
+        "genre": "history"
+      },
+      {
+        "id": "ming-chao",
+        "title": "明朝那些事儿",
+        "author": "当年明月",
+        "pages": 2400,
+        "genre": "history"
+      }
+    ]
   }
 }

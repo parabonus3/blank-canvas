@@ -29,6 +29,71 @@ function CategoryIcon({ name, className }: { name: string; className?: string })
   return <C className={className} />;
 }
 
+type LifeCategoryItem = { id: string; name: string; color: string; icon: string };
+
+function GoalsQuotaButton({
+  year, categories, limitReached, maxGoals, defaultCategoryId,
+}: {
+  year: number;
+  categories: LifeCategoryItem[];
+  limitReached: boolean;
+  maxGoals: number;
+  defaultCategoryId?: string | null;
+}) {
+  const { t } = useTranslation();
+  if (limitReached) {
+    return (
+      <TooltipProvider delayDuration={150}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button asChild size="sm" variant="outline" className="border-primary/30">
+              <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+            {t("annual_goals.limit_reached_goals", { max: maxGoals })}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+  return (
+    <CreateGoalDialog
+      year={year}
+      categories={categories as any}
+      defaultCategoryId={defaultCategoryId ?? undefined}
+      trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
+    />
+  );
+}
+
+function CategoryQuotaButton({
+  limitReached, maxCategories, size = "sm",
+}: { limitReached: boolean; maxCategories: number; size?: "sm" | "default" }) {
+  const { t } = useTranslation();
+  if (limitReached) {
+    return (
+      <TooltipProvider delayDuration={150}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button asChild size={size} variant="outline" className="border-primary/30">
+              <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
+            {t("annual_goals.limit_reached_categories", { max: maxCategories })}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+  return (
+    <CreateCategoryDialog
+      trigger={<Button variant="outline" size={size}><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
+    />
+  );
+}
+
 export default function Goals() {
   const { t } = useTranslation();
   const { tier, getMaxAnnualGoals, getMaxLifeCategories } = useSubscription();
@@ -48,56 +113,7 @@ export default function Goals() {
   const goalsLimitReached = goalsCount >= maxGoals;
   const categoriesLimitReached = categoriesCount >= maxCategories;
 
-  const GoalsQuotaButton = ({ defaultCategoryId }: { defaultCategoryId?: string | null } = {}) => {
-    if (goalsLimitReached) {
-      return (
-        <TooltipProvider delayDuration={150}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button asChild size="sm" variant="outline" className="border-primary/30">
-                <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
-              {t("annual_goals.limit_reached_goals", { max: maxGoals })}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    }
-    return (
-      <CreateGoalDialog
-        year={year}
-        categories={categories}
-        defaultCategoryId={defaultCategoryId ?? undefined}
-        trigger={<Button size="sm"><Plus className="h-4 w-4 mr-1.5" />{t("annual_goals.new_goal")}</Button>}
-      />
-    );
-  };
 
-  const CategoryQuotaButton = ({ size = "sm" as "sm" | "default" }) => {
-    if (categoriesLimitReached) {
-      return (
-        <TooltipProvider delayDuration={150}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button asChild size={size} variant="outline" className="border-primary/30">
-                <Link to="/pricing"><Crown className="h-4 w-4 mr-1.5 text-primary" />{t("annual_goals.upgrade_for_more")}</Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="text-xs max-w-[240px]" collisionPadding={12}>
-              {t("annual_goals.limit_reached_categories", { max: maxCategories })}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      );
-    }
-    return (
-      <CreateCategoryDialog
-        trigger={<Button variant="outline" size={size}><Folder className="h-4 w-4 mr-1.5" />{t("annual_goals.new_category")}</Button>}
-      />
-    );
-  };
 
 
   const goalsByCategory = (catId: string | null) => goals.filter((g) => g.category_id === catId);
@@ -151,8 +167,8 @@ export default function Goals() {
                 {YEARS.map((y) => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
-            <CategoryQuotaButton />
-            <GoalsQuotaButton />
+            <CategoryQuotaButton limitReached={categoriesLimitReached} maxCategories={maxCategories} />
+            <GoalsQuotaButton year={year} categories={categories} limitReached={goalsLimitReached} maxGoals={maxGoals} />
           </div>
         </div>
 
@@ -223,7 +239,7 @@ export default function Goals() {
               <Card className="p-10 text-center space-y-3">
                 <Folder className="h-10 w-10 mx-auto text-muted-foreground" />
                 <p className="text-muted-foreground">{t("annual_goals.no_categories")}</p>
-                <div className="flex justify-center"><CategoryQuotaButton size="default" /></div>
+                <div className="flex justify-center"><CategoryQuotaButton limitReached={categoriesLimitReached} maxCategories={maxCategories} size="default" /></div>
               </Card>
             )}
 

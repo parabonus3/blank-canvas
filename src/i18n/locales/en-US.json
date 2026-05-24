@@ -712,7 +712,240 @@
       "personal": "Personal",
       "business": "Business",
       "history": "History"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "The Holy Bible",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "pilgrim-progress",
+        "title": "The Pilgrim's Progress",
+        "author": "John Bunyan",
+        "pages": 320,
+        "genre": "christian"
+      },
+      {
+        "id": "the-shack",
+        "title": "The Shack",
+        "author": "William P. Young",
+        "pages": 256,
+        "genre": "christian"
+      },
+      {
+        "id": "mere-christianity",
+        "title": "Mere Christianity",
+        "author": "C.S. Lewis",
+        "pages": 224,
+        "genre": "christian"
+      },
+      {
+        "id": "purpose-driven",
+        "title": "The Purpose Driven Life",
+        "author": "Rick Warren",
+        "pages": 336,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "The Chronicles of Narnia",
+        "author": "C.S. Lewis",
+        "pages": 768,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "pages": 310,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "The Lord of the Rings",
+        "author": "J.R.R. Tolkien",
+        "pages": 1216,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "Harry Potter and the Sorcerer's Stone",
+        "author": "J.K. Rowling",
+        "pages": 309,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hunger-games",
+        "title": "The Hunger Games",
+        "author": "Suzanne Collins",
+        "pages": 374,
+        "genre": "fantasy"
+      },
+      {
+        "id": "dune",
+        "title": "Dune",
+        "author": "Frank Herbert",
+        "pages": 688,
+        "genre": "fantasy"
+      },
+      {
+        "id": "game-of-thrones",
+        "title": "A Game of Thrones",
+        "author": "George R.R. Martin",
+        "pages": 694,
+        "genre": "fantasy"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "George Orwell",
+        "pages": 328,
+        "genre": "classic"
+      },
+      {
+        "id": "to-kill-mockingbird",
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "pages": 281,
+        "genre": "classic"
+      },
+      {
+        "id": "great-gatsby",
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "pages": 180,
+        "genre": "classic"
+      },
+      {
+        "id": "catcher-rye",
+        "title": "The Catcher in the Rye",
+        "author": "J.D. Salinger",
+        "pages": 277,
+        "genre": "classic"
+      },
+      {
+        "id": "pride-prejudice",
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "pages": 432,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "The Little Prince",
+        "author": "Antoine de Saint-Exupéry",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "Atomic Habits",
+        "author": "James Clear",
+        "pages": 320,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "The Power of Habit",
+        "author": "Charles Duhigg",
+        "pages": 408,
+        "genre": "personal"
+      },
+      {
+        "id": "mindset",
+        "title": "Mindset",
+        "author": "Carol S. Dweck",
+        "pages": 312,
+        "genre": "personal"
+      },
+      {
+        "id": "how-to-win-friends",
+        "title": "How to Win Friends and Influence People",
+        "author": "Dale Carnegie",
+        "pages": 291,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "The Subtle Art of Not Giving a F*ck",
+        "author": "Mark Manson",
+        "pages": 224,
+        "genre": "personal"
+      },
+      {
+        "id": "deep-work",
+        "title": "Deep Work",
+        "author": "Cal Newport",
+        "pages": 304,
+        "genre": "personal"
+      },
+      {
+        "id": "cant-hurt-me",
+        "title": "Can't Hurt Me",
+        "author": "David Goggins",
+        "pages": 366,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "Rich Dad Poor Dad",
+        "author": "Robert Kiyosaki",
+        "pages": 336,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "The Psychology of Money",
+        "author": "Morgan Housel",
+        "pages": 256,
+        "genre": "business"
+      },
+      {
+        "id": "intelligent-investor",
+        "title": "The Intelligent Investor",
+        "author": "Benjamin Graham",
+        "pages": 640,
+        "genre": "business"
+      },
+      {
+        "id": "start-with-why",
+        "title": "Start with Why",
+        "author": "Simon Sinek",
+        "pages": 256,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "Sapiens",
+        "author": "Yuval Noah Harari",
+        "pages": 443,
+        "genre": "history"
+      },
+      {
+        "id": "homo-deus",
+        "title": "Homo Deus",
+        "author": "Yuval Noah Harari",
+        "pages": 448,
+        "genre": "history"
+      },
+      {
+        "id": "guns-germs",
+        "title": "Guns, Germs, and Steel",
+        "author": "Jared Diamond",
+        "pages": 480,
+        "genre": "history"
+      },
+      {
+        "id": "thinking-fast-slow",
+        "title": "Thinking, Fast and Slow",
+        "author": "Daniel Kahneman",
+        "pages": 499,
+        "genre": "history"
+      }
+    ]
   },
   "history": {
     "title": "History",

@@ -1701,6 +1701,176 @@
       "personal": "Persönlich",
       "business": "Business",
       "history": "Geschichte"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "Die Heilige Bibel",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "the-shack",
+        "title": "Die Hütte",
+        "author": "William P. Young",
+        "pages": 320,
+        "genre": "christian"
+      },
+      {
+        "id": "mere-christianity",
+        "title": "Pardon, ich bin Christ",
+        "author": "C.S. Lewis",
+        "pages": 240,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "Die Chroniken von Narnia",
+        "author": "C.S. Lewis",
+        "pages": 832,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "Der Hobbit",
+        "author": "J.R.R. Tolkien",
+        "pages": 397,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "Der Herr der Ringe",
+        "author": "J.R.R. Tolkien",
+        "pages": 1296,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "Harry Potter und der Stein der Weisen",
+        "author": "J.K. Rowling",
+        "pages": 335,
+        "genre": "fantasy"
+      },
+      {
+        "id": "unendliche-geschichte",
+        "title": "Die unendliche Geschichte",
+        "author": "Michael Ende",
+        "pages": 480,
+        "genre": "fantasy"
+      },
+      {
+        "id": "schwarm",
+        "title": "Der Schwarm",
+        "author": "Frank Schätzing",
+        "pages": 1024,
+        "genre": "fantasy"
+      },
+      {
+        "id": "faust",
+        "title": "Faust I",
+        "author": "Johann Wolfgang von Goethe",
+        "pages": 240,
+        "genre": "classic"
+      },
+      {
+        "id": "verwandlung",
+        "title": "Die Verwandlung",
+        "author": "Franz Kafka",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "prozess",
+        "title": "Der Prozess",
+        "author": "Franz Kafka",
+        "pages": 320,
+        "genre": "classic"
+      },
+      {
+        "id": "steppenwolf",
+        "title": "Der Steppenwolf",
+        "author": "Hermann Hesse",
+        "pages": 288,
+        "genre": "classic"
+      },
+      {
+        "id": "siddhartha",
+        "title": "Siddhartha",
+        "author": "Hermann Hesse",
+        "pages": 144,
+        "genre": "classic"
+      },
+      {
+        "id": "im-westen-nichts-neues",
+        "title": "Im Westen nichts Neues",
+        "author": "Erich Maria Remarque",
+        "pages": 256,
+        "genre": "classic"
+      },
+      {
+        "id": "blechtrommel",
+        "title": "Die Blechtrommel",
+        "author": "Günter Grass",
+        "pages": 779,
+        "genre": "classic"
+      },
+      {
+        "id": "kleiner-prinz",
+        "title": "Der kleine Prinz",
+        "author": "Antoine de Saint-Exupéry",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "George Orwell",
+        "pages": 384,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "Die 1%-Methode",
+        "author": "James Clear",
+        "pages": 288,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "Die Macht der Gewohnheit",
+        "author": "Charles Duhigg",
+        "pages": 416,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "Die subtile Kunst des Daraufscheißens",
+        "author": "Mark Manson",
+        "pages": 224,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "Rich Dad Poor Dad",
+        "author": "Robert Kiyosaki",
+        "pages": 352,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "Über die Psychologie des Geldes",
+        "author": "Morgan Housel",
+        "pages": 272,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "Eine kurze Geschichte der Menschheit",
+        "author": "Yuval Noah Harari",
+        "pages": 528,
+        "genre": "history"
+      }
+    ]
   }
 }

@@ -1,21 +1,72 @@
-## Problema identificado
+## 1. Diálogo fecha sozinho (Nova Meta / Nova Categoria)
 
-O widget de streak na sidebar mostra "Estude hoje para manter sua sequência" em laranja mesmo quando o usuário já estudou hoje.
+### Causa
+Em `src/pages/Goals.tsx` os helpers `GoalsQuotaButton` e `CategoryQuotaButton` estão **declarados dentro do componente `Goals`**. Cada render do `Goals` cria uma nova referência de função → o React enxerga um *tipo de componente novo* a cada render e **desmonta/remonta** toda a subárvore (`CreateGoalDialog`, `CreateCategoryDialog`).
 
-**Causa raiz:** em `src/components/SidebarStreakWidget.tsx` (linhas 63-70), a consulta que decide `studiedToday` filtra por `start_time >= todayStart` (meia-noite local).
+Como o estado `internalOpen` do `GoalFormDialog` é interno, no remount ele volta a `false` e o `Dialog`/`Sheet` fecha. O gatilho dos "alguns segundos" é o React Query refazendo `useAnnualGoals` / `useAnnualGoalsStats` / `useLifeCategories` no `refetchOnWindowFocus` ou após qualquer mutação → re-render do `Goals` → remount → fechamento.
 
-No caso atual o usuário fez uma sessão que **começou às 23:41 de 21/05 e terminou às 00:06 de 22/05**. O `end_time` é hoje, mas o `start_time` é ontem — então a query devolve `count = 0` e o widget acha que ele não estudou hoje, ficando laranja com `atRisk = true`.
+### Correção
+- Mover `GoalsQuotaButton` e `CategoryQuotaButton` para **componentes de módulo** (fora do `Goals`), recebendo via props o que hoje vêm por closure (`year`, `categories`, `goalsLimitReached`, `categoriesLimitReached`, `maxGoals`, `maxCategories`, `defaultCategoryId`, `t`).
+- Auditar o restante do app procurando o mesmo padrão (componente declarado dentro de outro componente que abriga `Dialog`/`Sheet`/`Popover`). Alvos para checagem rápida: `Settings.tsx`, `RoomDetail.tsx`, `Friends.tsx`, `Notes.tsx`, `MindMaps.tsx`, `RoomSettingsTab.tsx`. Corrigir os que tiverem o mesmo problema.
 
-## Correção
+Não mexer no `GoalFormDialog` — ele já é estável; o problema é externo.
 
-1. **`SidebarStreakWidget.tsx`** — trocar o filtro para considerar uma sessão como "estudou hoje" se **qualquer parte dela** cair em hoje no fuso local:
-   - filtrar por `end_time >= todayStart` (já é `not null`), em vez de `start_time >= todayStart`.
-   - Isso cobre sessões que atravessam a meia-noite e mantém o comportamento normal (sessões iniciadas e finalizadas hoje continuam contando).
+## 2. Livros populares por idioma
 
-2. **`StreakDetailModal.tsx`** — aplicar a mesma lógica na query `streakStudiedDates`: marcar como "studied" tanto o dia do `start_time` quanto o dia do `end_time` (em horário local), para que o calendário fique consistente com o widget e mostre o quadradinho verde no dia em que a sessão terminou.
+### Hoje
+`POPULAR_BOOKS` em `src/lib/goalTemplates.ts` tem títulos **fixos em português**. Mesmo o usuário japonês/inglês/etc vê "O Hobbit", "Bíblia Sagrada", etc.
 
-3. Usar o fuso do usuário (`useTimezone`) ao calcular o dia local em vez de `toISOString()` (UTC), evitando que sessões noturnas fiquem registradas em outro dia para quem está em fusos distantes do UTC.
+### Estratégia
+Refatorar `POPULAR_BOOKS` para um catálogo neutro com `id`, `pages`, `genre` e adicionar **traduções por idioma** no i18n, usando o `id` do livro como chave:
 
-## Sem mudanças de UI
+```
+annual_goals.books.{id}.title
+annual_goals.books.{id}.author   (opcional, pode ficar igual em todos)
+```
 
-Cores, copy, layout e i18n permanecem iguais. Apenas a lógica de detecção de "estudou hoje" é ajustada. Mobile e desktop herdam a correção automaticamente (o widget é o mesmo).
+E no `BookPicker`:
+```ts
+const title = t(`annual_goals.books.${b.id}.title`, b.fallbackTitle);
+const author = t(`annual_goals.books.${b.id}.author`, b.author ?? "");
+```
+
+### Curadoria por mercado
+Em vez de simplesmente traduzir os mesmos 60 livros, criar **listas regionais** por idioma para refletir o que realmente é publicado e popular em cada mercado:
+
+- **pt-BR**: manter o catálogo atual (já é brasileiro).
+- **en-US**: títulos no original em inglês + bestsellers EUA/UK (NYT/Goodreads).
+- **es-ES**: edições espanholas + autores hispano-americanos populares (García Márquez, Vargas Llosa, Zafón, Pérez-Reverte, etc.).
+- **ja-JP**: título japonês oficial das traduções (例: ホビット, ハリー・ポッターと賢者の石) + clássicos japoneses populares (村上春樹, 東野圭吾, 夏目漱石, 太宰治).
+- **zh-CN**: títulos chineses simplificados das traduções + clássicos chineses (《活着》余华, 《三体》刘慈欣, 《围城》钱钟书).
+- **ko-KR**: títulos coreanos + autores coreanos (한강, 김영하, 조남주).
+- **fr-FR**, **it-IT**, **de-DE**, **ru-RU**: títulos na edição local + 1–2 autores nativos populares (ex: Houellebecq, Ferrante, Schätzing, Pelevin).
+- **ar-SA**: edições árabes + autores árabes (نجيب محفوظ, غسان كنفاني, أحلام مستغانمي).
+- **id-ID**: edições em bahasa + autores indonésios (Pramoedya, Tere Liye, Andrea Hirata).
+
+### Implementação
+1. Em `goalTemplates.ts`: trocar `POPULAR_BOOKS` por `BOOK_CATALOG` indexado e exportar um helper:
+   ```ts
+   export function getPopularBooks(locale: string): BookOption[]
+   ```
+   que devolve a lista de IDs ordenados para aquele idioma (curadoria regional). Cada item carrega `id`, `pages`, `genre` e títulos **resolvidos via i18n** no consumidor.
+
+2. Em `src/i18n/locales/*.json`: adicionar a seção `annual_goals.books` com `{title, author}` para cada `id` usado no idioma. Idiomas sem curadoria específica caem na curadoria "internacional" (en-US) por fallback.
+
+3. `BookPicker.tsx`:
+   - Substituir `import { POPULAR_BOOKS }` por `getPopularBooks(i18n.language)`.
+   - Resolver `title`/`author` via `t()` com fallback ao valor do catálogo.
+   - Busca passa a comparar com o título já traduzido.
+
+4. **`InstrumentalI18n`**: o `BookPicker` já usa `useTranslation`; só falta passar `i18n.language` para o helper.
+
+### Sem mudanças
+- UI do `BookPicker`, do `GoalFormDialog`, dos templates de meta e da página `Goals` continua igual.
+- IDs dos livros não mudam → metas já criadas não são afetadas.
+- Currency picker e templates de meta (não-livros) ficam inalterados.
+
+## Arquivos a tocar
+- `src/pages/Goals.tsx` (extrair os dois helpers)
+- Possíveis ajustes em outras páginas se a auditoria encontrar o mesmo padrão
+- `src/lib/goalTemplates.ts` (catálogo neutro + `getPopularBooks(locale)`)
+- `src/components/goals/BookPicker.tsx` (consumir helper + i18n)
+- `src/i18n/locales/*.json` × 12 (seção `annual_goals.books`, curadoria por mercado)

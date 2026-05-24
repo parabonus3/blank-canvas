@@ -1701,6 +1701,162 @@
       "personal": "자기계발",
       "business": "비즈니스",
       "history": "역사"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "성경",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "purpose-driven",
+        "title": "목적이 이끄는 삶",
+        "author": "릭 워렌",
+        "pages": 432,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "나니아 연대기",
+        "author": "C.S. 루이스",
+        "pages": 768,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "호빗",
+        "author": "J.R.R. 톨킨",
+        "pages": 432,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "반지의 제왕",
+        "author": "J.R.R. 톨킨",
+        "pages": 1500,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "해리포터와 마법사의 돌",
+        "author": "J.K. 롤링",
+        "pages": 376,
+        "genre": "fantasy"
+      },
+      {
+        "id": "vegetarian",
+        "title": "채식주의자",
+        "author": "한강",
+        "pages": 248,
+        "genre": "classic"
+      },
+      {
+        "id": "human-acts",
+        "title": "소년이 온다",
+        "author": "한강",
+        "pages": 216,
+        "genre": "classic"
+      },
+      {
+        "id": "kim-jiyoung",
+        "title": "82년생 김지영",
+        "author": "조남주",
+        "pages": 192,
+        "genre": "classic"
+      },
+      {
+        "id": "almond",
+        "title": "아몬드",
+        "author": "손원평",
+        "pages": 264,
+        "genre": "classic"
+      },
+      {
+        "id": "please-look-after-mom",
+        "title": "엄마를 부탁해",
+        "author": "신경숙",
+        "pages": 304,
+        "genre": "classic"
+      },
+      {
+        "id": "memory-of-murder",
+        "title": "살인자의 기억법",
+        "author": "김영하",
+        "pages": 208,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "어린 왕자",
+        "author": "생텍쥐페리",
+        "pages": 144,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "조지 오웰",
+        "pages": 432,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "아주 작은 습관의 힘",
+        "author": "제임스 클리어",
+        "pages": 384,
+        "genre": "personal"
+      },
+      {
+        "id": "kirawareru-yuuki",
+        "title": "미움받을 용기",
+        "author": "기시미 이치로",
+        "pages": 336,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "습관의 힘",
+        "author": "찰스 두히그",
+        "pages": 480,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "신경끄기의 기술",
+        "author": "마크 맨슨",
+        "pages": 272,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "부자 아빠 가난한 아빠",
+        "author": "로버트 기요사키",
+        "pages": 384,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "돈의 심리학",
+        "author": "모건 하우절",
+        "pages": 472,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "사피엔스",
+        "author": "유발 하라리",
+        "pages": 636,
+        "genre": "history"
+      },
+      {
+        "id": "homo-deus",
+        "title": "호모 데우스",
+        "author": "유발 하라리",
+        "pages": 632,
+        "genre": "history"
+      }
+    ]
   }
 }

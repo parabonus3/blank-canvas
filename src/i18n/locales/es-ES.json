@@ -1701,6 +1701,183 @@
       "personal": "Personal",
       "business": "Negocios",
       "history": "Historia"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "La Santa Biblia",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "the-shack",
+        "title": "La Cabaña",
+        "author": "William P. Young",
+        "pages": 256,
+        "genre": "christian"
+      },
+      {
+        "id": "mere-christianity",
+        "title": "Mero Cristianismo",
+        "author": "C.S. Lewis",
+        "pages": 224,
+        "genre": "christian"
+      },
+      {
+        "id": "purpose-driven",
+        "title": "Una Vida con Propósito",
+        "author": "Rick Warren",
+        "pages": 336,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "Las Crónicas de Narnia",
+        "author": "C.S. Lewis",
+        "pages": 768,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "El Hobbit",
+        "author": "J.R.R. Tolkien",
+        "pages": 310,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "El Señor de los Anillos",
+        "author": "J.R.R. Tolkien",
+        "pages": 1216,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "Harry Potter y la Piedra Filosofal",
+        "author": "J.K. Rowling",
+        "pages": 264,
+        "genre": "fantasy"
+      },
+      {
+        "id": "sombra-viento",
+        "title": "La Sombra del Viento",
+        "author": "Carlos Ruiz Zafón",
+        "pages": 576,
+        "genre": "fantasy"
+      },
+      {
+        "id": "cien-anos",
+        "title": "Cien Años de Soledad",
+        "author": "Gabriel García Márquez",
+        "pages": 471,
+        "genre": "classic"
+      },
+      {
+        "id": "amor-colera",
+        "title": "El Amor en los Tiempos del Cólera",
+        "author": "Gabriel García Márquez",
+        "pages": 496,
+        "genre": "classic"
+      },
+      {
+        "id": "quijote",
+        "title": "Don Quijote de la Mancha",
+        "author": "Miguel de Cervantes",
+        "pages": 1250,
+        "genre": "classic"
+      },
+      {
+        "id": "casa-espiritus",
+        "title": "La Casa de los Espíritus",
+        "author": "Isabel Allende",
+        "pages": 464,
+        "genre": "classic"
+      },
+      {
+        "id": "rayuela",
+        "title": "Rayuela",
+        "author": "Julio Cortázar",
+        "pages": 736,
+        "genre": "classic"
+      },
+      {
+        "id": "ciudad-perros",
+        "title": "La Ciudad y los Perros",
+        "author": "Mario Vargas Llosa",
+        "pages": 432,
+        "genre": "classic"
+      },
+      {
+        "id": "principito",
+        "title": "El Principito",
+        "author": "Antoine de Saint-Exupéry",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "George Orwell",
+        "pages": 328,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "Hábitos Atómicos",
+        "author": "James Clear",
+        "pages": 320,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "El Poder del Hábito",
+        "author": "Charles Duhigg",
+        "pages": 408,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "El Sutil Arte de que te Importe un Carajo",
+        "author": "Mark Manson",
+        "pages": 224,
+        "genre": "personal"
+      },
+      {
+        "id": "how-to-win-friends",
+        "title": "Cómo Ganar Amigos e Influir Sobre las Personas",
+        "author": "Dale Carnegie",
+        "pages": 256,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "Padre Rico, Padre Pobre",
+        "author": "Robert Kiyosaki",
+        "pages": 336,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "La Psicología del Dinero",
+        "author": "Morgan Housel",
+        "pages": 256,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "Sapiens. De Animales a Dioses",
+        "author": "Yuval Noah Harari",
+        "pages": 496,
+        "genre": "history"
+      },
+      {
+        "id": "homo-deus",
+        "title": "Homo Deus",
+        "author": "Yuval Noah Harari",
+        "pages": 496,
+        "genre": "history"
+      }
+    ]
   }
 }

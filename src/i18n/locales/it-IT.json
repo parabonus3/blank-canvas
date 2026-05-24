@@ -1701,6 +1701,162 @@
       "personal": "Personale",
       "business": "Business",
       "history": "Storia"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "La Sacra Bibbia",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "the-shack",
+        "title": "Il Rifugio",
+        "author": "William P. Young",
+        "pages": 304,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "Le Cronache di Narnia",
+        "author": "C.S. Lewis",
+        "pages": 800,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "Lo Hobbit",
+        "author": "J.R.R. Tolkien",
+        "pages": 320,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "Il Signore degli Anelli",
+        "author": "J.R.R. Tolkien",
+        "pages": 1408,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "Harry Potter e la Pietra Filosofale",
+        "author": "J.K. Rowling",
+        "pages": 300,
+        "genre": "fantasy"
+      },
+      {
+        "id": "divina-commedia",
+        "title": "Divina Commedia",
+        "author": "Dante Alighieri",
+        "pages": 752,
+        "genre": "classic"
+      },
+      {
+        "id": "promessi-sposi",
+        "title": "I Promessi Sposi",
+        "author": "Alessandro Manzoni",
+        "pages": 720,
+        "genre": "classic"
+      },
+      {
+        "id": "se-questo-uomo",
+        "title": "Se questo è un uomo",
+        "author": "Primo Levi",
+        "pages": 240,
+        "genre": "classic"
+      },
+      {
+        "id": "amica-geniale",
+        "title": "L'amica geniale",
+        "author": "Elena Ferrante",
+        "pages": 336,
+        "genre": "classic"
+      },
+      {
+        "id": "gattopardo",
+        "title": "Il Gattopardo",
+        "author": "Giuseppe Tomasi di Lampedusa",
+        "pages": 304,
+        "genre": "classic"
+      },
+      {
+        "id": "nome-rosa",
+        "title": "Il Nome della Rosa",
+        "author": "Umberto Eco",
+        "pages": 624,
+        "genre": "classic"
+      },
+      {
+        "id": "se-una-notte",
+        "title": "Se una notte d'inverno un viaggiatore",
+        "author": "Italo Calvino",
+        "pages": 264,
+        "genre": "classic"
+      },
+      {
+        "id": "barone-rampante",
+        "title": "Il Barone Rampante",
+        "author": "Italo Calvino",
+        "pages": 256,
+        "genre": "classic"
+      },
+      {
+        "id": "piccolo-principe",
+        "title": "Il Piccolo Principe",
+        "author": "Antoine de Saint-Exupéry",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "George Orwell",
+        "pages": 320,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "Piccole Abitudini per Grandi Cambiamenti",
+        "author": "James Clear",
+        "pages": 320,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "La dittatura delle abitudini",
+        "author": "Charles Duhigg",
+        "pages": 420,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "La sottile arte di fare quello che c***o ti pare",
+        "author": "Mark Manson",
+        "pages": 240,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "Padre ricco, padre povero",
+        "author": "Robert Kiyosaki",
+        "pages": 224,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "La Psicologia dei Soldi",
+        "author": "Morgan Housel",
+        "pages": 272,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "Sapiens. Da animali a dèi",
+        "author": "Yuval Noah Harari",
+        "pages": 544,
+        "genre": "history"
+      }
+    ]
   }
 }

@@ -1701,6 +1701,162 @@
       "personal": "تطوير الذات",
       "business": "أعمال",
       "history": "تاريخ"
-    }
+    },
+    "books_list": [
+      {
+        "id": "quran",
+        "title": "القرآن الكريم",
+        "author": "",
+        "pages": 604,
+        "genre": "christian"
+      },
+      {
+        "id": "bible",
+        "title": "الكتاب المقدس",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "سجلات نارنيا",
+        "author": "سي إس لويس",
+        "pages": 768,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "الهوبيت",
+        "author": "ج.ر.ر. تولكين",
+        "pages": 320,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "سيد الخواتم",
+        "author": "ج.ر.ر. تولكين",
+        "pages": 1216,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "هاري بوتر وحجر الفيلسوف",
+        "author": "ج.ك. رولينج",
+        "pages": 264,
+        "genre": "fantasy"
+      },
+      {
+        "id": "thulathiya",
+        "title": "الثلاثية: بين القصرين، قصر الشوق، السكرية",
+        "author": "نجيب محفوظ",
+        "pages": 1500,
+        "genre": "classic"
+      },
+      {
+        "id": "awlad-haritna",
+        "title": "أولاد حارتنا",
+        "author": "نجيب محفوظ",
+        "pages": 552,
+        "genre": "classic"
+      },
+      {
+        "id": "rijal-shams",
+        "title": "رجال في الشمس",
+        "author": "غسان كنفاني",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "dhakirat-jasad",
+        "title": "ذاكرة الجسد",
+        "author": "أحلام مستغانمي",
+        "pages": 416,
+        "genre": "classic"
+      },
+      {
+        "id": "saaq-bambo",
+        "title": "ساق البامبو",
+        "author": "سعود السنعوسي",
+        "pages": 395,
+        "genre": "classic"
+      },
+      {
+        "id": "mawsim-hijra",
+        "title": "موسم الهجرة إلى الشمال",
+        "author": "الطيب صالح",
+        "pages": 169,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "الأمير الصغير",
+        "author": "أنطوان دو سانت إكزوبيري",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "جورج أورويل",
+        "pages": 328,
+        "genre": "classic"
+      },
+      {
+        "id": "alchemist",
+        "title": "الخيميائي",
+        "author": "باولو كويلو",
+        "pages": 208,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "العادات الذرية",
+        "author": "جيمس كلير",
+        "pages": 320,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "قوة العادات",
+        "author": "تشارلز دوهيغ",
+        "pages": 408,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "فن اللامبالاة",
+        "author": "مارك مانسون",
+        "pages": 224,
+        "genre": "personal"
+      },
+      {
+        "id": "how-to-win-friends",
+        "title": "كيف تكسب الأصدقاء وتؤثر في الناس",
+        "author": "ديل كارنيجي",
+        "pages": 256,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "الأب الغني والأب الفقير",
+        "author": "روبرت كيوساكي",
+        "pages": 336,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "علم نفس المال",
+        "author": "مورجان هاوسل",
+        "pages": 256,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "العاقل: تاريخ مختصر للنوع البشري",
+        "author": "يوفال نوح هراري",
+        "pages": 512,
+        "genre": "history"
+      }
+    ]
   }
 }

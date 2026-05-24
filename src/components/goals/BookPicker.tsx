@@ -8,6 +8,7 @@ import { Book, Search } from "lucide-react";
 import { FieldLabel } from "./FieldLabel";
 import { cn } from "@/lib/utils";
 
+
 interface Props {
   onPick: (title: string, pages: number) => void;
   defaultTitle?: string;
@@ -22,7 +23,14 @@ export function BookPicker({ onPick, defaultTitle = "", defaultPages = 300 }: Pr
   const [customTitle, setCustomTitle] = useState(defaultTitle);
   const [customPages, setCustomPages] = useState(String(defaultPages));
 
-  const filtered = POPULAR_BOOKS.filter((b) => {
+  // Read localized book list from i18n. Falls back through i18next's resolution chain;
+  // if absent we use the bundled PT-BR catalog as ultimate fallback.
+  const localized = t("annual_goals.books_list", { returnObjects: true, defaultValue: [] as BookOption[] }) as BookOption[];
+  const books: BookOption[] = Array.isArray(localized) && localized.length > 0 ? localized : POPULAR_BOOKS;
+
+
+  const filtered = books.filter((b) => {
+
     if (genre !== "all" && b.genre !== genre) return false;
     if (!search.trim()) return true;
     const q = search.toLowerCase();

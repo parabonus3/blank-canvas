@@ -1701,6 +1701,162 @@
       "personal": "Личность",
       "business": "Бизнес",
       "history": "История"
-    }
+    },
+    "books_list": [
+      {
+        "id": "bible",
+        "title": "Библия",
+        "author": "",
+        "pages": 1189,
+        "genre": "christian"
+      },
+      {
+        "id": "narnia",
+        "title": "Хроники Нарнии",
+        "author": "К.С. Льюис",
+        "pages": 768,
+        "genre": "fantasy"
+      },
+      {
+        "id": "hobbit",
+        "title": "Хоббит, или Туда и обратно",
+        "author": "Дж.Р.Р. Толкин",
+        "pages": 384,
+        "genre": "fantasy"
+      },
+      {
+        "id": "lotr",
+        "title": "Властелин колец",
+        "author": "Дж.Р.Р. Толкин",
+        "pages": 1280,
+        "genre": "fantasy"
+      },
+      {
+        "id": "harry-potter-1",
+        "title": "Гарри Поттер и философский камень",
+        "author": "Дж.К. Роулинг",
+        "pages": 432,
+        "genre": "fantasy"
+      },
+      {
+        "id": "master-margarita",
+        "title": "Мастер и Маргарита",
+        "author": "Михаил Булгаков",
+        "pages": 480,
+        "genre": "classic"
+      },
+      {
+        "id": "war-peace",
+        "title": "Война и мир",
+        "author": "Лев Толстой",
+        "pages": 1300,
+        "genre": "classic"
+      },
+      {
+        "id": "anna-karenina",
+        "title": "Анна Каренина",
+        "author": "Лев Толстой",
+        "pages": 864,
+        "genre": "classic"
+      },
+      {
+        "id": "crime-punishment",
+        "title": "Преступление и наказание",
+        "author": "Фёдор Достоевский",
+        "pages": 672,
+        "genre": "classic"
+      },
+      {
+        "id": "brothers-karamazov",
+        "title": "Братья Карамазовы",
+        "author": "Фёдор Достоевский",
+        "pages": 800,
+        "genre": "classic"
+      },
+      {
+        "id": "idiot",
+        "title": "Идиот",
+        "author": "Фёдор Достоевский",
+        "pages": 640,
+        "genre": "classic"
+      },
+      {
+        "id": "evgeny-onegin",
+        "title": "Евгений Онегин",
+        "author": "Александр Пушкин",
+        "pages": 224,
+        "genre": "classic"
+      },
+      {
+        "id": "dead-souls",
+        "title": "Мёртвые души",
+        "author": "Николай Гоголь",
+        "pages": 352,
+        "genre": "classic"
+      },
+      {
+        "id": "generation-p",
+        "title": "Generation П",
+        "author": "Виктор Пелевин",
+        "pages": 352,
+        "genre": "classic"
+      },
+      {
+        "id": "little-prince",
+        "title": "Маленький принц",
+        "author": "Антуан де Сент-Экзюпери",
+        "pages": 96,
+        "genre": "classic"
+      },
+      {
+        "id": "1984",
+        "title": "1984",
+        "author": "Джордж Оруэлл",
+        "pages": 320,
+        "genre": "classic"
+      },
+      {
+        "id": "atomic-habits",
+        "title": "Атомные привычки",
+        "author": "Джеймс Клир",
+        "pages": 336,
+        "genre": "personal"
+      },
+      {
+        "id": "power-of-habit",
+        "title": "Сила привычки",
+        "author": "Чарлз Дахигг",
+        "pages": 416,
+        "genre": "personal"
+      },
+      {
+        "id": "subtle-art",
+        "title": "Тонкое искусство пофигизма",
+        "author": "Марк Мэнсон",
+        "pages": 240,
+        "genre": "personal"
+      },
+      {
+        "id": "rich-dad",
+        "title": "Богатый папа, бедный папа",
+        "author": "Роберт Кийосаки",
+        "pages": 352,
+        "genre": "business"
+      },
+      {
+        "id": "psychology-money",
+        "title": "Психология денег",
+        "author": "Морган Хаузел",
+        "pages": 304,
+        "genre": "business"
+      },
+      {
+        "id": "sapiens",
+        "title": "Sapiens. Краткая история человечества",
+        "author": "Юваль Ной Харари",
+        "pages": 512,
+        "genre": "history"
+      }
+    ]
   }
 }
