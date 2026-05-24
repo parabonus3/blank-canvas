@@ -239,7 +239,7 @@ export default function Goals() {
               <Card className="p-10 text-center space-y-3">
                 <Folder className="h-10 w-10 mx-auto text-muted-foreground" />
                 <p className="text-muted-foreground">{t("annual_goals.no_categories")}</p>
-                <div className="flex justify-center"><CategoryQuotaButton size="default" /></div>
+                <div className="flex justify-center"><CategoryQuotaButton limitReached={categoriesLimitReached} maxCategories={maxCategories} size="default" /></div>
               </Card>
             )}
 
