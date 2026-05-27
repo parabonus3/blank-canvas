@@ -31,6 +31,7 @@ import { RoomPicker } from "@/components/RoomPicker";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
 import { InactivityCheckModal, resetInactivityCheck, initInactivityCheck } from "@/components/InactivityCheckModal";
+import { PauseWarningDialog, PAUSE_WARNING_KEY } from "@/components/PauseWarningDialog";
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
