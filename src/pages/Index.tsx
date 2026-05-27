@@ -58,6 +58,7 @@ export default function Index() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
+  const [showPauseWarning, setShowPauseWarning] = useState(false);
 
   const { isPaused, pausedElapsed, pauseStartTime, pause: contextPause, resume: contextResume, resetPause, addPausedSeconds, hydrateFromServer } = useTimerContext();
   const { user } = useAuth();
