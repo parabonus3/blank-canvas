@@ -382,7 +382,27 @@ export default function Index() {
       playStopSound();
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       // Snapshot do que o cronômetro mostra agora — fonte da verdade do usuário.
-      const clientSeconds = elapsed;
+      let clientSeconds = elapsed;
+
+      // Defesa: se elapsed estiver zerado mas a sessão tem tempo real decorrido,
+      // recalcular pelo servidor (start_time + paused_seconds atual) antes de parar.
+      // Evita salvar duration=0 quando hydrate/pause dessincronizam.
+      try {
+        const startMs = new Date(activeEntry.start_time).getTime();
+        const serverPaused = Number((activeEntry as any).paused_seconds || 0);
+        const grossElapsed = Math.floor((Date.now() - startMs) / 1000);
+        const fallback = Math.max(0, grossElapsed - serverPaused);
+        if (clientSeconds < 60 && fallback > clientSeconds + 30) {
+          console.warn("[timer] elapsed muito baixo no stop — usando fallback do servidor", {
+            clientSeconds, fallback, serverPaused, grossElapsed,
+          });
+          clientSeconds = fallback;
+          toast({ title: t("timer.pause_data_loss_recovered") });
+        }
+      } catch (e) {
+        console.error("[timer] erro no fallback do stop:", e);
+      }
+
       // Garante que qualquer pausa/resume em voo terminou antes do stop, evitando race no servidor.
       if (pauseSyncRef.current) {
         try { await pauseSyncRef.current; } catch {}
