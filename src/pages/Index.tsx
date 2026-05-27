@@ -31,6 +31,7 @@ import { RoomPicker } from "@/components/RoomPicker";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
 import { InactivityCheckModal, resetInactivityCheck, initInactivityCheck } from "@/components/InactivityCheckModal";
+import { PauseWarningDialog, PAUSE_WARNING_KEY } from "@/components/PauseWarningDialog";
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -57,6 +58,7 @@ export default function Index() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
+  const [showPauseWarning, setShowPauseWarning] = useState(false);
 
   const { isPaused, pausedElapsed, pauseStartTime, pause: contextPause, resume: contextResume, resetPause, addPausedSeconds, hydrateFromServer } = useTimerContext();
   const { user } = useAuth();
@@ -99,6 +101,12 @@ export default function Index() {
 
   // Pause via RPC: o servidor congela o snapshot exato exibido (clientSeconds).
   const handlePause = useCallback(() => {
+    // Mostra aviso de pausa na primeira vez
+    try {
+      if (!localStorage.getItem(PAUSE_WARNING_KEY)) {
+        setShowPauseWarning(true);
+      }
+    } catch {}
     // Snapshot ANTES de mudar o estado local — esse é o valor que o usuário vê.
     const snapshot = elapsed;
     contextPause();
@@ -266,12 +274,20 @@ export default function Index() {
 
     const startTime = new Date(activeEntry.start_time).getTime();
 
-    // Se pausado, calcula tempo congelado e para
+    // Se pausado, calcula tempo congelado. Defesa: se pausedElapsed cresceu
+    // demais (servidor incluiu pausa em andamento), clamp para o último elapsed
+    // conhecido em vez de cair pra 0 — evita perder tempo ao parar.
     if (isPaused) {
-      const frozenTime = pauseStartTime
-        ? Math.floor((pauseStartTime - startTime) / 1000) - pausedElapsed
-        : Math.floor((Date.now() - startTime) / 1000) - pausedElapsed;
-      setElapsed(Math.max(0, frozenTime));
+      const pauseRef = pauseStartTime ?? Date.now();
+      const grossSinceStart = Math.floor((pauseRef - startTime) / 1000);
+      const candidate = grossSinceStart - pausedElapsed;
+      if (candidate < 0 && elapsed > 0) {
+        console.warn("[timer] pausedElapsed > grossSinceStart — keeping last elapsed", {
+          grossSinceStart, pausedElapsed, elapsed,
+        });
+        return; // mantém elapsed atual, não zera
+      }
+      setElapsed(Math.max(0, candidate));
       return;
     }
     
@@ -284,7 +300,7 @@ export default function Index() {
     const interval = setInterval(updateElapsed, 1000);
     
     return () => clearInterval(interval);
-  }, [activeEntry, isLoadingEntry, isPaused, pausedElapsed]);
+  }, [activeEntry, isLoadingEntry, isPaused, pausedElapsed, pauseStartTime]);
 
   // Reminder system
   const showReminder = useCallback(() => {
@@ -366,7 +382,27 @@ export default function Index() {
       playStopSound();
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       // Snapshot do que o cronômetro mostra agora — fonte da verdade do usuário.
-      const clientSeconds = elapsed;
+      let clientSeconds = elapsed;
+
+      // Defesa: se elapsed estiver zerado mas a sessão tem tempo real decorrido,
+      // recalcular pelo servidor (start_time + paused_seconds atual) antes de parar.
+      // Evita salvar duration=0 quando hydrate/pause dessincronizam.
+      try {
+        const startMs = new Date(activeEntry.start_time).getTime();
+        const serverPaused = Number((activeEntry as any).paused_seconds || 0);
+        const grossElapsed = Math.floor((Date.now() - startMs) / 1000);
+        const fallback = Math.max(0, grossElapsed - serverPaused);
+        if (clientSeconds < 60 && fallback > clientSeconds + 30) {
+          console.warn("[timer] elapsed muito baixo no stop — usando fallback do servidor", {
+            clientSeconds, fallback, serverPaused, grossElapsed,
+          });
+          clientSeconds = fallback;
+          toast({ title: t("timer.pause_data_loss_recovered") });
+        }
+      } catch (e) {
+        console.error("[timer] erro no fallback do stop:", e);
+      }
+
       // Garante que qualquer pausa/resume em voo terminou antes do stop, evitando race no servidor.
       if (pauseSyncRef.current) {
         try { await pauseSyncRef.current; } catch {}
@@ -639,6 +675,8 @@ export default function Index() {
           onResume={handleResume}
           onAdjustPaused={addPausedSeconds}
         />
+
+        <PauseWarningDialog open={showPauseWarning} onOpenChange={setShowPauseWarning} />
       </div>
     </MainLayout>
   );

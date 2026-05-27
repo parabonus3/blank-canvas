@@ -87,14 +87,26 @@ export function TimerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Defensive hydration: keep client in sync with server pause state.
-  // If server has larger paused_seconds (e.g. another device updated it), trust the server.
+  // IMPORTANT: while the client is already paused with a known pauseStartTime,
+  // we MUST NOT accept growing paused_seconds from the server — some server-side
+  // accounting paths may include the in-flight pause window, and adopting that
+  // value here would double-count the pause and eventually drive elapsed→0
+  // (causing the "stop saves 0 seconds" bug).
   const hydrateFromServer = useCallback((serverPausedSeconds: number, serverPausedAt: string | null) => {
-    setPausedElapsed(prev => (serverPausedSeconds > prev ? serverPausedSeconds : prev));
-    if (serverPausedAt) {
-      setIsPaused(true);
-      setPauseStartTime(prev => prev ?? new Date(serverPausedAt).getTime());
-    }
-  }, []);
+    setIsPaused(prevPaused => {
+      setPausedElapsed(prev => {
+        // If we're actively paused on the client, freeze pausedElapsed at the
+        // value captured before this pause started.
+        if (prevPaused && pauseStartTime) return prev;
+        return serverPausedSeconds > prev ? serverPausedSeconds : prev;
+      });
+      if (serverPausedAt) {
+        setPauseStartTime(prev => prev ?? new Date(serverPausedAt).getTime());
+        return true;
+      }
+      return prevPaused;
+    });
+  }, [pauseStartTime]);
 
   return (
     <TimerContext.Provider value={{ isPaused, pausedElapsed, pauseStartTime, pause, resume, resetPause, addPausedSeconds, hydrateFromServer }}>
