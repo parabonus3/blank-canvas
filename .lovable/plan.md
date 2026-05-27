@@ -1,72 +1,137 @@
-## 1. Diálogo fecha sozinho (Nova Meta / Nova Categoria)
+## 1. Dashboard — Filtros e período visível
 
-### Causa
-Em `src/pages/Goals.tsx` os helpers `GoalsQuotaButton` e `CategoryQuotaButton` estão **declarados dentro do componente `Goals`**. Cada render do `Goals` cria uma nova referência de função → o React enxerga um *tipo de componente novo* a cada render e **desmonta/remonta** toda a subárvore (`CreateGoalDialog`, `CreateCategoryDialog`).
+**Novos filtros de período** (em `src/pages/Dashboard.tsx`):
+- Hoje
+- Ontem (novo)
+- Últimos 7 dias (novo)
+- Últimos 30 dias (novo)
+- Esta semana
+- Semana passada (novo)
+- Este mês
+- Mês passado (novo)
+- Este ano (novo)
+- Personalizado
 
-Como o estado `internalOpen` do `GoalFormDialog` é interno, no remount ele volta a `false` e o `Dialog`/`Sheet` fecha. O gatilho dos "alguns segundos" é o React Query refazendo `useAnnualGoals` / `useAnnualGoalsStats` / `useLifeCategories` no `refetchOnWindowFocus` ou após qualquer mutação → re-render do `Goals` → remount → fechamento.
+**Exibição do intervalo real**: logo abaixo do título do Dashboard, mostrar sempre uma linha "Período: 21/05/2026 — 27/05/2026 · 7 dias" calculada a partir do filtro ativo (não só no custom). Hoje só aparece para o custom — vamos exibir para todos.
 
-### Correção
-- Mover `GoalsQuotaButton` e `CategoryQuotaButton` para **componentes de módulo** (fora do `Goals`), recebendo via props o que hoje vêm por closure (`year`, `categories`, `goalsLimitReached`, `categoriesLimitReached`, `maxGoals`, `maxCategories`, `defaultCategoryId`, `t`).
-- Auditar o restante do app procurando o mesmo padrão (componente declarado dentro de outro componente que abriga `Dialog`/`Sheet`/`Popover`). Alvos para checagem rápida: `Settings.tsx`, `RoomDetail.tsx`, `Friends.tsx`, `Notes.tsx`, `MindMaps.tsx`, `RoomSettingsTab.tsx`. Corrigir os que tiverem o mesmo problema.
+**Filtro adicional**: dropdown de "Projeto" (multi-select) ao lado de Categoria, útil quando o usuário tem muitos projetos.
 
-Não mexer no `GoalFormDialog` — ele já é estável; o problema é externo.
+Todos os textos novos entram em todas as 12 línguas em `dashboard.*`.
 
-## 2. Livros populares por idioma
+## 2. PDF profissional multilíngue
 
-### Hoje
-`POPULAR_BOOKS` em `src/lib/goalTemplates.ts` tem títulos **fixos em português**. Mesmo o usuário japonês/inglês/etc vê "O Hobbit", "Bíblia Sagrada", etc.
+Reescrever `src/lib/pdfExport.ts` (`exportDashboardToPDF`) trocando a abordagem `html2canvas` (que gera uma imagem borrada e sem tradução real) por uma geração estruturada com `jsPDF` + `jspdf-autotable`, recebendo dados reais como argumento.
 
-### Estratégia
-Refatorar `POPULAR_BOOKS` para um catálogo neutro com `id`, `pages`, `genre` e adicionar **traduções por idioma** no i18n, usando o `id` do livro como chave:
+Estrutura do PDF (1 página de capa + seções):
 
+```text
+┌─ Cabeçalho com gradient TimeZoni ─────────────┐
+│  TimeZoni · Relatório de Produtividade        │
+│  Usuário · gerado em 27/05/2026 14:32         │
+├───────────────────────────────────────────────┤
+│  RESUMO DO FILTRO                             │
+│   Período:    Últimos 7 dias                  │
+│                21/05/2026 — 27/05/2026        │
+│   Categoria:  Todas                           │
+│   Tipo:       Todas                           │
+├───────────────────────────────────────────────┤
+│  CARDS DE TOTAIS                              │
+│   Hoje · Semana · Mês · Metas concluídas      │
+├───────────────────────────────────────────────┤
+│  GRÁFICOS (renderizados via html2canvas       │
+│   apenas dos <div> dos charts, alta resolução)│
+│   - Pizza: Distribuição por projeto           │
+│   - Barras: Horas por projeto                 │
+├───────────────────────────────────────────────┤
+│  TABELA DETALHADA POR PROJETO                 │
+│   Projeto · Categoria · Sessões · Tempo · %   │
+├───────────────────────────────────────────────┤
+│  TABELA POR CATEGORIA                         │
+├───────────────────────────────────────────────┤
+│  TABELA DIÁRIA (dia · tempo · sessões)        │
+└─ Rodapé com paginação + URL timezoni.com ─────┘
 ```
-annual_goals.books.{id}.title
-annual_goals.books.{id}.author   (opcional, pode ficar igual em todos)
-```
 
-E no `BookPicker`:
-```ts
-const title = t(`annual_goals.books.${b.id}.title`, b.fallbackTitle);
-const author = t(`annual_goals.books.${b.id}.author`, b.author ?? "");
-```
+Todos os títulos, headers de tabela e labels passam por `t()` (i18next), então o PDF sai na língua ativa do usuário. Datas formatadas via `useTimezone().formatInTz` com locale correto.
 
-### Curadoria por mercado
-Em vez de simplesmente traduzir os mesmos 60 livros, criar **listas regionais** por idioma para refletir o que realmente é publicado e popular em cada mercado:
+Charts: capturar só os SVGs do Recharts via `html2canvas` em alta DPI e inserir como imagens; o restante é texto nativo do PDF (selecionável, leve, nítido).
 
-- **pt-BR**: manter o catálogo atual (já é brasileiro).
-- **en-US**: títulos no original em inglês + bestsellers EUA/UK (NYT/Goodreads).
-- **es-ES**: edições espanholas + autores hispano-americanos populares (García Márquez, Vargas Llosa, Zafón, Pérez-Reverte, etc.).
-- **ja-JP**: título japonês oficial das traduções (例: ホビット, ハリー・ポッターと賢者の石) + clássicos japoneses populares (村上春樹, 東野圭吾, 夏目漱石, 太宰治).
-- **zh-CN**: títulos chineses simplificados das traduções + clássicos chineses (《活着》余华, 《三体》刘慈欣, 《围城》钱钟书).
-- **ko-KR**: títulos coreanos + autores coreanos (한강, 김영하, 조남주).
-- **fr-FR**, **it-IT**, **de-DE**, **ru-RU**: títulos na edição local + 1–2 autores nativos populares (ex: Houellebecq, Ferrante, Schätzing, Pelevin).
-- **ar-SA**: edições árabes + autores árabes (نجيب محفوظ, غسان كنفاني, أحلام مستغانمي).
-- **id-ID**: edições em bahasa + autores indonésios (Pramoedya, Tere Liye, Andrea Hirata).
+Responsividade do botão de export: já é responsivo, manter.
 
-### Implementação
-1. Em `goalTemplates.ts`: trocar `POPULAR_BOOKS` por `BOOK_CATALOG` indexado e exportar um helper:
-   ```ts
-   export function getPopularBooks(locale: string): BookOption[]
+## 3. Bug do timer: tempo zera ao pausar
+
+**Causa provável** (em `src/pages/Index.tsx` linhas 269-275 + `TimerContext.hydrateFromServer`):
+- Enquanto pausado, `elapsed` é calculado como `(pauseStartTime - startTime)/1000 - pausedElapsed`.
+- `hydrateFromServer` confia no servidor se `serverPausedSeconds > pausedElapsed` local.
+- Se o servidor agrega a pausa em andamento (paused_seconds + tempo decorrido desde paused_at) e devolve via refetch, `pausedElapsed` cresce continuamente. Quando ultrapassa `(pauseStartTime - startTime)/1000`, `elapsed` vira negativo → clamp para 0.
+- Ao parar nesse estado, salva-se duration = 0 (perda total do tempo).
+
+**Correções**:
+
+1. **Calcular `elapsed` no client sem subtrair `pausedElapsed` duas vezes durante pausa**. Quando `isPaused`, usar:
    ```
-   que devolve a lista de IDs ordenados para aquele idioma (curadoria regional). Cada item carrega `id`, `pages`, `genre` e títulos **resolvidos via i18n** no consumidor.
+   elapsed = max(0, ((pauseStartTime ?? activeEntry.paused_at) - startTime)/1000 - pausedSecondsBeforeThisPause)
+   ```
+   onde `pausedSecondsBeforeThisPause` é o `paused_seconds` salvo *antes* da pausa atual começar (não o agregado vindo do server enquanto pausa está em curso).
 
-2. Em `src/i18n/locales/*.json`: adicionar a seção `annual_goals.books` com `{title, author}` para cada `id` usado no idioma. Idiomas sem curadoria específica caem na curadoria "internacional" (en-US) por fallback.
+2. **Endurecer `hydrateFromServer`**: ignorar atualizações de `paused_seconds` enquanto o cliente já estiver pausado com `pauseStartTime` ativo — só aceitar quando voltar para running ou na primeira hidratação.
 
-3. `BookPicker.tsx`:
-   - Substituir `import { POPULAR_BOOKS }` por `getPopularBooks(i18n.language)`.
-   - Resolver `title`/`author` via `t()` com fallback ao valor do catálogo.
-   - Busca passa a comparar com o título já traduzido.
+3. **Validação no `handleStopConfirm`**: se `elapsed <= 0` mas `activeEntry.start_time` existe, recalcular `clientSeconds` como fallback a partir de `(now - start_time) - paused_seconds_real` antes de enviar, e exibir toast de aviso. Nunca enviar 0 segundos se a sessão tem >1 min de duração real.
 
-4. **`InstrumentalI18n`**: o `BookPicker` já usa `useTranslation`; só falta passar `i18n.language` para o helper.
+4. **Aviso preventivo** (UX, traduzido em 12 línguas): na primeira vez que o usuário clica em Pausar (flag por usuário em `localStorage`), exibir Dialog explicando:
+   - Pausa congela o cronômetro.
+   - Recomendado pausas curtas (<2h).
+   - Após retomar, o tempo continua.
+   - Em pausas muito longas o servidor pode dessincronizar — clique em "Continuar" antes de Parar.
 
-### Sem mudanças
-- UI do `BookPicker`, do `GoalFormDialog`, dos templates de meta e da página `Goals` continua igual.
-- IDs dos livros não mudam → metas já criadas não são afetadas.
-- Currency picker e templates de meta (não-livros) ficam inalterados.
+5. **Telemetria leve**: console.warn se detectado pausedElapsed > (now - startTime) — facilita diagnosticar regressões.
 
-## Arquivos a tocar
-- `src/pages/Goals.tsx` (extrair os dois helpers)
-- Possíveis ajustes em outras páginas se a auditoria encontrar o mesmo padrão
-- `src/lib/goalTemplates.ts` (catálogo neutro + `getPopularBooks(locale)`)
-- `src/components/goals/BookPicker.tsx` (consumir helper + i18n)
-- `src/i18n/locales/*.json` × 12 (seção `annual_goals.books`, curadoria por mercado)
+## 4. i18n
+
+Novas chaves em todos os 12 locales (`pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN, ar-SA, ru-RU, id-ID`):
+
+```
+dashboard.yesterday
+dashboard.last_7_days
+dashboard.last_30_days
+dashboard.last_week
+dashboard.last_month
+dashboard.this_year
+dashboard.period_range          // "{{start}} — {{end}}"
+dashboard.period_days           // "{{count}} dias"
+dashboard.project_filter
+dashboard.pdf.title
+dashboard.pdf.generated_at
+dashboard.pdf.filter_summary
+dashboard.pdf.by_project
+dashboard.pdf.by_category
+dashboard.pdf.daily_breakdown
+dashboard.pdf.sessions
+dashboard.pdf.percentage
+dashboard.pdf.footer
+timer.pause_warning.title
+timer.pause_warning.body
+timer.pause_warning.dont_show_again
+timer.pause_warning.got_it
+timer.pause_data_loss_toast
+```
+
+## 5. Mobile
+
+- Filtros do Dashboard reorganizados em `flex-wrap` com largura full no mobile, badges grandes (≥44px touch).
+- Linha "Período: ..." quebra em 2 linhas no mobile.
+- Botão Exportar PDF vira full-width no `sm:`.
+
+## Arquivos a modificar
+
+- `src/pages/Dashboard.tsx` — novos filtros, linha de período visível, filtro de projeto, passar dados estruturados ao PDF.
+- `src/lib/pdfExport.ts` — nova função `exportDashboardToPDF(data, locale, t)` estruturada.
+- `src/pages/Index.tsx` — corrigir cálculo de `elapsed` em pausa + fallback no `handleStopConfirm` + aviso primeira pausa.
+- `src/contexts/TimerContext.tsx` — endurecer `hydrateFromServer` durante pausa local.
+- `src/components/PauseWarningDialog.tsx` — novo componente do aviso.
+- 12 arquivos em `src/i18n/locales/*.json` — chaves novas.
+
+## Fora de escopo (não mexer)
+
+- Lógica de start/stop do servidor (`useStopTimer`, RPCs Supabase) — só ajuste defensivo no client.
+- Outras páginas que usam timer (Sala) — herdam a correção via `TimerContext`.
