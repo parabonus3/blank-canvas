@@ -101,6 +101,12 @@ export default function Index() {
 
   // Pause via RPC: o servidor congela o snapshot exato exibido (clientSeconds).
   const handlePause = useCallback(() => {
+    // Mostra aviso de pausa na primeira vez
+    try {
+      if (!localStorage.getItem(PAUSE_WARNING_KEY)) {
+        setShowPauseWarning(true);
+      }
+    } catch {}
     // Snapshot ANTES de mudar o estado local — esse é o valor que o usuário vê.
     const snapshot = elapsed;
     contextPause();
