@@ -675,6 +675,8 @@ export default function Index() {
           onResume={handleResume}
           onAdjustPaused={addPausedSeconds}
         />
+
+        <PauseWarningDialog open={showPauseWarning} onOpenChange={setShowPauseWarning} />
       </div>
     </MainLayout>
   );
