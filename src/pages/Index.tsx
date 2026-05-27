@@ -274,12 +274,20 @@ export default function Index() {
 
     const startTime = new Date(activeEntry.start_time).getTime();
 
-    // Se pausado, calcula tempo congelado e para
+    // Se pausado, calcula tempo congelado. Defesa: se pausedElapsed cresceu
+    // demais (servidor incluiu pausa em andamento), clamp para o último elapsed
+    // conhecido em vez de cair pra 0 — evita perder tempo ao parar.
     if (isPaused) {
-      const frozenTime = pauseStartTime
-        ? Math.floor((pauseStartTime - startTime) / 1000) - pausedElapsed
-        : Math.floor((Date.now() - startTime) / 1000) - pausedElapsed;
-      setElapsed(Math.max(0, frozenTime));
+      const pauseRef = pauseStartTime ?? Date.now();
+      const grossSinceStart = Math.floor((pauseRef - startTime) / 1000);
+      const candidate = grossSinceStart - pausedElapsed;
+      if (candidate < 0 && elapsed > 0) {
+        console.warn("[timer] pausedElapsed > grossSinceStart — keeping last elapsed", {
+          grossSinceStart, pausedElapsed, elapsed,
+        });
+        return; // mantém elapsed atual, não zera
+      }
+      setElapsed(Math.max(0, candidate));
       return;
     }
     
@@ -292,7 +300,7 @@ export default function Index() {
     const interval = setInterval(updateElapsed, 1000);
     
     return () => clearInterval(interval);
-  }, [activeEntry, isLoadingEntry, isPaused, pausedElapsed]);
+  }, [activeEntry, isLoadingEntry, isPaused, pausedElapsed, pauseStartTime]);
 
   // Reminder system
   const showReminder = useCallback(() => {
