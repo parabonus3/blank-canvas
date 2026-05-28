@@ -108,7 +108,14 @@ export function SidebarMiniTimer() {
     }
 
     const startTime = new Date(activeEntry.start_time).getTime();
-    const update = () => setElapsed(Math.max(0, Math.floor((Date.now() - startTime) / 1000) - pausedElapsed));
+    const update = () => {
+      const gross = Math.floor((Date.now() - startTime) / 1000);
+      setElapsed(prev => {
+        if (pausedElapsed > gross && prev > 0) return prev;
+        const next = Math.max(0, gross - pausedElapsed);
+        return next < prev ? prev : next;
+      });
+    };
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
