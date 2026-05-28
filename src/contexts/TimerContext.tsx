@@ -64,15 +64,17 @@ export function TimerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resume = useCallback(() => {
-    setPauseStartTime(prev => {
-      if (prev) {
-        const dur = Math.floor((Date.now() - prev) / 1000);
-        setPausedElapsed(p => p + dur);
-      }
-      return null;
-    });
+    // IMPORTANT: compute pause duration OUTSIDE any setState updater.
+    // Calling setPausedElapsed inside a setPauseStartTime updater causes
+    // the updater to be invoked twice in React StrictMode (dev), doubling
+    // pausedElapsed and driving elapsed→0 on resume (data-loss bug).
+    if (pauseStartTime) {
+      const dur = Math.max(0, Math.floor((Date.now() - pauseStartTime) / 1000));
+      if (dur > 0) setPausedElapsed(p => p + dur);
+    }
+    setPauseStartTime(null);
     setIsPaused(false);
-  }, []);
+  }, [pauseStartTime]);
 
   const resetPause = useCallback(() => {
     setIsPaused(false);
