@@ -1,57 +1,52 @@
-## Causa raiz
+## O que parece estar acontecendo
 
-`src/contexts/TimerContext.tsx` → função `resume()` chama `setPausedElapsed(...)` **dentro** do updater function de `setPauseStartTime(...)`. Em React 18 StrictMode (dev) o updater é executado duas vezes, então a duração da pausa é somada **2×** em `pausedElapsed`. Resultado: `elapsed = grossSinceStart - pausedElapsed` vira ≤ 0 → cronômetro mostra 00:00:00 → ao parar, salva `duration=0` e o tempo é perdido.
+Sim, o relato faz sentido pelo fluxo atual do código. A correção anterior evitou o cronômetro zerar ao clicar em play depois do pause, mas criou/expôs outro risco: quando o usuário volta do pause, o cálculo de `elapsed` pode ficar “preso” porque o efeito que atualiza o cronômetro fecha sobre um valor antigo de `elapsed` e a guarda anti-zeramento pode impedir novas atualizações. Além disso, o estado local de pausa e o estado vindo do servidor ainda podem disputar quem é a fonte da verdade logo após o resume.
 
-Também é frágil em produção (qualquer re-execução do updater duplica). Esse é o caminho exato que o usuário relatou: "pausa funciona, mas no resume zera".
+## Plano inteligente de correção
 
-## Correções (mínimas, cirúrgicas, sem mudar o fluxo de servidor)
+1. **Tornar o cálculo do cronômetro determinístico**
+   - Em `src/pages/Index.tsx`, ajustar o `useEffect` do `elapsed` para usar atualização funcional (`setElapsed(prev => ...)`) dentro do intervalo.
+   - Isso evita depender do `elapsed` antigo capturado pelo closure do React.
+   - A guarda anti-regressão continuará existindo, mas usando `prev` como último valor confiável.
 
-### 1. `src/contexts/TimerContext.tsx` — `resume()` sem side-effect aninhado
+2. **Garantir que o play depois do pause volte a contar**
+   - No ramo “rodando” (`!isPaused`), quando o cálculo for válido, sempre atualizar para `grossSinceStart - pausedElapsed`.
+   - Se houver dessincronia (`pausedElapsed > grossSinceStart`), manter o último tempo visível, sem zerar.
+   - Assim o cronômetro não volta para `00:00:00` e também não fica congelado quando a conta está saudável.
 
-Calcular a duração da pausa **fora** dos updaters e disparar cada `setState` independentemente:
+3. **Evitar corrida entre resume local e refetch do servidor**
+   - Revisar o `hydrateFromServer` para não reativar `isPaused` com dados antigos de `paused_at` logo após o usuário clicar em play.
+   - A ideia é ignorar hidratações obsoletas quando o cliente acabou de sair do pause, sem mexer nos RPCs nem na estrutura do banco.
+
+4. **Aplicar a mesma proteção no mini timer da sidebar**
+   - `src/components/SidebarMiniTimer.tsx` tem um cálculo separado e hoje não tem as mesmas defesas do timer principal.
+   - Ajustar para usar a mesma lógica segura: não zerar por dessincronia e continuar contando após resume.
+   - Isso evita a tela principal mostrar uma coisa e a sidebar outra.
+
+5. **Preservar o salvamento seguro**
+   - Manter o fallback já existente em `handleStopConfirm`, que recalcula pelo servidor caso o tempo visual esteja suspeitamente baixo.
+   - Não alterar `stop_time_entry`, `pause_time_entry`, `resume_time_entry`, streak, salas, dashboard, PDF ou traduções.
+
+## Arquivos que serão alterados
+
+- `src/pages/Index.tsx`
+- `src/components/SidebarMiniTimer.tsx`
+- Possivelmente `src/contexts/TimerContext.tsx`, apenas se necessário para bloquear hidratação obsoleta pós-resume.
+
+## Verificação esperada
+
+Depois da implementação, o fluxo correto deve ser:
 
 ```text
-resume():
-  const start = pauseStartTime;            // leitura direta do state
-  if (start) {
-    const dur = max(0, floor((Date.now() - start) / 1000));
-    setPausedElapsed(p => p + dur);        // updater puro
-  }
-  setPauseStartTime(null);
-  setIsPaused(false);
+Start -> conta normalmente
+Pause -> congela no tempo atual
+Play -> continua a partir do tempo congelado
+Stop -> salva o tempo real exibido, nunca 0 por causa do pause/resume
 ```
 
-Isso elimina a dupla-soma em StrictMode e em qualquer re-render. Mantém comportamento idêntico em produção quando o updater roda 1×.
+Também será verificado que:
 
-### 2. Guarda anti-regressão no cálculo de `elapsed` (Index.tsx)
-
-Em `src/pages/Index.tsx` no `useEffect` de cálculo (linhas ~267-303), no ramo **não pausado**, adicionar a mesma defesa que já existe no ramo pausado: se `pausedElapsed > grossSinceStart` (sinal de dessincronia/double-count futuro), **não zerar** — manter o último `elapsed` conhecido e logar warn. Garante que mesmo se outra regressão aparecer, o usuário nunca vê 00:00:00 magicamente.
-
-### 3. Fallback no stop já existe — só validar
-
-`handleStopConfirm` (linhas 388-405) já recalcula via servidor quando `clientSeconds <= 0`. Manter como rede de segurança final. Nenhuma mudança necessária.
-
-### 4. Não mexer
-
-- RPCs `pause_time_entry` / `resume_time_entry` no servidor — funcionam corretamente.
-- `hydrateFromServer` — o fix recente está correto, não tocar.
-- `pause()`, `resetPause()`, `addPausedSeconds()` — sem alterações.
-- Lógica de stop, salvamento, sala, streak — intocados.
-- Nenhum locale precisa de chave nova (bug puramente de cálculo).
-
-## Arquivos a modificar
-
-- `src/contexts/TimerContext.tsx` — reescrever `resume()` (≈8 linhas).
-- `src/pages/Index.tsx` — adicionar guarda de não-zeramento no ramo running do `useEffect` de elapsed (≈4 linhas).
-
-## Verificação após implementar
-
-1. Start → trabalhar 30s → pause 60s → resume → conferir que cronômetro continua de ~30s (não zera).
-2. Repetir com pausa de 5min → resume → continuar contando corretamente.
-3. Parar e confirmar que `duration` salvo bate com o que estava no visor.
-4. Console: verificar ausência do warn `[timer] pausedElapsed > grossSinceStart`.
-
-## Fora de escopo
-
-- Dashboard, PDF, i18n, filtros — nada disso é tocado.
-- Servidor / migrations — nenhuma.
+- O cronômetro principal continua contando após play.
+- A sidebar acompanha o mesmo tempo.
+- O timer não volta para `00:00:00` por dessincronia.
+- O fluxo atual de servidor/RPC continua intacto.

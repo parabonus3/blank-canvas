@@ -294,16 +294,17 @@ export default function Index() {
     const updateElapsed = () => {
       const now = Date.now();
       const grossSinceStart = Math.floor((now - startTime) / 1000);
-      // Defesa anti-regressão: se pausedElapsed ficou maior que o tempo total
-      // desde o start (sinal de double-count / dessincronia), NÃO zerar.
-      // Mantém o último elapsed conhecido para evitar perder o tempo do usuário.
-      if (pausedElapsed > grossSinceStart && elapsed > 0) {
-        console.warn("[timer] pausedElapsed > grossSinceStart (running) — keeping last elapsed", {
-          grossSinceStart, pausedElapsed, elapsed,
-        });
-        return;
-      }
-      setElapsed(Math.max(0, grossSinceStart - pausedElapsed));
+      setElapsed(prev => {
+        // Defesa anti-regressão: se pausedElapsed > tempo total desde start
+        // (dessincronia / double-count), manter o último valor — não zerar.
+        if (pausedElapsed > grossSinceStart && prev > 0) {
+          return prev;
+        }
+        const next = Math.max(0, grossSinceStart - pausedElapsed);
+        // Nunca deixar o cronômetro retroceder enquanto está rodando
+        // (evita "voltar pra 0" após resume se houver re-render atrasado).
+        return next < prev ? prev : next;
+      });
     };
 
     updateElapsed();

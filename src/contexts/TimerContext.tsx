@@ -52,6 +52,10 @@ export function TimerProvider({ children }: { children: ReactNode }) {
   const [isPaused, setIsPaused] = useState(() => loadPauseState().isPaused);
   const [pausedElapsed, setPausedElapsed] = useState(() => loadPauseState().pausedElapsed);
   const [pauseStartTime, setPauseStartTime] = useState<number | null>(() => loadPauseState().pauseStartTime);
+  // Marca o momento do último resume local. Usado para ignorar hidratações
+  // obsoletas do servidor (paused_at antigo) que chegam logo após o play
+  // e poderiam reativar o estado de pausa indevidamente.
+  const [lastResumeAt, setLastResumeAt] = useState<number>(0);
 
   // Sync to localStorage whenever state changes
   useEffect(() => {
@@ -74,12 +78,14 @@ export function TimerProvider({ children }: { children: ReactNode }) {
     }
     setPauseStartTime(null);
     setIsPaused(false);
+    setLastResumeAt(Date.now());
   }, [pauseStartTime]);
 
   const resetPause = useCallback(() => {
     setIsPaused(false);
     setPausedElapsed(0);
     setPauseStartTime(null);
+    setLastResumeAt(0);
     clearPauseState();
   }, []);
 
@@ -94,21 +100,24 @@ export function TimerProvider({ children }: { children: ReactNode }) {
   // accounting paths may include the in-flight pause window, and adopting that
   // value here would double-count the pause and eventually drive elapsed→0
   // (causing the "stop saves 0 seconds" bug).
+  // ALSO: se o usuário acabou de dar play (últimos ~8s), ignoramos paused_at
+  // obsoleto que ainda pode vir de um refetch em voo — caso contrário o
+  // cronômetro voltaria a ficar pausado sozinho.
   const hydrateFromServer = useCallback((serverPausedSeconds: number, serverPausedAt: string | null) => {
+    const justResumed = lastResumeAt > 0 && Date.now() - lastResumeAt < 8000;
     setIsPaused(prevPaused => {
       setPausedElapsed(prev => {
-        // If we're actively paused on the client, freeze pausedElapsed at the
-        // value captured before this pause started.
         if (prevPaused && pauseStartTime) return prev;
         return serverPausedSeconds > prev ? serverPausedSeconds : prev;
       });
-      if (serverPausedAt) {
+      if (serverPausedAt && !justResumed) {
         setPauseStartTime(prev => prev ?? new Date(serverPausedAt).getTime());
         return true;
       }
       return prevPaused;
     });
-  }, [pauseStartTime]);
+  }, [pauseStartTime, lastResumeAt]);
+
 
   return (
     <TimerContext.Provider value={{ isPaused, pausedElapsed, pauseStartTime, pause, resume, resetPause, addPausedSeconds, hydrateFromServer }}>
