@@ -293,7 +293,17 @@ export default function Index() {
     
     const updateElapsed = () => {
       const now = Date.now();
-      setElapsed(Math.max(0, Math.floor((now - startTime) / 1000) - pausedElapsed));
+      const grossSinceStart = Math.floor((now - startTime) / 1000);
+      // Defesa anti-regressão: se pausedElapsed ficou maior que o tempo total
+      // desde o start (sinal de double-count / dessincronia), NÃO zerar.
+      // Mantém o último elapsed conhecido para evitar perder o tempo do usuário.
+      if (pausedElapsed > grossSinceStart && elapsed > 0) {
+        console.warn("[timer] pausedElapsed > grossSinceStart (running) — keeping last elapsed", {
+          grossSinceStart, pausedElapsed, elapsed,
+        });
+        return;
+      }
+      setElapsed(Math.max(0, grossSinceStart - pausedElapsed));
     };
 
     updateElapsed();
