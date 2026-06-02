@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { SEO } from "@/components/SEO";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -171,6 +172,11 @@ export default function Pricing() {
 
   return (
     <MainLayout>
+      <SEO
+        title="Planos e preços — TimeZoni"
+        description="Compare os planos Free, Pro e Premium do TimeZoni. Cronômetro, Pomodoro, salas de estudo online, metas e mais. Comece grátis."
+        path="/pricing"
+      />
       <div className="max-w-5xl mx-auto space-y-8 p-4 md:p-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">{t("pricing.title")}</h1>

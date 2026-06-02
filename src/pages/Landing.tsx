@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLenis } from "@/hooks/useLenis";
 import { Reveal, Magnetic, SpotlightCursor, ScrollProgress, CountUp, Tilt } from "@/components/landing/primitives";
 import logo from "@/assets/logo.png";
+import { SEO } from "@/components/SEO";
 
 /* ============================================================ */
 /*  PARTICLES                                                   */
@@ -857,6 +858,12 @@ export default function Landing() {
   }
 
   return (
+    <>
+    <SEO
+      title="TimeZoni — Cronômetro de estudo, Pomodoro e salas de foco online"
+      description="App grátis de foco e produtividade: cronômetro de estudo, timer Pomodoro, salas de estudo online, metas, conquistas e sons ambientes para você estudar mais e melhor."
+      path="/"
+    />
     <div className="landing-root min-h-screen relative overflow-x-hidden">
       <ScrollProgress />
       <Hero />
@@ -877,5 +884,6 @@ export default function Landing() {
         </Link>
       </div>
     </div>
+    </>
   );
 }
