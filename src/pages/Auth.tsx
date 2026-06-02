@@ -13,6 +13,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Mail, Lock, User, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import logo from "@/assets/logo.png";
+import { SEO } from "@/components/SEO";
 
 export default function Auth() {
   const { t } = useTranslation();
@@ -172,6 +173,11 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <SEO
+        title="Entrar ou criar conta — TimeZoni"
+        description="Acesse sua conta TimeZoni para usar cronômetro, Pomodoro, salas de estudo online e acompanhar seu progresso."
+        path="/auth"
+      />
       {/* Back button */}
       <div className="absolute top-4 left-4 z-20">
         <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
