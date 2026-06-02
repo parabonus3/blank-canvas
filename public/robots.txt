@@ -12,3 +12,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /sac/dashboard
+Disallow: /sac/agents
+
+Sitemap: https://timezoni.com/sitemap.xml
