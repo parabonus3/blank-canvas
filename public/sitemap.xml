@@ -1,21 +1,688 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://timezoni.com/</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/en</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/es</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/fr</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/de</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/it</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ja</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ko</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/zh</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ru</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ar</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/id</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/" />
   </url>
   <url>
     <loc>https://timezoni.com/pricing</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/en/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/es/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/fr/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/de/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/it/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ja/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ko/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/zh/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ru/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ar/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/id/pricing</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/pricing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/pricing" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/pricing" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/pricing" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/pricing" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/pricing" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/pricing" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/pricing" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/pricing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/pricing" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/pricing" />
   </url>
   <url>
     <loc>https://timezoni.com/auth</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/en/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/es/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/fr/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/de/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/it/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ja/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ko/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/zh/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ru/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/ar/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
+  </url>
+  <url>
+    <loc>https://timezoni.com/id/auth</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://timezoni.com/auth" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://timezoni.com/en/auth" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://timezoni.com/es/auth" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://timezoni.com/fr/auth" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://timezoni.com/de/auth" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://timezoni.com/it/auth" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://timezoni.com/ja/auth" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://timezoni.com/ko/auth" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://timezoni.com/zh/auth" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://timezoni.com/ru/auth" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://timezoni.com/ar/auth" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://timezoni.com/id/auth" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://timezoni.com/auth" />
   </url>
 </urlset>
