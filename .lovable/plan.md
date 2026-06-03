@@ -1,85 +1,124 @@
 
-# Análise SEO completa — timezoni.com
+# SEO internacional — plano para os 12 idiomas
 
-## 1. Diagnóstico atual (dados Semrush)
+## 1. Diagnóstico do estado atual
 
-**Posicionamento orgânico: praticamente zero.**
+O app já tem **12 traduções** (`pt-BR`, `en-US`, `es-ES`, `fr-FR`, `ja-JP`, `de-DE`, `ar-SA`, `ko-KR`, `zh-CN`, `it-IT`, `ru-RU`, `id-ID`), mas para o Google **só existe um site em pt-BR**. Motivos:
 
-| Métrica | Valor | Leitura |
-|---|---|---|
-| Authority Score | 0/100 | Domínio novo, sem autoridade |
-| Trust Score | 0/100 | Sem sinais de confiança |
-| Palavras-chave orgânicas (US) | 0 | Não ranqueia para nada |
-| Palavras-chave orgânicas (BR) | 0 | Não ranqueia para nada |
-| Tráfego orgânico estimado | 0/mês | — |
-| Backlinks | 11 (todos nofollow) | Vindos de sites de spam/teste (8coint.com, atomizelink.icu, optimizeflow.top, etc.) — **tóxicos** |
-| Tendência histórica | 0 em todos os meses | Site ainda não foi indexado de forma relevante |
+- Uma única URL (`/`) serve todos os idiomas; a tradução acontece client-side via `i18next` depois do JS rodar. Google indexa o HTML inicial em pt-BR e nunca vê as outras versões.
+- `index.html` tem `lang="pt-BR"` fixo, `<title>` e `<meta description>` só em português.
+- **Não há `hreflang`** — Google não sabe que existem versões em outros idiomas.
+- `sitemap.xml` lista só 3 URLs em pt-BR.
+- O `SEO.tsx` (helmet) não é usado em rota nenhuma ainda.
 
-**Por que está assim:** o site é um SPA Vite/React com `index.html` único — Google só vê a Landing. Não há sitemap.xml, o `<title>` é "TimeZoni - Foco e Produtividade" (genérico), a description é curta, não há JSON-LD de SoftwareApplication, sem og:image, sem páginas de conteúdo (blog, comparativos, landing pages por keyword).
+Resultado prático: zero tráfego orgânico nos mercados US, ES, FR, DE, JP, KR, CN, IT, RU, ID, AR — mesmo com o conteúdo já traduzido.
 
-## 2. Oportunidades de palavras-chave
+## 2. Oportunidades por mercado (dados Semrush)
 
-### Mercado BR (alto potencial, baixa dificuldade)
+Foco em keywords de **baixa dificuldade (<30)** com volume relevante:
 
-| Keyword | Volume/mês | Dificuldade | Estratégia |
-|---|---|---|---|
-| cronometro de estudo | 2.900 | 25 (fácil) | **Landing dedicada** + blog pillar |
-| pomodoro online | 2.900 | 26 (fácil) | **Landing /pomodoro** (ferramenta web) |
-| timer pomodoro | 1.900 | 42 (médio) | Mesma landing /pomodoro |
-| sala de estudo online | 170 | 27 (fácil) | **Landing /salas** (feature rooms) |
-| app de foco | 20 | 0 (muito fácil) | Otimizar Landing principal |
+| Mercado | Keyword âncora | Volume/mês | KDI | Por quê |
+|---|---|---|---|---|
+| 🇯🇵 JP | オンライン 自習室 | 2.900 | 27 ✅ | Cultura "study with me" é forte no Japão |
+| 🇯🇵 JP | 勉強 タイマー | 18.100 | 36 | Volume gigantesco |
+| 🇪🇸 ES | temporizador pomodoro | 880 | 28 ✅ | Mercado LATAM + Espanha |
+| 🇪🇸 ES | app para estudiar | 590 | 26 ✅ | Intenção forte |
+| 🇰🇷 KR | 공부 타이머 | 1.000 | 23 ✅ | "Study with me" nasceu na Coreia |
+| 🇰🇷 KR | 스터디 윗미 | 1.000 | 26 ✅ | Match perfeito com o produto |
+| 🇩🇪 DE | fokus app | 140 | 26 ✅ | Concorrência baixa |
+| 🇩🇪 DE | virtueller lernraum | 20 | 0 ✅ | Quick win |
+| 🇫🇷 FR | application concentration | 30 | 0 ✅ | Quick win |
+| 🇮🇹 IT | sala studio online | 20 | 0 ✅ | Quick win |
+| 🇷🇺 RU | приложение для концентрации | 140 | 24 ✅ | |
+| 🇺🇸 US | virtual study room | 110 | 26 ✅ | |
+| 🇺🇸 US | study with me app | 20 | 0 ✅ | |
 
-### Mercado US (mais difícil, mas com volume)
+JP e KR são os **maiores ganhos potenciais** (cultura nativa de "study with me" + volume alto + KDI baixo).
 
-| Keyword | Volume/mês | Dificuldade |
-|---|---|---|
-| study timer | 5.400 | 62 |
-| pomodoro timer app | 4.400 | 64 |
-| focus app | 1.900 | 75 |
-| virtual study room | 110 | 26 (fácil) ✅ |
-| study together app | 70 | 28 (fácil) ✅ |
-| study with me app | 20 | 0 (muito fácil) ✅ |
+## 3. Estratégia de arquitetura: rotas por idioma com prefixo
 
-**Foco estratégico:** começar pelo BR (concorrência baixa + público nativo do app) e atacar EN com long-tail "virtual study room" / "study with me app".
+Em vez do app trocar idioma client-side numa URL única, criar **URLs separadas por idioma**:
 
-## 3. Problemas técnicos a corrigir
+```
+timezoni.com/         → pt-BR (default, sem prefixo)
+timezoni.com/en/      → en-US
+timezoni.com/es/      → es-ES
+timezoni.com/fr/      → fr-FR
+timezoni.com/de/      → de-DE
+timezoni.com/it/      → it-IT
+timezoni.com/ja/      → ja-JP
+timezoni.com/ko/      → ko-KR
+timezoni.com/zh/      → zh-CN
+timezoni.com/ru/      → ru-RU
+timezoni.com/ar/      → ar-SA
+timezoni.com/id/      → id-ID
+```
 
-1. **Sem sitemap.xml** → criar `public/sitemap.xml` com rotas públicas (`/`, `/pricing`, `/auth`).
-2. **robots.txt** OK, mas sem diretiva `Sitemap:`.
-3. **`<title>` e meta description** genéricos → reescrever com keyword principal.
-4. **Sem JSON-LD** → adicionar schema `SoftwareApplication` + `Organization`.
-5. **og:image ausente** → gerar imagem OG profissional (1200x630).
-6. **SPA single head** → adicionar `react-helmet-async` para títulos por rota (Pricing, Auth, RoomPreview já existe e precisa de SEO).
-7. **Backlinks tóxicos** → criar disavow file no Google Search Console.
-8. **Search Console não verificado** (provavelmente) → adicionar meta de verificação.
+Cada URL serve o **mesmo SPA**, mas:
+- Detecta o idioma pelo prefixo e força `i18n.changeLanguage()` antes do primeiro render
+- Injeta via `react-helmet-async` o `<html lang>`, `<title>`, `<meta description>` traduzidos
+- Adiciona `<link rel="alternate" hreflang="...">` para todas as versões + `x-default`
 
-## 4. Plano de ação proposto
+Mesmo sendo SPA, o Googlebot moderno (Chromium-based) executa JS e indexa cada URL como uma página separada, contanto que `hreflang` e `lang` mudem por rota.
 
-### Fase 1 — Fundação técnica (impacto imediato em indexação)
-1. Reescrever `<title>` e `<meta description>` do `index.html` com keyword forte em PT-BR ("Cronômetro de estudo, Pomodoro e salas de foco | TimeZoni").
-2. Adicionar JSON-LD `SoftwareApplication` + `Organization` no `index.html`.
-3. Criar `public/sitemap.xml` com rotas públicas + script `scripts/generate-sitemap.ts` rodando no `prebuild`.
-4. Adicionar diretiva `Sitemap: https://timezoni.com/sitemap.xml` no `robots.txt`.
-5. Instalar `react-helmet-async` e adicionar SEO por rota nas páginas públicas (`Landing`, `Pricing`, `Auth`, `RoomPreview`).
-6. Gerar imagem og:image (1200x630) com branding TimeZoni.
-7. Verificar domínio no Google Search Console (via meta tag) — exige conectar o conector Google Search Console.
+## 4. Plano de execução
 
-### Fase 2 — Conteúdo SEO (impacto em 2-6 meses)
-8. Criar landing pages dedicadas focadas em keywords BR de baixa dificuldade:
-   - `/pomodoro` → ferramenta web grátis + texto SEO (alvo: "pomodoro online", "timer pomodoro")
-   - `/cronometro-estudo` → ferramenta + guia (alvo: "cronometro de estudo")
-   - `/salas-de-estudo` → showcase de rooms (alvo: "sala de estudo online")
-9. Criar `/blog` com 5-10 artigos pilares (técnica Pomodoro, como estudar com foco, study with me, etc.).
+### Fase A — Roteamento i18n (base técnica)
 
-### Fase 3 — Autoridade e link building
-10. Criar disavow para os 11 backlinks tóxicos no GSC.
-11. Estratégia de backlinks limpos: Product Hunt, BetaList, diretórios de apps de produtividade, posts convidados em blogs de estudantes/concurseiros BR.
+1. Adicionar rota wrapper `/<lang>/*` no `App.tsx` que:
+   - Lê o prefixo (`en`, `es`, `fr`, ...) e chama `i18n.changeLanguage(code)` antes de renderizar
+   - Renderiza as mesmas rotas internas (Landing, Pricing, Auth, RoomPreview)
+   - Default (sem prefixo) continua em pt-BR (preserva URLs já indexadas)
+2. Atualizar `LanguageSwitcher` para navegar para `/<lang>/...` em vez de só trocar o i18n.
 
-### Fase 4 — Monitoramento contínuo
-12. Conectar Semrush (connector) para construir um painel interno de tracking de keywords e visibilidade, com histórico e alertas de queda.
+### Fase B — Metas SEO por idioma
 
-## 5. Próximos passos — preciso da sua escolha
+3. Criar `src/lib/seoTranslations.ts` com `title` + `description` por idioma das páginas públicas (Landing, Pricing, Auth), usando as keywords âncora da tabela acima.
+4. Aplicar `<SEO>` em `Landing`, `Pricing`, `Auth` lendo o idioma atual e mandando o texto traduzido + `path` correto (com prefixo).
+5. Estender `SEO.tsx` para emitir:
+   - `<html lang="...">` (via `<Helmet htmlAttributes>`)
+   - `<link rel="alternate" hreflang="x" href="https://timezoni.com/x/...">` para os 12 idiomas + `x-default` apontando pra raiz
+   - `<meta property="og:locale">` correto + `og:locale:alternate` para os outros
 
-Posso implementar tudo da **Fase 1** agora (é a base e dá resultado mais rápido — Google passa a entender o site corretamente). As fases 2-4 são trabalhos maiores e merecem aprovação separada.
+### Fase C — Sitemap internacional
 
-**Pergunta:** quer que eu já entre em modo build e execute a Fase 1 completa, ou prefere começar por uma parte específica (ex: só sitemap + metas, ou já incluir a página `/pomodoro`)?
+6. Reescrever `scripts/generate-sitemap.ts` para gerar entradas para cada (rota × idioma), cada `<url>` com seus `<xhtml:link rel="alternate" hreflang>` (formato oficial recomendado pelo Google). Isso multiplica o sitemap por 12 e dá ao Google um mapa explícito.
+
+### Fase D — Conteúdo localizado (próxima leva, depois da Fase A-C ir ao ar)
+
+7. Landings por keyword nos mercados-alvo (não precisam de tradução para começar):
+   - `/ja/jishuushitsu` → focada em "オンライン 自習室" (JP) — maior ROI
+   - `/ko/study-with-me` → focada em "스터디 윗미" (KR)
+   - `/es/temporizador-pomodoro` (ES)
+   - `/pomodoro`, `/cronometro-estudo`, `/salas-de-estudo` (BR — já no plano original)
+
+### Fase E — Sinalização externa
+
+8. Submeter o novo sitemap no Google Search Console (já temos a verificação pronta).
+9. Disavow dos 11 backlinks tóxicos.
+10. Inscrição em diretórios locais: Product Hunt (global), 99fav (KR), Vector (JP), Genially/Educaplay (ES).
+
+## 5. Detalhes técnicos
+
+**Por que prefixo de idioma e não subdomínio (en.timezoni.com)?**
+Prefixo é mais simples (não exige config de DNS/Vercel novo), preserva autoridade no domínio raiz e é o padrão recomendado pelo Google para SPAs que servem o mesmo app.
+
+**Por que não SSR / Next.js?**
+Mudaria a stack inteira. Google JS-rendering cobre bem SPAs hoje quando `hreflang` e `lang` mudam por URL. Crawlers de social preview (Facebook/LinkedIn) ainda vão usar a meta do `index.html` (limitação conhecida do stack Vite — fica como dívida documentada).
+
+**O que NÃO vamos mexer:**
+- Conteúdo das traduções existentes (já estão prontas)
+- Estrutura do `i18n/index.ts`
+- Rotas protegidas (admin, dashboard, etc.) — continuam sem prefixo e com `noindex`
+
+## 6. Impacto esperado
+
+- Indexação de 12× mais páginas em ~2-4 semanas após Fase A-C
+- Primeiros rankings em JP e KR (cultura "study with me") em 1-3 meses
+- Tráfego orgânico começando a aparecer em 2-6 meses (sites novos demoram)
+
+## 7. Próximo passo
+
+Posso executar **Fases A, B, C de uma vez** (roteamento + metas + sitemap internacional) — é o pacote técnico que destrava tudo. As Fases D e E são trabalho separado depois que isso indexar.
+
+Aprova partir pra build com A+B+C?

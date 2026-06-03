@@ -859,11 +859,7 @@ export default function Landing() {
 
   return (
     <>
-    <SEO
-      title="TimeZoni — Cronômetro de estudo, Pomodoro e salas de foco online"
-      description="App grátis de foco e produtividade: cronômetro de estudo, timer Pomodoro, salas de estudo online, metas, conquistas e sons ambientes para você estudar mais e melhor."
-      path="/"
-    />
+    <SEO pageKey="landing" path="/" />
     <div className="landing-root min-h-screen relative overflow-x-hidden">
       <ScrollProgress />
       <Hero />

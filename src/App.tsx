@@ -42,6 +42,7 @@ import MyTickets from "./pages/sac/MyTickets";
 import SacDashboard from "./pages/sac/SacDashboard";
 import TicketDetail from "./pages/sac/TicketDetail";
 import AgentManager from "./pages/sac/AgentManager";
+import { LangShell } from "./components/LangShell";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,15 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <Routes>
+                  {/* Language-prefixed public routes for international SEO (hreflang). */}
+                  <Route path="/:lang" element={<LangShell />}>
+                    <Route index element={<Landing />} />
+                    <Route path="auth" element={<Auth />} />
+                    <Route path="pricing" element={<Pricing />} />
+                    <Route path="reset-password" element={<ResetPassword />} />
+                    <Route path="room-preview/:code" element={<RoomPreview />} />
+                  </Route>
+
                   <Route path="/" element={<Landing />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/room-preview/:code" element={<RoomPreview />} />

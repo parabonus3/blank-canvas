@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
 import {
@@ -8,21 +9,40 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { LANGUAGES, SUPPORTED_PREFIXES, langFromI18n, buildLangPath } from '@/lib/i18nRoutes';
 
-const languages = [
-  { code: 'pt-BR', name: 'Português', flag: '🇧🇷' },
-  { code: 'en-US', name: 'English', flag: '🇺🇸' },
-  { code: 'es-ES', name: 'Español', flag: '🇪🇸' },
-  { code: 'fr-FR', name: 'Français', flag: '🇫🇷' },
-  { code: 'ja-JP', name: '日本語', flag: '🇯🇵' },
-  { code: 'de-DE', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'ar-SA', name: 'العربية', flag: '🇸🇦' },
-  { code: 'ko-KR', name: '한국어', flag: '🇰🇷' },
-  { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
-  { code: 'it-IT', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'ru-RU', name: 'Русский', flag: '🇷🇺' },
-  { code: 'id-ID', name: 'Bahasa Indonesia', flag: '🇮🇩' },
-];
+const flagFor: Record<string, string> = {
+  'pt-BR': '🇧🇷',
+  'en-US': '🇺🇸',
+  'es-ES': '🇪🇸',
+  'fr-FR': '🇫🇷',
+  'ja-JP': '🇯🇵',
+  'de-DE': '🇩🇪',
+  'ar-SA': '🇸🇦',
+  'ko-KR': '🇰🇷',
+  'zh-CN': '🇨🇳',
+  'it-IT': '🇮🇹',
+  'ru-RU': '🇷🇺',
+  'id-ID': '🇮🇩',
+};
+
+const nameFor: Record<string, string> = {
+  'pt-BR': 'Português',
+  'en-US': 'English',
+  'es-ES': 'Español',
+  'fr-FR': 'Français',
+  'ja-JP': '日本語',
+  'de-DE': 'Deutsch',
+  'ar-SA': 'العربية',
+  'ko-KR': '한국어',
+  'zh-CN': '中文',
+  'it-IT': 'Italiano',
+  'ru-RU': 'Русский',
+  'id-ID': 'Bahasa Indonesia',
+};
+
+// Public paths that exist as language-prefixed routes (see App.tsx).
+const PUBLIC_PATHS = new Set(['', 'auth', 'pricing', 'reset-password', 'room-preview']);
 
 interface LanguageSwitcherProps {
   variant?: 'default' | 'outline' | 'ghost';
@@ -31,8 +51,33 @@ interface LanguageSwitcherProps {
 
 export function LanguageSwitcher({ variant = 'ghost', className }: LanguageSwitcherProps) {
   const { i18n } = useTranslation();
-  
-  const currentLang = languages.find(l => i18n.language.startsWith(l.code.split('-')[0])) || languages[1];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentLang = langFromI18n(i18n.language);
+
+  const handleSelect = (code: string) => {
+    i18n.changeLanguage(code);
+
+    // Strip current language prefix from URL if present.
+    const segments = location.pathname.split('/').filter(Boolean);
+    const firstSegment = segments[0] ?? '';
+    const hasLangPrefix = SUPPORTED_PREFIXES.has(firstSegment);
+    const rest = hasLangPrefix ? segments.slice(1) : segments;
+    const restPath = '/' + rest.join('/');
+
+    // Only navigate when we're on a public, indexable route.
+    const rootPublicSegment = rest[0] ?? '';
+    const isPublicRoute = PUBLIC_PATHS.has(rootPublicSegment);
+    if (!isPublicRoute) return;
+
+    const target = LANGUAGES.find((l) => l.code === code);
+    if (!target) return;
+
+    const newPath = buildLangPath(target.prefix, restPath === '/' ? '/' : restPath);
+    if (newPath !== location.pathname) {
+      navigate(newPath + location.search + location.hash);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -42,17 +87,17 @@ export function LanguageSwitcher({ variant = 'ghost', className }: LanguageSwitc
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {languages.map((lang) => (
+        {LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => i18n.changeLanguage(lang.code)}
+            onClick={() => handleSelect(lang.code)}
             className={cn(
               "cursor-pointer",
-              i18n.language === lang.code && "bg-muted"
+              currentLang.code === lang.code && "bg-muted"
             )}
           >
-            <span className="mr-2">{lang.flag}</span>
-            {lang.name}
+            <span className="mr-2">{flagFor[lang.code]}</span>
+            {nameFor[lang.code]}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
