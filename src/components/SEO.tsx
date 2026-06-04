@@ -14,6 +14,13 @@ interface SEOProps {
   image?: string;
   type?: "website" | "article";
   noindex?: boolean;
+  /**
+   * Page exists only in the current locale (no other-language versions).
+   * Skip hreflang alternates and og:locale:alternate; emit canonical only.
+   */
+  localeOnly?: boolean;
+  /** Extra JSON-LD blocks to inject (e.g. FAQPage, BreadcrumbList). */
+  jsonLd?: object[];
 }
 
 const BASE_URL = "https://timezoni.com";
@@ -26,6 +33,8 @@ export function SEO({
   image,
   type = "website",
   noindex,
+  localeOnly,
+  jsonLd,
 }: SEOProps) {
   const { i18n } = useTranslation();
   const currentLang = langFromI18n(i18n.language);
@@ -50,8 +59,8 @@ export function SEO({
       <link rel="canonical" href={canonical} />
       {noindex && <meta name="robots" content="noindex,nofollow" />}
 
-      {/* hreflang alternates — one per supported language + x-default */}
-      {LANGUAGES.map((l) => (
+      {/* hreflang alternates — skipped for locale-only pages */}
+      {!localeOnly && LANGUAGES.map((l) => (
         <link
           key={l.hreflang}
           rel="alternate"
@@ -59,7 +68,9 @@ export function SEO({
           href={`${BASE_URL}${buildLangPath(l.prefix, path)}`}
         />
       ))}
-      <link rel="alternate" hrefLang="x-default" href={xDefaultUrl} />
+      {!localeOnly && (
+        <link rel="alternate" hrefLang="x-default" href={xDefaultUrl} />
+      )}
 
       <meta property="og:type" content={type} />
       <meta property="og:title" content={finalTitle} />
@@ -67,7 +78,7 @@ export function SEO({
       <meta property="og:url" content={canonical} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:locale" content={currentLang.ogLocale} />
-      {LANGUAGES.filter((l) => l.code !== currentLang.code).map((l) => (
+      {!localeOnly && LANGUAGES.filter((l) => l.code !== currentLang.code).map((l) => (
         <meta key={l.ogLocale} property="og:locale:alternate" content={l.ogLocale} />
       ))}
 
@@ -75,6 +86,12 @@ export function SEO({
       <meta name="twitter:title" content={finalTitle} />
       <meta name="twitter:description" content={finalDescription} />
       <meta name="twitter:image" content={ogImage} />
+
+      {jsonLd?.map((block, i) => (
+        <script key={i} type="application/ld+json">
+          {JSON.stringify(block)}
+        </script>
+      ))}
     </Helmet>
   );
 }

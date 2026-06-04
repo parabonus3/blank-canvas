@@ -36,13 +36,31 @@ interface SitemapEntry {
   lastmod?: string;
 }
 
+/** Page that exists only in one specific locale (no hreflang alternates). */
+interface LocaleOnlyEntry {
+  prefix: string; // language URL prefix
+  path: string;   // path under that prefix (e.g. "/jishuushitsu")
+  changefreq?: SitemapEntry["changefreq"];
+  priority?: string;
+  lastmod?: string;
+}
+
 const today = new Date().toISOString().split("T")[0];
 
-// Only public, indexable routes.
+// Multilingual routes — emitted once per language with hreflang alternates.
 const entries: SitemapEntry[] = [
   { path: "/",        changefreq: "weekly",  priority: "1.0", lastmod: today },
   { path: "/pricing", changefreq: "monthly", priority: "0.8", lastmod: today },
   { path: "/auth",    changefreq: "monthly", priority: "0.5", lastmod: today },
+];
+
+// Single-locale landing pages (Sprint 1: JP + KR keyword targeting).
+// Kept in sync with src/lib/localizedLandings.ts
+const localeOnlyEntries: LocaleOnlyEntry[] = [
+  { prefix: "ja", path: "/jishuushitsu",  changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ja", path: "/benkyou-timer", changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ko", path: "/study-with-me", changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ko", path: "/gongbu-timer",  changefreq: "monthly", priority: "0.9", lastmod: today },
 ];
 
 function buildLangPath(prefix: string, path: string): string {
@@ -52,9 +70,7 @@ function buildLangPath(prefix: string, path: string): string {
 }
 
 function urlBlock(entry: SitemapEntry): string[] {
-  // Emit one <url> per language. Each one carries the full set of
-  // <xhtml:link rel="alternate" hreflang> pointing at all language variants,
-  // plus x-default pointing at the no-prefix URL.
+  // Emit one <url> per language with full hreflang alternates + x-default.
   return LANGUAGES.map((lang) => {
     const loc = `${BASE_URL}${buildLangPath(lang.prefix, entry.path)}`;
     const alternates = LANGUAGES.map(
@@ -79,17 +95,35 @@ function urlBlock(entry: SitemapEntry): string[] {
   });
 }
 
-function generateSitemap(entries: SitemapEntry[]): string {
-  const urls = entries.flatMap(urlBlock);
+function localeOnlyBlock(entry: LocaleOnlyEntry): string {
+  const loc = `${BASE_URL}${buildLangPath(entry.prefix, entry.path)}`;
+  return [
+    `  <url>`,
+    `    <loc>${loc}</loc>`,
+    entry.lastmod ? `    <lastmod>${entry.lastmod}</lastmod>` : null,
+    entry.changefreq ? `    <changefreq>${entry.changefreq}</changefreq>` : null,
+    entry.priority ? `    <priority>${entry.priority}</priority>` : null,
+    `  </url>`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function generateSitemap(): string {
+  const multi = entries.flatMap(urlBlock);
+  const single = localeOnlyEntries.map(localeOnlyBlock);
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`,
     `        xmlns:xhtml="http://www.w3.org/1999/xhtml">`,
-    ...urls,
+    ...multi,
+    ...single,
     `</urlset>`,
   ].join("\n");
 }
 
-const xml = generateSitemap(entries);
+const xml = generateSitemap();
 writeFileSync(resolve("public/sitemap.xml"), xml);
-console.log(`sitemap.xml written (${entries.length} routes × ${LANGUAGES.length} langs = ${entries.length * LANGUAGES.length} URLs)`);
+const total = entries.length * LANGUAGES.length + localeOnlyEntries.length;
+console.log(`sitemap.xml written (${entries.length} routes × ${LANGUAGES.length} langs + ${localeOnlyEntries.length} locale-only = ${total} URLs)`);
+

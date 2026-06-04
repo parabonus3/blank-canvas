@@ -43,6 +43,7 @@ import SacDashboard from "./pages/sac/SacDashboard";
 import TicketDetail from "./pages/sac/TicketDetail";
 import AgentManager from "./pages/sac/AgentManager";
 import { LangShell } from "./components/LangShell";
+import LocalizedLandingPage from "./pages/LocalizedLandingPage";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,8 @@ const App = () => (
                     <Route path="pricing" element={<Pricing />} />
                     <Route path="reset-password" element={<ResetPassword />} />
                     <Route path="room-preview/:code" element={<RoomPreview />} />
+                    {/* Keyword-targeted localized landings (Sprint 1: JP+KR) */}
+                    <Route path=":slug" element={<LocalizedLandingPage />} />
                   </Route>
 
                   <Route path="/" element={<Landing />} />
