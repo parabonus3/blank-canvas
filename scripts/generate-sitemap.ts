@@ -72,6 +72,9 @@ const localeOnlyEntries: LocaleOnlyEntry[] = [
   { prefix: "fr", path: "/minuteur-etude",       changefreq: "monthly", priority: "0.9", lastmod: today },
   { prefix: "it", path: "/timer-studio",         changefreq: "monthly", priority: "0.9", lastmod: today },
   { prefix: "ru", path: "/tajmer-uchyoby",       changefreq: "monthly", priority: "0.9", lastmod: today },
+  // Phase E — native blog posts (JP + KR)
+  { prefix: "ja", path: "/blog/online-jishuushitsu-tsukaikata", changefreq: "monthly", priority: "0.7", lastmod: today },
+  { prefix: "ko", path: "/blog/study-with-me-gongbu-supgwan",   changefreq: "monthly", priority: "0.7", lastmod: today },
 ];
 
 function buildLangPath(prefix: string, path: string): string {

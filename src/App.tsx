@@ -44,6 +44,7 @@ import TicketDetail from "./pages/sac/TicketDetail";
 import AgentManager from "./pages/sac/AgentManager";
 import { LangShell } from "./components/LangShell";
 import LocalizedLandingPage from "./pages/LocalizedLandingPage";
+import BlogPostPage from "./pages/BlogPostPage";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,8 @@ const App = () => (
                     <Route path="pricing" element={<Pricing />} />
                     <Route path="reset-password" element={<ResetPassword />} />
                     <Route path="room-preview/:code" element={<RoomPreview />} />
+                    {/* Native blog posts per locale (Phase E content) */}
+                    <Route path="blog/:slug" element={<BlogPostPage />} />
                     {/* Keyword-targeted localized landings (Sprint 1: JP+KR) */}
                     <Route path=":slug" element={<LocalizedLandingPage />} />
                   </Route>
