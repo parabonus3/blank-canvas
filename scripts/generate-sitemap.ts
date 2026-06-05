@@ -57,10 +57,21 @@ const entries: SitemapEntry[] = [
 // Single-locale landing pages (Sprint 1: JP + KR keyword targeting).
 // Kept in sync with src/lib/localizedLandings.ts
 const localeOnlyEntries: LocaleOnlyEntry[] = [
-  { prefix: "ja", path: "/jishuushitsu",  changefreq: "monthly", priority: "0.9", lastmod: today },
-  { prefix: "ja", path: "/benkyou-timer", changefreq: "monthly", priority: "0.9", lastmod: today },
-  { prefix: "ko", path: "/study-with-me", changefreq: "monthly", priority: "0.9", lastmod: today },
-  { prefix: "ko", path: "/gongbu-timer",  changefreq: "monthly", priority: "0.9", lastmod: today },
+  // Sprint 1 — JP + KR
+  { prefix: "ja", path: "/jishuushitsu",         changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ja", path: "/benkyou-timer",        changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ko", path: "/study-with-me",        changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ko", path: "/gongbu-timer",         changefreq: "monthly", priority: "0.9", lastmod: today },
+  // Sprint 2 — quick wins (EN/ES/DE/FR/IT/RU)
+  { prefix: "en", path: "/study-timer-online",   changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "en", path: "/pomodoro-study-timer", changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "es", path: "/sala-de-estudio-online", changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "es", path: "/temporizador-de-estudio", changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "de", path: "/lernzeit-timer",       changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "de", path: "/online-lernraum",      changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "fr", path: "/minuteur-etude",       changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "it", path: "/timer-studio",         changefreq: "monthly", priority: "0.9", lastmod: today },
+  { prefix: "ru", path: "/tajmer-uchyoby",       changefreq: "monthly", priority: "0.9", lastmod: today },
 ];
 
 function buildLangPath(prefix: string, path: string): string {
