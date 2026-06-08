@@ -424,7 +424,8 @@
     "add_password": "Ajouter un mot de passe",
     "delete_folder_cascade_desc": "Cela supprimera définitivement le dossier ET toutes les notes à l'intérieur.",
     "delete_folder_warning": "Toutes les notes de ce dossier seront supprimées définitivement.",
-    "enter_password_to_delete": "Entrez le mot de passe du dossier pour confirmer"
+    "enter_password_to_delete": "Entrez le mot de passe du dossier pour confirmer",
+    "download_pdf": "Télécharger en PDF"
   },
   "settings": {
     "title": "Paramètres",

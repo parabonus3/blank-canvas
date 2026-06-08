@@ -424,7 +424,8 @@
     "add_password": "Passwort hinzufügen",
     "delete_folder_cascade_desc": "Der Ordner und ALLE Notizen darin werden dauerhaft gelöscht.",
     "delete_folder_warning": "Alle Notizen in diesem Ordner werden dauerhaft gelöscht.",
-    "enter_password_to_delete": "Geben Sie das Ordnerpasswort ein, um zu bestätigen"
+    "enter_password_to_delete": "Geben Sie das Ordnerpasswort ein, um zu bestätigen",
+    "download_pdf": "Als PDF herunterladen"
   },
   "settings": {
     "title": "Einstellungen",

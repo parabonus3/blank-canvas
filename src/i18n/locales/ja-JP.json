@@ -424,7 +424,8 @@
     "add_password": "パスワードを追加",
     "delete_folder_cascade_desc": "フォルダとその中のすべてのノートが完全に削除されます。",
     "delete_folder_warning": "このフォルダ内のすべてのノートが完全に削除されます。",
-    "enter_password_to_delete": "削除を確認するためにフォルダのパスワードを入力してください"
+    "enter_password_to_delete": "削除を確認するためにフォルダのパスワードを入力してください",
+    "download_pdf": "PDFでダウンロード"
   },
   "settings": {
     "title": "設定",

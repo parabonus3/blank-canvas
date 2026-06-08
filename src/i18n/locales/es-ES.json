@@ -424,7 +424,8 @@
     "add_password": "Agregar contraseña",
     "delete_folder_cascade_desc": "Esto eliminará permanentemente la carpeta Y todas las notas dentro. Esta acción no se puede deshacer.",
     "delete_folder_warning": "Todas las notas en esta carpeta se eliminarán permanentemente.",
-    "enter_password_to_delete": "Ingresa la contraseña de la carpeta para confirmar"
+    "enter_password_to_delete": "Ingresa la contraseña de la carpeta para confirmar",
+    "download_pdf": "Descargar en PDF"
   },
   "settings": {
     "title": "Configuración",

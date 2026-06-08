@@ -424,7 +424,8 @@
     "add_password": "إضافة كلمة مرور",
     "delete_folder_cascade_desc": "سيتم حذف المجلد وجميع الملاحظات بداخله نهائياً.",
     "delete_folder_warning": "سيتم حذف جميع الملاحظات في هذا المجلد نهائياً.",
-    "enter_password_to_delete": "أدخل كلمة مرور المجلد للتأكيد"
+    "enter_password_to_delete": "أدخل كلمة مرور المجلد للتأكيد",
+    "download_pdf": "تنزيل بصيغة PDF"
   },
   "settings": {
     "title": "الإعدادات",
