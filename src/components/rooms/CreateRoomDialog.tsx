@@ -137,7 +137,7 @@ export function CreateRoomDialog({ open, onOpenChange }: Props) {
               <Link to="/pricing">{t("rooms.upgrade_for_more")}</Link>
             </Button>
           </div>
-          </div>
+
         ) : (
         <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-4 space-y-3 sm:space-y-4 min-h-0">
           <div className="text-xs text-muted-foreground mb-1">
