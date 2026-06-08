@@ -1116,7 +1116,8 @@
     "level_veteran": "베테랑",
     "level_master": "마스터",
     "level_legend": "전설",
-    "focus_completed_celebration": "🎉 세션 완료!"
+    "focus_completed_celebration": "🎉 세션 완료!",
+    "enter_room": "방 열기"
   },
   "explore": {
     "title": "방 탐색",

@@ -1116,7 +1116,8 @@
     "level_veteran": "Ветеран",
     "level_master": "Мастер",
     "level_legend": "Легенда",
-    "focus_completed_celebration": "🎉 Сессия завершена!"
+    "focus_completed_celebration": "🎉 Сессия завершена!",
+    "enter_room": "Открыть комнату"
   },
   "explore": {
     "title": "Исследовать Комнаты",

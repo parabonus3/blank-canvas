@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { JoinPasswordDialog } from "@/components/rooms/JoinPasswordDialog";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
-import { useJoinPublicRoom } from "@/hooks/useRooms";
+import { useJoinPublicRoom, useRooms } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
 import { RoomFrame } from "@/components/RoomFrame";
 
@@ -54,6 +54,8 @@ export default function Explore() {
   const [period, setPeriod] = useState<RankingPeriod>("now");
   const [passwordDialog, setPasswordDialog] = useState<{ open: boolean; roomId: string; roomName: string }>({ open: false, roomId: "", roomName: "" });
   const joinPublicRoom = useJoinPublicRoom();
+  const { data: myRooms = [] } = useRooms();
+  const myRoomIds = useMemo(() => new Set(myRooms.map((r) => r.id)), [myRooms]);
 
   // Room ranking query
   const { data: rooms = [], isLoading: roomsLoading } = useQuery({
@@ -87,6 +89,10 @@ export default function Explore() {
   });
 
   const handleJoin = async (room: any) => {
+    if (myRoomIds.has(room.room_id)) {
+      navigate(`/rooms/${room.room_id}`);
+      return;
+    }
     const { data: hasPassword } = await supabase.rpc("room_has_password", { _room_id: room.room_id });
     if (hasPassword) {
       setPasswordDialog({ open: true, roomId: room.room_id, roomName: room.name });
@@ -217,17 +223,20 @@ export default function Explore() {
                   const metric = getSecondaryMetric(room);
 
                   const isPrivate = room.is_public === false;
+                  const isMember = myRoomIds.has(room.room_id);
                   return (
                     <RoomFrame
                       key={room.room_id}
                       background={!isPrivate ? room.room_background : null}
                       rounded="rounded-xl"
-                      className={cn("transition-all hover:shadow-md", isPrivate && "opacity-90")}
+                      className={cn("transition-all hover:shadow-md", isPrivate && !isMember && "opacity-90")}
                     >
                     <div
+                      onClick={isMember ? () => navigate(`/rooms/${room.room_id}`) : undefined}
                       className={cn(
                         "relative overflow-hidden rounded-[inherit] p-4 flex flex-col sm:flex-row sm:items-center gap-4",
-                        isTop3 && "ring-1 ring-primary/30"
+                        isTop3 && "ring-1 ring-primary/30",
+                        isMember && "cursor-pointer"
                       )}
                     >
                       <div className="relative z-10 flex items-center gap-3 sm:w-12 shrink-0">
@@ -239,31 +248,31 @@ export default function Explore() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          {isPrivate ? (
+                          {isPrivate && !isMember ? (
                             <Lock className="h-4 w-4 text-muted-foreground shrink-0" />
                           ) : (
                             <Icon className="h-4 w-4 text-primary shrink-0" />
                           )}
-                          {!isPrivate && flag && <span className="text-base shrink-0">{flag}</span>}
-                          <h3 className={cn("font-semibold truncate", isPrivate && "italic text-muted-foreground")}>{room.name}</h3>
+                          {(!isPrivate || isMember) && flag && <span className="text-base shrink-0">{flag}</span>}
+                          <h3 className={cn("font-semibold truncate", isPrivate && !isMember && "italic text-muted-foreground")}>{room.name}</h3>
                           {!isPrivate && index < 10 && (
                             <span className="text-[10px] bg-yellow-500/10 text-yellow-600 px-1.5 py-0.5 rounded-full font-medium shrink-0 flex items-center gap-0.5">
                               <Trophy className="h-3 w-3" /> Top 10
                             </span>
                           )}
                         </div>
-                        {!isPrivate && room.description && (
+                        {(!isPrivate || isMember) && room.description && (
                           <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{room.description}</p>
                         )}
                       </div>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground shrink-0">
-                        {!isPrivate && (
+                        {(!isPrivate || isMember) && (
                           <div className="flex items-center gap-1">
                             <Users className="h-3.5 w-3.5" />
                             <span>{room.member_count}</span>
                           </div>
                         )}
-                        {!isPrivate && (
+                        {(!isPrivate || isMember) && (
                           <div className="flex items-center gap-1">
                             <Wifi className="h-3.5 w-3.5 text-green-500" />
                             <span>{room.online_count}</span>
@@ -275,19 +284,28 @@ export default function Explore() {
                             <span>{room.studying_count}</span>
                           </div>
                         )}
-                        {!isPrivate && (
+                        {(!isPrivate || isMember) && (
                           <div className="flex items-center gap-1">
                             <Clock className="h-3.5 w-3.5" />
                             <span>{metric.value}</span>
                           </div>
                         )}
                       </div>
-                      {isPrivate ? (
+                      {isMember ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) => { e.stopPropagation(); navigate(`/rooms/${room.room_id}`); }}
+                          className="shrink-0"
+                        >
+                          {t("rooms.enter_room")}
+                        </Button>
+                      ) : isPrivate ? (
                         <Button size="sm" variant="outline" disabled className="shrink-0">
                           <Lock className="h-3.5 w-3.5 mr-1" /> {t("rooms.private") || "Privada"}
                         </Button>
                       ) : (
-                        <Button size="sm" onClick={() => handleJoin(room)} className="shrink-0">
+                        <Button size="sm" onClick={(e) => { e.stopPropagation(); handleJoin(room); }} className="shrink-0">
                           {t("rooms.join")}
                         </Button>
                       )}

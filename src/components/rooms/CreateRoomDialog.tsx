@@ -122,13 +122,13 @@ export function CreateRoomDialog({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="w-[calc(100%-1rem)] sm:max-w-md max-h-[92dvh] sm:max-h-[85vh] flex flex-col gap-0 p-0">
+        <DialogHeader className="px-6 pt-6 pb-2 shrink-0">
           <DialogTitle>{t("rooms.create_room")}</DialogTitle>
         </DialogHeader>
 
         {!loadingCount && limitReached ? (
-          <div className="py-6 text-center space-y-3">
+          <div className="px-6 py-6 text-center space-y-3 overflow-y-auto">
             <AlertTriangle className="h-10 w-10 text-amber-500 mx-auto" />
             <p className="text-sm text-muted-foreground">
               {t("rooms.room_limit_reached", { max: maxRooms, plan: tier.charAt(0).toUpperCase() + tier.slice(1) })}
@@ -137,8 +137,9 @@ export function CreateRoomDialog({ open, onOpenChange }: Props) {
               <Link to="/pricing">{t("rooms.upgrade_for_more")}</Link>
             </Button>
           </div>
+
         ) : (
-        <div className="space-y-4">
+        <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-4 space-y-3 sm:space-y-4 min-h-0">
           <div className="text-xs text-muted-foreground mb-1">
             {t("rooms.rooms_used", { used: ownedRoomCount, max: maxRooms })}
           </div>
@@ -281,11 +282,11 @@ export function CreateRoomDialog({ open, onOpenChange }: Props) {
         </div>
         )}
         {!limitReached && (
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="px-6 py-4 border-t bg-background shrink-0 flex-col-reverse sm:flex-row gap-2">
+          <Button variant="ghost" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
             {t("common.cancel")}
           </Button>
-          <Button onClick={handleCreate} disabled={!name.trim() || isPending || passwordTooShort}>
+          <Button onClick={handleCreate} disabled={!name.trim() || isPending || passwordTooShort} className="w-full sm:w-auto">
             {t("common.create")}
           </Button>
         </DialogFooter>

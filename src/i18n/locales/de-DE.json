@@ -1116,7 +1116,8 @@
     "level_veteran": "Veteran",
     "level_master": "Meister",
     "level_legend": "Legende",
-    "focus_completed_celebration": "🎉 Sitzung abgeschlossen!"
+    "focus_completed_celebration": "🎉 Sitzung abgeschlossen!",
+    "enter_room": "Raum öffnen"
   },
   "explore": {
     "title": "Räume Entdecken",

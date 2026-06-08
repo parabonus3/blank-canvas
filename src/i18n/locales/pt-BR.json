@@ -1905,7 +1905,8 @@
     "level_legend": "Lenda",
     "focus_completed_celebration": "🎉 Sessão concluída!",
     "streak_warning": "Estude hoje para manter sua sequência!",
-    "room_streak": "Sala ativa"
+    "room_streak": "Sala ativa",
+    "enter_room": "Entrar na sala"
   },
   "explore": {
     "title": "Explorar Salas",
