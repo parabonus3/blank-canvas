@@ -282,11 +282,11 @@ export function CreateRoomDialog({ open, onOpenChange }: Props) {
         </div>
         )}
         {!limitReached && (
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="px-6 py-4 border-t bg-background shrink-0 flex-col-reverse sm:flex-row gap-2">
+          <Button variant="ghost" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
             {t("common.cancel")}
           </Button>
-          <Button onClick={handleCreate} disabled={!name.trim() || isPending || passwordTooShort}>
+          <Button onClick={handleCreate} disabled={!name.trim() || isPending || passwordTooShort} className="w-full sm:w-auto">
             {t("common.create")}
           </Button>
         </DialogFooter>
