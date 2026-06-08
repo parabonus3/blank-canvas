@@ -424,7 +424,8 @@
     "add_password": "Tambah kata sandi",
     "delete_folder_cascade_desc": "Folder dan SEMUA catatan di dalamnya akan dihapus secara permanen.",
     "delete_folder_warning": "Semua catatan di folder ini akan dihapus secara permanen.",
-    "enter_password_to_delete": "Masukkan kata sandi folder untuk mengonfirmasi"
+    "enter_password_to_delete": "Masukkan kata sandi folder untuk mengonfirmasi",
+    "download_pdf": "Unduh sebagai PDF"
   },
   "settings": {
     "title": "Pengaturan",

@@ -424,7 +424,8 @@
     "add_password": "添加密码",
     "delete_folder_cascade_desc": "文件夹及其中的所有笔记将被永久删除。",
     "delete_folder_warning": "此文件夹中的所有笔记将被永久删除。",
-    "enter_password_to_delete": "输入文件夹密码以确认删除"
+    "enter_password_to_delete": "输入文件夹密码以确认删除",
+    "download_pdf": "下载为 PDF"
   },
   "settings": {
     "title": "设置",

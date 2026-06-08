@@ -1095,7 +1095,8 @@
     "add_password": "Adicionar senha",
     "delete_folder_cascade_desc": "Isso excluirá permanentemente a pasta E todas as anotações dentro dela. Esta ação não pode ser desfeita.",
     "delete_folder_warning": "Todas as anotações nesta pasta serão excluídas permanentemente. Isso não pode ser revertido.",
-    "enter_password_to_delete": "Digite a senha da pasta para confirmar a exclusão"
+    "enter_password_to_delete": "Digite a senha da pasta para confirmar a exclusão",
+    "download_pdf": "Baixar em PDF"
   },
   "settings": {
     "title": "Configurações",

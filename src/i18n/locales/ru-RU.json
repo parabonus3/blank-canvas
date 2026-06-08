@@ -424,7 +424,8 @@
     "add_password": "Добавить пароль",
     "delete_folder_cascade_desc": "Папка и ВСЕ заметки в ней будут удалены безвозвратно.",
     "delete_folder_warning": "Все заметки в этой папке будут удалены безвозвратно.",
-    "enter_password_to_delete": "Введите пароль папки для подтверждения"
+    "enter_password_to_delete": "Введите пароль папки для подтверждения",
+    "download_pdf": "Скачать в PDF"
   },
   "settings": {
     "title": "Настройки",

@@ -1093,7 +1093,8 @@
     "add_password": "Add password",
     "delete_folder_cascade_desc": "This will permanently delete the folder AND all notes inside it. This action cannot be undone.",
     "delete_folder_warning": "All notes in this folder will be permanently deleted. This cannot be reversed.",
-    "enter_password_to_delete": "Enter the folder password to confirm deletion"
+    "enter_password_to_delete": "Enter the folder password to confirm deletion",
+    "download_pdf": "Download as PDF"
   },
   "settings": {
     "title": "Settings",

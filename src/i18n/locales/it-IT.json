@@ -424,7 +424,8 @@
     "add_password": "Aggiungi password",
     "delete_folder_cascade_desc": "La cartella e TUTTE le note al suo interno verranno eliminate definitivamente.",
     "delete_folder_warning": "Tutte le note in questa cartella verranno eliminate definitivamente.",
-    "enter_password_to_delete": "Inserisci la password della cartella per confermare"
+    "enter_password_to_delete": "Inserisci la password della cartella per confermare",
+    "download_pdf": "Scarica in PDF"
   },
   "settings": {
     "title": "Impostazioni",
