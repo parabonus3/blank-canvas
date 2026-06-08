@@ -1850,7 +1850,8 @@
     "level_legend": "Legend",
     "focus_completed_celebration": "🎉 Session completed!",
     "streak_warning": "Study today to keep your streak!",
-    "room_streak": "Room streak"
+    "room_streak": "Room streak",
+    "enter_room": "Open room"
   },
   "explore": {
     "title": "Explore Rooms",

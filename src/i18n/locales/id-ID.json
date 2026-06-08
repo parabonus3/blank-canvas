@@ -1116,7 +1116,8 @@
     "level_veteran": "Veteran",
     "level_master": "Master",
     "level_legend": "Legenda",
-    "focus_completed_celebration": "🎉 Sesi selesai!"
+    "focus_completed_celebration": "🎉 Sesi selesai!",
+    "enter_room": "Buka ruang"
   },
   "explore": {
     "title": "Jelajahi Ruangan",

@@ -1116,7 +1116,8 @@
     "level_veteran": "محترف",
     "level_master": "خبير",
     "level_legend": "أسطورة",
-    "focus_completed_celebration": "🎉 اكتملت الجلسة!"
+    "focus_completed_celebration": "🎉 اكتملت الجلسة!",
+    "enter_room": "دخول الغرفة"
   },
   "explore": {
     "title": "استكشاف الغرف",

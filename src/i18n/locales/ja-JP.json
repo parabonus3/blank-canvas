@@ -1116,7 +1116,8 @@
     "level_veteran": "ベテラン",
     "level_master": "マスター",
     "level_legend": "レジェンド",
-    "focus_completed_celebration": "🎉 セッション完了!"
+    "focus_completed_celebration": "🎉 セッション完了!",
+    "enter_room": "ルームを開く"
   },
   "explore": {
     "title": "ルームを探索",

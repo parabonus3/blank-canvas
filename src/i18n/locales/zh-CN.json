@@ -1116,7 +1116,8 @@
     "level_veteran": "老兵",
     "level_master": "大师",
     "level_legend": "传奇",
-    "focus_completed_celebration": "🎉 会话完成!"
+    "focus_completed_celebration": "🎉 会话完成!",
+    "enter_room": "进入房间"
   },
   "explore": {
     "title": "探索房间",
