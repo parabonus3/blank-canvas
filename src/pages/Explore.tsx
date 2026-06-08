@@ -89,6 +89,10 @@ export default function Explore() {
   });
 
   const handleJoin = async (room: any) => {
+    if (myRoomIds.has(room.room_id)) {
+      navigate(`/rooms/${room.room_id}`);
+      return;
+    }
     const { data: hasPassword } = await supabase.rpc("room_has_password", { _room_id: room.room_id });
     if (hasPassword) {
       setPasswordDialog({ open: true, roomId: room.room_id, roomName: room.name });
