@@ -848,10 +848,40 @@ export default function Notes() {
                         </div>
 
                         <div className="flex flex-col gap-1 shrink-0">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(note)}>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEditDialog(note)} title={t("common.edit")}>
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => confirmDelete(note.id)}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            title={t("notes.download_pdf")}
+                            onClick={() => {
+                              exportNoteToPDF({
+                                title: note.title,
+                                content: note.content,
+                                projectName: note.project?.name || null,
+                                folderName: noteFolder?.name || null,
+                                createdAt: formatInTz(new Date(note.created_at), "PPp"),
+                                updatedAt:
+                                  note.updated_at !== note.created_at
+                                    ? formatInTz(new Date(note.updated_at), "PPp")
+                                    : undefined,
+                                i18n: {
+                                  docTitle: t("notes.title"),
+                                  project: t("common.project", { defaultValue: "Project" }),
+                                  folder: t("notes.folder"),
+                                  createdOn: t("notes.created_at") + ":",
+                                  updatedOn: t("notes.updated_at") + ":",
+                                  footer: `TimeZoni · ${formatInTz(new Date(), "PPp")}`,
+                                  pageOf: (p, total) => `${p} / ${total}`,
+                                },
+                              });
+                            }}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => confirmDelete(note.id)} title={t("common.delete")}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
