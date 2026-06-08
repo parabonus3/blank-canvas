@@ -76,6 +76,7 @@ import {
 } from "lucide-react";
 import { startOfDay, startOfWeek, startOfMonth, isAfter, isBefore, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
+import { exportNoteToPDF } from "@/lib/pdfExport";
 
 export default function Notes() {
   const { t } = useTranslation();
