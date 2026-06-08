@@ -122,13 +122,13 @@ export function CreateRoomDialog({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="w-[calc(100%-1rem)] sm:max-w-md max-h-[92dvh] sm:max-h-[85vh] flex flex-col gap-0 p-0">
+        <DialogHeader className="px-6 pt-6 pb-2 shrink-0">
           <DialogTitle>{t("rooms.create_room")}</DialogTitle>
         </DialogHeader>
 
         {!loadingCount && limitReached ? (
-          <div className="py-6 text-center space-y-3">
+          <div className="px-6 py-6 text-center space-y-3 overflow-y-auto">
             <AlertTriangle className="h-10 w-10 text-amber-500 mx-auto" />
             <p className="text-sm text-muted-foreground">
               {t("rooms.room_limit_reached", { max: maxRooms, plan: tier.charAt(0).toUpperCase() + tier.slice(1) })}
