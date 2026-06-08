@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { JoinPasswordDialog } from "@/components/rooms/JoinPasswordDialog";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
-import { useJoinPublicRoom } from "@/hooks/useRooms";
+import { useJoinPublicRoom, useRooms } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
 import { RoomFrame } from "@/components/RoomFrame";
 
