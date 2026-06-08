@@ -386,3 +386,317 @@ export async function exportDashboardToPDF(elementId: string, title: string): Pr
   drawFooter(pdf, pageWidth, pageHeight, 1, 1, `TimeZoni · ${generatedAt}`, '1 / 1');
   pdf.save(`timezoni-dashboard-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
 }
+
+// ============================================================================
+// SINGLE NOTE PDF (clean, professional, markdown-aware)
+// ============================================================================
+
+export interface NotePDFData {
+  title: string;
+  content: string;
+  projectName?: string | null;
+  folderName?: string | null;
+  createdAt: string;   // formatted
+  updatedAt?: string;  // formatted (only if changed)
+  i18n: {
+    docTitle: string;       // e.g. "Anotação"
+    project: string;
+    folder: string;
+    createdOn: string;
+    updatedOn: string;
+    footer: string;         // e.g. "TimeZoni · Gerado em ..."
+    pageOf: (page: number, total: number) => string;
+  };
+}
+
+interface ParsedBlock {
+  type: 'h1' | 'h2' | 'h3' | 'p' | 'ul' | 'ol' | 'code' | 'quote' | 'hr' | 'spacer';
+  text?: string;
+  items?: string[];
+}
+
+function stripInline(s: string): string {
+  // Strip bold/italic/code markers but keep link text
+  return s
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1');
+}
+
+function parseMarkdown(md: string): ParsedBlock[] {
+  const lines = md.replace(/\r\n/g, '\n').split('\n');
+  const blocks: ParsedBlock[] = [];
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      if (blocks.length && blocks[blocks.length - 1].type !== 'spacer') {
+        blocks.push({ type: 'spacer' });
+      }
+      i++;
+      continue;
+    }
+
+    // Code fence
+    if (trimmed.startsWith('```')) {
+      const buf: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        buf.push(lines[i]);
+        i++;
+      }
+      i++;
+      blocks.push({ type: 'code', text: buf.join('\n') });
+      continue;
+    }
+
+    // Headings
+    const h = /^(#{1,3})\s+(.*)$/.exec(trimmed);
+    if (h) {
+      const lvl = h[1].length;
+      blocks.push({ type: lvl === 1 ? 'h1' : lvl === 2 ? 'h2' : 'h3', text: stripInline(h[2]) });
+      i++;
+      continue;
+    }
+
+    // Horizontal rule
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      blocks.push({ type: 'hr' });
+      i++;
+      continue;
+    }
+
+    // Quote
+    if (trimmed.startsWith('>')) {
+      const buf: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        buf.push(stripInline(lines[i].trim().replace(/^>\s?/, '')));
+        i++;
+      }
+      blocks.push({ type: 'quote', text: buf.join(' ') });
+      continue;
+    }
+
+    // Unordered list
+    if (/^[-*+]\s+/.test(trimmed)) {
+      const items: string[] = [];
+      while (i < lines.length && /^[-*+]\s+/.test(lines[i].trim())) {
+        items.push(stripInline(lines[i].trim().replace(/^[-*+]\s+/, '')));
+        i++;
+      }
+      blocks.push({ type: 'ul', items });
+      continue;
+    }
+
+    // Ordered list
+    if (/^\d+\.\s+/.test(trimmed)) {
+      const items: string[] = [];
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
+        items.push(stripInline(lines[i].trim().replace(/^\d+\.\s+/, '')));
+        i++;
+      }
+      blocks.push({ type: 'ol', items });
+      continue;
+    }
+
+    // Paragraph (gather consecutive non-empty, non-special lines)
+    const buf: string[] = [trimmed];
+    i++;
+    while (i < lines.length) {
+      const t = lines[i].trim();
+      if (!t) break;
+      if (/^(#{1,3}\s|[-*+]\s|\d+\.\s|>|```|-{3,}$|\*{3,}$|_{3,}$)/.test(t)) break;
+      buf.push(t);
+      i++;
+    }
+    blocks.push({ type: 'p', text: stripInline(buf.join(' ')) });
+  }
+  return blocks;
+}
+
+export async function exportNoteToPDF(data: NotePDFData): Promise<void> {
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const marginX = 18;
+  const contentW = pageWidth - marginX * 2;
+  const bottomLimit = pageHeight - 16;
+
+  drawHeader(pdf, pageWidth, data.i18n.docTitle);
+
+  let y = 48;
+
+  // Title
+  pdf.setTextColor(...COLORS.black);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(20);
+  const titleLines = pdf.splitTextToSize(data.title || '—', contentW);
+  pdf.text(titleLines, marginX, y);
+  y += titleLines.length * 8 + 2;
+
+  // Meta line
+  const metaParts: string[] = [];
+  if (data.projectName) metaParts.push(`${data.i18n.project}: ${data.projectName}`);
+  if (data.folderName) metaParts.push(`${data.i18n.folder}: ${data.folderName}`);
+  metaParts.push(`${data.i18n.createdOn} ${data.createdAt}`);
+  if (data.updatedAt) metaParts.push(`${data.i18n.updatedOn} ${data.updatedAt}`);
+
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(9);
+  pdf.setTextColor(...COLORS.gray600);
+  const metaLines = pdf.splitTextToSize(metaParts.join('  ·  '), contentW);
+  pdf.text(metaLines, marginX, y);
+  y += metaLines.length * 4.5 + 4;
+
+  // Divider
+  pdf.setDrawColor(...COLORS.primary);
+  pdf.setLineWidth(0.6);
+  pdf.line(marginX, y, marginX + 28, y);
+  y += 6;
+
+  const ensureSpace = (need: number) => {
+    if (y + need > bottomLimit) {
+      pdf.addPage();
+      drawHeader(pdf, pageWidth, data.i18n.docTitle);
+      y = 48;
+    }
+  };
+
+  const writeText = (text: string, opts: { size: number; bold?: boolean; color?: [number, number, number]; indent?: number; lineGap?: number }) => {
+    pdf.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+    pdf.setFontSize(opts.size);
+    pdf.setTextColor(...(opts.color || COLORS.black));
+    const indent = opts.indent || 0;
+    const wrapped = pdf.splitTextToSize(text, contentW - indent);
+    const lineH = opts.size * 0.45 + (opts.lineGap || 0);
+    for (const line of wrapped) {
+      ensureSpace(lineH);
+      pdf.text(line, marginX + indent, y);
+      y += lineH;
+    }
+  };
+
+  const blocks = parseMarkdown(data.content || '');
+  if (blocks.length === 0) {
+    writeText('—', { size: 11, color: COLORS.gray600 });
+  }
+
+  for (const b of blocks) {
+    switch (b.type) {
+      case 'h1':
+        ensureSpace(12);
+        y += 2;
+        writeText(b.text!, { size: 16, bold: true, lineGap: 1.5 });
+        y += 2;
+        break;
+      case 'h2':
+        ensureSpace(10);
+        y += 1.5;
+        writeText(b.text!, { size: 13, bold: true, lineGap: 1 });
+        y += 1.5;
+        break;
+      case 'h3':
+        ensureSpace(8);
+        writeText(b.text!, { size: 11, bold: true, lineGap: 0.5 });
+        y += 1;
+        break;
+      case 'p':
+        writeText(b.text!, { size: 10.5, lineGap: 1 });
+        y += 1.5;
+        break;
+      case 'ul':
+        for (const item of b.items!) {
+          ensureSpace(6);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(10.5);
+          pdf.setTextColor(...COLORS.primary);
+          pdf.text('•', marginX + 2, y);
+          writeText(item, { size: 10.5, indent: 7, lineGap: 1 });
+        }
+        y += 1.5;
+        break;
+      case 'ol':
+        b.items!.forEach((item, idx) => {
+          ensureSpace(6);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(10.5);
+          pdf.setTextColor(...COLORS.primary);
+          pdf.text(`${idx + 1}.`, marginX + 1, y);
+          writeText(item, { size: 10.5, indent: 8, lineGap: 1 });
+        });
+        y += 1.5;
+        break;
+      case 'code': {
+        const codeLines = (b.text || '').split('\n');
+        const lineH = 4.5;
+        const boxH = codeLines.length * lineH + 6;
+        ensureSpace(boxH);
+        pdf.setFillColor(...COLORS.gray50);
+        pdf.setDrawColor(...COLORS.gray100);
+        pdf.roundedRect(marginX, y - 1, contentW, boxH, 1.5, 1.5, 'FD');
+        pdf.setFont('courier', 'normal');
+        pdf.setFontSize(9);
+        pdf.setTextColor(...COLORS.black);
+        let cy = y + 4;
+        for (const line of codeLines) {
+          const wrapped = pdf.splitTextToSize(line || ' ', contentW - 6);
+          for (const w of wrapped) {
+            if (cy + lineH > bottomLimit) {
+              pdf.addPage();
+              drawHeader(pdf, pageWidth, data.i18n.docTitle);
+              y = 48;
+              cy = y + 4;
+            }
+            pdf.text(w, marginX + 3, cy);
+            cy += lineH;
+          }
+        }
+        y = cy + 3;
+        break;
+      }
+      case 'quote': {
+        const wrapped = pdf.splitTextToSize(b.text || '', contentW - 8);
+        const blockH = wrapped.length * 5 + 4;
+        ensureSpace(blockH);
+        pdf.setDrawColor(...COLORS.primary);
+        pdf.setLineWidth(1.5);
+        pdf.line(marginX, y - 2, marginX, y - 2 + blockH);
+        pdf.setFont('helvetica', 'italic');
+        pdf.setFontSize(10.5);
+        pdf.setTextColor(...COLORS.gray600);
+        let qy = y + 2;
+        for (const line of wrapped) {
+          pdf.text(line, marginX + 5, qy);
+          qy += 5;
+        }
+        y = qy + 2;
+        break;
+      }
+      case 'hr':
+        ensureSpace(6);
+        pdf.setDrawColor(...COLORS.gray100);
+        pdf.setLineWidth(0.4);
+        pdf.line(marginX, y, pageWidth - marginX, y);
+        y += 5;
+        break;
+      case 'spacer':
+        y += 2;
+        break;
+    }
+  }
+
+  const totalPages = pdf.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    pdf.setPage(i);
+    drawFooter(pdf, pageWidth, pageHeight, i, totalPages, data.i18n.footer, data.i18n.pageOf(i, totalPages));
+  }
+
+  const safeTitle = (data.title || 'note').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'note';
+  pdf.save(`${safeTitle}-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+}
