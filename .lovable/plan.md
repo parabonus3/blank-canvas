@@ -1,113 +1,56 @@
+# Plano: responsividade do "Criar Sala" + atalho de entrada no Explorar
 
-# Próximo passo — Fases D e E do SEO internacional
+## 1. Dialog "Criar Sala" totalmente responsivo (mobile)
 
-Fases A+B+C já estão no ar (rotas `/<lang>/*`, metas traduzidas, hreflang, sitemap com 36 URLs). Agora o trabalho deixa de ser técnico e passa a ser **conteúdo + sinalização externa**. Sem isso, o Google vê as 36 URLs mas não tem motivo pra rankear nenhuma — falta página dedicada por keyword e backlinks.
+**Problema:** em telas pequenas (~360–400 px de altura útil) o `DialogContent` de `CreateRoomDialog` ultrapassa a viewport. Como não há área de scroll interna nem altura máxima, o usuário não enxerga o campo "Nome da sala" no topo nem o botão "Criar" no rodapé — fica preso no meio do formulário.
 
-## 1. O que falta resolver
+**Solução:** reestruturar o `DialogContent` em três zonas (header fixo / corpo rolável / footer fixo) com altura máxima atrelada ao viewport.
 
-| Problema | Sintoma | Solução |
-|---|---|---|
-| Landing única tenta rankear pra tudo | Diluição: nenhuma keyword fica forte | Landings dedicadas por keyword âncora |
-| Zero backlinks nos novos mercados | Domain Authority não cresce fora do BR | Diretórios + Product Hunt + parcerias locais |
-| Sitemap novo não foi submetido | Google demora 2-4 semanas pra descobrir sozinho | Submeter via GSC + ping |
-| 11 backlinks tóxicos no perfil | Risco de penalização | Disavow file no GSC |
-| Sem dados de tráfego por idioma | Não dá pra medir o que funciona | GA4 com dimensão de idioma + GSC por país |
+Mudanças em `src/components/rooms/CreateRoomDialog.tsx`:
 
-## 2. Fase D — Landing pages localizadas (maior ROI)
+- `DialogContent` recebe classes:
+  - `max-h-[92dvh] sm:max-h-[85vh]` (usa `dvh` para respeitar barras dinâmicas do mobile)
+  - `flex flex-col gap-0 p-0`
+  - `w-[calc(100%-1rem)] sm:max-w-md` (margem lateral em mobile)
+- `DialogHeader` envolto em `<div class="px-6 pt-6 pb-2 shrink-0">`.
+- Corpo do formulário (atual `<div class="space-y-4">` e o bloco de `limit_reached`) envolvido em um wrapper rolável:
+  - `<div class="flex-1 overflow-y-auto px-6 py-4 space-y-4 overscroll-contain">`
+- `DialogFooter` envolto em `<div class="px-6 py-4 border-t bg-background shrink-0">` para grudar no fundo e nunca sumir; em mobile usar `flex-col-reverse gap-2` para o botão "Criar" ficar acima de "Cancelar" e em destaque.
+- O `ScrollArea` da lista de amigos passa a `max-h-32` já existente, mas com `min-h-0` no pai para não quebrar o flex.
+- Pequenos ajustes de densidade em mobile: `space-y-3` ao invés de `space-y-4` em telas `<sm`.
 
-Criar landings dedicadas por keyword nos mercados de maior potencial. Cada landing é uma **rota pública nova**, indexável, com copy 100% focado numa keyword âncora — não é só tradução da home.
+Resultado esperado: em qualquer aparelho (inclusive iPhone SE / Android pequenos com teclado aberto), o título e o botão "Criar" permanecem visíveis, e o restante do formulário rola dentro do dialog.
 
-### Prioridade 1 — Mercados com cultura "study with me" nativa
+> Observação: a mesma estrutura (header fixo + corpo scroll + footer fixo) pode ser reaproveitada depois em outros dialogs grandes, mas neste plano só corrigimos o de Criar Sala, conforme pedido.
 
-| Rota | Mercado | Keyword alvo | Volume | KDI |
-|---|---|---|---|---|
-| `/ja/jishuushitsu` | 🇯🇵 JP | オンライン 自習室 | 2.900 | 27 |
-| `/ja/benkyou-timer` | 🇯🇵 JP | 勉強 タイマー | 18.100 | 36 |
-| `/ko/study-with-me` | 🇰🇷 KR | 스터디 윗미 | 1.000 | 26 |
-| `/ko/gongbu-timer` | 🇰🇷 KR | 공부 타이머 | 1.000 | 23 |
+## 2. Entrada direta no Explorar quando já sou membro
 
-### Prioridade 2 — Quick wins (KDI baixo, concorrência mínima)
+**Problema:** na página `/explore`, ao clicar em "Entrar" numa sala da qual o usuário já é membro, o fluxo chama `room_has_password` + `join_public_room` novamente, e em salas privadas o botão fica "Privada" mesmo se a pessoa já participar. O usuário precisa ir até `/rooms` para acessar.
 
-| Rota | Mercado | Keyword alvo | Volume | KDI |
-|---|---|---|---|---|
-| `/en/virtual-study-room` | 🇺🇸 US | virtual study room | 110 | 26 |
-| `/en/study-with-me-app` | 🇺🇸 US | study with me app | 20 | 0 |
-| `/es/temporizador-pomodoro` | 🇪🇸 ES | temporizador pomodoro | 880 | 28 |
-| `/es/app-para-estudiar` | 🇪🇸 ES | app para estudiar | 590 | 26 |
-| `/de/fokus-app` | 🇩🇪 DE | fokus app | 140 | 26 |
-| `/de/virtueller-lernraum` | 🇩🇪 DE | virtueller lernraum | 20 | 0 |
-| `/fr/application-concentration` | 🇫🇷 FR | application concentration | 30 | 0 |
-| `/it/sala-studio-online` | 🇮🇹 IT | sala studio online | 20 | 0 |
-| `/ru/prilozhenie-koncentracii` | 🇷🇺 RU | приложение для концентрации | 140 | 24 |
+**Solução:** usar a lista de salas do próprio usuário (`useRooms()`) como fonte de verdade para identificar se ele já é membro e, nesse caso, navegar direto para `/rooms/:id`.
 
-### Prioridade 3 — Mercado BR (já no plano original)
+Mudanças em `src/pages/Explore.tsx`:
 
-| Rota | Keyword |
-|---|---|
-| `/pomodoro` | técnica pomodoro / pomodoro online |
-| `/cronometro-estudo` | cronômetro de estudo |
-| `/salas-de-estudo` | salas de estudo online |
+- Importar `useRooms` de `@/hooks/useRooms` e montar `const myRoomIds = useMemo(() => new Set((myRooms ?? []).map(r => r.id)), [myRooms])`.
+- Em `handleJoin(room)`:
+  - Se `myRoomIds.has(room.room_id)` → `navigate(`/rooms/${room.room_id}`)` e retornar (sem checar senha, sem RPC de join).
+- Renderização do botão na linha da sala:
+  - Calcular `const isMember = myRoomIds.has(room.room_id)`.
+  - Se `isMember` → renderizar botão "Entrar na sala" (texto `t("rooms.open") || t("rooms.enter")`) que chama `navigate(`/rooms/${room.room_id}`)`. Isso vale **inclusive para salas privadas** (substitui o botão desabilitado "Privada" quando o usuário já é membro). Pode receber um leve destaque visual (`variant="secondary"`) para diferenciar de "Entrar".
+  - Se não for membro → comportamento atual (botão "Entrar" para públicas, "Privada" desabilitado para privadas).
+- Tornar o card inteiro clicável também: adicionar `onClick` no wrapper externo do item que, quando `isMember`, navega para a sala (mantendo `stopPropagation` no botão para não duplicar).
 
-### Estrutura de cada landing
+Chaves de tradução novas (em todos os locales `src/i18n/locales/*.json`, dentro de `rooms`):
+- `enter_room`: "Entrar na sala" / "Open room" / equivalentes nas 12 línguas.
 
-Cada landing reusa o layout da Landing principal mas com:
-- **H1** com a keyword exata
-- **Meta title/description** focados na keyword (entrar no `seoTranslations.ts`)
-- **Bloco de copy** explicando o conceito local (ex: na JP, falar de "study with me" como já-conhecido; na DE, explicar o que é "fokus app")
-- **FAQ JSON-LD** com 4-6 perguntas naturais da região (oportunidade de SERP feature)
-- **CTA** redireciona pro `/auth` no idioma correto
-- **Screenshot** com UI no idioma da landing
-- Adicionada ao `generate-sitemap.ts` com hreflang correto
+## 3. Validação
 
-Implementação: componente `<LocalizedLanding>` parametrizado por `(slug, lang, copy)` — uma definição, 13 instâncias. Evita 13 arquivos duplicados.
+- Abrir `/rooms` no preview em viewport mobile (375×667 e 360×640) → clicar "Criar sala" → confirmar que título + botão Criar estão visíveis sem rolar a página e que o formulário rola por dentro.
+- Em `/explore`, com uma conta que já é membro de uma sala listada (pública e privada), confirmar que o botão muda para "Entrar na sala" e leva direto a `/rooms/:id` sem passar pelo fluxo de join.
+- Verificar que para salas das quais não sou membro o comportamento atual continua igual (join público pede senha quando aplicável, privadas seguem com botão "Privada" desabilitado).
 
-## 3. Fase E — Sinalização externa (sem isso, indexação é lenta)
+## Arquivos afetados
 
-### E.1 — Google Search Console (ação imediata, 1 dia)
-- Submeter `/sitemap.xml` no GSC (agora com 36 URLs + landings D = ~49 URLs)
-- Solicitar indexação manual das 4 landings P1 (JP + KR)
-- Subir disavow file com os 11 backlinks tóxicos
-- Adicionar propriedades `sc-domain:timezoni.com` se ainda for por URL-prefix
-
-### E.2 — Diretórios e marketplaces (1-2 semanas)
-
-| Diretório | Mercado | Por quê |
-|---|---|---|
-| Product Hunt | Global | Pico de tráfego + backlink DR 90+ |
-| AlternativeTo | Global | Comparação com Forest, Focusmate |
-| StartupBase, BetaList | Global | Backlinks fáceis |
-| 99fav.com | 🇰🇷 KR | Diretório de apps coreano |
-| Vector / FreeSoft | 🇯🇵 JP | Diretórios de software JP |
-| Genially, Educaplay | 🇪🇸 ES | Comunidades educacionais ES/LATAM |
-| t3n, Deutsche Startups | 🇩🇪 DE | Imprensa tech alemã |
-
-### E.3 — Conteúdo de aquisição (mês 2-3)
-- 1 post de blog por mercado P1 traduzido nativamente (não Google Translate):
-  - JP: "オンライン自習室の使い方 — 集中力を3倍にする方法"
-  - KR: "스터디 윗미로 공부 습관 만들기"
-- Hosteado em `/<lang>/blog/<slug>` com Article JSON-LD
-
-## 4. Medição
-
-Adicionar antes de começar a Fase D:
-- **GA4 custom dimension** = idioma do prefixo da URL (pra ver tráfego por idioma)
-- **GSC**: filtrar Performance por país a cada 2 semanas
-- **KPI 30 dias**: ≥30 das 49 URLs indexadas
-- **KPI 90 dias**: primeiras impressões em JP/KR pra keywords alvo
-- **KPI 180 dias**: primeiros cliques orgânicos fora do BR
-
-## 5. Ordem de execução sugerida
-
-1. **Sprint 1 (essa leva)** — Fase D Prioridade 1: 4 landings JP+KR + adicionar ao sitemap + submeter no GSC
-2. **Sprint 2** — Fase D Prioridade 2: 9 landings quick-win
-3. **Sprint 3** — Fase D Prioridade 3 (BR) + disavow + diretórios globais
-4. **Sprint 4+** — Blog posts nativos + diretórios locais
-
-## 6. Decisões que preciso de você
-
-1. **Componente único parametrizado vs página por arquivo?** Recomendo único (`<LocalizedLanding>`) — menos código, mais fácil manter as 13.
-2. **FAQ JSON-LD por landing?** Recomendo sim — é a forma mais fácil de pegar SERP feature em mercados de baixa concorrência.
-3. **Começo só pelo Sprint 1 (4 landings JP+KR, maior ROI)** ou já vou direto até o Sprint 2 (13 landings total)?
-4. **GA4**: já está instalado no projeto? Se não, adicionar agora pra ter baseline antes de publicar as landings.
-
-Aprovando, executo Sprint 1 + setup de medição.
+- `src/components/rooms/CreateRoomDialog.tsx` (estrutura responsiva)
+- `src/pages/Explore.tsx` (detecção de membro + navegação direta)
+- `src/i18n/locales/*.json` (12 arquivos, nova chave `rooms.enter_room`)
