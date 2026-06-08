@@ -54,6 +54,8 @@ export default function Explore() {
   const [period, setPeriod] = useState<RankingPeriod>("now");
   const [passwordDialog, setPasswordDialog] = useState<{ open: boolean; roomId: string; roomName: string }>({ open: false, roomId: "", roomName: "" });
   const joinPublicRoom = useJoinPublicRoom();
+  const { data: myRooms = [] } = useRooms();
+  const myRoomIds = useMemo(() => new Set(myRooms.map((r) => r.id)), [myRooms]);
 
   // Room ranking query
   const { data: rooms = [], isLoading: roomsLoading } = useQuery({
