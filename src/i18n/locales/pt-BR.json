@@ -1256,7 +1256,9 @@
           "description": "Estrelas orbitando em galáxia"
         }
       }
-    }
+    },
+    "challenge_alerts": "Avisos de meta da sala",
+    "challenge_alerts_desc": "Mostrar aviso no cronômetro quando houver meta ativa na sala selecionada"
   },
   "sidebar": {
     "navigation": "Navegação",
@@ -1907,7 +1909,43 @@
     "focus_completed_celebration": "🎉 Sessão concluída!",
     "streak_warning": "Estude hoje para manter sua sequência!",
     "room_streak": "Sala ativa",
-    "enter_room": "Entrar na sala"
+    "enter_room": "Entrar na sala",
+    "challenges": {
+      "section_title": "Desafios da sala",
+      "new": "Novo desafio",
+      "empty_owner": "Nenhum desafio criado ainda. Clique em \"Novo desafio\" para começar.",
+      "create_title": "Criar desafio",
+      "edit_title": "Editar desafio",
+      "create_desc": "Defina uma meta recorrente para os membros baterem com o cronômetro.",
+      "emoji": "Ícone",
+      "title_label": "Título",
+      "title_placeholder": "Ex: Oração diária",
+      "description_label": "Descrição (opcional)",
+      "description_placeholder": "Ex: 10 minutos de oração todos os dias",
+      "period_label": "Frequência",
+      "period_daily": "Diária",
+      "period_weekly": "Semanal",
+      "period_daily_short": "Diário",
+      "period_weekly_short": "Semanal",
+      "target_minutes": "Minutos por período",
+      "duration_days": "Duração (dias)",
+      "duration_optional": "Opcional",
+      "create_btn": "Criar desafio",
+      "delete_confirm": "Excluir este desafio? Esta ação não pode ser desfeita.",
+      "min_per_period_short": "min",
+      "member": "Membro",
+      "completed_today": "{{done}} de {{total}} bateram a meta",
+      "status_on_track": "Em dia ✓",
+      "status_not_started": "Ainda não começou",
+      "status_missed_short": "{{count}}d sem completar",
+      "status_missed_days": "{{count}} dias sem completar",
+      "missed": "Não bateu",
+      "legend_done": "Cumpriu",
+      "legend_partial": "Parcial",
+      "legend_missed": "Faltou",
+      "banner_remaining": "Faltam {{remaining}} para a meta da sala: {{title}}",
+      "banner_done": "Meta da sala cumprida hoje: {{title}} ✓"
+    }
   },
   "explore": {
     "title": "Explorar Salas",
