@@ -333,7 +333,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
       let newActiveEntryId: string | null = null;
 
       if (nextPhase === 'work' && state.currentProjectId) {
-        const entry = await createPomodoroEntry(state.currentProjectId, 'work');
+        const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
         newActiveEntryId = entry?.id || null;
       }
 
@@ -388,7 +388,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
 
   const start = useCallback(async (projectId: string, roomId?: string) => {
     playPageStart();
-    const entry = await createPomodoroEntry(projectId, 'work');
+    const entry = await createPomodoroEntry(projectId, 'work', roomId || null);
     const duration = config.workDuration;
 
     // Set timer active in room if selected
@@ -513,7 +513,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
     let newActiveEntryId: string | null = null;
 
     if (nextPhase === 'work' && state.currentProjectId) {
-      const entry = await createPomodoroEntry(state.currentProjectId, 'work');
+      const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
       newActiveEntryId = entry?.id || null;
     }
 
