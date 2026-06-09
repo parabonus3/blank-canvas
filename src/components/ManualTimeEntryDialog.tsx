@@ -114,6 +114,7 @@ export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDia
           <div className="space-y-2">
             <RoomPicker value={roomId} onValueChange={setRoomId} />
           </div>
+          <div className="space-y-2">
             <Label>{t('history.date')}</Label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
