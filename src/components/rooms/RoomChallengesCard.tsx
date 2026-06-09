@@ -155,7 +155,7 @@ function ChallengeRow({
               onClick={() => onOpenMember(m)}
               className="flex items-center gap-2 rounded-md border border-border bg-card p-2 text-left hover:bg-accent transition-colors"
             >
-              <AvatarFlair flairId={m.avatar_flair}>
+              <AvatarFlair tier="free" flairId={m.avatar_flair}>
                 <Avatar className="h-8 w-8 shrink-0">
                   <AvatarImage src={m.avatar_url || undefined} />
                   <AvatarFallback className="text-xs">
