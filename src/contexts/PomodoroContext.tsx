@@ -171,7 +171,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   }, [playNotificationSound]);
 
   // Create time entry for work phase
-  const createPomodoroEntry = useCallback(async (projectId: string, pomodoroType: string) => {
+  const createPomodoroEntry = useCallback(async (projectId: string, pomodoroType: string, roomId?: string | null) => {
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -182,7 +182,8 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
         start_time: new Date().toISOString(),
         is_pomodoro: true,
         pomodoro_type: pomodoroType,
-      })
+        room_id: roomId || null,
+      } as any)
       .select()
       .single();
 
@@ -332,7 +333,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
       let newActiveEntryId: string | null = null;
 
       if (nextPhase === 'work' && state.currentProjectId) {
-        const entry = await createPomodoroEntry(state.currentProjectId, 'work');
+        const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
         newActiveEntryId = entry?.id || null;
       }
 
@@ -387,7 +388,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
 
   const start = useCallback(async (projectId: string, roomId?: string) => {
     playPageStart();
-    const entry = await createPomodoroEntry(projectId, 'work');
+    const entry = await createPomodoroEntry(projectId, 'work', roomId || null);
     const duration = config.workDuration;
 
     // Set timer active in room if selected
@@ -512,7 +513,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
     let newActiveEntryId: string | null = null;
 
     if (nextPhase === 'work' && state.currentProjectId) {
-      const entry = await createPomodoroEntry(state.currentProjectId, 'work');
+      const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
       newActiveEntryId = entry?.id || null;
     }
 

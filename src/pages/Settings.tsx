@@ -41,6 +41,7 @@ export default function Settings() {
   const [reminderNotification, setReminderNotification] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isStatsPublic, setIsStatsPublic] = useState(false);
+  const [showRoomChallengeAlerts, setShowRoomChallengeAlerts] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [cropOpen, setCropOpen] = useState(false);
@@ -91,6 +92,7 @@ export default function Settings() {
       setTimezone((profile as any).timezone || "America/Sao_Paulo");
       setAvatarUrl(profile.avatar_url || null);
       setIsStatsPublic(profile.is_stats_public ?? false);
+      setShowRoomChallengeAlerts((profile as any).show_room_challenge_alerts ?? true);
       
       // Pomodoro settings
       setPomodoroWorkDuration(profile.pomodoro_work_duration ?? 25);
@@ -178,6 +180,7 @@ export default function Settings() {
       pomodoro_auto_start_work: pomodoroAutoStartWork,
       timezone,
       is_stats_public: isStatsPublic,
+      show_room_challenge_alerts: showRoomChallengeAlerts,
     } as any);
   };
 
@@ -357,6 +360,13 @@ export default function Settings() {
                 <p className="text-sm text-muted-foreground">{t('settings.notification_desc')}</p>
               </div>
               <Switch checked={reminderNotification} onCheckedChange={setReminderNotification} />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label>{t('settings.challenge_alerts')}</Label>
+                <p className="text-sm text-muted-foreground">{t('settings.challenge_alerts_desc')}</p>
+              </div>
+              <Switch checked={showRoomChallengeAlerts} onCheckedChange={setShowRoomChallengeAlerts} />
             </div>
           </CardContent>
         </Card>

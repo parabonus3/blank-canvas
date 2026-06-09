@@ -576,7 +576,9 @@
           "description": "Estrellas orbitando en galaxia"
         }
       }
-    }
+    },
+    "challenge_alerts": "Avisos de meta de la sala",
+    "challenge_alerts_desc": "Muestra un aviso en el temporizador cuando la sala seleccionada tiene una meta activa"
   },
   "sidebar": {
     "navigation": "Navegación",
@@ -1118,7 +1120,43 @@
     "level_master": "Maestro",
     "level_legend": "Leyenda",
     "focus_completed_celebration": "🎉 ¡Sesión completada!",
-    "enter_room": "Abrir sala"
+    "enter_room": "Abrir sala",
+    "challenges": {
+      "section_title": "Retos de la sala",
+      "new": "Nuevo reto",
+      "empty_owner": "Sin retos aún. Haz clic en \"Nuevo reto\" para crear uno.",
+      "create_title": "Crear reto",
+      "edit_title": "Editar reto",
+      "create_desc": "Define una meta recurrente para los miembros.",
+      "emoji": "Ícono",
+      "title_label": "Título",
+      "title_placeholder": "Ej: Oración diaria",
+      "description_label": "Descripción (opcional)",
+      "description_placeholder": "Ej: 10 minutos diarios",
+      "period_label": "Frecuencia",
+      "period_daily": "Diario",
+      "period_weekly": "Semanal",
+      "period_daily_short": "Diario",
+      "period_weekly_short": "Semanal",
+      "target_minutes": "Minutos por período",
+      "duration_days": "Duración (días)",
+      "duration_optional": "Opcional",
+      "create_btn": "Crear reto",
+      "delete_confirm": "¿Eliminar este reto?",
+      "min_per_period_short": "min",
+      "member": "Miembro",
+      "completed_today": "{{done}} de {{total}} lograron la meta",
+      "status_on_track": "Al día ✓",
+      "status_not_started": "Aún no empezó",
+      "status_missed_short": "{{count}}d sin lograr",
+      "status_missed_days": "{{count}} días sin lograr",
+      "missed": "No logrado",
+      "legend_done": "Logrado",
+      "legend_partial": "Parcial",
+      "legend_missed": "Faltó",
+      "banner_remaining": "Faltan {{remaining}} para la meta: {{title}}",
+      "banner_done": "Meta cumplida hoy: {{title}} ✓"
+    }
   },
   "explore": {
     "title": "Explorar Salas",

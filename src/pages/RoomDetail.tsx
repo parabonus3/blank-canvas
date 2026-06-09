@@ -17,6 +17,7 @@ import { RoomLiveBanner } from "@/components/rooms/RoomLiveBanner";
 import { RoomChat } from "@/components/rooms/RoomChat";
 import { RoomGoalProgress } from "@/components/rooms/RoomGoalProgress";
 import { RoomStatsHeader } from "@/components/rooms/RoomStatsHeader";
+import { RoomChallengesCard } from "@/components/rooms/RoomChallengesCard";
 import { PinnedMessage } from "@/components/rooms/PinnedMessage";
 import { InviteMemberDialog } from "@/components/rooms/InviteMemberDialog";
 import { RoomActivityFeed } from "@/components/rooms/RoomActivityFeed";
@@ -293,6 +294,13 @@ export default function RoomDetail() {
                   goalLabel={room?.goal_label}
                   roomStreak={roomStreak}
                 />
+
+                {id && (
+                  <div className="mt-4">
+                    <RoomChallengesCard roomId={id} isOwner={isOwner} />
+                  </div>
+                )}
+
 
                 {/* Chalkboard section */}
                 <div className="classroom-chalkboard p-5 mt-4 space-y-4">

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProjectPicker } from '@/components/ProjectPicker';
 import { RoomPicker } from '@/components/RoomPicker';
+import { RoomChallengeBanner } from '@/components/timer/RoomChallengeBanner';
 import { Progress } from '@/components/ui/progress';
 import { Play, Pause, Square, SkipForward, RotateCcw, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -154,6 +155,7 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
               value={selectedRoom}
               onValueChange={setSelectedRoom}
             />
+            <RoomChallengeBanner roomId={selectedRoom} />
           </div>
         )}
 

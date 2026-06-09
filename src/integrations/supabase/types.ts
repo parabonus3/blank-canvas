@@ -656,6 +656,7 @@ export type Database = {
           reminder_interval: number
           reminder_notification: boolean
           reminder_sound: boolean
+          show_room_challenge_alerts: boolean
           theme: string
           timezone: string
           trial_ends_at: string | null
@@ -690,6 +691,7 @@ export type Database = {
           reminder_interval?: number
           reminder_notification?: boolean
           reminder_sound?: boolean
+          show_room_challenge_alerts?: boolean
           theme?: string
           timezone?: string
           trial_ends_at?: string | null
@@ -724,6 +726,7 @@ export type Database = {
           reminder_interval?: number
           reminder_notification?: boolean
           reminder_sound?: boolean
+          show_room_challenge_alerts?: boolean
           theme?: string
           timezone?: string
           trial_ends_at?: string | null
@@ -871,6 +874,113 @@ export type Database = {
           },
           {
             foreignKeyName: "room_activity_log_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      room_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed: boolean
+          completed_at: string | null
+          id: string
+          period_key: string
+          period_start: string
+          seconds_in_period: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          period_key: string
+          period_start: string
+          seconds_in_period?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          period_key?: string
+          period_start?: string
+          seconds_in_period?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "room_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      room_challenges: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          duration_days: number | null
+          emoji: string | null
+          id: string
+          is_active: boolean
+          period_type: string
+          room_id: string
+          start_date: string
+          target_minutes: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          duration_days?: number | null
+          emoji?: string | null
+          id?: string
+          is_active?: boolean
+          period_type: string
+          room_id: string
+          start_date?: string
+          target_minutes: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          duration_days?: number | null
+          emoji?: string | null
+          id?: string
+          is_active?: boolean
+          period_type?: string
+          room_id?: string
+          start_date?: string
+          target_minutes?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_challenges_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_challenges_room_id_fkey"
             columns: ["room_id"]
             isOneToOne: false
             referencedRelation: "study_rooms_safe"
@@ -1320,6 +1430,7 @@ export type Database = {
           paused_seconds: number
           pomodoro_type: string | null
           project_id: string
+          room_id: string | null
           start_time: string
           updated_at: string
           user_id: string
@@ -1337,6 +1448,7 @@ export type Database = {
           paused_seconds?: number
           pomodoro_type?: string | null
           project_id: string
+          room_id?: string | null
           start_time: string
           updated_at?: string
           user_id: string
@@ -1354,6 +1466,7 @@ export type Database = {
           paused_seconds?: number
           pomodoro_type?: string | null
           project_id?: string
+          room_id?: string | null
           start_time?: string
           updated_at?: string
           user_id?: string
@@ -1364,6 +1477,20 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_entries_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_entries_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -1550,6 +1677,13 @@ export type Database = {
           new_streak: number
         }[]
       }
+      compute_challenge_period: {
+        Args: { _at: string; _period_type: string; _tz: string }
+        Returns: {
+          period_key: string
+          period_start: string
+        }[]
+      }
       confirm_presence_time_entry: {
         Args: { _entry_id: string }
         Returns: undefined
@@ -1564,6 +1698,18 @@ export type Database = {
       }
       create_note_folder: {
         Args: { _color?: string; _name: string; _password?: string }
+        Returns: string
+      }
+      create_room_challenge: {
+        Args: {
+          _description?: string
+          _duration_days?: number
+          _emoji?: string
+          _period_type?: string
+          _room_id: string
+          _target_minutes?: number
+          _title: string
+        }
         Returns: string
       }
       create_room_with_password: {
@@ -1582,6 +1728,7 @@ export type Database = {
         Args: { _amount: number; _user_id: string }
         Returns: undefined
       }
+      delete_room_challenge: { Args: { _id: string }; Returns: undefined }
       duplicate_goals_to_year: {
         Args: { _from: number; _to: number }
         Returns: number
@@ -1646,6 +1793,19 @@ export type Database = {
       }
       get_habit_period_count: { Args: { _goal_id: string }; Returns: number }
       get_member_best_session: { Args: { _user_id: string }; Returns: number }
+      get_member_challenge_calendar: {
+        Args: {
+          _challenge_id: string
+          _from: string
+          _to: string
+          _user_id: string
+        }
+        Returns: {
+          completed: boolean
+          period_start: string
+          seconds_in_period: number
+        }[]
+      }
       get_member_current_role: { Args: { _member_id: string }; Returns: string }
       get_member_profile_stats: {
         Args: { _room_id: string; _user_id: string }
@@ -1748,6 +1908,22 @@ export type Database = {
           total_minutes: number
         }[]
       }
+      get_room_challenges_with_status: {
+        Args: { _room_id: string }
+        Returns: {
+          challenge_id: string
+          created_at: string
+          description: string
+          duration_days: number
+          emoji: string
+          is_active: boolean
+          members: Json
+          period_type: string
+          start_date: string
+          target_minutes: number
+          title: string
+        }[]
+      }
       get_room_daily_progress: {
         Args: { _period?: string; _room_id: string; _tz?: string }
         Returns: {
@@ -1848,6 +2024,7 @@ export type Database = {
           paused_seconds: number
           pomodoro_type: string | null
           project_id: string
+          room_id: string | null
           start_time: string
           updated_at: string
           user_id: string
@@ -1858,6 +2035,15 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      record_room_challenge_progress: {
+        Args: {
+          _at: string
+          _room_id: string
+          _seconds: number
+          _user_id: string
+        }
+        Returns: undefined
       }
       refresh_last_known_streak: { Args: never; Returns: number }
       resume_time_entry: {
@@ -1875,6 +2061,7 @@ export type Database = {
           paused_seconds: number
           pomodoro_type: string | null
           project_id: string
+          room_id: string | null
           start_time: string
           updated_at: string
           user_id: string
@@ -1907,6 +2094,7 @@ export type Database = {
           paused_seconds: number
           pomodoro_type: string | null
           project_id: string
+          room_id: string | null
           start_time: string
           updated_at: string
           user_id: string
@@ -1929,6 +2117,18 @@ export type Database = {
           _new_password?: string
         }
         Returns: boolean
+      }
+      update_room_challenge: {
+        Args: {
+          _description: string
+          _duration_days: number
+          _emoji: string
+          _id: string
+          _is_active: boolean
+          _target_minutes: number
+          _title: string
+        }
+        Returns: undefined
       }
       update_room_password: {
         Args: { _password?: string; _room_id: string }

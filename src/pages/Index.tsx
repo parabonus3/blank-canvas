@@ -28,6 +28,7 @@ import { FullscreenTimer } from "@/components/FullscreenTimer";
 import { cn } from "@/lib/utils";
 import { StopTimerDialog } from "@/components/StopTimerDialog";
 import { RoomPicker } from "@/components/RoomPicker";
+import { RoomChallengeBanner } from "@/components/timer/RoomChallengeBanner";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
 import { InactivityCheckModal, resetInactivityCheck, initInactivityCheck } from "@/components/InactivityCheckModal";
@@ -565,6 +566,7 @@ export default function Index() {
                     value={selectedRoom}
                     onValueChange={setSelectedRoom}
                   />
+                  <RoomChallengeBanner roomId={selectedRoom} />
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
