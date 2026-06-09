@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ProjectPicker } from "@/components/ProjectPicker";
+import { RoomPicker } from "@/components/RoomPicker";
 import { TagPicker } from "@/components/TagPicker";
 import { toast } from "sonner";
 
@@ -33,6 +34,7 @@ export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDia
   const saveEntryTags = useSaveTimeEntryTags();
 
   const [projectId, setProjectId] = useState("");
+  const [roomId, setRoomId] = useState("none");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("10:00");
@@ -63,7 +65,8 @@ export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDia
       end_time: end.toISOString(),
       duration: durationSeconds,
       notes: notes.trim() || null,
-    }).select().single();
+      room_id: roomId !== "none" ? roomId : null,
+    } as any).select().single();
 
     if (error) {
       setSaving(false);
@@ -85,6 +88,7 @@ export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDia
 
   const resetForm = () => {
     setProjectId("");
+    setRoomId("none");
     setDate(new Date().toISOString().slice(0, 10));
     setStartTime("09:00");
     setEndTime("10:00");
@@ -108,6 +112,8 @@ export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDia
             />
           </div>
           <div className="space-y-2">
+            <RoomPicker value={roomId} onValueChange={setRoomId} />
+          </div>
             <Label>{t('history.date')}</Label>
             <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </div>
