@@ -28,6 +28,7 @@ export interface Profile {
   onboarding_completed: boolean;
   avatar_flair: string;
   avatar_flair_color: string | null;
+  show_room_challenge_alerts?: boolean;
   created_at: string;
   updated_at: string;
 }
