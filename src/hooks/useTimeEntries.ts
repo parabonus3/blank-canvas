@@ -133,7 +133,8 @@ export function useStartTimer() {
           user_id: user.id,
           project_id: projectId,
           start_time: new Date().toISOString(),
-        })
+          room_id: roomId || null,
+        } as any)
         .select(`
           *,
           project:projects(
