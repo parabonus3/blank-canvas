@@ -177,7 +177,7 @@ export function RoomTimerCard({ roomId }: Props) {
               >
                 {ambient.isPlaying ? <VolumeX className="h-3.5 w-3.5 mr-2" /> : <Volume2 className="h-3.5 w-3.5 mr-2" />}
                 <span className="truncate text-xs">
-                  {ambient.currentSound?.name || t("rooms.room_timer_pick_sound", "Escolher som")}
+                  {ambient.currentSound ? t(ambient.currentSound.nameKey) : t("rooms.room_timer_pick_sound", "Escolher som")}
                 </span>
               </Button>
             </div>
@@ -193,7 +193,7 @@ export function RoomTimerCard({ roomId }: Props) {
                       : "bg-muted/40 border-border hover:bg-muted",
                   )}
                 >
-                  {s.name}
+                  {t(s.nameKey)}
                 </button>
               ))}
             </div>
