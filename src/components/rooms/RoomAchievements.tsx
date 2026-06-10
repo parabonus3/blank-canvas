@@ -87,10 +87,9 @@ export function RoomAchievements({ roomId, members, streak = 0 }: Props) {
 
     Promise.all(
       toUnlock.map(c =>
-        supabase.from("room_achievements" as any).insert({
-          room_id: roomId,
-          achievement_type: c.type,
-        }).then()
+        supabase.from("room_achievements" as any)
+          .upsert({ room_id: roomId, achievement_type: c.type }, { onConflict: "room_id,achievement_type", ignoreDuplicates: true })
+          .then()
       )
     ).then(() => refetch());
   }, [members, streak, achievements, roomId, user]);

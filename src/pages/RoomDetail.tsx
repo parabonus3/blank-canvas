@@ -21,7 +21,7 @@ import { RoomChallengesCard } from "@/components/rooms/RoomChallengesCard";
 import { PinnedMessage } from "@/components/rooms/PinnedMessage";
 import { InviteMemberDialog } from "@/components/rooms/InviteMemberDialog";
 import { RoomActivityFeed } from "@/components/rooms/RoomActivityFeed";
-import { RoomFocusSession } from "@/components/rooms/RoomFocusSession";
+import { RoomTimerCard } from "@/components/rooms/RoomTimerCard";
 import { RoomSettingsTab } from "@/components/rooms/RoomSettingsTab";
 import { RoomHeatmap } from "@/components/rooms/RoomHeatmap";
 import { RoomFrame } from "@/components/RoomFrame";
@@ -310,18 +310,7 @@ export default function RoomDetail() {
                     </div>
                   )}
 
-                  {room && (
-                    <RoomFocusSession
-                      roomId={room.id}
-                      focusSessionEndAt={(room as any).focus_session_end_at}
-                      focusSessionDuration={(room as any).focus_session_duration}
-                      focusSessionStartedBy={(room as any).focus_session_started_by}
-                      focusSessionStartAt={(room as any).focus_session_start_at}
-                      memberProfiles={memberProfiles}
-                      isChalkboard
-                      members={members}
-                    />
-                  )}
+                  {room && <RoomTimerCard roomId={room.id} />}
 
                   {room?.goal_hours && (
                     <RoomGoalProgress
