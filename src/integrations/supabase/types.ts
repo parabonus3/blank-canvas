@@ -1930,6 +1930,14 @@ export type Database = {
           total_seconds_today: number
         }[]
       }
+      get_room_heatmap: {
+        Args: { _days?: number; _room_id: string }
+        Returns: {
+          day: string
+          sessions: number
+          total_minutes: number
+        }[]
+      }
       get_room_invite_code: { Args: { _room_id: string }; Returns: string }
       get_room_member_profiles: {
         Args: { _room_id: string }
@@ -1979,6 +1987,17 @@ export type Database = {
         }[]
       }
       get_room_streak: { Args: { _room_id: string }; Returns: number }
+      get_room_timezone: { Args: { _room_id: string }; Returns: string }
+      get_room_today_window: {
+        Args: { _room_id: string }
+        Returns: {
+          end_utc: string
+          seconds_until_rollover: number
+          start_utc: string
+          timezone: string
+          today_local: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2035,6 +2054,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      recalc_room_member_total: {
+        Args: { _room_id: string; _user_id: string }
+        Returns: undefined
       }
       record_room_challenge_progress: {
         Args: {
