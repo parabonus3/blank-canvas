@@ -8,7 +8,8 @@
     "delete": "Hapus",
     "edit": "Edit",
     "create": "Buat",
-    "close": "Tutup"
+    "close": "Tutup",
+    "project": "Proyek"
   },
   "landing": {
     "tagline_1": "Waktumu",

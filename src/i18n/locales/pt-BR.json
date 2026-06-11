@@ -10,7 +10,8 @@
     "create": "Criar",
     "close": "Fechar",
     "export": "Exportar",
-    "clear_filters": "Limpar filtros"
+    "clear_filters": "Limpar filtros",
+    "project": "Projeto"
   },
   "landing": {
     "tagline_1": "Seu tempo",

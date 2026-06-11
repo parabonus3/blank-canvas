@@ -8,7 +8,8 @@
     "delete": "삭제",
     "edit": "편집",
     "create": "만들기",
-    "close": "닫기"
+    "close": "닫기",
+    "project": "프로젝트"
   },
   "landing": {
     "tagline_1": "당신의 시간",
