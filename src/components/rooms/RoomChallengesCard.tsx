@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trophy, Pencil, Trash2, Target, Flame } from "lucide-react";
+import { Plus, Trophy, Pencil, Trash2, Flame, Clock, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -11,6 +11,7 @@ import {
   RoomChallenge,
   RoomChallengeMember,
 } from "@/hooks/useRoomChallenges";
+import { useRoomTodayWindow } from "@/hooks/useRoomTodayWindow";
 import { CreateChallengeDialog } from "./CreateChallengeDialog";
 import { ChallengeCalendarModal } from "./ChallengeCalendarModal";
 import { AvatarFlair } from "@/components/avatar/AvatarFlair";
@@ -35,6 +36,7 @@ function memberStatus(m: RoomChallengeMember, t: (k: string, opts?: any) => stri
 export function RoomChallengesCard({ roomId, isOwner }: Props) {
   const { t } = useTranslation();
   const { data: challenges = [], isLoading } = useRoomChallenges(roomId);
+  const { data: todayWindow } = useRoomTodayWindow(roomId);
   const del = useDeleteChallenge();
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<RoomChallenge | null>(null);
@@ -44,6 +46,9 @@ export function RoomChallengesCard({ roomId, isOwner }: Props) {
 
   const active = challenges.filter((c) => c.is_active);
   if (active.length === 0 && !isOwner) return null;
+
+  const rolloverHours = todayWindow ? Math.floor(todayWindow.seconds_until_rollover / 3600) : 0;
+  const rolloverMins = todayWindow ? Math.floor((todayWindow.seconds_until_rollover % 3600) / 60) : 0;
 
   return (
     <div className="rounded-xl border border-border bg-card p-3 sm:p-4 space-y-3">
@@ -59,6 +64,23 @@ export function RoomChallengesCard({ roomId, isOwner }: Props) {
           </Button>
         )}
       </div>
+
+      {todayWindow && (
+        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground bg-muted/40 rounded-md px-2 py-1.5 border border-border/60">
+          <Clock className="h-3 w-3 text-primary" />
+          <span className="font-medium text-foreground">
+            {t("rooms.challenges.room_day", { defaultValue: "Dia da sala" })}: {new Date(todayWindow.today_local).toLocaleDateString(undefined, { day: "2-digit", month: "short" })}
+          </span>
+          <span className="opacity-60">·</span>
+          <Globe className="h-3 w-3" />
+          <span>{todayWindow.timezone}</span>
+          <span className="opacity-60">·</span>
+          <span>
+            {t("rooms.challenges.rollover_in", { defaultValue: "vira em" })} {rolloverHours}h{String(rolloverMins).padStart(2, "0")}
+          </span>
+        </div>
+      )}
+
 
       {active.length === 0 ? (
         <p className="text-xs text-muted-foreground py-2">{t("rooms.challenges.empty_owner")}</p>

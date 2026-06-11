@@ -2,60 +2,111 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   roomId: string;
+  days?: number;
 }
 
-export function RoomHeatmap({ roomId }: Props) {
+function fmtDate(d: Date) {
+  return d.toLocaleDateString(undefined, { day: "2-digit", month: "short" });
+}
+
+export function RoomHeatmap({ roomId, days = 84 }: Props) {
   const { t } = useTranslation();
 
-  const { data: heatmap = [] } = useQuery({
-    queryKey: ["roomHeatmap", roomId],
+  const { data = [] } = useQuery({
+    queryKey: ["roomHeatmapDaily", roomId, days],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_room_activity_heatmap", { _room_id: roomId });
+      const { data, error } = await (supabase.rpc as any)("get_room_heatmap", {
+        _room_id: roomId,
+        _days: days,
+      });
       if (error) throw error;
-      return (data || []) as { hour_of_day: number; total_minutes: number }[];
+      return (data || []) as { day: string; total_minutes: number; sessions: number }[];
     },
     enabled: !!roomId,
+    staleTime: 60000,
   });
 
-  if (heatmap.length === 0) return null;
+  // Build last `days` worth of dates
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const map = new Map<string, number>();
+  data.forEach((r) => map.set(r.day, Number(r.total_minutes) || 0));
 
-  const maxMinutes = Math.max(...heatmap.map((h) => h.total_minutes), 1);
+  const cells: { date: Date; minutes: number; key: string }[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    cells.push({ date: d, minutes: map.get(key) || 0, key });
+  }
 
-  // Fill all 24 hours
-  const hours = Array.from({ length: 24 }, (_, i) => {
-    const found = heatmap.find((h) => h.hour_of_day === i);
-    return { hour: i, minutes: found?.total_minutes || 0 };
+  const max = Math.max(1, ...cells.map((c) => c.minutes));
+  const intensity = (m: number) => {
+    if (m <= 0) return "bg-muted/40";
+    const ratio = m / max;
+    if (ratio < 0.2) return "bg-primary/20";
+    if (ratio < 0.4) return "bg-primary/40";
+    if (ratio < 0.65) return "bg-primary/60";
+    if (ratio < 0.85) return "bg-primary/80";
+    return "bg-primary";
+  };
+
+  // Build weeks (columns) — start each column on Sunday for consistency
+  const weeks: typeof cells[] = [];
+  let current: typeof cells = [];
+  cells.forEach((c) => {
+    if (current.length === 0 && c.date.getDay() !== 0) {
+      // pad start
+      for (let p = 0; p < c.date.getDay(); p++) current.push({ date: new Date(0), minutes: -1, key: `pad-${p}` });
+    }
+    current.push(c);
+    if (current.length === 7) {
+      weeks.push(current);
+      current = [];
+    }
   });
+  if (current.length > 0) weeks.push(current);
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+    <div className="rounded-xl border border-border bg-card p-4 space-y-3">
       <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
         <BarChart3 className="h-4 w-4" />
         {t("rooms.activity_heatmap")}
       </h3>
       <p className="text-xs text-muted-foreground">{t("rooms.heatmap_desc")}</p>
-      <div className="flex items-end gap-[2px] h-20">
-        {hours.map((h) => {
-          const height = maxMinutes > 0 ? (h.minutes / maxMinutes) * 100 : 0;
-          return (
-            <div key={h.hour} className="flex-1 flex flex-col items-center gap-0.5" title={`${h.hour}h — ${h.minutes}min`}>
-              <div
-                className="w-full rounded-sm bg-primary/70 transition-all min-h-[2px]"
-                style={{ height: `${Math.max(height, 2)}%` }}
-              />
+      <div className="overflow-x-auto">
+        <div className="flex gap-[3px]">
+          {weeks.map((week, wi) => (
+            <div key={wi} className="flex flex-col gap-[3px]">
+              {week.map((c) => (
+                <div
+                  key={c.key}
+                  title={c.minutes < 0 ? "" : `${fmtDate(c.date)} — ${c.minutes}min`}
+                  className={cn(
+                    "h-3 w-3 rounded-sm",
+                    c.minutes < 0 ? "bg-transparent" : intensity(c.minutes),
+                  )}
+                />
+              ))}
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
-      <div className="flex justify-between text-[10px] text-muted-foreground">
-        <span>0h</span>
-        <span>6h</span>
-        <span>12h</span>
-        <span>18h</span>
-        <span>23h</span>
+      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+        <span>{t("rooms.heatmap_less", { defaultValue: "Menos" })}</span>
+        <div className="flex gap-[3px]">
+          <div className="h-2.5 w-2.5 rounded-sm bg-muted/40" />
+          <div className="h-2.5 w-2.5 rounded-sm bg-primary/20" />
+          <div className="h-2.5 w-2.5 rounded-sm bg-primary/40" />
+          <div className="h-2.5 w-2.5 rounded-sm bg-primary/60" />
+          <div className="h-2.5 w-2.5 rounded-sm bg-primary/80" />
+          <div className="h-2.5 w-2.5 rounded-sm bg-primary" />
+        </div>
+        <span>{t("rooms.heatmap_more", { defaultValue: "Mais" })}</span>
       </div>
     </div>
   );

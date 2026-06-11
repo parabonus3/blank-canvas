@@ -8,7 +8,8 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "create": "Crear",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "project": "Proyecto"
   },
   "landing": {
     "tagline_1": "Tu tiempo",
