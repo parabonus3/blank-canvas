@@ -1,43 +1,96 @@
-# Correções nas Salas: Timer, Desafios e Conquistas
 
-## O que encontrei na investigação
+# Plano de correções — Salas, Desafios, Perfis, PDF e UI
 
-**1. Sessão de Foco não conta tempo (confirmado)**
-A "Sessão de Foco" é apenas um cronômetro visual compartilhado — ela nunca cria uma sessão real em `time_entries`. Por isso quem usou ela ficou com 0 no ranking e nos desafios.
+Objetivo: alinhar todas as contagens (ranking, desafio, sala) ao **mesmo "hoje"** (fuso do dono da sala), recuperar tempos perdidos, deixar o perfil público por padrão, e melhorar UI/i18n/PDF. Nada será apagado — só reconciliado.
 
-**2. Bug do "1d sem completar" (confirmado — causa exata)**
-O progresso dos desafios é gravado usando o **fuso horário do usuário** (America/Sao_Paulo), mas a tela de status compara com a **data UTC do servidor**. Resultado: das 21h até meia-noite (horário do Brasil), o servidor já está no "dia seguinte" e mostra todo mundo como "1d sem completar" mesmo quem bateu a meta hoje. É exatamente o que aparece no seu print noturno.
+## 1. Causa raiz dos números divergentes
 
-**3. Rick não apareceu (confirmado)**
-Duas causas: (a) sessões dele foram feitas **sem selecionar a sala** no timer (room_id vazio), então não contam para o desafio; (b) o mesmo bug de fuso acima escondia o progresso dele à noite.
+Hoje cada lugar calcula "hoje" de um jeito diferente:
 
-**4. Conquistas duplicadas (confirmado)**
-"5 membros" foi gravada 4 vezes e "10 membros" 2 vezes — o banco não tem proteção contra duplicatas e a conquista é inserida pelo navegador de cada membro ao mesmo tempo.
+- **Ranking (Hoje/Semana/Mês)** → usa o fuso do **usuário que olha** (ou UTC).
+- **Desafio diário** → após a última migração, passou a usar o fuso de **cada membro** individualmente.
+- **Total da sala (`room_members.total_seconds`)** → soma bruta, sem fuso, e só é incrementada quando `time_entries.room_id = sala`. Sessões feitas fora da sala (ex.: Bielzinho rezando no timer pessoal) **não entram**.
 
-## O que será feito
+Resultado: Felipe aparece "em dia" no calendário mas "2 dias sem completar" no card; Bielzinho tem 28 min na semana mas só 11 min na sala; ranking "Hoje" mostra minutos que o desafio ignora.
 
-### A) Correções no banco de dados (migração)
-- Corrigir a função de status dos desafios para usar o **fuso horário de cada membro** ao decidir o que é "hoje" — acaba o bug do "1d sem completar" e do Rick sumido
-- Remover conquistas duplicadas e adicionar trava única (sala + tipo de conquista) para nunca mais duplicar
-- Ajustar a inserção de conquistas para ignorar silenciosamente duplicatas
+**Decisão:** o "hoje" de uma sala é **o fuso configurado pelo dono da sala** (ou, se ele não tiver, `America/Sao_Paulo`). Esse fuso será exibido no card de Desafios ("Dia da sala: 11/jun — fuso America/Sao_Paulo, vira às 00:00") para todo mundo ver até quando dá pra bater a meta.
 
-### B) Recuperação do tempo perdido (dados)
-- Sessões de foco registradas no log da sala (quem iniciou, com duração): creditar esses minutos no total da sala (`room_members.total_seconds`) e no desafio do dia correspondente — Gabriel B (25min concluídos), e quem iniciou sessões nos dias 08–09
-- Vincular as sessões do Rick feitas sem sala (620s ontem + 1054s dia 08) à sala e recalcular o progresso do desafio dele
+## 2. Banco de dados (uma migração só)
 
-### C) Substituir "Sessão de Foco" por um Timer da Sala
-- Remover o card de Sessão de Foco da sala
-- Criar no mesmo lugar um **Timer da Sala** bonito e profissional: escolha do projeto (sala já pré-selecionada automaticamente), botão grande "Iniciar", display do tempo, parar/pausar — usando exatamente o mesmo sistema do timer normal (`useStartTimer`/`useStopTimer` com room_id)
-- Tempo conta normalmente para: histórico, ranking da sala, desafios e sequência
-- Acesso aos **sons ambientes** direto no card
-- Visual destacado com gradiente/cores atraentes, totalmente responsivo no mobile
-- Se já houver timer ativo, o card mostra o timer rodando em vez do botão iniciar
+### 2.1 Fonte única de "hoje da sala"
+- Nova função `get_room_timezone(_room_id)` → retorna `profiles.timezone` do owner, fallback `America/Sao_Paulo`.
+- Reescrever `get_room_challenges_with_status` para usar **o fuso da sala** em todos os membros (não o de cada um). Mesmo período para todos → calendário e card sempre batem.
+- Reescrever `get_room_streak` e a RPC do ranking "Hoje/Semana/Mês" da sala para usar o **mesmo fuso da sala**.
 
-### D) Traduções
-- Novos textos do Timer da Sala nos 12 idiomas
+### 2.2 Reconciliar `room_members.total_seconds`
+Trigger `time_entries_after_update_room` para recalcular `total_seconds` do membro a partir do `SUM(duration_seconds)` real em `time_entries` com `room_id = sala` (evita drift). Roda também via job de backfill agora.
 
-## Detalhes técnicos
-- Migração: `get_room_challenges_with_status` passa a calcular o período atual com `compute_challenge_period` por membro (timezone do profile); `UNIQUE(room_id, achievement_type)` em `room_achievements` após dedupe; insert com upsert/ignore
-- Backfill via SQL: `record_room_challenge_progress` chamada manualmente para os créditos recuperados; atualização de `room_id` nas entradas do Rick
-- Novo componente `RoomTimerCard.tsx` substitui `RoomFocusSession` em `RoomDetail.tsx`; reutiliza `ProjectPicker`, `useStartTimer`, `useStopTimer` e `AmbientSoundContext`
-- Nada muda no trigger de progresso que já funciona corretamente
+### 2.3 Backfill retroativo (sem perder nada)
+- Recalcular `total_seconds` de **todos os membros de todas as salas** a partir de `time_entries` reais.
+- Recalcular `room_challenge_progress` de todos os desafios ativos a partir do histórico de `time_entries` no fuso da sala — quem bateu, fica marcado como completo no dia certo.
+- Específicos relatados:
+  - **Bielzinho** (sala Oração): atribuir as sessões de oração dele dos últimos dias ao `room_id` da sala (atualiza `time_entries.room_id`) → assim entram em ranking, desafio e total da sala.
+  - **Felipe Micael**: o backfill do `room_challenge_progress` vai recolocar os dias verdes no calendário e remover o "2 dias sem completar".
+
+### 2.4 Heatmap (mapa de atividade) funcional
+- Função `get_room_heatmap(_room_id, _days)` agregando `time_entries` por dia **no fuso da sala**. `RoomHeatmap.tsx` passa a ler dela. Hoje está dessincronizado.
+
+### 2.5 Perfil público por padrão
+- `ALTER TABLE profiles ALTER COLUMN profile_visibility SET DEFAULT 'public';`
+- `UPDATE profiles SET profile_visibility='public' WHERE profile_visibility IS NULL;`
+- **Não** mexe em quem já escolheu `private` — respeita escolha existente.
+- Trigger `handle_new_user` passa a inserir `profile_visibility = 'public'`.
+
+## 3. Frontend
+
+### 3.1 Card de Desafios da sala
+- Mostrar badge no topo: `Dia da sala: <data> · fuso <tz da sala> · vira em <hh:mm>`.
+- Usar essa mesma fonte de verdade para "X dias sem completar" (vem do RPC, não recalculado no client).
+
+### 3.2 Ranking da sala
+- "Hoje / Semana / Mês" passam a chamar RPC com fuso da sala. Ranking "Hoje" e progresso do desafio diário vão bater 100%.
+
+### 3.3 RoomTimerCard — visual
+Trocar o gradiente verde-acinzentado (que apaga texto no tema claro) por um card sólido com a identidade do app:
+- Fundo: `bg-card` com borda `border-primary/30` e leve `shadow-md`.
+- Header chapado, sem radial-gradient atrás do texto.
+- Botão "Iniciar nesta sala" em `bg-primary text-primary-foreground` (azul oficial).
+- Mantém responsivo, com painel de sons recolhível igual hoje.
+- Aplica em ambos temas (claro/escuro) com tokens semânticos — sem `text-white` hard-coded.
+
+### 3.4 Roxo → azul do sistema
+Varrer componentes que ainda têm `purple-*`, `violet-*` ou `from-purple…`/`to-violet…` (achievements, badges, alguns dialogs) e substituir por tokens `primary` / `accent` já azuis do `index.css`. Nada de cor hardcoded.
+
+### 3.5 i18n
+- Procurar strings hardcoded em inglês expostas em PT (ex.: "Project" no header de Anotações deveria ser "Projeto"). Trocar por `t(...)` e completar chaves nos 12 locales.
+- Validar Anotações (cabeçalho do PDF + tela) e RoomTimerCard.
+
+### 3.6 Privacidade do perfil
+- Settings: deixar o toggle de visibilidade refletindo o novo default `public`. Texto explicando: "Seu perfil começa público. Você pode tornar privado a qualquer momento."
+
+## 4. PDF de Anotações
+Bug: acentos saem trocados ("criação" vira "criaÃ§Ã£o" / sublinhado cortando linha).
+- Em `src/lib/pdfExport.ts` trocar a geração atual (jsPDF latin1) por:
+  - Fonte **Inter** ou **Noto Sans** embarcada com suporte UTF-8 (`doc.addFileToVFS` + `doc.addFont`).
+  - `doc.setLanguage(i18n.language)`.
+  - Layout: cabeçalho com logo TimeZoni, título da nota, metadados (projeto, criado em, atualizado em) em coluna, corpo com `splitTextToSize` respeitando margens, paginação "Página X de Y".
+  - Cores: paleta do sistema (azul primário em vez de roxo).
+  - Sublinhados e negritos do editor renderizados de forma legível (sem cortar texto).
+
+## 5. Ordem de execução
+
+1. Migração única: timezone da sala + reescrita das RPCs + trigger de recálculo + backfill de `total_seconds` + backfill de `room_challenge_progress` + reatribuição das sessões do Bielzinho + default `profile_visibility=public` + função `get_room_heatmap`.
+2. Frontend: novo RoomTimerCard, badge de fuso no card de desafios, ranking usando RPC nova, RoomHeatmap consumindo nova função.
+3. Sweep de cor roxa → azul e i18n faltantes (Projeto, etc.).
+4. Reescrita do `pdfExport.ts` com fonte UTF-8 e layout profissional.
+5. Verificação: abrir a sala Oração, conferir que Felipe está "Em dia", Bielzinho mostra ~28 min no total, calendário e card batem, heatmap preenchido, PDF de uma nota com acentos sai limpo.
+
+## Detalhes técnicos (referência)
+
+- RPCs alteradas: `get_room_challenges_with_status`, `get_member_challenge_calendar`, `get_room_streak`, novo `get_room_today_window(_room_id) → (start_utc, end_utc, tz, label)`, novo `get_room_heatmap`.
+- Trigger novo em `time_entries` (AFTER INSERT/UPDATE/DELETE) para `recalc_room_member_totals(room_id, user_id)`.
+- Backfill rodado como bloco `DO $$ ... $$` na própria migração, idempotente.
+- `room_challenge_progress` usa `ON CONFLICT (challenge_id, user_id, period_start) DO UPDATE`.
+- Frontend: nenhum cálculo de "hoje" no client — sempre vem do RPC para evitar drift entre fusos do navegador.
+
+Sem este plano aprovado, nada é alterado.
