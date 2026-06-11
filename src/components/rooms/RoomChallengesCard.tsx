@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trophy, Pencil, Trash2, Target, Flame } from "lucide-react";
+import { Plus, Trophy, Pencil, Trash2, Flame, Clock, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -11,6 +11,7 @@ import {
   RoomChallenge,
   RoomChallengeMember,
 } from "@/hooks/useRoomChallenges";
+import { useRoomTodayWindow } from "@/hooks/useRoomTodayWindow";
 import { CreateChallengeDialog } from "./CreateChallengeDialog";
 import { ChallengeCalendarModal } from "./ChallengeCalendarModal";
 import { AvatarFlair } from "@/components/avatar/AvatarFlair";
