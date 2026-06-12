@@ -301,6 +301,12 @@ export default function RoomDetail() {
                   </div>
                 )}
 
+                {/* Room timer — standalone block above the chalkboard */}
+                {room && (
+                  <div className="mt-4">
+                    <RoomTimerCard roomId={room.id} />
+                  </div>
+                )}
 
                 {/* Chalkboard section */}
                 <div className="classroom-chalkboard p-5 mt-4 space-y-4">
@@ -309,8 +315,6 @@ export default function RoomDetail() {
                       📌 {room.pinned_message}
                     </div>
                   )}
-
-                  {room && <RoomTimerCard roomId={room.id} />}
 
                   {room?.goal_hours && (
                     <RoomGoalProgress
@@ -329,6 +333,7 @@ export default function RoomDetail() {
                     </div>
                   )}
                 </div>
+
 
                 {/* Floor + Desks area */}
                 <div className="classroom-floor rounded-b-xl p-5 pt-8">

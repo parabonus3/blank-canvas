@@ -12,12 +12,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Users, Wifi, Clock, GraduationCap, BookOpen, Briefcase, Sparkles, Trophy, Globe, Search, Radio, Calendar, CalendarDays, BarChart3, Lock, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTimezone } from "@/hooks/useTimezone";
 import { cn } from "@/lib/utils";
 import { JoinPasswordDialog } from "@/components/rooms/JoinPasswordDialog";
 import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { useJoinPublicRoom, useRooms } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
 import { RoomFrame } from "@/components/RoomFrame";
+
 
 const typeIcons: Record<string, any> = {
   study: GraduationCap,
@@ -47,6 +49,7 @@ export default function Explore() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { timezone } = useTimezone();
   const [activeTab, setActiveTab] = useState("rooms");
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
@@ -59,14 +62,14 @@ export default function Explore() {
 
   // Room ranking query
   const { data: rooms = [], isLoading: roomsLoading } = useQuery({
-    queryKey: ["publicRoomsRanking", category, search, countryFilter, period],
+    queryKey: ["publicRoomsRanking", category, search, countryFilter, period, timezone],
     queryFn: async () => {
       const { data, error } = await (supabase.rpc as any)("get_public_rooms_ranking_by_period", {
         _period: period,
         _category: category === "all" ? null : category,
         _search: search.trim() || null,
         _country: countryFilter === "all" ? null : countryFilter,
-        _tz: "UTC",
+        _tz: timezone,
       });
       if (error) throw error;
       return (data || []) as any[];
@@ -76,17 +79,18 @@ export default function Explore() {
 
   // User ranking query
   const { data: userRanking = [], isLoading: usersLoading } = useQuery({
-    queryKey: ["globalUserRanking", period],
+    queryKey: ["globalUserRanking", period, timezone],
     queryFn: async () => {
       const { data, error } = await (supabase.rpc as any)("get_global_user_ranking", {
         _period: period,
-        _tz: "UTC",
+        _tz: timezone,
       });
       if (error) throw error;
       return (data || []) as any[];
     },
     enabled: !!user && activeTab === "users",
   });
+
 
   const handleJoin = async (room: any) => {
     if (myRoomIds.has(room.room_id)) {
@@ -156,8 +160,9 @@ export default function Explore() {
 
         {(period === "today" || period === "week") && (
           <p className="text-[11px] text-muted-foreground/70 -mt-1">
-            {t("explore.timezone_notice", { defaultValue: "Dia e semana baseados em UTC para manter o ranking global consistente." })}
+            {t("explore.timezone_notice_local", { tz: timezone, defaultValue: `Dia e semana baseados no seu fuso (${timezone}).` })}
           </p>
+
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
