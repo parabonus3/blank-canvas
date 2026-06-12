@@ -207,44 +207,40 @@ serve(async (req) => {
       break;
     }
 
-    case "customer.subscription.created": {
-      const sub = event.data.object as Stripe.Subscription;
-      logStep("Subscription created", {
-        subId: sub.id,
-        customerId: sub.customer,
-        status: sub.status,
-      });
-      break;
-    }
-
+    case "customer.subscription.created":
     case "customer.subscription.updated": {
       const sub = event.data.object as Stripe.Subscription;
-      logStep("Subscription updated", {
-        subId: sub.id,
-        status: sub.status,
-        priceId: sub.items.data[0]?.price?.id,
-      });
+      const productId = sub.items.data[0]?.price?.product;
+      const isActive = sub.status === "active" || sub.status === "trialing";
+      let tier = "free";
+      if (isActive && typeof productId === "string") {
+        tier = PRODUCT_TIER_MAP[productId] || "free";
+      }
+      logStep("Subscription created/updated", { subId: sub.id, status: sub.status, productId, tier });
+      if (typeof sub.customer === "string") {
+        await syncPlanTierForCustomer(stripe, sub.customer, tier);
+      }
       break;
     }
 
     case "customer.subscription.deleted": {
       const sub = event.data.object as Stripe.Subscription;
-      logStep("Subscription cancelled/deleted", {
-        subId: sub.id,
-        customerId: sub.customer,
-      });
+      logStep("Subscription cancelled/deleted", { subId: sub.id, customerId: sub.customer });
+      if (typeof sub.customer === "string") {
+        await syncPlanTierForCustomer(stripe, sub.customer, "free");
+      }
       break;
     }
 
     case "invoice.payment_succeeded": {
       const invoice = event.data.object as Stripe.Invoice;
-      logStep("Payment succeeded", {
-        invoiceId: invoice.id,
-        customerId: invoice.customer,
-        amount: invoice.amount_paid,
-      });
+      logStep("Payment succeeded", { invoiceId: invoice.id, customerId: invoice.customer, amount: invoice.amount_paid });
+      if (typeof invoice.customer === "string") {
+        await syncPlanTierForCustomer(stripe, invoice.customer);
+      }
       break;
     }
+
 
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice;
