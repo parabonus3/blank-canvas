@@ -72,47 +72,38 @@ serve(async (req) => {
 
     const report: { email: string; tier: string; updated: number }[] = [];
     let processed = 0;
+    let starting_after: string | undefined = undefined;
 
-    // Iterate every Stripe customer
-    for await (const customer of (stripe.customers.list({ limit: 100 }) as any).autoPagingEach
-      ? (stripe.customers.list({ limit: 100 }) as any)
-      : await (async () => {
-          // Fallback manual pagination
-          const out: any[] = [];
-          let starting_after: string | undefined = undefined;
-          while (true) {
-            const page = await stripe.customers.list({ limit: 100, starting_after });
-            out.push(...page.data);
-            if (!page.has_more) break;
-            starting_after = page.data[page.data.length - 1].id;
+    while (true) {
+      const page = await stripe.customers.list({ limit: 100, starting_after });
+      for (const c of page.data) {
+        if (!c.email) continue;
+        processed++;
+        let tier = "free";
+        try {
+          const subs = await stripe.subscriptions.list({ customer: c.id, status: "active", limit: 1 });
+          if (subs.data.length > 0) {
+            const productId = subs.data[0].items.data[0]?.price?.product;
+            if (typeof productId === "string") tier = PRODUCT_TIER_MAP[productId] || "free";
           }
-          return out;
-        })()) {
-      const c = customer as Stripe.Customer;
-      if (!c.email) continue;
-      processed++;
-
-      let tier = "free";
-      try {
-        const subs = await stripe.subscriptions.list({ customer: c.id, status: "active", limit: 1 });
-        if (subs.data.length > 0) {
-          const productId = subs.data[0].items.data[0]?.price?.product;
-          if (typeof productId === "string") tier = PRODUCT_TIER_MAP[productId] || "free";
+        } catch (e) {
+          log("subs.list error", { customerId: c.id, message: (e as Error).message });
+          continue;
         }
-      } catch (e) {
-        log("subs.list error", { customerId: c.id, message: (e as Error).message });
-        continue;
-      }
 
-      const { data: updated, error } = await admin.rpc("admin_set_plan_tier_by_email", {
-        _email: c.email, _tier: tier,
-      });
-      if (error) {
-        log("rpc error", { email: c.email, message: error.message });
-      } else {
-        report.push({ email: c.email, tier, updated: Number(updated || 0) });
+        const { data: updated, error } = await admin.rpc("admin_set_plan_tier_by_email", {
+          _email: c.email, _tier: tier,
+        });
+        if (error) {
+          log("rpc error", { email: c.email, message: error.message });
+        } else {
+          report.push({ email: c.email, tier, updated: Number(updated || 0) });
+        }
       }
+      if (!page.has_more) break;
+      starting_after = page.data[page.data.length - 1].id;
     }
+
 
     log("done", { processed, changed: report.length });
     return new Response(JSON.stringify({ processed, results: report }), {
