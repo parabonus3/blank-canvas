@@ -53,16 +53,17 @@ async function syncPlanTierForCustomer(
       logStep("syncPlanTier: no email on customer", { customerId });
       return;
     }
-    const { error } = await admin.from("profiles").update({ plan_tier: tier }).eq("email", email);
+    const { data, error } = await admin.rpc("admin_set_plan_tier_by_email", { _email: email, _tier: tier });
     if (error) {
-      logStep("syncPlanTier: update error", { email, tier, message: error.message });
+      logStep("syncPlanTier: rpc error", { email, tier, message: error.message });
     } else {
-      logStep("syncPlanTier: ok", { email, tier });
+      logStep("syncPlanTier: ok", { email, tier, updated: data });
     }
   } catch (e) {
     logStep("syncPlanTier: exception", { message: e instanceof Error ? e.message : String(e) });
   }
 }
+
 
 
 serve(async (req) => {

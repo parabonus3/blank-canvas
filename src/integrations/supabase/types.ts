@@ -1652,6 +1652,10 @@ export type Database = {
       }
     }
     Functions: {
+      admin_set_plan_tier_by_email: {
+        Args: { _email: string; _tier: string }
+        Returns: number
+      }
       auto_consume_pending_freezes: {
         Args: { _user_id: string }
         Returns: undefined
