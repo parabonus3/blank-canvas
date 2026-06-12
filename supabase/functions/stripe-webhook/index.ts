@@ -53,16 +53,17 @@ async function syncPlanTierForCustomer(
       logStep("syncPlanTier: no email on customer", { customerId });
       return;
     }
-    const { error } = await admin.from("profiles").update({ plan_tier: tier }).eq("email", email);
+    const { data, error } = await admin.rpc("admin_set_plan_tier_by_email", { _email: email, _tier: tier });
     if (error) {
-      logStep("syncPlanTier: update error", { email, tier, message: error.message });
+      logStep("syncPlanTier: rpc error", { email, tier, message: error.message });
     } else {
-      logStep("syncPlanTier: ok", { email, tier });
+      logStep("syncPlanTier: ok", { email, tier, updated: data });
     }
   } catch (e) {
     logStep("syncPlanTier: exception", { message: e instanceof Error ? e.message : String(e) });
   }
 }
+
 
 
 serve(async (req) => {
@@ -206,44 +207,40 @@ serve(async (req) => {
       break;
     }
 
-    case "customer.subscription.created": {
-      const sub = event.data.object as Stripe.Subscription;
-      logStep("Subscription created", {
-        subId: sub.id,
-        customerId: sub.customer,
-        status: sub.status,
-      });
-      break;
-    }
-
+    case "customer.subscription.created":
     case "customer.subscription.updated": {
       const sub = event.data.object as Stripe.Subscription;
-      logStep("Subscription updated", {
-        subId: sub.id,
-        status: sub.status,
-        priceId: sub.items.data[0]?.price?.id,
-      });
+      const productId = sub.items.data[0]?.price?.product;
+      const isActive = sub.status === "active" || sub.status === "trialing";
+      let tier = "free";
+      if (isActive && typeof productId === "string") {
+        tier = PRODUCT_TIER_MAP[productId] || "free";
+      }
+      logStep("Subscription created/updated", { subId: sub.id, status: sub.status, productId, tier });
+      if (typeof sub.customer === "string") {
+        await syncPlanTierForCustomer(stripe, sub.customer, tier);
+      }
       break;
     }
 
     case "customer.subscription.deleted": {
       const sub = event.data.object as Stripe.Subscription;
-      logStep("Subscription cancelled/deleted", {
-        subId: sub.id,
-        customerId: sub.customer,
-      });
+      logStep("Subscription cancelled/deleted", { subId: sub.id, customerId: sub.customer });
+      if (typeof sub.customer === "string") {
+        await syncPlanTierForCustomer(stripe, sub.customer, "free");
+      }
       break;
     }
 
     case "invoice.payment_succeeded": {
       const invoice = event.data.object as Stripe.Invoice;
-      logStep("Payment succeeded", {
-        invoiceId: invoice.id,
-        customerId: invoice.customer,
-        amount: invoice.amount_paid,
-      });
+      logStep("Payment succeeded", { invoiceId: invoice.id, customerId: invoice.customer, amount: invoice.amount_paid });
+      if (typeof invoice.customer === "string") {
+        await syncPlanTierForCustomer(stripe, invoice.customer);
+      }
       break;
     }
+
 
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice;
