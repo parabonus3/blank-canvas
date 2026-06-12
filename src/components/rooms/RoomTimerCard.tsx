@@ -76,17 +76,17 @@ export function RoomTimerCard({ roomId }: Props) {
   };
 
   return (
-    <div className="rounded-2xl border border-primary/30 bg-card text-card-foreground shadow-md p-4 sm:p-5 space-y-4">
+    <div className="rounded-2xl border border-primary/20 bg-card text-card-foreground shadow-lg shadow-primary/5 p-4 sm:p-5 space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-            <TimerIcon className="h-4.5 w-4.5 text-primary" />
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="h-10 w-10 rounded-xl bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center shrink-0">
+            <TimerIcon className="h-5 w-5 text-primary" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-foreground truncate">
+            <h3 className="text-sm sm:text-base font-semibold text-foreground truncate">
               {t("rooms.room_timer_title", "Timer da Sala")}
             </h3>
-            <p className="text-[11px] text-muted-foreground truncate">
+            <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
               {t("rooms.room_timer_desc", "Estude com a sala e conte para o ranking e desafios")}
             </p>
           </div>
@@ -94,13 +94,14 @@ export function RoomTimerCard({ roomId }: Props) {
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8 shrink-0 text-muted-foreground hover:text-foreground"
+          className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
           onClick={() => setShowSounds((v) => !v)}
           aria-label={t("rooms.room_timer_sounds", "Sons ambientes")}
         >
           <Music2 className="h-4 w-4" />
         </Button>
       </div>
+
 
       {isActiveInThisRoom ? (
         <div className="space-y-3">

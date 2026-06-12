@@ -7,6 +7,64 @@ const logStep = (step: string, details?: any) => {
   console.log(`[STRIPE-WEBHOOK] ${step}${d}`);
 };
 
+// Keep in sync with check-subscription/index.ts PRODUCT_TIER_MAP
+const PRODUCT_TIER_MAP: Record<string, string> = {
+  "prod_U9cV4fuZjYahhc": "pro",
+  "prod_U9cVTsdR19wOvY": "pro",
+  "prod_U2XhJsja0hQj1w": "pro",
+  "prod_U2XkpL9hN68Gjn": "pro",
+  "prod_U7AHwT0K5dTEB7": "pro",
+  "prod_U7AJBjf96NNNx6": "pro",
+  "prod_U9cW1bur6JaHIy": "premium",
+  "prod_U9cXdUEoYVf070": "premium",
+  "prod_U2XlgWOl7aJNKN": "premium",
+  "prod_U2XlbGDQP8G5FM": "premium",
+  "prod_U7ALKqBXBiZkH3": "premium",
+  "prod_U7AM9GTRJYqVNV": "premium",
+};
+
+function getAdmin() {
+  return createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  );
+}
+
+async function syncPlanTierForCustomer(
+  stripe: Stripe,
+  customerId: string,
+  fallbackTier?: string,
+) {
+  try {
+    const admin = getAdmin();
+    let tier = fallbackTier ?? "free";
+
+    if (!fallbackTier) {
+      const subs = await stripe.subscriptions.list({ customer: customerId, status: "active", limit: 1 });
+      if (subs.data.length > 0) {
+        const productId = subs.data[0].items.data[0]?.price?.product;
+        if (typeof productId === "string") tier = PRODUCT_TIER_MAP[productId] || "free";
+      }
+    }
+
+    const customer = await stripe.customers.retrieve(customerId);
+    const email = (customer as any)?.email as string | undefined;
+    if (!email) {
+      logStep("syncPlanTier: no email on customer", { customerId });
+      return;
+    }
+    const { error } = await admin.from("profiles").update({ plan_tier: tier }).eq("email", email);
+    if (error) {
+      logStep("syncPlanTier: update error", { email, tier, message: error.message });
+    } else {
+      logStep("syncPlanTier: ok", { email, tier });
+    }
+  } catch (e) {
+    logStep("syncPlanTier: exception", { message: e instanceof Error ? e.message : String(e) });
+  }
+}
+
+
 serve(async (req) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
