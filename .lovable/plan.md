@@ -1,81 +1,91 @@
-# Correções: Timer da Sala, Premium e Explorar
+# Organização Mobile + Clareza do Timer da Sala
 
-Investiguei o código + banco e identifiquei a causa de cada problema. Abaixo o plano para resolver os três pontos de forma coerente.
+Foco: melhorar a página da sala no mobile (espaçamento, ordem, hierarquia), tornar o Timer da Sala claro e profissional sobre o que conta para a sala/desafio, melhorar o Mapa de Atividade com noção de dias, e reorganizar o status do membro no mobile.
 
----
+## 1. Reorganização mobile do RoomDetail
 
-## 1) Timer da Sala — visual ruim, texto sumindo
-
-**Causa real:** o `RoomTimerCard` em si já usa `bg-card` sólido, mas em `RoomDetail.tsx` ele é renderizado **dentro de `.classroom-chalkboard`** (gradiente verde-escuro com borda madeira). O cartão branco "glassy" empilhado sobre o quadro-negro cria a aparência de gradiente esverdeado e deixa o título "Timer da Sala" praticamente ilegível no tema light.
-
-**O que vou fazer:**
-- Tirar o `RoomTimerCard` de dentro do `.classroom-chalkboard` em `src/pages/RoomDetail.tsx` e colocá-lo como bloco próprio acima do quadro-negro (mesma posição visual, sem o fundo verde por trás).
-- Redesenhar o `RoomTimerCard` com identidade premium e sólida:
-  - Fundo `bg-card` com borda fina `border-primary/20`, cantos `rounded-2xl`, sombra suave `shadow-lg shadow-primary/5`.
-  - Header com ícone em "chip" `bg-primary/10`, título em `text-foreground font-semibold` (contraste garantido em light/dark), subtítulo em `text-muted-foreground`.
-  - Display do tempo grande, mono, `text-primary` com `tabular-nums`.
-  - Botão principal sólido `bg-primary text-primary-foreground` (manter), botão Parar `variant="destructive"`.
-  - Painel de sons recolhível mantendo o mesmo padrão sólido (sem gradientes).
-- Garantir responsividade: padding `p-4 sm:p-5`, tipografia escalonando `text-4xl sm:text-5xl`, botões `w-full`.
-- Manter o ProjectPicker, sons ambientes e a lógica atual (sem mexer em hooks/RPCs).
-
-**Aceite:** Em light e dark, o card aparece destacado, com texto totalmente legível, sem o "véu" verde do quadro-negro.
-
----
-
-## 2) Membros Premium não aparecem como Premium
-
-**Causa real:** No banco, **apenas 2 perfis** têm `plan_tier = 'premium'` (Nicky, Isabella). Os demais usuários que pagaram premium ficaram com `plan_tier = 'free'` porque o `plan_tier` só é atualizado quando a função `check-subscription` roda para aquele usuário (no login/refresh dele). O webhook do Stripe (`stripe-webhook`) também não está gravando o `plan_tier` corretamente para todos os eventos.
-
-**O que vou fazer:**
-1. **Backfill imediato (migration SQL)** — função `sync_all_plan_tiers_from_stripe()` chamada via Edge Function admin, mas como rodar Stripe em SQL não é trivial, vou criar uma **edge function `sync-all-plan-tiers`** que:
-   - Lista todos os customers ativos do Stripe.
-   - Para cada um, busca a assinatura ativa e mapeia produto → tier usando o `PRODUCT_TIER_MAP` já existente em `check-subscription`.
-   - Faz `UPDATE profiles SET plan_tier = ... WHERE email = customer.email`.
-   - Retorna um relatório (quantos atualizados / quais).
-2. **Corrigir o `stripe-webhook`** para sempre escrever `plan_tier` em `profiles` nos eventos `customer.subscription.created/updated/deleted` e `invoice.payment_succeeded` (hoje só atualiza em alguns caminhos). Garantir que `subscription.deleted` faz fallback para `'free'`.
-3. **Realtime no perfil:** assinar `postgres_changes` em `profiles` no `useRoomMembers` (filtro `user_id in (...)`) para que mudanças de `plan_tier` apareçam ao vivo na sala sem reload.
-4. **Defensivo:** no `get_room_member_profiles` já retorna `plan_tier`; conferir que o front (`RoomMemberGrid`, `MemberProfileModal`, `RoomRankingSidebar`) lê esse campo de forma consistente.
-
-**Aceite:** Após rodar a edge function uma vez, todos os pagantes ativos aparecem com selo Premium/Pro nas salas, ranking e modal de perfil.
-
----
-
-## 3) "Hoje" no Explorar mostra quem não estudou hoje
-
-**Causa real:** `get_global_user_ranking` usa `_tz = 'UTC'` (passado pelo `Explore.tsx`). Quem estudou ontem entre 21h–00h (horário Brasil) cai dentro de "hoje UTC" e aparece no ranking — mesmo sem ter estudado no dia local do usuário. Mesma incoerência já corrigida nas salas, agora precisa valer no Explorar global.
-
-**O que vou fazer:**
-1. **Migration SQL:**
-   - Reescrever `get_global_user_ranking(_period, _tz)` para de fato usar `_tz` no cálculo de "today/week" (já recebe, mas usa `start_of_day_in_tz(_tz)` — vou validar e corrigir uso para todos os ramos, incluindo `now` filtrar por `start_of_day_in_tz(_tz)` em vez de "últimas 24h").
-   - Mesma correção em `get_public_rooms_ranking_by_period` se necessário.
-2. **Frontend (`src/pages/Explore.tsx`):**
-   - Substituir `_tz: "UTC"` por **o timezone do próprio usuário** (`useTimezone()` hook já existente) — assim "Hoje" significa "hoje pra você".
-   - Atualizar o aviso `explore.timezone_notice` para refletir: "Dia e semana baseados no seu fuso ({tz})" em todos os 12 locales.
-   - Filtrar do resultado quem tem `total_seconds = 0` (defensivo).
-3. **Coerência com salas:** a aba "Salas" do Explorar também passa a usar o tz do usuário para "Hoje/Semana".
-
-**Aceite:** Em "Hoje" só aparecem usuários que efetivamente estudaram hoje no fuso local do visitante. "Semana" idem. Os números batem com o que o usuário vê no próprio Dashboard.
-
----
-
-## Arquivos afetados
+**Ordem dos blocos no overview (mobile e desktop):**
 
 ```text
-src/components/rooms/RoomTimerCard.tsx        (redesign)
-src/pages/RoomDetail.tsx                      (tirar timer do chalkboard)
-src/pages/Explore.tsx                         (usar tz local)
-src/hooks/useRoomMembers.ts                   (realtime profiles)
-src/i18n/locales/*.json                       (12 arquivos — texto do aviso)
-supabase/migrations/<timestamp>_*.sql         (get_global_user_ranking + tz)
-supabase/functions/sync-all-plan-tiers/       (nova edge function)
-supabase/functions/stripe-webhook/index.ts    (gravar plan_tier sempre)
+1. RoomStatsHeader
+2. RoomTimerCard        ← sobe para antes do desafio
+3. RoomChallengesCard   ← agora abaixo do timer
+4. Chalkboard (Estudando agora / goal)
+5. Floor + RoomMemberGrid
+6. Sidebar (ranking, conquistas, heatmap, atividades) — empilhada no mobile
 ```
 
-## Pontos técnicos
+**Espaçamentos:**
+- Trocar `space-y-0` por `space-y-4 sm:space-y-5` no container principal e remover os `mt-4` redundantes (eles + space-y duplicam margens em telas grandes e somem no mobile).
+- Sidebar mobile: aumentar gap para `gap-4 sm:gap-6` e adicionar `mt-2` entre o classroom-floor e a sidebar empilhada para não colar.
+- Padding do `RoomFrame`: `p-3 sm:p-6` (mobile mais apertado, mas com respiro entre cards).
+- Cada card (`RoomChallengesCard`, `RoomHeatmap`, `RoomActivityFeed`, `RoomAchievements`, `RoomRankingSidebar`) usa borda + `rounded-2xl` consistente — já fazem, garantir margem entre eles via `space-y` do pai (não mais via `mt-4` ad-hoc).
 
-- A edge function `sync-all-plan-tiers` exige `STRIPE_SECRET_KEY` (já existe) e `SUPABASE_SERVICE_ROLE_KEY` (já existe). Será chamada manualmente uma vez e fica disponível para re-execução.
-- A migration é não-destrutiva: só `CREATE OR REPLACE FUNCTION`.
-- Nada do redesign do timer toca em hooks de tempo/RPCs — risco visual baixo.
+## 2. RoomTimerCard mais claro e destacado
 
-Confirme para eu aplicar.
+Visual:
+- Ring de destaque sutil: `ring-1 ring-primary/15 shadow-md shadow-primary/10` mantido, mas com header maior (ícone 12x12, título `text-base sm:text-lg`).
+- Quando NÃO há timer ativo, mostrar 1 linha de helper logo abaixo do botão Iniciar:
+  - Sem desafio ativo na sala: "O tempo conta para o ranking e streak desta sala."
+  - Com desafio ativo: "Conta para o ranking, streak e para o desafio: <nome do desafio>." (puxar nome do `useRoomChallenges` ativo).
+
+Estado "ativo em outro lugar" (já existe) — refinar:
+- Texto novo: "Você está com cronômetro rodando em outro contexto. Esse tempo NÃO está contando para esta sala. Toque em Parar lá e Iniciar aqui para contabilizar nesta sala."
+- Botão secundário "Ir para o cronômetro ativo" (navega para a sala de origem se `active.room_id` existe, senão para `/`).
+
+Estado "ativo nesta sala":
+- Adicionar chip discreto abaixo do tempo: "Contando para esta sala" e, se houver desafio ativo, "+ desafio: X".
+
+Tudo profissional: copy curto, sem emoji excessivo, sem alarmes — apenas info inline em `text-xs text-muted-foreground` ou chip pequeno com `bg-primary/10`.
+
+## 3. RoomHeatmap com noção de dias
+
+Hoje o heatmap mostra só pontos. Adicionar:
+- Rótulos de mês acima das colunas (Jan, Fev, Mar...) — render condicional na primeira coluna de cada mês.
+- Coluna lateral com iniciais de dias da semana (S, T, Q, Q, S — alternados).
+- Tooltip já existe, manter; aumentar levemente as células no mobile (`h-3 w-3` → `h-3.5 w-3.5`).
+- Trocar título do bloco para incluir período: "Mapa de Atividade — últimos X dias" e dropdown simples (30 / 84 / 180 dias) opcional — versão mínima: só o subtítulo dinâmico.
+- Manter scroll horizontal no mobile (já tem `overflow-x-auto`).
+
+## 4. Status do membro organizado no mobile
+
+Problema: no mobile o status aparece em linha junto com badges e quebra layout (vide imagem 3 — "Com grandes…" colado).
+
+Mudanças em `RoomMemberGrid`:
+- Mover o `status_text` para uma linha própria abaixo do bloco principal do card, com `mt-1.5 pl-0 sm:pl-14` (alinhada após o avatar) e `line-clamp-2` em vez de `truncate`.
+- No mobile, o card vira layout vertical compacto:
+  - Linha 1: avatar + nome + tier badge (chips no canto direito)
+  - Linha 2: título de nível + streak
+  - Linha 3 (se houver): status em itálico
+  - Tempo total: posição absoluta no canto superior direito do card no mobile (`absolute top-3 right-3`) para não brigar com badges.
+- Fita "PRO/PREMIUM" diagonal: encolher no mobile (`text-[9px]` em vez de `text-[10px]`) e mover para `top-1 right-1` com menos rotação, ou trocar por um pill discreto no header do card no mobile (a fita estourava a borda do card pequeno).
+
+Resultado: cada membro vira um cartão "respirável" no mobile, sem badges sobrepostas e com o status legível.
+
+## 5. Detalhes técnicos
+
+**Arquivos editados (sem mudanças de lógica/dados):**
+- `src/pages/RoomDetail.tsx` — reordenar blocos, padding e space-y mobile-first.
+- `src/components/rooms/RoomTimerCard.tsx` — copy + chips de contexto + integração com `useRoomChallenges` para detectar desafio ativo + botão "Ir para timer ativo".
+- `src/components/rooms/RoomHeatmap.tsx` — labels de mês e dias da semana, subtítulo dinâmico com período.
+- `src/components/rooms/RoomMemberGrid.tsx` — layout mobile do card (status em linha própria, tempo absoluto, fita menor).
+- `src/i18n/locales/pt-BR.json` + demais 11 locales — novas chaves:
+  - `rooms.room_timer_counts_for_room`
+  - `rooms.room_timer_counts_for_room_and_challenge`
+  - `rooms.room_timer_active_elsewhere_v2`
+  - `rooms.room_timer_go_to_active`
+  - `rooms.room_timer_counting_here`
+  - `rooms.heatmap_period_30` / `_84` / `_180`
+  - `rooms.weekday_short_s` etc. (iniciais)
+
+**O que NÃO muda:**
+- Nenhuma lógica de contagem de tempo, RPC, schema, ou regras de negócio.
+- Nenhuma migração nova.
+- Apenas UI/UX, copy, e i18n.
+
+## 6. Verificação
+
+- Inspecionar preview em mobile (375px) e desktop após cada mudança.
+- Garantir que o card do timer no mobile não fica colado no card de desafio nem no chalkboard.
+- Garantir que membros com status longo não quebram o grid no mobile.
+- Garantir que o heatmap mostra rótulos de mês corretamente alinhados.

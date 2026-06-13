@@ -183,7 +183,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
             <div
               key={member.id}
               className={cn(
-                "relative overflow-hidden flex items-center gap-3 p-3 pr-4 transition-all rounded-xl",
+                "relative overflow-hidden p-3 pr-3 sm:pr-4 transition-all rounded-xl",
                 isPremium ? "classroom-desk-premium" : isPro ? "classroom-desk-pro" : "classroom-desk",
                 !isMe && "cursor-pointer hover:scale-[1.02] hover:-translate-y-0.5",
                 isMe && !isPremium && !isPro && "ring-2 ring-primary/30",
@@ -191,94 +191,101 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
               )}
               onClick={() => handleMemberClick(member)}
             >
-              
-              {isPremium && <span className="plan-ribbon plan-ribbon-premium">Premium</span>}
-              {isPro && <span className="plan-ribbon plan-ribbon-pro">Pro</span>}
-              {/* Avatar with plan ring */}
-              <div className="relative shrink-0 z-[1]">
-                <PlanAvatarRing tier={memberTier} flairId={(member as any).avatar_flair}>
-                  <Avatar className={cn(
-                    "h-11 w-11 ring-2 ring-offset-1 ring-offset-transparent",
-                    memberTier !== "free"
-                      ? "ring-transparent"
-                      : studyingNow
-                        ? "ring-green-500"
-                        : isMe
-                        ? "ring-primary"
-                        : "ring-border"
-                  )}>
-                    {member.avatar_url && <AvatarImage src={member.avatar_url} />}
-                    <AvatarFallback className={cn("text-xs font-bold text-white", getAvatarColor(member.user_id))}>
-                      {getInitials(member.display_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                </PlanAvatarRing>
-                {studyingNow ? <TimerPulse /> : member.is_online ? <OnlineDot /> : <OfflineDot />}
-              </div>
 
-              {/* Info */}
-              <div className="flex-1 min-w-0 space-y-0.5 relative z-[1]">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className={cn(
-                    "font-semibold text-sm truncate",
-                    isPremium && "font-extrabold bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(180,120,0,0.25)]",
-                    isPro && "font-extrabold bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent",
-                    !isPremium && !isPro && (isMe ? "text-primary" : "text-foreground")
-                  )}>
-                    {member.display_name || t("rooms.anonymous")}
-                  </span>
-                  <PlanBadge tier={memberTier} />
-                  {isPremium && (
-                    <span className="text-amber-500 text-xs animate-pulse">✨</span>
-                  )}
-                  {isMe && (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary border-0 shrink-0">
-                      {t("rooms.you")}
-                    </Badge>
-                  )}
-                  {member.role === "owner" && (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
-                      👑 {t("rooms.owner")}
-                    </Badge>
-                  )}
-                  {member.role === "moderator" && (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
-                      <Shield className="h-2.5 w-2.5 mr-0.5" /> MOD
-                    </Badge>
-                  )}
-                  {isOwnerOrMod && (member as any).is_muted && (
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-destructive border-destructive/30 shrink-0">
-                      <VolumeX className="h-2.5 w-2.5 mr-0.5" /> {t("rooms.muted")}
-                    </Badge>
-                  )}
-                  {(streaksMap[member.user_id] || 0) >= 2 && (
-                    <Badge className="text-[10px] px-1.5 py-0 bg-orange-500/15 text-orange-600 border-orange-500/30 shrink-0">
-                      <Flame className="h-2.5 w-2.5 mr-0.5" /> {streaksMap[member.user_id]}d
-                    </Badge>
-                  )}
+              {isPremium && <span className="plan-ribbon plan-ribbon-premium text-[8px] sm:text-[10px]">Premium</span>}
+              {isPro && <span className="plan-ribbon plan-ribbon-pro text-[8px] sm:text-[10px]">Pro</span>}
+
+              {/* Top row: avatar + name/badges + time */}
+              <div className="flex items-start gap-3">
+                {/* Avatar with plan ring */}
+                <div className="relative shrink-0 z-[1]">
+                  <PlanAvatarRing tier={memberTier} flairId={(member as any).avatar_flair}>
+                    <Avatar className={cn(
+                      "h-11 w-11 ring-2 ring-offset-1 ring-offset-transparent",
+                      memberTier !== "free"
+                        ? "ring-transparent"
+                        : studyingNow
+                          ? "ring-green-500"
+                          : isMe
+                          ? "ring-primary"
+                          : "ring-border"
+                    )}>
+                      {member.avatar_url && <AvatarImage src={member.avatar_url} />}
+                      <AvatarFallback className={cn("text-xs font-bold text-white", getAvatarColor(member.user_id))}>
+                        {getInitials(member.display_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </PlanAvatarRing>
+                  {studyingNow ? <TimerPulse /> : member.is_online ? <OnlineDot /> : <OfflineDot />}
                 </div>
-                <div className="flex items-center gap-1.5">
-                  {/* Level title */}
-                  <span className={cn("text-[10px] font-medium", title.color)}>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0 space-y-1 relative z-[1] pr-12 sm:pr-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className={cn(
+                      "font-semibold text-sm truncate max-w-[140px] sm:max-w-none",
+                      isPremium && "font-extrabold bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent drop-shadow-[0_1px_1px_rgba(180,120,0,0.25)]",
+                      isPro && "font-extrabold bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent",
+                      !isPremium && !isPro && (isMe ? "text-primary" : "text-foreground")
+                    )}>
+                      {member.display_name || t("rooms.anonymous")}
+                    </span>
+                    <PlanBadge tier={memberTier} />
+                    {isPremium && (
+                      <span className="text-amber-500 text-xs animate-pulse">✨</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {isMe && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary border-0 shrink-0">
+                        {t("rooms.you")}
+                      </Badge>
+                    )}
+                    {member.role === "owner" && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
+                        👑 {t("rooms.owner")}
+                      </Badge>
+                    )}
+                    {member.role === "moderator" && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
+                        <Shield className="h-2.5 w-2.5 mr-0.5" /> MOD
+                      </Badge>
+                    )}
+                    {isOwnerOrMod && (member as any).is_muted && (
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-destructive border-destructive/30 shrink-0">
+                        <VolumeX className="h-2.5 w-2.5 mr-0.5" /> {t("rooms.muted")}
+                      </Badge>
+                    )}
+                    {(streaksMap[member.user_id] || 0) >= 2 && (
+                      <Badge className="text-[10px] px-1.5 py-0 bg-orange-500/15 text-orange-600 border-orange-500/30 shrink-0">
+                        <Flame className="h-2.5 w-2.5 mr-0.5" /> {streaksMap[member.user_id]}d
+                      </Badge>
+                    )}
+                  </div>
+                  <span className={cn("text-[10px] font-medium block", title.color)}>
                     {title.label}
                   </span>
                 </div>
-                {(member as any).status_text && (
-                  <p className="text-[11px] italic text-muted-foreground truncate">
-                    {(member as any).status_text}
-                  </p>
-                )}
+
+                {/* Time — absolute on mobile (top-right) to avoid colliding with badges,
+                    inline aligned right on >= sm */}
+                <span className={cn(
+                  "font-mono text-sm sm:text-base font-bold tabular-nums shrink-0 relative z-[1]",
+                  "absolute top-3 right-3 sm:static",
+                  isPremium && "text-amber-700 dark:text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]",
+                  isPro && "text-blue-700 dark:text-blue-300 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]",
+                  !isPremium && !isPro && "text-foreground"
+                )}>
+                  {formatTime(member.total_seconds)}
+                </span>
               </div>
 
-              {/* Time */}
-              <span className={cn(
-                "font-mono text-base font-bold tabular-nums shrink-0 relative z-[1]",
-                isPremium && "text-amber-700 dark:text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]",
-                isPro && "text-blue-700 dark:text-blue-300 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]",
-                !isPremium && !isPro && "text-foreground"
-              )}>
-                {formatTime(member.total_seconds)}
-              </span>
+              {/* Status text — own line, mobile-friendly */}
+              {(member as any).status_text && (
+                <p className="mt-2 text-[11px] italic text-muted-foreground line-clamp-2 leading-snug relative z-[1] sm:pl-14">
+                  “{(member as any).status_text}”
+                </p>
+              )}
             </div>
           );
         })}

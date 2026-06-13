@@ -14,7 +14,7 @@ function fmtDate(d: Date) {
 }
 
 export function RoomHeatmap({ roomId, days = 84 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { data = [] } = useQuery({
     queryKey: ["roomHeatmapDaily", roomId, days],
@@ -30,7 +30,6 @@ export function RoomHeatmap({ roomId, days = 84 }: Props) {
     staleTime: 60000,
   });
 
-  // Build last `days` worth of dates
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const map = new Map<string, number>();
@@ -56,12 +55,13 @@ export function RoomHeatmap({ roomId, days = 84 }: Props) {
   };
 
   // Build weeks (columns) — start each column on Sunday for consistency
-  const weeks: typeof cells[] = [];
-  let current: typeof cells = [];
+  type Cell = { date: Date; minutes: number; key: string };
+  const weeks: Cell[][] = [];
+  let current: Cell[] = [];
   cells.forEach((c) => {
     if (current.length === 0 && c.date.getDay() !== 0) {
-      // pad start
-      for (let p = 0; p < c.date.getDay(); p++) current.push({ date: new Date(0), minutes: -1, key: `pad-${p}` });
+      for (let p = 0; p < c.date.getDay(); p++)
+        current.push({ date: new Date(0), minutes: -1, key: `pad-${p}-${c.key}` });
     }
     current.push(c);
     if (current.length === 7) {
@@ -69,33 +69,101 @@ export function RoomHeatmap({ roomId, days = 84 }: Props) {
       current = [];
     }
   });
-  if (current.length > 0) weeks.push(current);
+  if (current.length > 0) {
+    while (current.length < 7) current.push({ date: new Date(0), minutes: -1, key: `tail-${current.length}` });
+    weeks.push(current);
+  }
+
+  // Month labels: show short month name above the first column where that month begins
+  const monthFmt = new Intl.DateTimeFormat(i18n.language, { month: "short" });
+  const monthLabels = weeks.map((week, wi) => {
+    const firstReal = week.find((c) => c.minutes >= 0);
+    if (!firstReal) return "";
+    if (wi === 0) return monthFmt.format(firstReal.date);
+    const prevWeek = weeks[wi - 1];
+    const prevReal = [...prevWeek].reverse().find((c) => c.minutes >= 0);
+    if (!prevReal) return monthFmt.format(firstReal.date);
+    return firstReal.date.getMonth() !== prevReal.date.getMonth()
+      ? monthFmt.format(firstReal.date)
+      : "";
+  });
+
+  // Weekday labels — use locale-aware narrow names; show on Mon/Wed/Fri rows
+  const weekdayFmt = new Intl.DateTimeFormat(i18n.language, { weekday: "narrow" });
+  const refSunday = new Date();
+  refSunday.setDate(refSunday.getDate() - refSunday.getDay());
+  const weekdayLabels = [0, 1, 2, 3, 4, 5, 6].map((dow) => {
+    const d = new Date(refSunday);
+    d.setDate(refSunday.getDate() + dow);
+    return weekdayFmt.format(d);
+  });
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-        <BarChart3 className="h-4 w-4" />
-        {t("rooms.activity_heatmap")}
-      </h3>
-      <p className="text-xs text-muted-foreground">{t("rooms.heatmap_desc")}</p>
+    <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+          <BarChart3 className="h-4 w-4" />
+          {t("rooms.activity_heatmap")}
+        </h3>
+        <span className="text-[10px] text-muted-foreground shrink-0">
+          {t("rooms.heatmap_period_label", { count: days, defaultValue: "últimos {{count}} dias" })}
+        </span>
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {t("rooms.heatmap_desc_v2", {
+          defaultValue: "Quanto tempo a sala estudou em cada dia. Quadrado mais escuro = mais minutos.",
+        })}
+      </p>
+
       <div className="overflow-x-auto">
-        <div className="flex gap-[3px]">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[3px]">
-              {week.map((c) => (
+        <div className="inline-flex flex-col gap-1 min-w-full">
+          {/* Month labels row */}
+          <div className="flex gap-[3px] pl-6">
+            {monthLabels.map((m, i) => (
+              <div
+                key={`m-${i}`}
+                className="w-3.5 text-[9px] text-muted-foreground font-medium capitalize text-left"
+                style={{ minWidth: "14px" }}
+              >
+                {m}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-[3px]">
+            {/* Weekday labels column */}
+            <div className="flex flex-col gap-[3px] mr-1 w-4">
+              {weekdayLabels.map((wd, i) => (
                 <div
-                  key={c.key}
-                  title={c.minutes < 0 ? "" : `${fmtDate(c.date)} — ${c.minutes}min`}
+                  key={`wd-${i}`}
                   className={cn(
-                    "h-3 w-3 rounded-sm",
-                    c.minutes < 0 ? "bg-transparent" : intensity(c.minutes),
+                    "h-3.5 text-[9px] text-muted-foreground leading-[14px] text-right pr-0.5",
+                    i % 2 === 0 ? "opacity-0" : "opacity-100",
                   )}
-                />
+                >
+                  {wd}
+                </div>
               ))}
             </div>
-          ))}
+
+            {weeks.map((week, wi) => (
+              <div key={wi} className="flex flex-col gap-[3px]">
+                {week.map((c) => (
+                  <div
+                    key={c.key}
+                    title={c.minutes < 0 ? "" : `${fmtDate(c.date)} — ${c.minutes}min`}
+                    className={cn(
+                      "h-3.5 w-3.5 rounded-sm",
+                      c.minutes < 0 ? "bg-transparent" : intensity(c.minutes),
+                    )}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
       <div className="flex items-center justify-between text-[10px] text-muted-foreground">
         <span>{t("rooms.heatmap_less", { defaultValue: "Menos" })}</span>
         <div className="flex gap-[3px]">

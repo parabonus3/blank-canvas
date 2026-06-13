@@ -211,7 +211,7 @@ export default function RoomDetail() {
   return (
     <MainLayout>
       <RoomFrame background={roomFrame} variant="page" rounded="rounded-2xl" className="block">
-        <div className="relative z-[1] space-y-6 p-4 sm:p-6">
+        <div className="relative z-[1] space-y-4 sm:space-y-6 p-3 sm:p-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/rooms")}>
@@ -282,9 +282,9 @@ export default function RoomDetail() {
               hasFocusSession={!!(room as any)?.focus_session_end_at && new Date((room as any).focus_session_end_at) > new Date()}
             />
 
-            <div className="flex flex-col lg:flex-row gap-6 mt-4">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 mt-4">
               {/* Main classroom area */}
-              <div className="flex-1 min-w-0 space-y-0">
+              <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
                 {/* Stats */}
                 <RoomStatsHeader
                   roomId={id}
@@ -295,21 +295,13 @@ export default function RoomDetail() {
                   roomStreak={roomStreak}
                 />
 
-                {id && (
-                  <div className="mt-4">
-                    <RoomChallengesCard roomId={id} isOwner={isOwner} />
-                  </div>
-                )}
+                {/* Room timer — destacado, antes do desafio */}
+                {room && <RoomTimerCard roomId={room.id} />}
 
-                {/* Room timer — standalone block above the chalkboard */}
-                {room && (
-                  <div className="mt-4">
-                    <RoomTimerCard roomId={room.id} />
-                  </div>
-                )}
+                {id && <RoomChallengesCard roomId={id} isOwner={isOwner} />}
 
                 {/* Chalkboard section */}
-                <div className="classroom-chalkboard p-5 mt-4 space-y-4">
+                <div className="classroom-chalkboard p-5 space-y-4">
                   {room && !isOwner && room.pinned_message && (
                     <div className="chalk-text text-sm opacity-90 border-b border-white/10 pb-3">
                       📌 {room.pinned_message}
@@ -337,14 +329,14 @@ export default function RoomDetail() {
 
                 {/* Floor + Desks area */}
                 <div className="classroom-floor rounded-b-xl p-5 pt-8">
-                  <div className="classroom-wall rounded-xl p-5">
+                  <div className="classroom-wall rounded-xl p-3 sm:p-5">
                     <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
                   </div>
                 </div>
               </div>
 
               {/* Sidebar */}
-              <div className="w-full lg:w-80 shrink-0 space-y-6">
+              <div className="w-full lg:w-80 shrink-0 space-y-4 sm:space-y-6">
                 <RoomRankingSidebar members={members} roomId={id} />
                 <RoomAchievements roomId={id!} members={members} />
                 <RoomHeatmap roomId={id!} />
