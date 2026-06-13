@@ -211,7 +211,7 @@ export default function RoomDetail() {
   return (
     <MainLayout>
       <RoomFrame background={roomFrame} variant="page" rounded="rounded-2xl" className="block">
-        <div className="relative z-[1] space-y-6 p-4 sm:p-6">
+        <div className="relative z-[1] space-y-4 sm:space-y-6 p-3 sm:p-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/rooms")}>
