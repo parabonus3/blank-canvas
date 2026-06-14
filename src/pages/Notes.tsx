@@ -151,6 +151,64 @@ export default function Notes() {
   const [formContent, setFormContent] = useState("");
   const [formFolderId, setFormFolderId] = useState<string | null>(null);
   const [editorMode, setEditorMode] = useState<"edit" | "preview">("edit");
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+
+  // === Editor helpers (cursor-aware insertion) ===
+  const QUICK_EMOJIS = ["✅", "⭐", "🔥", "💡", "📌", "⚠️", "❤️", "🎯", "📚", "🧠"];
+
+  const applyEdit = (mutate: (text: string, selStart: number, selEnd: number) => { text: string; cursorStart: number; cursorEnd: number }) => {
+    const ta = contentRef.current;
+    if (!ta) return;
+    const { selectionStart: s, selectionEnd: e } = ta;
+    const res = mutate(formContent, s, e);
+    setFormContent(res.text);
+    requestAnimationFrame(() => {
+      ta.focus();
+      ta.setSelectionRange(res.cursorStart, res.cursorEnd);
+    });
+  };
+
+  const wrapSelection = (before: string, after: string, placeholder = "texto") =>
+    applyEdit((text, s, e) => {
+      const sel = text.slice(s, e) || placeholder;
+      const next = text.slice(0, s) + before + sel + after + text.slice(e);
+      const start = s + before.length;
+      return { text: next, cursorStart: start, cursorEnd: start + sel.length };
+    });
+
+  const insertAtCursor = (snippet: string, cursorOffset?: number) =>
+    applyEdit((text, s, e) => {
+      const next = text.slice(0, s) + snippet + text.slice(e);
+      const pos = s + (cursorOffset ?? snippet.length);
+      return { text: next, cursorStart: pos, cursorEnd: pos };
+    });
+
+  const insertLineStart = (prefix: string) =>
+    applyEdit((text, s) => {
+      const lineStart = text.lastIndexOf("\n", s - 1) + 1;
+      const needsNewline = lineStart === s && s > 0 && text[s - 1] !== "\n";
+      const ins = (needsNewline ? "\n" : "") + prefix;
+      const next = text.slice(0, lineStart) + ins + text.slice(lineStart);
+      const pos = lineStart + ins.length;
+      return { text: next, cursorStart: pos, cursorEnd: pos };
+    });
+
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (!(e.metaKey || e.ctrlKey)) return;
+    const k = e.key.toLowerCase();
+    if (k === "b") { e.preventDefault(); wrapSelection("**", "**"); }
+    else if (k === "i") { e.preventDefault(); wrapSelection("*", "*"); }
+    else if (k === "k") { e.preventDefault(); wrapSelection("[", "](https://)", "texto"); }
+  };
+
+  const contentStats = useMemo(() => {
+    const text = formContent.trim();
+    const chars = formContent.length;
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    const minutes = Math.max(1, Math.round(words / 200));
+    return { chars, words, minutes };
+  }, [formContent]);
 
   // Delete confirmation
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
