@@ -327,6 +327,17 @@ export function RoomTimerCard({ roomId }: Props) {
           </div>
         </div>
       )}
+
+      {fsOpen && isActiveInThisRoom && (
+        <FullscreenTimer
+          mode="normal"
+          elapsed={elapsed}
+          onClose={() => setFsOpen(false)}
+          onPause={pause}
+          onResume={resume}
+          onStop={handleStop}
+        />
+      )}
     </div>
   );
 }
