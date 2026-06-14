@@ -140,7 +140,10 @@ export function RoomTimerCard({ roomId }: Props) {
       {isActiveInThisRoom ? (
         <div className="space-y-3">
           <div className="text-center py-2">
-            <div className="text-4xl sm:text-5xl font-mono font-bold text-primary tabular-nums tracking-tight">
+            <div className={cn(
+              "text-4xl sm:text-5xl font-mono font-bold tabular-nums tracking-tight transition-colors",
+              isPaused ? "text-warning" : "text-primary"
+            )}>
               {fmt(elapsed)}
             </div>
             <p className="text-xs text-muted-foreground mt-1 truncate">
@@ -148,12 +151,19 @@ export function RoomTimerCard({ roomId }: Props) {
             </p>
           </div>
 
-          {/* Status chips: counting + challenge */}
+          {/* Status chips: counting / paused + challenge */}
           <div className="flex flex-wrap items-center justify-center gap-1.5">
-            <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/30 px-2 py-0.5 text-[11px] font-medium">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-              {t("rooms.room_timer_counting_here", "Contando para esta sala")}
-            </span>
+            {isPaused ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 text-warning border border-warning/40 px-2 py-0.5 text-[11px] font-medium">
+                <Pause className="h-3 w-3" />
+                {t("rooms.room_timer_paused", "Pausado")}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/30 px-2 py-0.5 text-[11px] font-medium">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                {t("rooms.room_timer_counting_here", "Contando para esta sala")}
+              </span>
+            )}
             {hasChallenge && (
               <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/30 px-2 py-0.5 text-[11px] font-medium">
                 <Trophy className="h-3 w-3" />
@@ -162,16 +172,41 @@ export function RoomTimerCard({ roomId }: Props) {
             )}
           </div>
 
-          <Button
-            size="lg"
-            variant="destructive"
-            className="w-full font-semibold"
-            onClick={handleStop}
-            disabled={stop.isPending}
-          >
-            <Square className="h-4 w-4 mr-2" />
-            {t("rooms.room_timer_stop", "Parar")}
-          </Button>
+          {/* Action row: Pause/Resume · Fullscreen · Stop */}
+          <div className="grid grid-cols-[1fr_auto_1fr] gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              className="font-semibold"
+              onClick={handlePauseToggle}
+            >
+              {isPaused ? (
+                <><Play className="h-4 w-4 mr-2" />{t("timer.resume", "Retomar")}</>
+              ) : (
+                <><Pause className="h-4 w-4 mr-2" />{t("timer.pause", "Pausar")}</>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="px-3"
+              onClick={() => setFsOpen(true)}
+              aria-label={t("timer.fullscreen", "Tela cheia")}
+              title={t("timer.fullscreen", "Tela cheia")}
+            >
+              <Maximize2 className="h-4 w-4" />
+            </Button>
+            <Button
+              size="lg"
+              variant="destructive"
+              className="font-semibold"
+              onClick={handleStop}
+              disabled={stop.isPending}
+            >
+              <Square className="h-4 w-4 mr-2" />
+              {t("rooms.room_timer_stop", "Parar")}
+            </Button>
+          </div>
         </div>
       ) : isActiveElsewhere ? (
         <div className="space-y-3">
