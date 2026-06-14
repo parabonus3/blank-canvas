@@ -38,8 +38,10 @@ export function RoomTimerCard({ roomId }: Props) {
   const [projectId, setProjectId] = useState<string>("");
   const [elapsed, setElapsed] = useState(0);
   const [showSounds, setShowSounds] = useState(false);
+  const [fsOpen, setFsOpen] = useState(false);
 
   const ambient = useAmbientSoundContext();
+  const { isPaused, pausedElapsed, pauseStartTime, pause, resume, resetPause } = useTimerContext();
 
   const activeChallenges = useMemo(() => challenges.filter((c) => c.is_active), [challenges]);
   const hasChallenge = activeChallenges.length > 0;
