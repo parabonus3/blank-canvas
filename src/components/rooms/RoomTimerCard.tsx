@@ -172,18 +172,20 @@ export function RoomTimerCard({ roomId }: Props) {
             )}
           </div>
 
-          {/* Action row: Pause/Resume · Fullscreen · Stop */}
-          <div className="grid grid-cols-[1fr_auto_1fr] gap-2">
+          {/* Action row: Pause/Resume · Fullscreen · Stop
+              Mobile: 2 rows (pause full-width, then [fullscreen | stop])
+              ≥sm: single row 3 columns */}
+          <div className="grid grid-cols-2 sm:grid-cols-[1fr_auto_1fr] gap-2">
             <Button
               variant="outline"
               size="lg"
-              className="font-semibold"
+              className="font-semibold col-span-2 sm:col-span-1 min-w-0"
               onClick={handlePauseToggle}
             >
               {isPaused ? (
-                <><Play className="h-4 w-4 mr-2" />{t("timer.resume", "Retomar")}</>
+                <><Play className="h-4 w-4 mr-2 shrink-0" /><span className="truncate">{t("timer.resume", "Retomar")}</span></>
               ) : (
-                <><Pause className="h-4 w-4 mr-2" />{t("timer.pause", "Pausar")}</>
+                <><Pause className="h-4 w-4 mr-2 shrink-0" /><span className="truncate">{t("timer.pause", "Pausar")}</span></>
               )}
             </Button>
             <Button
@@ -199,12 +201,12 @@ export function RoomTimerCard({ roomId }: Props) {
             <Button
               size="lg"
               variant="destructive"
-              className="font-semibold"
+              className="font-semibold min-w-0"
               onClick={handleStop}
               disabled={stop.isPending}
             >
-              <Square className="h-4 w-4 mr-2" />
-              {t("rooms.room_timer_stop", "Parar")}
+              <Square className="h-4 w-4 mr-2 shrink-0" />
+              <span className="truncate">{t("rooms.room_timer_stop", "Parar")}</span>
             </Button>
           </div>
         </div>
