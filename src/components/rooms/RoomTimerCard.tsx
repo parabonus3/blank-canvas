@@ -60,18 +60,26 @@ export function RoomTimerCard({ roomId }: Props) {
       setElapsed(0);
       return;
     }
+    const startMs = new Date(active.start_time).getTime();
+    const baseOffset = (active.paused_seconds || 0) + pausedElapsed;
+
+    if (isPaused) {
+      const ref = pauseStartTime ?? Date.now();
+      setElapsed(Math.max(0, Math.floor((ref - startMs) / 1000) - baseOffset));
+      return;
+    }
+
     const tick = () => {
-      const s = Math.max(
-        0,
-        Math.floor((Date.now() - new Date(active.start_time).getTime()) / 1000) -
-          (active.paused_seconds || 0),
-      );
-      setElapsed(s);
+      const gross = Math.floor((Date.now() - startMs) / 1000);
+      setElapsed((prev) => {
+        const next = Math.max(0, gross - baseOffset);
+        return next < prev ? prev : next;
+      });
     };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [active?.start_time, active?.paused_seconds]);
+  }, [active?.start_time, active?.paused_seconds, isPaused, pausedElapsed, pauseStartTime]);
 
   const isActiveInThisRoom = !!active && (active as any).room_id === roomId;
   const isActiveElsewhere = !!active && !isActiveInThisRoom;
@@ -79,13 +87,23 @@ export function RoomTimerCard({ roomId }: Props) {
 
   const handleStart = () => {
     if (!projectId) return;
+    resetPause();
     localStorage.setItem("lastProjectId", projectId);
     start.mutate({ projectId, roomId });
   };
 
   const handleStop = () => {
     if (!active) return;
-    stop.mutate({ entryId: active.id, roomId, clientSeconds: elapsed });
+    stop.mutate(
+      { entryId: active.id, roomId, clientSeconds: elapsed },
+      { onSuccess: () => resetPause() },
+    );
+    setFsOpen(false);
+  };
+
+  const handlePauseToggle = () => {
+    if (isPaused) resume();
+    else pause();
   };
 
   return (
