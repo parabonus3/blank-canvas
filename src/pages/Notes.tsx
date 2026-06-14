@@ -1053,17 +1053,72 @@ export default function Notes() {
               </div>
               {editorMode === "edit" ? (
                 <>
-                  <div className="flex gap-1 border-b pb-1">
-                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.bold")} onClick={() => setFormContent((c) => c + "**text**")}><Bold className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.italic")} onClick={() => setFormContent((c) => c + "*text*")}><Italic className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.heading")} onClick={() => setFormContent((c) => c + "\n## ")}><Heading className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.list")} onClick={() => setFormContent((c) => c + "\n- ")}><List className="h-3.5 w-3.5" /></Button>
+                  <div className="flex flex-wrap items-center gap-0.5 border-b pb-1.5">
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={`${t("notes.bold", { defaultValue: "Negrito" })} (⌘B)`} onClick={() => wrapSelection("**", "**")}><Bold className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={`${t("notes.italic", { defaultValue: "Itálico" })} (⌘I)`} onClick={() => wrapSelection("*", "*")}><Italic className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.heading", { defaultValue: "Título" })} onClick={() => insertLineStart("## ")}><Heading className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.list", { defaultValue: "Lista" })} onClick={() => insertLineStart("- ")}><List className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.checkbox", { defaultValue: "Checkbox" })} onClick={() => insertLineStart("- [ ] ")}><CheckSquare className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.quote", { defaultValue: "Citação" })} onClick={() => insertLineStart("> ")}><Quote className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.code", { defaultValue: "Código" })} onClick={() => wrapSelection("`", "`", "código")}><Code className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={`${t("notes.link", { defaultValue: "Link" })} (⌘K)`} onClick={() => wrapSelection("[", "](https://)", "texto")}><LinkIcon className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.divider", { defaultValue: "Divisor" })} onClick={() => insertAtCursor("\n\n---\n\n")}><Minus className="h-3.5 w-3.5" /></Button>
+                    <div className="mx-1 h-5 w-px bg-border" />
+                    <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title={t("notes.emoji", { defaultValue: "Emoji" })}>
+                          <Smile className="h-3.5 w-3.5" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="p-0 w-auto border-0" align="start" sideOffset={6}>
+                        <div className="flex gap-1 p-2 border-b bg-popover">
+                          {QUICK_EMOJIS.map((e) => (
+                            <button
+                              key={e}
+                              type="button"
+                              onClick={() => { insertAtCursor(e); }}
+                              className="text-lg leading-none hover:scale-125 transition-transform"
+                            >
+                              {e}
+                            </button>
+                          ))}
+                        </div>
+                        <Suspense fallback={<div className="p-4 text-xs text-muted-foreground">…</div>}>
+                          <EmojiPicker
+                            onEmojiClick={(d: any) => { insertAtCursor(d.emoji); setEmojiOpen(false); }}
+                            width={320}
+                            height={380}
+                            lazyLoadEmojis
+                            previewConfig={{ showPreview: false }}
+                            searchPlaceHolder={t("notes.emoji_search", { defaultValue: "Buscar emoji…" })}
+                          />
+                        </Suspense>
+                      </PopoverContent>
+                    </Popover>
                     <span className="ml-auto text-[10px] text-muted-foreground self-center">{t("notes.markdown_supported")}</span>
                   </div>
-                  <Textarea value={formContent} onChange={(e) => setFormContent(e.target.value)} placeholder={t("notes.content_placeholder")} className="min-h-[160px] resize-y font-mono text-sm" />
+                  <Textarea
+                    ref={contentRef}
+                    value={formContent}
+                    onChange={(e) => setFormContent(e.target.value)}
+                    onKeyDown={handleEditorKeyDown}
+                    placeholder={t("notes.content_placeholder")}
+                    className="min-h-[240px] max-h-[60vh] resize-y font-mono text-sm"
+                  />
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1">
+                    <span>
+                      {t("notes.editor_stats", {
+                        defaultValue: "{{words}} palavras · {{chars}} caracteres · ~{{minutes}} min de leitura",
+                        words: contentStats.words,
+                        chars: contentStats.chars,
+                        minutes: contentStats.minutes,
+                      })}
+                    </span>
+                    <span className="opacity-70">⌘B · ⌘I · ⌘K</span>
+                  </div>
                 </>
               ) : (
-                <div className="min-h-[160px] rounded-md border p-3 prose prose-sm dark:prose-invert max-w-none overflow-auto">
+                <div className="min-h-[240px] rounded-md border p-3 prose prose-sm dark:prose-invert max-w-none overflow-auto">
                   {formContent ? <ReactMarkdown>{formContent}</ReactMarkdown> : <p className="text-muted-foreground italic">{t("notes.content_placeholder")}</p>}
                 </div>
               )}
