@@ -1,91 +1,67 @@
-# Organização Mobile + Clareza do Timer da Sala
+# Pause + Fullscreen no Timer da Sala + Bloco de Notas mais Dinâmico
 
-Foco: melhorar a página da sala no mobile (espaçamento, ordem, hierarquia), tornar o Timer da Sala claro e profissional sobre o que conta para a sala/desafio, melhorar o Mapa de Atividade com noção de dias, e reorganizar o status do membro no mobile.
+Duas frentes pequenas e independentes.
 
-## 1. Reorganização mobile do RoomDetail
+## Parte 1 — Paridade do Timer da Sala com o Timer Normal
 
-**Ordem dos blocos no overview (mobile e desktop):**
+Hoje o `RoomTimerCard` só tem Iniciar / Parar. O timer normal (Dashboard) tem **Pause/Resume** (via `TimerContext`) e **Tela cheia** (via `FullscreenTimer`). Vamos trazer ambos para a sala.
 
-```text
-1. RoomStatsHeader
-2. RoomTimerCard        ← sobe para antes do desafio
-3. RoomChallengesCard   ← agora abaixo do timer
-4. Chalkboard (Estudando agora / goal)
-5. Floor + RoomMemberGrid
-6. Sidebar (ranking, conquistas, heatmap, atividades) — empilhada no mobile
-```
+**Mudanças em `src/components/rooms/RoomTimerCard.tsx`:**
 
-**Espaçamentos:**
-- Trocar `space-y-0` por `space-y-4 sm:space-y-5` no container principal e remover os `mt-4` redundantes (eles + space-y duplicam margens em telas grandes e somem no mobile).
-- Sidebar mobile: aumentar gap para `gap-4 sm:gap-6` e adicionar `mt-2` entre o classroom-floor e a sidebar empilhada para não colar.
-- Padding do `RoomFrame`: `p-3 sm:p-6` (mobile mais apertado, mas com respiro entre cards).
-- Cada card (`RoomChallengesCard`, `RoomHeatmap`, `RoomActivityFeed`, `RoomAchievements`, `RoomRankingSidebar`) usa borda + `rounded-2xl` consistente — já fazem, garantir margem entre eles via `space-y` do pai (não mais via `mt-4` ad-hoc).
+- Importar `useTimerContext` (já existe e gerencia `isPaused`, `pause()`, `resume()`, `pausedElapsed`).
+- Quando `isActiveInThisRoom`, exibir 3 botões em vez de só "Parar":
+  - **Pause/Resume** (toggle com ícones `Pause` / `Play`)
+  - **Tela cheia** (ícone `Maximize2`)
+  - **Parar** (já existe, vermelho)
+- Cálculo do `elapsed` passa a respeitar `isPaused` (congela quando pausado) e `pausedElapsed` (subtrai o tempo já pausado nesta sessão local). Mesma fórmula usada no SidebarMiniTimer/Dashboard.
+- Visual quando pausado: dígitos viram cor `text-warning` e chip "Contando para esta sala" troca por "Pausado" amarelo. Quando retoma, volta ao normal.
+- Botão de tela cheia abre `<FullscreenTimer mode="normal" elapsed={elapsed} onPause={pause} onResume={resume} onStop={handleStop} onClose={() => setFs(false)} streak={null} />` em estado local `fs`.
+- O `FullscreenTimer` já tem toda a lógica de pause/resume/stop/som ambiente — só consumimos.
 
-## 2. RoomTimerCard mais claro e destacado
+**Sem mudanças** em RPCs, schema, hooks de tempo ou cálculo persistido. `paused_seconds` no servidor continua sendo gerenciado por quem já gerencia (não mexer).
 
-Visual:
-- Ring de destaque sutil: `ring-1 ring-primary/15 shadow-md shadow-primary/10` mantido, mas com header maior (ícone 12x12, título `text-base sm:text-lg`).
-- Quando NÃO há timer ativo, mostrar 1 linha de helper logo abaixo do botão Iniciar:
-  - Sem desafio ativo na sala: "O tempo conta para o ranking e streak desta sala."
-  - Com desafio ativo: "Conta para o ranking, streak e para o desafio: <nome do desafio>." (puxar nome do `useRoomChallenges` ativo).
+## Parte 2 — Bloco de Notas mais Dinâmico (emojis + ações no editor)
 
-Estado "ativo em outro lugar" (já existe) — refinar:
-- Texto novo: "Você está com cronômetro rodando em outro contexto. Esse tempo NÃO está contando para esta sala. Toque em Parar lá e Iniciar aqui para contabilizar nesta sala."
-- Botão secundário "Ir para o cronômetro ativo" (navega para a sala de origem se `active.room_id` existe, senão para `/`).
+Foco em melhorar o **editor de notas** (dialog Create/Edit) sem mexer em schema ou na listagem.
 
-Estado "ativo nesta sala":
-- Adicionar chip discreto abaixo do tempo: "Contando para esta sala" e, se houver desafio ativo, "+ desafio: X".
+**Mudanças em `src/pages/Notes.tsx`:**
 
-Tudo profissional: copy curto, sem emoji excessivo, sem alarmes — apenas info inline em `text-xs text-muted-foreground` ou chip pequeno com `bg-primary/10`.
+a) **Picker de Emojis completo no editor**
+- Adicionar um popover de emojis ao lado dos botões de formatação (`Bold`, `Italic`, `Heading`, `List`).
+- Em vez de hardcodar uma lista pequena, usar a lib leve `emoji-picker-react` (já compatível com React 18, ~80kB lazy) com categorias completas, busca e seleção de skin tone.
+- Insere o emoji escolhido na posição atual do cursor do `Textarea` (usar `selectionStart`/`selectionEnd` do textareaRef, não só `c => c + emoji`).
+- Backup: lista curta de "emojis rápidos" (10 mais usados em notas: ✅ ⭐ 🔥 💡 📌 ⚠️ ❤️ 🎯 📚 🧠) acima do picker para inserção em 1 clique.
 
-## 3. RoomHeatmap com noção de dias
+b) **Barra de formatação ampliada e funcional**
+- Botões atuais (`Bold`, `Italic`, `Heading`, `List`) sempre concatenam no fim. Trocar por inserção no cursor, envolvendo seleção:
+  - `Bold` envolve seleção em `**...**` (ou insere `**texto**` se nada selecionado).
+  - `Italic` → `*...*`
+  - `Heading` → adiciona `## ` no início da linha atual.
+  - `List` → `\n- ` na linha atual.
+- Adicionar botões novos:
+  - **Checkbox** (`Square` icon) → `\n- [ ] `
+  - **Citação** (`Quote` icon) → `\n> `
+  - **Código** (`Code` icon) → `` `texto` ``
+  - **Link** (`Link` icon) → `[texto](https://)`
+  - **Divisor** (`Minus` icon) → `\n\n---\n\n`
 
-Hoje o heatmap mostra só pontos. Adicionar:
-- Rótulos de mês acima das colunas (Jan, Fev, Mar...) — render condicional na primeira coluna de cada mês.
-- Coluna lateral com iniciais de dias da semana (S, T, Q, Q, S — alternados).
-- Tooltip já existe, manter; aumentar levemente as células no mobile (`h-3 w-3` → `h-3.5 w-3.5`).
-- Trocar título do bloco para incluir período: "Mapa de Atividade — últimos X dias" e dropdown simples (30 / 84 / 180 dias) opcional — versão mínima: só o subtítulo dinâmico.
-- Manter scroll horizontal no mobile (já tem `overflow-x-auto`).
+c) **Contadores e atalhos úteis**
+- Mostrar contagem de palavras + caracteres no rodapé do textarea (`123 palavras · 678 caracteres · ~2 min de leitura`).
+- Suportar atalhos no textarea: `Ctrl/Cmd+B` (bold), `Ctrl/Cmd+I` (italic), `Ctrl/Cmd+K` (link).
 
-## 4. Status do membro organizado no mobile
+d) **Textarea com mais "respiro"**
+- Aumentar `min-h-[160px]` para `min-h-[240px]` e habilitar auto-grow simples (até `max-h-[60vh]` com scroll interno).
 
-Problema: no mobile o status aparece em linha junto com badges e quebra layout (vide imagem 3 — "Com grandes…" colado).
+**Sem mudanças** em hooks de notas, schema, RLS, pastas, senhas, import/export — apenas o editor.
 
-Mudanças em `RoomMemberGrid`:
-- Mover o `status_text` para uma linha própria abaixo do bloco principal do card, com `mt-1.5 pl-0 sm:pl-14` (alinhada após o avatar) e `line-clamp-2` em vez de `truncate`.
-- No mobile, o card vira layout vertical compacto:
-  - Linha 1: avatar + nome + tier badge (chips no canto direito)
-  - Linha 2: título de nível + streak
-  - Linha 3 (se houver): status em itálico
-  - Tempo total: posição absoluta no canto superior direito do card no mobile (`absolute top-3 right-3`) para não brigar com badges.
-- Fita "PRO/PREMIUM" diagonal: encolher no mobile (`text-[9px]` em vez de `text-[10px]`) e mover para `top-1 right-1` com menos rotação, ou trocar por um pill discreto no header do card no mobile (a fita estourava a borda do card pequeno).
+## Arquivos editados
 
-Resultado: cada membro vira um cartão "respirável" no mobile, sem badges sobrepostas e com o status legível.
+- `src/components/rooms/RoomTimerCard.tsx` — pause/resume + fullscreen.
+- `src/pages/Notes.tsx` — editor melhorado (emoji picker, barra rica, contadores, atalhos).
+- `package.json` — adicionar `emoji-picker-react` (`bun add`).
+- (opcional) `src/i18n/locales/pt-BR.json` + outros 11 — chaves novas usam `defaultValue` inline; não obrigatório editar.
 
-## 5. Detalhes técnicos
+## Verificação
 
-**Arquivos editados (sem mudanças de lógica/dados):**
-- `src/pages/RoomDetail.tsx` — reordenar blocos, padding e space-y mobile-first.
-- `src/components/rooms/RoomTimerCard.tsx` — copy + chips de contexto + integração com `useRoomChallenges` para detectar desafio ativo + botão "Ir para timer ativo".
-- `src/components/rooms/RoomHeatmap.tsx` — labels de mês e dias da semana, subtítulo dinâmico com período.
-- `src/components/rooms/RoomMemberGrid.tsx` — layout mobile do card (status em linha própria, tempo absoluto, fita menor).
-- `src/i18n/locales/pt-BR.json` + demais 11 locales — novas chaves:
-  - `rooms.room_timer_counts_for_room`
-  - `rooms.room_timer_counts_for_room_and_challenge`
-  - `rooms.room_timer_active_elsewhere_v2`
-  - `rooms.room_timer_go_to_active`
-  - `rooms.room_timer_counting_here`
-  - `rooms.heatmap_period_30` / `_84` / `_180`
-  - `rooms.weekday_short_s` etc. (iniciais)
-
-**O que NÃO muda:**
-- Nenhuma lógica de contagem de tempo, RPC, schema, ou regras de negócio.
-- Nenhuma migração nova.
-- Apenas UI/UX, copy, e i18n.
-
-## 6. Verificação
-
-- Inspecionar preview em mobile (375px) e desktop após cada mudança.
-- Garantir que o card do timer no mobile não fica colado no card de desafio nem no chalkboard.
-- Garantir que membros com status longo não quebram o grid no mobile.
-- Garantir que o heatmap mostra rótulos de mês corretamente alinhados.
+- Mobile e desktop: iniciar timer na sala, pausar → dígitos amarelos, chip "Pausado"; retomar → contagem continua sem reset; tela cheia abre e os botões funcionam; parar fecha.
+- Notas: abrir editor, selecionar trecho, clicar Bold → envolve com `**`; abrir picker de emojis, inserir no cursor; atalho Cmd+B funciona; contador atualiza.
