@@ -63,6 +63,12 @@ import {
   Italic,
   Heading,
   List,
+  CheckSquare,
+  Quote,
+  Code,
+  Link as LinkIcon,
+  Minus,
+  Smile,
   FolderPlus,
   Folder,
   Lock,
@@ -74,6 +80,7 @@ import {
   FolderMinus,
   Settings,
 } from "lucide-react";
+const EmojiPicker = lazy(() => import("emoji-picker-react"));
 import { startOfDay, startOfWeek, startOfMonth, isAfter, isBefore, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { exportNoteToPDF } from "@/lib/pdfExport";
