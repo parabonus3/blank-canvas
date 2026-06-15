@@ -9,7 +9,9 @@
     "edit": "Edit",
     "create": "Create",
     "close": "Close",
-    "project": "Project"
+    "project": "Project",
+    "back": "Back",
+    "next": "Next"
   },
   "landing": {
     "tagline_1": "Your time",
@@ -1936,7 +1938,33 @@
     ],
     "done_button": "Start using",
     "step_of": "Step {{current}} of {{total}}",
-    "skip_step": "Skip"
+    "skip_step": "Skip",
+    "explore_intro_title": "Meet Explore 🧭",
+    "explore_intro_desc": "It's where you discover public rooms and see the community ranking in real time.",
+    "explore_intro_bullets": [
+      "Find public rooms for study, reading, work and more",
+      "See who's studying right now around the world",
+      "Track rankings by period: now, today, week and all-time",
+      "Connect with people who share your goals"
+    ],
+    "explore_rooms_title": "Public rooms 👥",
+    "explore_rooms_desc": "Rooms are shared spaces to study together. Here's how to navigate them.",
+    "explore_rooms_bullets": [
+      "Use the search and category/country filters to find the right room",
+      "A flag shows the country community; a lock means the room is private",
+      "The first 10 get a Top 10 badge — joining them puts your progress on the map",
+      "Tap Join to enter; private rooms need an invite or password"
+    ],
+    "explore_users_title": "People ranking 🏆",
+    "explore_users_desc": "See who studied the most per period. You only appear when studying inside a room.",
+    "explore_users_bullets": [
+      "Now: people in an active session right now",
+      "Today and Week: time aggregated in your timezone",
+      "All-time: full history since the beginning",
+      "Top 3 earn medals 🥇🥈🥉; anonymous profiles are respected"
+    ],
+    "done_explore_button": "Explore now",
+    "done_stay_button": "Stay on dashboard"
   },
   "friends": {
     "title": "Friends",

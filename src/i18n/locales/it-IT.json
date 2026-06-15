@@ -9,7 +9,9 @@
     "edit": "Modifica",
     "create": "Crea",
     "close": "Chiudi",
-    "project": "Progetto"
+    "project": "Progetto",
+    "back": "Indietro",
+    "next": "Avanti"
   },
   "landing": {
     "tagline_1": "Il tuo tempo",
@@ -1202,7 +1204,33 @@
     ],
     "done_button": "Inizia a usare",
     "step_of": "Passo {{current}} di {{total}}",
-    "skip_step": "Salta"
+    "skip_step": "Salta",
+    "explore_intro_title": "Scopri Esplora 🧭",
+    "explore_intro_desc": "Qui trovi le stanze pubbliche e vedi la classifica della community in tempo reale.",
+    "explore_intro_bullets": [
+      "Trova stanze pubbliche di studio, lettura, lavoro e altro",
+      "Vedi chi sta studiando ora in tutto il mondo",
+      "Consulta le classifiche per periodo: ora, oggi, settimana e totale",
+      "Connettiti con persone con obiettivi simili"
+    ],
+    "explore_rooms_title": "Stanze pubbliche 👥",
+    "explore_rooms_desc": "Le stanze sono spazi condivisi per studiare insieme. Ecco come muoverti.",
+    "explore_rooms_bullets": [
+      "Usa ricerca e filtri di categoria/paese per trovare la stanza giusta",
+      "La bandiera indica il paese; il lucchetto segnala stanze private",
+      "Le prime 10 ottengono il badge Top 10 — entrarci dà visibilità ai tuoi progressi",
+      "Tocca Entra per partecipare; le stanze private richiedono invito o password"
+    ],
+    "explore_users_title": "Classifica persone 🏆",
+    "explore_users_desc": "Vedi chi ha studiato di più per periodo. Appari solo quando studi dentro una stanza.",
+    "explore_users_bullets": [
+      "Ora: persone in sessione attiva in questo momento",
+      "Oggi e Settimana: tempo nel tuo fuso orario",
+      "Totale: cronologia completa",
+      "Top 3 ottengono medaglie 🥇🥈🥉; i profili anonimi sono rispettati"
+    ],
+    "done_explore_button": "Esplora ora",
+    "done_stay_button": "Resta nella dashboard"
   },
   "friends": {
     "title": "Amici",

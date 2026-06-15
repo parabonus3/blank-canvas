@@ -9,7 +9,9 @@
     "edit": "Bearbeiten",
     "create": "Erstellen",
     "close": "Schließen",
-    "project": "Projekt"
+    "project": "Projekt",
+    "back": "Zurück",
+    "next": "Weiter"
   },
   "landing": {
     "tagline_1": "Deine Zeit",
@@ -1202,7 +1204,33 @@
     ],
     "done_button": "Jetzt starten",
     "step_of": "Schritt {{current}} von {{total}}",
-    "skip_step": "Überspringen"
+    "skip_step": "Überspringen",
+    "explore_intro_title": "Entdecke Erkunden 🧭",
+    "explore_intro_desc": "Hier findest du öffentliche Räume und siehst das Community-Ranking in Echtzeit.",
+    "explore_intro_bullets": [
+      "Finde öffentliche Räume zum Lernen, Lesen, Arbeiten und mehr",
+      "Sieh, wer gerade weltweit lernt",
+      "Verfolge Rankings nach Zeitraum: jetzt, heute, Woche und gesamt",
+      "Verbinde dich mit Menschen mit ähnlichen Zielen"
+    ],
+    "explore_rooms_title": "Öffentliche Räume 👥",
+    "explore_rooms_desc": "Räume sind geteilte Orte zum gemeinsamen Lernen. So navigierst du.",
+    "explore_rooms_bullets": [
+      "Nutze Suche und Filter (Kategorie/Land), um den passenden Raum zu finden",
+      "Die Flagge zeigt das Land; ein Schloss markiert private Räume",
+      "Die ersten 10 erhalten das Top-10-Abzeichen — dort wird dein Fortschritt sichtbar",
+      "Tippe auf Beitreten; private Räume brauchen Einladung oder Passwort"
+    ],
+    "explore_users_title": "Personen-Ranking 🏆",
+    "explore_users_desc": "Sieh, wer pro Zeitraum am meisten gelernt hat. Du erscheinst nur, wenn du in einem Raum lernst.",
+    "explore_users_bullets": [
+      "Jetzt: Personen in aktiver Sitzung",
+      "Heute und Woche: aufsummierte Zeit in deiner Zeitzone",
+      "Gesamt: komplette Historie",
+      "Top 3 erhalten Medaillen 🥇🥈🥉; anonyme Profile werden respektiert"
+    ],
+    "done_explore_button": "Jetzt erkunden",
+    "done_stay_button": "Im Dashboard bleiben"
   },
   "friends": {
     "title": "Freunde",
