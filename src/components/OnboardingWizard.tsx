@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,10 @@ import { useUpdateProfile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { Sparkles, FolderOpen, FileText, PartyPopper, SkipForward, ChevronRight } from "lucide-react";
+import {
+  Sparkles, FolderOpen, FileText, PartyPopper, SkipForward, ChevronRight, ChevronLeft,
+  Compass, Globe, Search, Users, Trophy, Radio, Calendar, CalendarDays, BarChart3, Lock, BookOpen,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const COLORS = ["#6366f1", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4", "#f97316"];
@@ -21,6 +25,7 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const updateProfile = useUpdateProfile();
   const queryClient = useQueryClient();
@@ -32,11 +37,12 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
   const [createdCategoryId, setCreatedCategoryId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  const totalSteps = 4;
+  const totalSteps = 7;
 
-  const finish = () => {
+  const finish = (goExplore = false) => {
     updateProfile.mutate({ onboarding_completed: true } as any);
     onComplete();
+    if (goExplore) navigate("/explore");
   };
 
   const handleCreateCategory = async () => {
@@ -80,6 +86,51 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
     }
   };
 
+  const renderBullets = (key: string, icons: any[]) => {
+    const items = (t(key, { returnObjects: true }) as string[]) || [];
+    return (
+      <ul className="text-left text-sm space-y-2 w-full">
+        {items.map((it, i) => {
+          const Icon = icons[i] || Sparkles;
+          return (
+            <li key={i} className="flex items-start gap-2.5 rounded-lg border bg-muted/30 p-2.5">
+              <Icon className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              <span className="text-foreground/90 leading-snug">{it}</span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  const NavRow = ({
+    onNext,
+    onBack,
+    nextLabel,
+    nextIcon: NextIcon = ChevronRight,
+    disabled,
+  }: {
+    onNext: () => void;
+    onBack?: () => void;
+    nextLabel: string;
+    nextIcon?: any;
+    disabled?: boolean;
+  }) => (
+    <div className="flex flex-col sm:flex-row gap-2 w-full">
+      {onBack && (
+        <Button variant="outline" onClick={onBack} className="gap-2 sm:flex-initial">
+          <ChevronLeft className="h-4 w-4" /> {t("common.back", { defaultValue: "Voltar" })}
+        </Button>
+      )}
+      <Button onClick={onNext} disabled={disabled} className="flex-1 gap-2">
+        {nextLabel} <NextIcon className="h-4 w-4" />
+      </Button>
+      <Button variant="ghost" onClick={() => finish(false)} className="gap-2 text-muted-foreground sm:flex-initial">
+        <SkipForward className="h-4 w-4" /> {t("onboarding.skip_all")}
+      </Button>
+    </div>
+  );
+
   const steps = [
     // Step 0: Welcome
     <div key="welcome" className="flex flex-col items-center text-center space-y-6 py-4">
@@ -94,7 +145,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
         <Button onClick={() => setStep(1)} className="flex-1 gap-2">
           {t("onboarding.start")} <ChevronRight className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" onClick={finish} className="flex-1 gap-2 text-muted-foreground">
+        <Button variant="ghost" onClick={() => finish(false)} className="flex-1 gap-2 text-muted-foreground">
           <SkipForward className="h-4 w-4" /> {t("onboarding.skip_all")}
         </Button>
       </div>
@@ -173,7 +224,46 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
       </div>
     </div>,
 
-    // Step 3: Done
+    // Step 3: Explore intro
+    <div key="explore-intro" className="flex flex-col items-center text-center space-y-5 py-2">
+      <div className="w-16 h-16 rounded-full bg-sky-500/10 flex items-center justify-center">
+        <Compass className="h-8 w-8 text-sky-500" />
+      </div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">{t("onboarding.explore_intro_title")}</h2>
+        <p className="text-muted-foreground text-sm max-w-sm">{t("onboarding.explore_intro_desc")}</p>
+      </div>
+      {renderBullets("onboarding.explore_intro_bullets", [Globe, Users, Trophy, Sparkles])}
+      <NavRow onBack={() => setStep(2)} onNext={() => setStep(4)} nextLabel={t("common.next", { defaultValue: "Próximo" })} />
+    </div>,
+
+    // Step 4: Public rooms
+    <div key="explore-rooms" className="flex flex-col items-center text-center space-y-5 py-2">
+      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+        <Users className="h-8 w-8 text-primary" />
+      </div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">{t("onboarding.explore_rooms_title")}</h2>
+        <p className="text-muted-foreground text-sm max-w-sm">{t("onboarding.explore_rooms_desc")}</p>
+      </div>
+      {renderBullets("onboarding.explore_rooms_bullets", [Search, Globe, Trophy, Lock])}
+      <NavRow onBack={() => setStep(3)} onNext={() => setStep(5)} nextLabel={t("common.next", { defaultValue: "Próximo" })} />
+    </div>,
+
+    // Step 5: User ranking
+    <div key="explore-users" className="flex flex-col items-center text-center space-y-5 py-2">
+      <div className="w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center">
+        <Trophy className="h-8 w-8 text-yellow-500" />
+      </div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">{t("onboarding.explore_users_title")}</h2>
+        <p className="text-muted-foreground text-sm max-w-sm">{t("onboarding.explore_users_desc")}</p>
+      </div>
+      {renderBullets("onboarding.explore_users_bullets", [Radio, CalendarDays, BarChart3, BookOpen])}
+      <NavRow onBack={() => setStep(4)} onNext={() => setStep(6)} nextLabel={t("common.next", { defaultValue: "Próximo" })} />
+    </div>,
+
+    // Step 6: Done
     <div key="done" className="flex flex-col items-center text-center space-y-6 py-4">
       <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center animate-scale-in">
         <PartyPopper className="h-10 w-10 text-primary" />
@@ -189,16 +279,20 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
           </li>
         ))}
       </ul>
-      <Button onClick={finish} className="w-full gap-2" size="lg">
-        {t("onboarding.done_button")} <Sparkles className="h-4 w-4" />
-      </Button>
+      <div className="flex flex-col sm:flex-row gap-2 w-full">
+        <Button onClick={() => finish(true)} className="flex-1 gap-2" size="lg">
+          <Compass className="h-4 w-4" /> {t("onboarding.done_explore_button")}
+        </Button>
+        <Button variant="outline" onClick={() => finish(false)} className="flex-1 gap-2" size="lg">
+          {t("onboarding.done_stay_button")} <Sparkles className="h-4 w-4" />
+        </Button>
+      </div>
     </div>,
   ];
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && finish()}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-        {/* Progress */}
+    <Dialog open={open} onOpenChange={(v) => !v && finish(false)}>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <div className="space-y-2 mb-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>{t("onboarding.step_of", { current: step + 1, total: totalSteps })}</span>

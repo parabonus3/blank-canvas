@@ -9,7 +9,9 @@
     "edit": "Modifier",
     "create": "Créer",
     "close": "Fermer",
-    "project": "Projet"
+    "project": "Projet",
+    "back": "Retour",
+    "next": "Suivant"
   },
   "landing": {
     "tagline_1": "Votre temps",
@@ -1202,7 +1204,33 @@
     ],
     "done_button": "Commencer",
     "step_of": "Étape {{current}} sur {{total}}",
-    "skip_step": "Passer"
+    "skip_step": "Passer",
+    "explore_intro_title": "Découvre Explorer 🧭",
+    "explore_intro_desc": "C'est ici que tu trouves les salles publiques et vois le classement de la communauté en temps réel.",
+    "explore_intro_bullets": [
+      "Trouve des salles publiques d'étude, de lecture, de travail et plus",
+      "Vois qui étudie en ce moment partout dans le monde",
+      "Consulte les classements par période : maintenant, aujourd'hui, semaine et total",
+      "Connecte-toi avec des personnes aux objectifs similaires"
+    ],
+    "explore_rooms_title": "Salles publiques 👥",
+    "explore_rooms_desc": "Les salles sont des espaces partagés pour étudier ensemble. Voici comment naviguer.",
+    "explore_rooms_bullets": [
+      "Utilise la recherche et les filtres de catégorie/pays pour trouver ta salle",
+      "Le drapeau indique le pays ; le cadenas signale les salles privées",
+      "Les 10 premières reçoivent le badge Top 10 — y entrer rend ton progrès visible",
+      "Touche Rejoindre pour entrer ; les salles privées demandent invitation ou mot de passe"
+    ],
+    "explore_users_title": "Classement des personnes 🏆",
+    "explore_users_desc": "Vois qui a le plus étudié par période. Tu n'apparais qu'en étudiant dans une salle.",
+    "explore_users_bullets": [
+      "Maintenant : les personnes en session active",
+      "Aujourd'hui et Semaine : temps cumulé dans ton fuseau",
+      "Total : historique complet depuis le début",
+      "Top 3 gagne des médailles 🥇🥈🥉 ; les profils anonymes sont respectés"
+    ],
+    "done_explore_button": "Explorer maintenant",
+    "done_stay_button": "Rester sur le tableau de bord"
   },
   "friends": {
     "title": "Amis",

@@ -9,7 +9,9 @@
     "edit": "Edit",
     "create": "Buat",
     "close": "Tutup",
-    "project": "Proyek"
+    "project": "Proyek",
+    "back": "Kembali",
+    "next": "Berikutnya"
   },
   "landing": {
     "tagline_1": "Waktumu",
@@ -1202,7 +1204,33 @@
     ],
     "done_button": "Mulai menggunakan",
     "step_of": "Langkah {{current}} dari {{total}}",
-    "skip_step": "Lewati"
+    "skip_step": "Lewati",
+    "explore_intro_title": "Kenalan dengan Jelajahi 🧭",
+    "explore_intro_desc": "Di sini Anda menemukan ruang publik dan melihat peringkat komunitas secara real-time.",
+    "explore_intro_bullets": [
+      "Temukan ruang publik untuk belajar, membaca, bekerja, dan lainnya",
+      "Lihat siapa yang sedang belajar di seluruh dunia sekarang",
+      "Pantau peringkat per periode: sekarang, hari ini, minggu, dan total",
+      "Terhubung dengan orang yang punya tujuan serupa"
+    ],
+    "explore_rooms_title": "Ruang publik 👥",
+    "explore_rooms_desc": "Ruang adalah tempat berbagi untuk belajar bersama. Begini cara menggunakannya.",
+    "explore_rooms_bullets": [
+      "Gunakan pencarian dan filter kategori/negara untuk menemukan ruang yang tepat",
+      "Bendera menunjukkan komunitas negara; gembok berarti ruang privat",
+      "10 teratas mendapat lencana Top 10 — bergabung membuat progres Anda terlihat",
+      "Ketuk Gabung untuk masuk; ruang privat butuh undangan atau kata sandi"
+    ],
+    "explore_users_title": "Peringkat pengguna 🏆",
+    "explore_users_desc": "Lihat siapa yang belajar paling banyak per periode. Anda hanya muncul saat belajar di dalam ruang.",
+    "explore_users_bullets": [
+      "Sekarang: orang dalam sesi aktif saat ini",
+      "Hari ini dan Minggu: waktu terakumulasi di zona waktu Anda",
+      "Total: riwayat lengkap sejak awal",
+      "Top 3 dapat medali 🥇🥈🥉; profil anonim tetap dihormati"
+    ],
+    "done_explore_button": "Jelajahi sekarang",
+    "done_stay_button": "Tetap di dasbor"
   },
   "friends": {
     "title": "Teman",

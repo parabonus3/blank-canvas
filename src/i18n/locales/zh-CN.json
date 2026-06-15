@@ -9,7 +9,9 @@
     "edit": "编辑",
     "create": "创建",
     "close": "关闭",
-    "project": "项目"
+    "project": "项目",
+    "back": "返回",
+    "next": "下一步"
   },
   "landing": {
     "tagline_1": "你的时间",
@@ -1202,7 +1204,33 @@
     ],
     "done_button": "开始使用",
     "step_of": "第 {{current}} 步，共 {{total}} 步",
-    "skip_step": "跳过"
+    "skip_step": "跳过",
+    "explore_intro_title": "认识探索 🧭",
+    "explore_intro_desc": "在这里发现公开自习室，实时查看社区排行榜。",
+    "explore_intro_bullets": [
+      "找到学习、阅读、工作等公开房间",
+      "查看此刻全球谁在学习",
+      "按时段查看排行：当前、今日、本周、总计",
+      "结识目标相似的人"
+    ],
+    "explore_rooms_title": "公开房间 👥",
+    "explore_rooms_desc": "房间是一起学习的共享空间。下面教你如何使用。",
+    "explore_rooms_bullets": [
+      "使用搜索和分类/国家筛选找到合适的房间",
+      "国旗代表国家社区，锁形图标表示私密房间",
+      "前10名获得 Top 10 徽章——加入后你的进度也会被看到",
+      "点击加入即可进入；私密房间需要邀请或密码"
+    ],
+    "explore_users_title": "用户排行 🏆",
+    "explore_users_desc": "查看每个时段学习最多的人。只有在房间内学习时你才会出现。",
+    "explore_users_bullets": [
+      "当前：正在活跃学习的人",
+      "今日和本周：按你的时区累计的时长",
+      "总计：从一开始的完整记录",
+      "前 3 名获得奖牌 🥇🥈🥉；匿名资料受到尊重"
+    ],
+    "done_explore_button": "立即探索",
+    "done_stay_button": "留在仪表盘"
   },
   "friends": {
     "title": "好友",

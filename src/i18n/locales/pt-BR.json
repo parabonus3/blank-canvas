@@ -11,7 +11,9 @@
     "close": "Fechar",
     "export": "Exportar",
     "clear_filters": "Limpar filtros",
-    "project": "Projeto"
+    "project": "Projeto",
+    "back": "Voltar",
+    "next": "Próximo"
   },
   "landing": {
     "tagline_1": "Seu tempo",
@@ -1991,7 +1993,33 @@
     ],
     "done_button": "Começar a usar",
     "step_of": "Etapa {{current}} de {{total}}",
-    "skip_step": "Pular"
+    "skip_step": "Pular",
+    "explore_intro_title": "Conheça o Explorar 🧭",
+    "explore_intro_desc": "É onde você descobre salas públicas e vê o ranking da comunidade em tempo real.",
+    "explore_intro_bullets": [
+      "Encontre salas públicas de estudo, leitura, trabalho e mais",
+      "Veja quem está estudando agora ao redor do mundo",
+      "Acompanhe rankings por período: agora, hoje, semana e total",
+      "Conecte-se com pessoas com objetivos parecidos"
+    ],
+    "explore_rooms_title": "Salas públicas 👥",
+    "explore_rooms_desc": "Salas são espaços compartilhados para estudar junto. Aqui você aprende a navegar.",
+    "explore_rooms_bullets": [
+      "Use a busca e os filtros de categoria e país para achar a sala ideal",
+      "Salas com bandeira mostram a comunidade do país; o cadeado indica salas privadas",
+      "As 10 primeiras ganham o selo Top 10 — entrar nelas dá visibilidade ao seu progresso",
+      "Toque em Entrar para participar; em salas privadas é preciso convite ou senha"
+    ],
+    "explore_users_title": "Ranking de pessoas 🏆",
+    "explore_users_desc": "Veja quem mais estudou em cada período. Você só aparece quando estuda dentro de uma sala.",
+    "explore_users_bullets": [
+      "Agora: quem está em sessão ativa neste momento",
+      "Hoje e Semana: tempo acumulado no seu fuso horário",
+      "Total: histórico completo desde o início",
+      "Top 3 ganham medalhas 🥇🥈🥉; perfis anônimos são respeitados"
+    ],
+    "done_explore_button": "Explorar agora",
+    "done_stay_button": "Ficar no painel"
   },
   "friends": {
     "title": "Amigos",
