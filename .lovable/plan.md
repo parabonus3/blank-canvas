@@ -1,71 +1,66 @@
-## Objetivo
+# Linguagem genérica + Desafios traduzidos + Tooltips
 
-Estender o tutorial atual (`OnboardingWizard`) para, após criar categoria e projeto, levar o usuário até a página **Explorar** e ensinar de forma didática tudo o que ela oferece (salas públicas, ranking, filtros, etc.). Tudo responsivo para mobile e desktop, e traduzido nos 12 idiomas do app.
+A plataforma é usada para estudar, ler, orar, trabalhar, etc. Hoje a UI assume "estudando" em vários pontos e o módulo de Desafios da Sala está em inglês fixo em 10 dos 12 idiomas. Também faltam tooltips explicativos no diálogo "Novo desafio".
 
-## Mudanças
+## 1. Trocar "estudando" por linguagem neutra (apenas textos de UI)
 
-### 1. Fluxo do wizard (`src/components/OnboardingWizard.tsx`)
+Vocabulário novo por idioma — usar "em foco / em sessão / focando agora" no lugar de "estudando agora". Aplicar nas chaves já existentes nos 12 locales:
 
-Aumentar de 4 para **7 passos**:
+- `rooms.studying_now` → "Em foco agora" / "Focusing now" / "Concentrándose ahora" / etc.
+- `rooms.live_studying_count` → "{{count}} pessoa(s) em foco agora"
+- `rooms.more_studying` → "mais em foco"
+- `rooms.profile_studying` → "Em foco"
+- `rooms.activity_study_started` → "{{name}} iniciou uma sessão"
+- `rooms.profile_activity_started` → "Iniciou sessão"
+- `explore.studying_now` → "Em foco agora"
+- `explore.user_ranking_desc` → "Usuários com mais horas em foco" (remover "de estudo")
+- `explore.subtitle` → "Descubra salas públicas e entre para focar junto com outras pessoas"
+- `rooms.room_timer_desc` (hardcoded em `RoomTimerCard.tsx`) → trocar fallback "Estude com a sala..." por "Use o timer junto com a sala e conte para o ranking e desafios"
+- `timer.inactivity_desc` → "Confirme que ainda está em sessão"
+- `rooms.join_and_start` → "Entrar e começar sessão"
 
-```
-0. Boas-vindas (existente)
-1. Criar categoria (existente)
-2. Criar projeto (existente)
-3. NOVO — "Conheça o Explorar" (intro)
-4. NOVO — "Salas públicas" (filtros, países, top 10, entrar)
-5. NOVO — "Ranking de pessoas" (períodos: agora/hoje/semana/total)
-6. Finalização (existente, com CTA "Ir para Explorar")
-```
+Sem mudar nomes de chaves nem schema/RPC. Apenas valores dos JSONs e o fallback hardcoded do RoomTimerCard.
 
-Comportamento:
-- Cada passo novo tem ícone, título, descrição curta, lista de 3-4 bullets explicativos com ícones (Search, Globe, Users, Trophy, Radio, Calendar, etc.) e mini "preview" visual em card.
-- Botão "Pular tour" sempre disponível.
-- No passo final, o botão principal vira **"Explorar agora"** e navega para `/explore`; botão secundário "Ficar no painel" vai para `/`.
-- `finish()` marca `onboarding_completed: true` em qualquer saída.
+Idiomas atualizados: pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ru-RU, ja-JP, ko-KR, zh-CN, ar-SA, id-ID.
 
-### 2. Responsividade
+## 2. Traduzir o bloco `rooms.challenges.*` em todos os idiomas
 
-- `DialogContent` passa de `sm:max-w-md` para `sm:max-w-lg` para acomodar mais conteúdo.
-- Mantém `max-h-[90vh] overflow-y-auto` (já existe).
-- Listas de bullets em `space-y-2` com `text-sm`; ícones `h-4 w-4 shrink-0`.
-- Botões de ação em `flex-col sm:flex-row gap-3 w-full` (padrão já usado).
-- Mini previews dos passos 4 e 5: cards `rounded-lg border bg-muted/30 p-3` com flex compacto, sem imagens pesadas — apenas ícones + placeholders de texto.
+Hoje só pt-BR e en-US estão traduzidos. Os outros 10 idiomas têm strings em inglês fixas (ko-KR, zh-CN, ru-RU, fr-FR, de-DE, it-IT, ja-JP, es-ES, ar-SA, id-ID).
 
-### 3. Traduções (12 idiomas)
+Traduzir todas as chaves de `rooms.challenges`:
+section_title, new, empty_owner, create_title, edit_title, create_desc, emoji, title_label, title_placeholder, description_label, description_placeholder, period_label, period_daily, period_weekly, period_daily_short, period_weekly_short, target_minutes, duration_days, duration_optional, create_btn, delete_confirm, min_per_period_short, member, completed_today, status_on_track, status_not_started, status_missed_short, status_missed_days, missed, legend_done, legend_partial, legend_missed, banner_remaining, banner_done.
 
-Adicionar a cada `src/i18n/locales/*.json` em `onboarding`:
+Mais: novas chaves de tooltip (ver item 3) também traduzidas em todos os idiomas.
 
-```
-explore_intro_title, explore_intro_desc,
-explore_intro_bullets[4],
-explore_rooms_title, explore_rooms_desc,
-explore_rooms_bullets[4],
-explore_users_title, explore_users_desc,
-explore_users_bullets[4],
-done_explore_button, done_stay_button
-```
+## 3. Tooltips explicativos no `CreateChallengeDialog`
 
-Arquivos: `pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ru-RU, ja-JP, ko-KR, zh-CN, ar-SA, id-ID`.
+Adicionar um ícone de ajuda (`HelpCircle` lucide) ao lado de cada `Label`, usando `Tooltip` + `TooltipTrigger` + `TooltipContent` do shadcn. Em mobile, o tooltip abre por toque (já suportado via Radix). Novas chaves `rooms.challenges.tooltip_*`:
 
-Conteúdo didático (resumo do que será explicado):
-- **Salas:** o que são salas de foco/estudo, como filtrar por categoria/país, buscar pelo nome, identificar Top 10, entrar em salas públicas e o cadeado em salas privadas.
-- **Ranking de usuários:** períodos (Agora/Hoje/Semana/Total), medalhas top 3, como aparecer no ranking (estudando dentro de salas), respeito ao anonimato.
-- **Intro Explorar:** o que é a página, por que usar, como descobrir comunidades.
+- `tooltip_emoji` — "Escolha um ícone para identificar visualmente o desafio na lista."
+- `tooltip_title` — "Nome curto do desafio. Aparece no card e no banner do timer."
+- `tooltip_description` — "Opcional. Explique o objetivo ou regra do desafio para os membros."
+- `tooltip_period` — "Diária: meta zera todo dia. Semanal: meta acumula durante a semana e zera no domingo."
+- `tooltip_target_minutes` — "Quantos minutos cada membro precisa registrar no timer da sala para bater a meta no período."
+- `tooltip_duration_days` — "Por quantos dias o desafio fica ativo. Deixe em branco para desafio sem prazo."
 
-### 4. Sem mudanças
+Também ajustar `DialogDescription` para algo mais informativo: "Crie uma meta recorrente (oração, leitura, foco etc.) que os membros completam ao usar o timer da sala."
 
-- Nenhuma alteração em RPCs, schema, hooks, página Explorar ou lógica de criação de categoria/projeto.
-- Sem novas dependências.
+## 4. Responsividade do diálogo
 
-## Arquivos editados
+O dialog já tem `w-[calc(100%-1rem)] sm:max-w-md max-h-[92dvh] flex flex-col` com body scrollável e footer fixo, o que está bom. Ajustes:
 
-- `src/components/OnboardingWizard.tsx` — 3 passos novos + navegação final.
-- `src/i18n/locales/*.json` (12 arquivos) — chaves novas em `onboarding`.
+- Trocar a grade fixa `grid-cols-2` dos campos "Minutes" + "Duration" por `grid-cols-1 sm:grid-cols-2` para evitar inputs apertados em telas <380px.
+- Garantir que o `flex-wrap` dos emojis cabe (já está).
+- Botões do footer já são `flex-col-reverse sm:flex-row` (ok).
 
-## Detalhes técnicos
+## Arquivos afetados
 
-- `totalSteps = 7`, barra de progresso recalculada automaticamente.
-- Navegação final usa `useNavigate()` de `react-router-dom` (novo import).
-- Bullets renderizados com `(t("onboarding.X_bullets", { returnObjects: true }) as string[]).map(...)` (padrão já usado em `done_tips`).
-- Ícones reutilizados de `lucide-react` (já no bundle): `Globe, Search, Users, Trophy, Radio, Calendar, Lock, Compass`.
+- `src/components/rooms/CreateChallengeDialog.tsx` — tooltips, grid responsivo, descrição.
+- `src/components/rooms/RoomTimerCard.tsx` — fallback do `room_timer_desc`.
+- `src/i18n/locales/*.json` (12 arquivos) — traduzir bloco `rooms.challenges`, adicionar `tooltip_*`, generalizar strings de "estudando".
+
+## Fora do escopo
+
+- Não alterar schema, RPCs, lógica de contagem ou layout do RoomDetail.
+- Não tocar em SEO/landing textuais ("study with me" continua para SEO em inglês).
+- Não renomear chaves i18n existentes (apenas valores).

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { HelpCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useCreateChallenge, useUpdateChallenge, RoomChallenge } from "@/hooks/useRoomChallenges";
 
 interface Props {
@@ -22,7 +29,41 @@ interface Props {
   editing?: RoomChallenge | null;
 }
 
-const EMOJIS = ["🎯", "🙏", "📖", "📚", "💻", "🏃", "🧘", "✍️", "🎨", "🎵", "🌱", "⏰"];
+const EMOJIS = ["🎯", "🙏", "📖", "📚", "💻", "💼", "🏃", "🧘", "✍️", "🎨", "🎵", "🌱", "⏰", "📝", "🧠", "☕"];
+
+function FieldLabel({
+  htmlFor,
+  children,
+  tip,
+  helpLabel,
+}: {
+  htmlFor?: string;
+  children: ReactNode;
+  tip: string;
+  helpLabel: string;
+}) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <Label htmlFor={htmlFor} className="m-0">
+        {children}
+      </Label>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-label={helpLabel}
+            className="inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[260px] text-xs leading-relaxed">
+          {tip}
+        </TooltipContent>
+      </Tooltip>
+    </div>
+  );
+}
 
 export function CreateChallengeDialog({ open, onOpenChange, roomId, editing }: Props) {
   const { t } = useTranslation();
@@ -82,99 +123,120 @@ export function CreateChallengeDialog({ open, onOpenChange, roomId, editing }: P
   };
 
   const pending = create.isPending || update.isPending;
+  const helpLabel = t("rooms.challenges.help", "Help");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[calc(100%-1rem)] sm:max-w-md max-h-[92dvh] sm:max-h-[85vh] flex flex-col gap-0 p-0">
-        <DialogHeader className="px-6 pt-6 pb-2 shrink-0">
-          <DialogTitle>
-            {editing ? t("rooms.challenges.edit_title") : t("rooms.challenges.create_title")}
-          </DialogTitle>
-          <DialogDescription>{t("rooms.challenges.create_desc")}</DialogDescription>
-        </DialogHeader>
+        <TooltipProvider delayDuration={150}>
+          <DialogHeader className="px-5 sm:px-6 pt-5 sm:pt-6 pb-2 shrink-0">
+            <DialogTitle>
+              {editing ? t("rooms.challenges.edit_title") : t("rooms.challenges.create_title")}
+            </DialogTitle>
+            <DialogDescription>{t("rooms.challenges.create_desc")}</DialogDescription>
+          </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-          <div className="space-y-2">
-            <Label>{t("rooms.challenges.emoji")}</Label>
-            <div className="flex flex-wrap gap-2">
-              {EMOJIS.map((e) => (
-                <button
-                  key={e}
-                  type="button"
-                  onClick={() => setEmoji(e)}
-                  className={`h-9 w-9 rounded-md border text-lg flex items-center justify-center transition-colors ${
-                    emoji === e ? "border-primary bg-primary/10" : "border-border hover:bg-muted"
-                  }`}
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>{t("rooms.challenges.title_label")}</Label>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={t("rooms.challenges.title_placeholder")}
-              maxLength={80}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>{t("rooms.challenges.description_label")}</Label>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder={t("rooms.challenges.description_placeholder")}
-              rows={2}
-              maxLength={200}
-            />
-          </div>
-
-          {!editing && (
+          <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-4 space-y-4">
             <div className="space-y-2">
-              <Label>{t("rooms.challenges.period_label")}</Label>
-              <Select value={periodType} onValueChange={(v) => setPeriodType(v as any)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="daily">{t("rooms.challenges.period_daily")}</SelectItem>
-                  <SelectItem value="weekly">{t("rooms.challenges.period_weekly")}</SelectItem>
-                </SelectContent>
-              </Select>
+              <FieldLabel tip={t("rooms.challenges.tooltip_emoji")} helpLabel={helpLabel}>
+                {t("rooms.challenges.emoji")}
+              </FieldLabel>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {EMOJIS.map((e) => (
+                  <button
+                    key={e}
+                    type="button"
+                    onClick={() => setEmoji(e)}
+                    className={`h-9 w-9 rounded-md border text-lg flex items-center justify-center transition-colors ${
+                      emoji === e ? "border-primary bg-primary/10" : "border-border hover:bg-muted"
+                    }`}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
 
-          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>{t("rooms.challenges.target_minutes")}</Label>
+              <FieldLabel htmlFor="challenge-title" tip={t("rooms.challenges.tooltip_title")} helpLabel={helpLabel}>
+                {t("rooms.challenges.title_label")}
+              </FieldLabel>
               <Input
-                type="number"
-                min={1}
-                value={targetMinutes}
-                onChange={(e) => setTargetMinutes(e.target.value)}
+                id="challenge-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t("rooms.challenges.title_placeholder")}
+                maxLength={80}
               />
             </div>
+
             <div className="space-y-2">
-              <Label>{t("rooms.challenges.duration_days")}</Label>
-              <Input
-                type="number"
-                min={1}
-                value={durationDays}
-                onChange={(e) => setDurationDays(e.target.value)}
-                placeholder={t("rooms.challenges.duration_optional")}
+              <FieldLabel htmlFor="challenge-desc" tip={t("rooms.challenges.tooltip_description")} helpLabel={helpLabel}>
+                {t("rooms.challenges.description_label")}
+              </FieldLabel>
+              <Textarea
+                id="challenge-desc"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder={t("rooms.challenges.description_placeholder")}
+                rows={2}
+                maxLength={200}
               />
             </div>
-          </div>
-        </div>
 
-        <DialogFooter className="flex-col-reverse sm:flex-row gap-2 px-6 py-4 border-t bg-background shrink-0">
-          <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("common.cancel")}</Button>
-          <Button onClick={handleSave} disabled={pending || !title.trim()}>
-            {editing ? t("common.save") : t("rooms.challenges.create_btn")}
-          </Button>
-        </DialogFooter>
+            {!editing && (
+              <div className="space-y-2">
+                <FieldLabel tip={t("rooms.challenges.tooltip_period")} helpLabel={helpLabel}>
+                  {t("rooms.challenges.period_label")}
+                </FieldLabel>
+                <Select value={periodType} onValueChange={(v) => setPeriodType(v as any)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="daily">{t("rooms.challenges.period_daily")}</SelectItem>
+                    <SelectItem value="weekly">{t("rooms.challenges.period_weekly")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <FieldLabel htmlFor="challenge-minutes" tip={t("rooms.challenges.tooltip_target_minutes")} helpLabel={helpLabel}>
+                  {t("rooms.challenges.target_minutes")}
+                </FieldLabel>
+                <Input
+                  id="challenge-minutes"
+                  type="number"
+                  min={1}
+                  inputMode="numeric"
+                  value={targetMinutes}
+                  onChange={(e) => setTargetMinutes(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <FieldLabel htmlFor="challenge-duration" tip={t("rooms.challenges.tooltip_duration_days")} helpLabel={helpLabel}>
+                  {t("rooms.challenges.duration_days")}
+                </FieldLabel>
+                <Input
+                  id="challenge-duration"
+                  type="number"
+                  min={1}
+                  inputMode="numeric"
+                  value={durationDays}
+                  onChange={(e) => setDurationDays(e.target.value)}
+                  placeholder={t("rooms.challenges.duration_optional")}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2 px-5 sm:px-6 py-4 border-t bg-background shrink-0">
+            <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("common.cancel")}</Button>
+            <Button onClick={handleSave} disabled={pending || !title.trim()}>
+              {editing ? t("common.save") : t("rooms.challenges.create_btn")}
+            </Button>
+          </DialogFooter>
+        </TooltipProvider>
       </DialogContent>
     </Dialog>
   );
