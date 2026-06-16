@@ -121,7 +121,7 @@ export function RoomTimerCard({ roomId }: Props) {
               {t("rooms.room_timer_title", "Timer da Sala")}
             </h3>
             <p className="text-[11px] sm:text-xs text-muted-foreground truncate">
-              {t("rooms.room_timer_desc", "Estude com a sala e conte para o ranking e desafios")}
+              {t("rooms.room_timer_desc", "Use o timer junto com a sala e conte para o ranking e desafios")}
             </p>
           </div>
         </div>
