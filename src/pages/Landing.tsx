@@ -15,6 +15,7 @@ import { useLenis } from "@/hooks/useLenis";
 import { Reveal, Magnetic, SpotlightCursor, ScrollProgress, CountUp, Tilt } from "@/components/landing/primitives";
 import logo from "@/assets/logo.png";
 import { SEO } from "@/components/SEO";
+import { SmartInstallButton } from "@/components/pwa/SmartInstallButton";
 
 /* ============================================================ */
 /*  PARTICLES                                                   */
