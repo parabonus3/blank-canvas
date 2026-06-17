@@ -356,6 +356,7 @@ function Hero() {
               <Link to="/auth">{t("landing.cta_login")}</Link>
             </Button>
           </Magnetic>
+          <SmartInstallButton variant="hero" className="w-full sm:w-auto" />
         </motion.div>
 
         <motion.div

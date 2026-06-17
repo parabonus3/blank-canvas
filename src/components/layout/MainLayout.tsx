@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { PendingPlanChangeBanner } from "@/components/PendingPlanChangeBanner";
 import { ExpiredPlanBanner } from "@/components/ExpiredPlanBanner";
+import { InstallBanner } from "@/components/pwa/InstallBanner";
 import { Sun, Moon } from "lucide-react";
 
 interface MainLayoutProps {
@@ -54,6 +55,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <div className="flex-1 flex flex-col min-h-screen min-w-0">
             <ExpiredPlanBanner />
             <PendingPlanChangeBanner />
+            <InstallBanner />
             <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
               <div className="flex items-center gap-4">
                 <SidebarToggle />
