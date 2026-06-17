@@ -1982,6 +1982,17 @@
     "update_available_desc": "Aggiorna ora per ricevere gli ultimi miglioramenti.",
     "update_now": "Aggiorna ora",
     "update_later": "Più tardi",
-    "already_installed": "App già installata"
+    "already_installed": "App già installata",
+    "banner_title": "Installa TimeZoni sul tuo dispositivo",
+    "banner_cta": "Installa",
+    "banner_dismiss": "Chiudi",
+    "hero_cta": "Scarica l'app",
+    "manual_title": "Come installare",
+    "manual_desc_chrome": "Clicca sull'icona di installazione nella barra degli indirizzi.",
+    "manual_desc_firefox": "Firefox desktop non supporta l'installazione diretta. Usa Chrome o Edge.",
+    "manual_desc_safari_mac": "In Safari su Mac: menu File → Aggiungi al Dock.",
+    "manual_desc_other": "Il tuo browser non supporta l'installazione diretta. Prova Chrome o Edge.",
+    "desktop_step_1": "Clicca sull'icona di installazione nella barra degli indirizzi.",
+    "desktop_step_2": "Conferma con Installa nella finestra del browser."
   }
 }

@@ -15,6 +15,7 @@ import { useLenis } from "@/hooks/useLenis";
 import { Reveal, Magnetic, SpotlightCursor, ScrollProgress, CountUp, Tilt } from "@/components/landing/primitives";
 import logo from "@/assets/logo.png";
 import { SEO } from "@/components/SEO";
+import { SmartInstallButton } from "@/components/pwa/SmartInstallButton";
 
 /* ============================================================ */
 /*  PARTICLES                                                   */
@@ -356,6 +357,7 @@ function Hero() {
               <Link to="/auth">{t("landing.cta_login")}</Link>
             </Button>
           </Magnetic>
+          <SmartInstallButton variant="hero" className="w-full sm:w-auto" />
         </motion.div>
 
         <motion.div

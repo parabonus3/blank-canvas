@@ -1982,6 +1982,17 @@
     "update_available_desc": "حدّث الآن للحصول على آخر التحسينات.",
     "update_now": "تحديث الآن",
     "update_later": "لاحقاً",
-    "already_installed": "التطبيق مثبت بالفعل"
+    "already_installed": "التطبيق مثبت بالفعل",
+    "banner_title": "ثبّت TimeZoni على جهازك",
+    "banner_cta": "تثبيت",
+    "banner_dismiss": "إغلاق",
+    "hero_cta": "احصل على التطبيق",
+    "manual_title": "طريقة التثبيت",
+    "manual_desc_chrome": "انقر على أيقونة التثبيت في شريط العنوان.",
+    "manual_desc_firefox": "Firefox لسطح المكتب لا يدعم التثبيت المباشر. استخدم Chrome أو Edge.",
+    "manual_desc_safari_mac": "في Safari على Mac: قائمة ملف → إضافة إلى الـ Dock.",
+    "manual_desc_other": "متصفحك لا يدعم التثبيت المباشر. جرّب Chrome أو Edge.",
+    "desktop_step_1": "انقر على أيقونة التثبيت في شريط العنوان.",
+    "desktop_step_2": "أكّد بالضغط على \"تثبيت\" في نافذة المتصفح."
   }
 }

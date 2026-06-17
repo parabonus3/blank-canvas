@@ -1996,6 +1996,17 @@
     "update_available_desc": "Perbarui sekarang untuk mendapatkan peningkatan terbaru.",
     "update_now": "Perbarui sekarang",
     "update_later": "Nanti",
-    "already_installed": "Aplikasi sudah terpasang"
+    "already_installed": "Aplikasi sudah terpasang",
+    "banner_title": "Pasang TimeZoni di perangkatmu",
+    "banner_cta": "Pasang",
+    "banner_dismiss": "Tutup",
+    "hero_cta": "Dapatkan aplikasi",
+    "manual_title": "Cara memasang",
+    "manual_desc_chrome": "Klik ikon pasang di bilah alamat.",
+    "manual_desc_firefox": "Firefox desktop tidak mendukung pemasangan langsung. Gunakan Chrome atau Edge.",
+    "manual_desc_safari_mac": "Di Safari Mac: menu File → Tambahkan ke Dock.",
+    "manual_desc_other": "Peramban kamu tidak mendukung pemasangan langsung. Coba Chrome atau Edge.",
+    "desktop_step_1": "Klik ikon pasang di bilah alamat.",
+    "desktop_step_2": "Konfirmasi dengan klik Pasang di dialog peramban."
   }
 }
