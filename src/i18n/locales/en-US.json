@@ -2077,5 +2077,20 @@
     "monthly_legendary_title": "Monthly Legendary",
     "monthly_legendary_desc": "Study every day of the month (1h+) and total 80h+",
     "monthly_legendary_completed_title": "Legendary mission completed!"
+  },
+  "pwa": {
+    "install_button": "Install app",
+    "install_title": "Install TimeZoni",
+    "install_desc": "Add TimeZoni to your home screen like an app.",
+    "ios_desc": "On iPhone/iPad, install in 3 steps from Safari.",
+    "ios_step_1": "Tap the Share button in Safari's bar.",
+    "ios_step_2": "Choose \"Add to Home Screen\".",
+    "ios_step_3": "Tap \"Add\" in the top-right corner.",
+    "step": "Step",
+    "update_available_title": "New version available",
+    "update_available_desc": "Update now to get the latest improvements.",
+    "update_now": "Update now",
+    "update_later": "Later",
+    "already_installed": "App already installed"
   }
 }

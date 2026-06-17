@@ -2132,5 +2132,20 @@
     "monthly_legendary_title": "Mensal Lendária",
     "monthly_legendary_desc": "Estude todos os dias do mês (1h+) e some 80h+",
     "monthly_legendary_completed_title": "Missão Lendária concluída!"
+  },
+  "pwa": {
+    "install_button": "Instalar app",
+    "install_title": "Instalar TimeZoni",
+    "install_desc": "Tenha o TimeZoni na sua tela inicial como um app.",
+    "ios_desc": "No iPhone/iPad, instale em 3 passos pelo Safari.",
+    "ios_step_1": "Toque no botão Compartilhar na barra do Safari.",
+    "ios_step_2": "Escolha \"Adicionar à Tela de Início\".",
+    "ios_step_3": "Toque em \"Adicionar\" no canto superior direito.",
+    "step": "Passo",
+    "update_available_title": "Nova versão disponível",
+    "update_available_desc": "Atualize agora para receber as últimas melhorias.",
+    "update_now": "Atualizar agora",
+    "update_later": "Depois",
+    "already_installed": "App já instalado"
   }
 }

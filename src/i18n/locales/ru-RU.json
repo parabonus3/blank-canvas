@@ -1968,5 +1968,20 @@
         "genre": "history"
       }
     ]
+  },
+  "pwa": {
+    "install_button": "Установить приложение",
+    "install_title": "Установить TimeZoni",
+    "install_desc": "Добавьте TimeZoni на главный экран как приложение.",
+    "ios_desc": "На iPhone/iPad установите в 3 шага через Safari.",
+    "ios_step_1": "Нажмите кнопку «Поделиться» в Safari.",
+    "ios_step_2": "Выберите «На экран Домой».",
+    "ios_step_3": "Нажмите «Добавить» в правом верхнем углу.",
+    "step": "Шаг",
+    "update_available_title": "Доступна новая версия",
+    "update_available_desc": "Обновитесь, чтобы получить улучшения.",
+    "update_now": "Обновить сейчас",
+    "update_later": "Позже",
+    "already_installed": "Приложение уже установлено"
   }
 }
