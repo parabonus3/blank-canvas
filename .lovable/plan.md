@@ -1,66 +1,106 @@
-# Linguagem genérica + Desafios traduzidos + Tooltips
+## Objetivo
+Transformar o TimeZoni em um PWA profissional, instalável em qualquer dispositivo (iOS, Android, Desktop), com suporte offline básico, auto-atualização e botão "Instalar app" visível na sidebar.
 
-A plataforma é usada para estudar, ler, orar, trabalhar, etc. Hoje a UI assume "estudando" em vários pontos e o módulo de Desafios da Sala está em inglês fixo em 10 dos 12 idiomas. Também faltam tooltips explicativos no diálogo "Novo desafio".
+## Escopo
 
-## 1. Trocar "estudando" por linguagem neutra (apenas textos de UI)
+### 1. Infraestrutura PWA (vite-plugin-pwa)
+- Instalar `vite-plugin-pwa` + `workbox-window`.
+- Configurar em `vite.config.ts`:
+  - `registerType: "autoUpdate"` (atualiza automático quando houver nova versão).
+  - `injectRegister: null` (registro manual via wrapper seguro).
+  - `devOptions: { enabled: false }` (nunca registra em dev/preview Lovable).
+  - `workbox`:
+    - `navigateFallback: "/index.html"`, **excluindo** `/~oauth` e rotas Supabase.
+    - Runtime caching:
+      - HTML/navegação → `NetworkFirst` (sempre busca atualização).
+      - Assets hashados (JS/CSS/imagens locais) → `CacheFirst`.
+      - Fontes Google → `CacheFirst` com expiração 30d.
+      - Supabase API (`*.supabase.co/rest/*`, `/auth/*`, `/realtime/*`) → **NetworkOnly** (nunca cachear dados sensíveis nem auth).
+    - `cleanupOutdatedCaches: true`.
 
-Vocabulário novo por idioma — usar "em foco / em sessão / focando agora" no lugar de "estudando agora". Aplicar nas chaves já existentes nos 12 locales:
+### 2. Wrapper de registro seguro (`src/pwa/registerSW.ts`)
+Recusa registrar (e desregistra SWs existentes) quando:
+- `!import.meta.env.PROD`
+- dentro de iframe
+- hostname inclui `id-preview--`, `preview--`, `lovableproject.com`, `lovable.dev`, `lovableproject-dev.com`
+- URL contém `?sw=off` (kill switch)
 
-- `rooms.studying_now` → "Em foco agora" / "Focusing now" / "Concentrándose ahora" / etc.
-- `rooms.live_studying_count` → "{{count}} pessoa(s) em foco agora"
-- `rooms.more_studying` → "mais em foco"
-- `rooms.profile_studying` → "Em foco"
-- `rooms.activity_study_started` → "{{name}} iniciou uma sessão"
-- `rooms.profile_activity_started` → "Iniciou sessão"
-- `explore.studying_now` → "Em foco agora"
-- `explore.user_ranking_desc` → "Usuários com mais horas em foco" (remover "de estudo")
-- `explore.subtitle` → "Descubra salas públicas e entre para focar junto com outras pessoas"
-- `rooms.room_timer_desc` (hardcoded em `RoomTimerCard.tsx`) → trocar fallback "Estude com a sala..." por "Use o timer junto com a sala e conte para o ranking e desafios"
-- `timer.inactivity_desc` → "Confirme que ainda está em sessão"
-- `rooms.join_and_start` → "Entrar e começar sessão"
+Quando atualização nova é detectada, dispara evento custom `pwa:update-available` consumido por um toast com botão "Atualizar agora" (recarrega aplicando `skipWaiting`).
 
-Sem mudar nomes de chaves nem schema/RPC. Apenas valores dos JSONs e o fallback hardcoded do RoomTimerCard.
+### 3. Manifest + ícones (`public/manifest.webmanifest`)
+- `name: "TimeZoni"`, `short_name: "TimeZoni"`.
+- `display: "standalone"`, `start_url: "/"`, `scope: "/"`, `id: "/"`.
+- `theme_color` e `background_color` alinhados ao design system (cores do `index.css`).
+- `orientation: "portrait"`, `lang: "pt-BR"`, `categories: ["productivity"]`.
+- Ícones gerados (192, 256, 384, 512 + 512 maskable + apple-touch-icon 180).
+- `screenshots` (1 desktop + 1 mobile) para melhorar o prompt de instalação no Chrome/Edge.
+- Adicionar `shortcuts`: Timer, Salas, Dashboard.
 
-Idiomas atualizados: pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ru-RU, ja-JP, ko-KR, zh-CN, ar-SA, id-ID.
+### 4. Tags no `index.html`
+- `<link rel="manifest">`, `<meta name="theme-color">` (claro/escuro via media), `<link rel="apple-touch-icon">`, `<meta name="apple-mobile-web-app-capable">`, `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">`, `<meta name="apple-mobile-web-app-title">`.
 
-## 2. Traduzir o bloco `rooms.challenges.*` em todos os idiomas
+### 5. Hook + botão de instalação
+`src/hooks/usePWAInstall.ts`:
+- Captura evento `beforeinstallprompt` (Chrome/Edge/Android) e armazena.
+- Detecta iOS Safari (sem evento) para mostrar instruções manuais ("Compartilhar → Adicionar à Tela de Início").
+- Detecta se já está instalado (`display-mode: standalone` ou `navigator.standalone`) e esconde o botão.
+- Retorna `{ canInstall, isIOS, isInstalled, promptInstall() }`.
 
-Hoje só pt-BR e en-US estão traduzidos. Os outros 10 idiomas têm strings em inglês fixas (ko-KR, zh-CN, ru-RU, fr-FR, de-DE, it-IT, ja-JP, es-ES, ar-SA, id-ID).
+`src/components/pwa/InstallAppButton.tsx`:
+- Botão na sidebar (acima do logout) com ícone `Download` e label traduzido.
+- Em Android/Desktop: chama `prompt()` nativo.
+- Em iOS: abre um `Dialog` com instruções ilustradas passo a passo.
+- Some quando `isInstalled` é true.
 
-Traduzir todas as chaves de `rooms.challenges`:
-section_title, new, empty_owner, create_title, edit_title, create_desc, emoji, title_label, title_placeholder, description_label, description_placeholder, period_label, period_daily, period_weekly, period_daily_short, period_weekly_short, target_minutes, duration_days, duration_optional, create_btn, delete_confirm, min_per_period_short, member, completed_today, status_on_track, status_not_started, status_missed_short, status_missed_days, missed, legend_done, legend_partial, legend_missed, banner_remaining, banner_done.
+Integração em `src/components/layout/Sidebar.tsx`, no `SidebarFooter`, antes do botão "Sair". Visível tanto em desktop quanto mobile (collapsed mode mostra só o ícone).
 
-Mais: novas chaves de tooltip (ver item 3) também traduzidas em todos os idiomas.
+### 6. Toast de atualização (`src/components/pwa/UpdatePrompt.tsx`)
+- Monta um `Sonner` toast persistente quando `pwa:update-available` dispara.
+- Botões: "Atualizar agora" (recarrega) / "Depois".
+- Montado uma vez em `App.tsx` ao lado dos outros `Toaster`.
 
-## 3. Tooltips explicativos no `CreateChallengeDialog`
+### 7. i18n
+Adicionar bloco `pwa.*` nos 12 locales:
+- `install_button`, `install_title`, `install_desc`
+- `ios_step_1`, `ios_step_2`, `ios_step_3`
+- `update_available_title`, `update_available_desc`, `update_now`, `update_later`
+- `already_installed`
 
-Adicionar um ícone de ajuda (`HelpCircle` lucide) ao lado de cada `Label`, usando `Tooltip` + `TooltipTrigger` + `TooltipContent` do shadcn. Em mobile, o tooltip abre por toque (já suportado via Radix). Novas chaves `rooms.challenges.tooltip_*`:
+### 8. Responsividade
+- Botão da sidebar respeita o estado `collapsed` (só ícone) e modo offcanvas (mobile).
+- Diálogo de instruções iOS: `max-h-[90dvh] overflow-y-auto`, `w-[calc(100%-1rem)]`.
+- Toast empilha corretamente no mobile (já tratado pelo Sonner existente).
 
-- `tooltip_emoji` — "Escolha um ícone para identificar visualmente o desafio na lista."
-- `tooltip_title` — "Nome curto do desafio. Aparece no card e no banner do timer."
-- `tooltip_description` — "Opcional. Explique o objetivo ou regra do desafio para os membros."
-- `tooltip_period` — "Diária: meta zera todo dia. Semanal: meta acumula durante a semana e zera no domingo."
-- `tooltip_target_minutes` — "Quantos minutos cada membro precisa registrar no timer da sala para bater a meta no período."
-- `tooltip_duration_days` — "Por quantos dias o desafio fica ativo. Deixe em branco para desafio sem prazo."
+### 9. Não cachear dados sensíveis / autenticação
+- Regras explícitas de bypass para domínio Supabase e `/~oauth`.
+- HTML sempre `NetworkFirst` → toda atualização de UI/tradução chega na próxima visita sem usuário precisar limpar nada.
 
-Também ajustar `DialogDescription` para algo mais informativo: "Crie uma meta recorrente (oração, leitura, foco etc.) que os membros completam ao usar o timer da sala."
+## Arquivos a criar
+- `public/manifest.webmanifest`
+- `public/icons/icon-192.png`, `icon-512.png`, `icon-512-maskable.png`, `apple-touch-icon.png` (gerados)
+- `src/pwa/registerSW.ts`
+- `src/hooks/usePWAInstall.ts`
+- `src/components/pwa/InstallAppButton.tsx`
+- `src/components/pwa/UpdatePrompt.tsx`
+- `src/components/pwa/IOSInstallDialog.tsx`
 
-## 4. Responsividade do diálogo
+## Arquivos a editar
+- `vite.config.ts` (plugin PWA)
+- `index.html` (manifest + meta tags Apple)
+- `src/main.tsx` (chamar `registerSW()` do wrapper)
+- `src/App.tsx` (montar `<UpdatePrompt />`)
+- `src/components/layout/Sidebar.tsx` (botão Install no footer)
+- 12 arquivos em `src/i18n/locales/*.json` (chaves `pwa.*`)
+- `package.json` / `bun.lock` (novas deps)
 
-O dialog já tem `w-[calc(100%-1rem)] sm:max-w-md max-h-[92dvh] flex flex-col` com body scrollável e footer fixo, o que está bom. Ajustes:
+## Fora de escopo
+- Push notifications (web push exige worker dedicado — fica para etapa futura).
+- Offline real de dados Supabase (apenas shell + assets ficam offline; chamadas de API continuam online).
+- Publicação em App Store/Play Store (caminho Capacitor é separado).
 
-- Trocar a grade fixa `grid-cols-2` dos campos "Minutes" + "Duration" por `grid-cols-1 sm:grid-cols-2` para evitar inputs apertados em telas <380px.
-- Garantir que o `flex-wrap` dos emojis cabe (já está).
-- Botões do footer já são `flex-col-reverse sm:flex-row` (ok).
-
-## Arquivos afetados
-
-- `src/components/rooms/CreateChallengeDialog.tsx` — tooltips, grid responsivo, descrição.
-- `src/components/rooms/RoomTimerCard.tsx` — fallback do `room_timer_desc`.
-- `src/i18n/locales/*.json` (12 arquivos) — traduzir bloco `rooms.challenges`, adicionar `tooltip_*`, generalizar strings de "estudando".
-
-## Fora do escopo
-
-- Não alterar schema, RPCs, lógica de contagem ou layout do RoomDetail.
-- Não tocar em SEO/landing textuais ("study with me" continua para SEO em inglês).
-- Não renomear chaves i18n existentes (apenas valores).
+## Como o usuário verá
+1. Em produção (`timezoni.com` / `timezonii.lovable.app`), aparece "Instalar app" na sidebar.
+2. Android/Desktop: 1 clique instala.
+3. iPhone: abre tutorial visual ("Compartilhar → Adicionar à Tela de Início").
+4. Quando você publicar uma nova versão, qualquer usuário com o app aberto recebe um toast "Nova versão disponível → Atualizar agora".
+5. No editor/preview do Lovable nada muda (SW desativado por segurança).

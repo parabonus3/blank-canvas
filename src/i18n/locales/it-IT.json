@@ -1968,5 +1968,20 @@
         "genre": "history"
       }
     ]
+  },
+  "pwa": {
+    "install_button": "Installa app",
+    "install_title": "Installa TimeZoni",
+    "install_desc": "Aggiungi TimeZoni alla schermata Home come un'app.",
+    "ios_desc": "Su iPhone/iPad, installa in 3 passaggi da Safari.",
+    "ios_step_1": "Tocca il pulsante Condividi nella barra di Safari.",
+    "ios_step_2": "Scegli \"Aggiungi a Home\".",
+    "ios_step_3": "Tocca \"Aggiungi\" in alto a destra.",
+    "step": "Passo",
+    "update_available_title": "Nuova versione disponibile",
+    "update_available_desc": "Aggiorna ora per ricevere gli ultimi miglioramenti.",
+    "update_now": "Aggiorna ora",
+    "update_later": "Più tardi",
+    "already_installed": "App già installata"
   }
 }

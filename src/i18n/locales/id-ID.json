@@ -1982,5 +1982,20 @@
         "genre": "history"
       }
     ]
+  },
+  "pwa": {
+    "install_button": "Pasang aplikasi",
+    "install_title": "Pasang TimeZoni",
+    "install_desc": "Tambahkan TimeZoni ke layar utama seperti aplikasi.",
+    "ios_desc": "Di iPhone/iPad, pasang dalam 3 langkah dari Safari.",
+    "ios_step_1": "Ketuk tombol Bagikan di bilah Safari.",
+    "ios_step_2": "Pilih \"Ke Layar Utama\".",
+    "ios_step_3": "Ketuk \"Tambah\" di pojok kanan atas.",
+    "step": "Langkah",
+    "update_available_title": "Versi baru tersedia",
+    "update_available_desc": "Perbarui sekarang untuk mendapatkan peningkatan terbaru.",
+    "update_now": "Perbarui sekarang",
+    "update_later": "Nanti",
+    "already_installed": "Aplikasi sudah terpasang"
   }
 }

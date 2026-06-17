@@ -1989,5 +1989,20 @@
         "genre": "history"
       }
     ]
+  },
+  "pwa": {
+    "install_button": "Instalar app",
+    "install_title": "Instalar TimeZoni",
+    "install_desc": "Añade TimeZoni a tu pantalla de inicio como una app.",
+    "ios_desc": "En iPhone/iPad, instálala en 3 pasos desde Safari.",
+    "ios_step_1": "Toca el botón Compartir en la barra de Safari.",
+    "ios_step_2": "Elige \"Añadir a pantalla de inicio\".",
+    "ios_step_3": "Toca \"Añadir\" en la esquina superior derecha.",
+    "step": "Paso",
+    "update_available_title": "Nueva versión disponible",
+    "update_available_desc": "Actualiza ahora para recibir las últimas mejoras.",
+    "update_now": "Actualizar ahora",
+    "update_later": "Más tarde",
+    "already_installed": "App ya instalada"
   }
 }

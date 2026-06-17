@@ -1982,5 +1982,20 @@
         "genre": "history"
       }
     ]
+  },
+  "pwa": {
+    "install_button": "安装应用",
+    "install_title": "安装 TimeZoni",
+    "install_desc": "像应用一样将 TimeZoni 添加到主屏幕。",
+    "ios_desc": "在 iPhone/iPad 上，通过 Safari 三步即可安装。",
+    "ios_step_1": "点击 Safari 栏中的分享按钮。",
+    "ios_step_2": "选择「添加到主屏幕」。",
+    "ios_step_3": "点击右上角的「添加」。",
+    "step": "步骤",
+    "update_available_title": "有新版本可用",
+    "update_available_desc": "立即更新以获取最新改进。",
+    "update_now": "立即更新",
+    "update_later": "稍后",
+    "already_installed": "已安装"
   }
 }

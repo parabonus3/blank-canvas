@@ -46,6 +46,7 @@ import logo from "@/assets/logo.png";
 import { SidebarMiniTimer } from "@/components/SidebarMiniTimer";
 import { SidebarStreakWidget } from "@/components/SidebarStreakWidget";
 import { SidebarMiniPlayer } from "@/components/SidebarMiniPlayer";
+import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 
 export function AppSidebar() {
   const { t } = useTranslation();
@@ -153,7 +154,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4">
+      <SidebarFooter className={cn("p-4 flex flex-col gap-2")}>
+        <InstallAppButton />
         <Button
           variant="ghost"
           size={isCollapsed ? "icon" : "default"}
