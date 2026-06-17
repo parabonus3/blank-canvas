@@ -45,6 +45,7 @@ import AgentManager from "./pages/sac/AgentManager";
 import { LangShell } from "./components/LangShell";
 import LocalizedLandingPage from "./pages/LocalizedLandingPage";
 import BlogPostPage from "./pages/BlogPostPage";
+import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ const App = () => (
             <AmbientSoundProvider>
             <TooltipProvider>
               <DirectionHandler />
+              <UpdatePrompt />
               <Toaster />
               <Sonner />
               <BrowserRouter>
