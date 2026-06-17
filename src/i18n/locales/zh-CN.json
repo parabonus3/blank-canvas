@@ -1996,6 +1996,17 @@
     "update_available_desc": "立即更新以获取最新改进。",
     "update_now": "立即更新",
     "update_later": "稍后",
-    "already_installed": "已安装"
+    "already_installed": "已安装",
+    "banner_title": "在你的设备上安装 TimeZoni",
+    "banner_cta": "安装",
+    "banner_dismiss": "关闭",
+    "hero_cta": "获取应用",
+    "manual_title": "如何安装",
+    "manual_desc_chrome": "点击地址栏中的安装图标即可安装。",
+    "manual_desc_firefox": "桌面版 Firefox 不支持直接安装。请使用 Chrome 或 Edge。",
+    "manual_desc_safari_mac": "Mac 上的 Safari：文件菜单 → 添加到程序坞。",
+    "manual_desc_other": "当前浏览器不支持直接安装。请尝试 Chrome 或 Edge。",
+    "desktop_step_1": "点击地址栏中的安装图标。",
+    "desktop_step_2": "在浏览器对话框中点击「安装」确认。"
   }
 }

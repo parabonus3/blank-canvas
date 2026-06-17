@@ -1982,6 +1982,17 @@
     "update_available_desc": "최신 개선 사항을 적용하려면 업데이트하세요.",
     "update_now": "지금 업데이트",
     "update_later": "나중에",
-    "already_installed": "이미 설치됨"
+    "already_installed": "이미 설치됨",
+    "banner_title": "기기에 TimeZoni 설치",
+    "banner_cta": "설치",
+    "banner_dismiss": "닫기",
+    "hero_cta": "앱 받기",
+    "manual_title": "설치 방법",
+    "manual_desc_chrome": "주소 표시줄의 설치 아이콘을 클릭하세요.",
+    "manual_desc_firefox": "데스크톱 Firefox는 직접 설치를 지원하지 않아요. Chrome 또는 Edge를 사용하세요.",
+    "manual_desc_safari_mac": "Mac Safari: 파일 메뉴 → Dock에 추가.",
+    "manual_desc_other": "이 브라우저는 직접 설치를 지원하지 않아요. Chrome이나 Edge를 사용해보세요.",
+    "desktop_step_1": "주소 표시줄의 설치 아이콘을 클릭하세요.",
+    "desktop_step_2": "브라우저 대화상자에서 설치를 누르세요."
   }
 }

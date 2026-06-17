@@ -1996,6 +1996,17 @@
     "update_available_desc": "最新の改善を反映するため更新してください。",
     "update_now": "今すぐ更新",
     "update_later": "あとで",
-    "already_installed": "インストール済み"
+    "already_installed": "インストール済み",
+    "banner_title": "TimeZoniをデバイスにインストール",
+    "banner_cta": "インストール",
+    "banner_dismiss": "閉じる",
+    "hero_cta": "アプリを入手",
+    "manual_title": "インストール方法",
+    "manual_desc_chrome": "アドレスバーのインストールアイコンをクリック。",
+    "manual_desc_firefox": "デスクトップ版Firefoxは直接インストール非対応。ChromeかEdgeをお使いください。",
+    "manual_desc_safari_mac": "Mac版Safari：ファイルメニュー → Dockに追加。",
+    "manual_desc_other": "このブラウザは直接インストール非対応。ChromeかEdgeでお試しください。",
+    "desktop_step_1": "アドレスバーのインストールアイコンをクリック。",
+    "desktop_step_2": "ダイアログで「インストール」を確認。"
   }
 }
