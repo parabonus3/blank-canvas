@@ -145,12 +145,13 @@ export default function Auth() {
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('send-email', {
-        body: {
-          email: forgotEmail,
-          type: 'recovery',
-          redirect_to: `${window.location.origin}/reset-password`,
-        },
+      // Preserve locale prefix if user is on a localized route (e.g. /pt-BR/auth)
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      const localePrefix = /^[a-z]{2}-[A-Z]{2}$/.test(pathParts[0] || '') ? `/${pathParts[0]}` : '';
+      const redirectTo = `${window.location.origin}${localePrefix}/reset-password`;
+
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo,
       });
 
       if (error) throw error;
@@ -161,9 +162,16 @@ export default function Auth() {
       });
       setView("auth");
     } catch (error: any) {
+      const lower = (error?.message || '').toLowerCase();
+      let description = error?.message || t('common.error');
+      if (lower.includes('rate') || lower.includes('too many') || lower.includes('limit')) {
+        description = t('auth.reset_rate_limited');
+      } else if (lower.includes('invalid') && lower.includes('email')) {
+        description = t('auth.invalid_email');
+      }
       toast({
         title: t('common.error'),
-        description: error.message || t('common.error'),
+        description,
         variant: "destructive",
       });
     } finally {
