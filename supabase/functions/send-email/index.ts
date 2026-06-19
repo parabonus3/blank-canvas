@@ -169,6 +169,13 @@ Deno.serve(async (req) => {
       throw new Error(`Unknown email type: ${type}`)
     }
 
+    if (!resend) {
+      return new Response(
+        JSON.stringify({ error: 'Email provider not configured' }),
+        { status: 503, headers: { 'Content-Type': 'application/json', ...corsHeaders } },
+      )
+    }
+
     const { error: sendError } = await resend.emails.send({
       from: 'TimeZoni <noreply@timezoni.com>',
       to: [email],
