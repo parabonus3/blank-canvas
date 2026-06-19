@@ -1,61 +1,49 @@
-## Problema
-O botão atual de instalar PWA fica só no rodapé da sidebar (área autenticada). Usuários não-logados na landing não veem nenhuma chamada para instalar, e mesmo logados o botão passa despercebido. Também não aparece no preview Lovable (SW desativado lá), o que confunde no teste.
+# Corrigir "Esqueci a senha" (erro 403 na Edge Function)
 
-## Solução: "Smart Install" em 3 pontos
+## Diagnóstico
 
-### 1. Componente central `SmartInstallButton`
-Botão reutilizável que decide sozinho o que fazer baseado no ambiente:
-- Se já instalado (`display-mode: standalone`) → não renderiza.
-- Se Android/Chrome/Edge/desktop com `beforeinstallprompt` capturado → dispara prompt nativo.
-- Se iOS Safari → abre o `IOSInstallDialog` já existente.
-- Se outro navegador sem suporte (ex.: Firefox desktop, Safari macOS) → abre um novo `ManualInstallDialog` explicando "use Chrome/Edge para instalar" ou as instruções específicas do navegador.
-- Props: `variant` ("hero" | "compact" | "icon"), `className`.
+No console aparece:
+- `POST .../functions/v1/send-email → 403`
+- `CORS: Response to preflight ... does not have HTTP ok status`
+- Toast: "Failed to send a request to the Edge Function"
 
-### 2. `InstallBanner` (topo do app)
-Banner fino, dispensável, exibido quando `canInstall && !isInstalled && !dismissed`:
-- Posição: logo abaixo do header em `MainLayout` e no topo da `Landing`.
-- Texto: "Instale o TimeZoni no seu dispositivo" + botão "Instalar" + "X" para dispensar.
-- Persistência do dismiss em `localStorage` (`tz_pwa_banner_dismissed_at`) com cooldown de 7 dias (reaparece depois).
-- Responsivo: em mobile fica compacto (só ícone + label curto + X).
+Fluxo atual:
+1. `src/pages/Auth.tsx` (handleForgotPassword) chama `supabase.functions.invoke('send-email', { type: 'recovery', ... })`.
+2. O usuário está deslogado (esqueceu a senha), então não há JWT de usuário — apenas a anon key.
+3. Por padrão, o gateway das Edge Functions do Supabase exige um JWT válido de usuário. Como o `supabase/config.toml` **não** declara `verify_jwt = false` para `send-email`, o gateway rejeita o preflight/POST com **403 antes mesmo de executar o código** da função. Isso também derruba o CORS (sem headers na resposta de erro do gateway).
 
-### 3. CTA na landing (`Landing.tsx`)
-Adicionar um botão "Baixar app" ao lado de "Começar Grátis" no hero, usando `SmartInstallButton variant="hero"`. Só aparece se `canInstall`.
+A função `send-email` já faz autenticação interna (exige Bearer só para `type: 'signup'` e aplica rate-limit por e-mail para `type: 'recovery'`), então é seguro desativar o `verify_jwt` no gateway.
 
-### 4. Substituir o botão atual da sidebar
-`InstallAppButton.tsx` passa a renderizar `<SmartInstallButton variant="compact" />` (mantém aparência atual, mas com a lógica nova).
+## Mudanças
 
-### 5. i18n (12 idiomas)
-Adicionar ao bloco `pwa.*`:
-- `banner_title`, `banner_cta`, `banner_dismiss`
-- `hero_cta` ("Baixar app" / "Get the app" / etc.)
-- `manual_title`, `manual_desc_chrome`, `manual_desc_firefox`, `manual_desc_safari_mac`, `manual_desc_other`
-- `desktop_step_1`, `desktop_step_2` (instruções genéricas Chrome/Edge: "clique no ícone de instalação na barra de endereço")
+### 1. `supabase/config.toml`
+Adicionar bloco para a função:
 
-### 6. Detecção de navegador
-Pequena util `src/lib/browserDetect.ts` que classifica em `"chromium" | "firefox" | "safari-mac" | "safari-ios" | "other"`. Usada pelo `ManualInstallDialog` para escolher a mensagem certa.
+```toml
+[functions.send-email]
+verify_jwt = false
+```
 
-### 7. Preview Lovable
-No iframe do editor Lovable o SW e `beforeinstallprompt` não disparam — isso é esperado e desejado. O botão simplesmente não aparece lá. Vou adicionar um comentário no código + uma nota visível só em dev (`import.meta.env.DEV`) abaixo do botão "Instalar app" da sidebar: "Disponível no app publicado". Assim você sabe testar via `timezoni.com`/`timezonii.lovable.app`.
+Isso permite que o gateway aceite chamadas anônimas; a função continua validando internamente:
+- `recovery`: valida formato de e-mail + rate-limit persistente (3/10min por e-mail).
+- `signup`: continua exigindo `Authorization: Bearer <user_jwt>` e checando que o e-mail bate com o usuário autenticado.
 
-## Arquivos a criar
-- `src/components/pwa/SmartInstallButton.tsx`
-- `src/components/pwa/InstallBanner.tsx`
-- `src/components/pwa/ManualInstallDialog.tsx`
-- `src/lib/browserDetect.ts`
+### 2. Redeploy da função
+Após o ajuste de config, redeployar `send-email` para o gateway aplicar a nova flag.
 
-## Arquivos a editar
-- `src/components/pwa/InstallAppButton.tsx` (delegar para SmartInstallButton)
-- `src/components/layout/MainLayout.tsx` (montar `<InstallBanner />`)
-- `src/pages/Landing.tsx` (adicionar CTA no hero)
-- 12 × `src/i18n/locales/*.json` (novas chaves `pwa.*`)
+### 3. Pequena melhoria de robustez em `supabase/functions/send-email/index.ts`
+- Garantir headers CORS também em qualquer caminho de erro precoce (já está OK, mas revisar `OPTIONS` para retornar `status: 204`).
+- Não muda comportamento funcional.
+
+## Verificação
+
+1. Em `https://timezoni.com/auth` → "Esqueci a senha" → inserir e-mail → enviar.
+2. Esperado: toast de sucesso + e-mail recebido com link para `/reset-password`.
+3. Console sem 403/CORS na chamada para `/functions/v1/send-email`.
+4. Testar também o caminho de signup (que exige JWT) continua funcionando para usuário autenticado.
 
 ## Fora de escopo
-- Push notifications, modo offline real de dados, badges de app, integrações nativas.
-- Mudar visual da landing além de adicionar 1 botão no hero.
 
-## Resultado
-- Visitante na landing: vê CTA "Baixar app" se o navegador suporta.
-- Usuário logado: vê banner discreto no topo (uma vez por semana se dispensado) + botão na sidebar.
-- iOS: sempre abre tutorial visual.
-- Navegadores sem suporte: instruções específicas em vez de botão "morto".
-- Tudo em 12 idiomas, responsivo mobile/desktop.
+- Não trocar provedor de e-mail (continua Resend com `noreply@timezoni.com`).
+- Não mexer no template do e-mail nem na página `/reset-password` (já funcionais).
+- Não alterar rate-limit nem regras de signup.
