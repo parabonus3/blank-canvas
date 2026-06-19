@@ -144,7 +144,8 @@
     "passwords_not_match": "两次输入的密码不一致",
     "password_updated": "密码更新成功！",
     "updating_password": "更新中...",
-    "back_to_login": "返回登录"
+    "back_to_login": "返回登录",
+    "reset_rate_limited": "尝试次数过多。请等待几分钟后再试。"
   },
   "timer": {
     "title": "计时器",

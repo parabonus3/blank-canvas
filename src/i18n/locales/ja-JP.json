@@ -144,7 +144,8 @@
     "passwords_not_match": "パスワードが一致しません",
     "password_updated": "パスワードが正常に更新されました！",
     "updating_password": "更新中...",
-    "back_to_login": "ログインに戻る"
+    "back_to_login": "ログインに戻る",
+    "reset_rate_limited": "試行回数が多すぎます。数分待ってから再試行してください。"
   },
   "timer": {
     "title": "タイマー",

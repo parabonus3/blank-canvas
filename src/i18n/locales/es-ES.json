@@ -144,7 +144,8 @@
     "passwords_not_match": "Las contraseñas no coinciden",
     "password_updated": "¡Contraseña actualizada con éxito!",
     "updating_password": "Actualizando...",
-    "back_to_login": "Volver al inicio de sesión"
+    "back_to_login": "Volver al inicio de sesión",
+    "reset_rate_limited": "Demasiados intentos. Espere unos minutos e inténtelo de nuevo."
   },
   "timer": {
     "title": "Temporizador",

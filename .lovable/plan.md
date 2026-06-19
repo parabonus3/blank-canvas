@@ -1,49 +1,47 @@
-# Corrigir "Esqueci a senha" (erro 403 na Edge Function)
+Diagnóstico confirmado:
 
-## Diagnóstico
+- O erro principal não é mais `verify_jwt`.
+- A função `send-email` está quebrando na inicialização porque `RESEND_API_KEY` não existe no projeto.
+- Como ela quebra antes de responder ao `OPTIONS`, o navegador interpreta como erro de CORS e bloqueia o envio.
+- Resultado: o usuário clica em “Esqueci minha senha”, mas nenhum e-mail é disparado.
+- Também confirmei que não há domínio de e-mail Lovable configurado neste workspace, então a correção mais segura agora é não depender dessa função customizada para recuperação de senha.
 
-No console aparece:
-- `POST .../functions/v1/send-email → 403`
-- `CORS: Response to preflight ... does not have HTTP ok status`
-- Toast: "Failed to send a request to the Edge Function"
+Plano de correção:
 
-Fluxo atual:
-1. `src/pages/Auth.tsx` (handleForgotPassword) chama `supabase.functions.invoke('send-email', { type: 'recovery', ... })`.
-2. O usuário está deslogado (esqueceu a senha), então não há JWT de usuário — apenas a anon key.
-3. Por padrão, o gateway das Edge Functions do Supabase exige um JWT válido de usuário. Como o `supabase/config.toml` **não** declara `verify_jwt = false` para `send-email`, o gateway rejeita o preflight/POST com **403 antes mesmo de executar o código** da função. Isso também derruba o CORS (sem headers na resposta de erro do gateway).
+1. Corrigir o fluxo público de “Esqueci minha senha”
+   - Trocar o envio atual via função `send-email` por `supabase.auth.resetPasswordForEmail`.
+   - Isso usa o fluxo nativo de recuperação do Supabase Auth, sem depender de `RESEND_API_KEY`, sem Edge Function pública e sem CORS customizado.
+   - Manter o redirecionamento para `/reset-password`.
 
-A função `send-email` já faz autenticação interna (exige Bearer só para `type: 'signup'` e aplica rate-limit por e-mail para `type: 'recovery'`), então é seguro desativar o `verify_jwt` no gateway.
+2. Preservar idioma e país no link de recuperação
+   - Se o usuário estiver em rota localizada, como `/pt-BR/auth`, `/en-US/auth`, `/ja-JP/auth`, enviar o link para a rota localizada correspondente, como `/pt-BR/reset-password`.
+   - Se estiver na rota padrão `/auth`, manter `/reset-password`.
+   - Isso evita quebrar a experiência internacional já existente.
 
-## Mudanças
+3. Melhorar mensagens de erro e sucesso em todas as línguas
+   - Ajustar o tratamento de erros para mostrar mensagens amigáveis e traduzidas quando houver limite de tentativas, e-mail inválido ou falha temporária.
+   - Revisar/adicionar as chaves necessárias nos 12 arquivos de idioma existentes.
 
-### 1. `supabase/config.toml`
-Adicionar bloco para a função:
+4. Fortalecer a página `/reset-password`
+   - Garantir que ela reconheça corretamente o token de recuperação vindo do Supabase.
+   - Mostrar estado claro quando o link estiver carregando, inválido ou expirado.
+   - Manter a rota pública, sem exigir login prévio.
 
-```toml
-[functions.send-email]
-verify_jwt = false
-```
+5. Evitar que a função `send-email` continue quebrando o navegador
+   - Remover o uso dela do fluxo de recuperação de senha.
+   - Opcionalmente tornar a função mais defensiva para responder CORS mesmo se uma chave externa estiver ausente, sem alterar fluxos sensíveis.
+   - Não adicionar segredo de terceiros nem mudar provedor de e-mail sem necessidade.
 
-Isso permite que o gateway aceite chamadas anônimas; a função continua validando internamente:
-- `recovery`: valida formato de e-mail + rate-limit persistente (3/10min por e-mail).
-- `signup`: continua exigindo `Authorization: Bearer <user_jwt>` e checando que o e-mail bate com o usuário autenticado.
+6. Verificação
+   - Testar o clique em “Esqueci minha senha” no preview/local e confirmar que a requisição vai para Supabase Auth, não para `send-email`.
+   - Verificar que não há mais erro de CORS no console.
+   - Validar que o link de redefinição aponta para a rota correta de idioma.
+   - Validar que a tela de nova senha permite definir a senha e redireciona corretamente após sucesso.
 
-### 2. Redeploy da função
-Após o ajuste de config, redeployar `send-email` para o gateway aplicar a nova flag.
+Fora do escopo desta correção:
 
-### 3. Pequena melhoria de robustez em `supabase/functions/send-email/index.ts`
-- Garantir headers CORS também em qualquer caminho de erro precoce (já está OK, mas revisar `OPTIONS` para retornar `status: 204`).
-- Não muda comportamento funcional.
-
-## Verificação
-
-1. Em `https://timezoni.com/auth` → "Esqueci a senha" → inserir e-mail → enviar.
-2. Esperado: toast de sucesso + e-mail recebido com link para `/reset-password`.
-3. Console sem 403/CORS na chamada para `/functions/v1/send-email`.
-4. Testar também o caminho de signup (que exige JWT) continua funcionando para usuário autenticado.
-
-## Fora de escopo
-
-- Não trocar provedor de e-mail (continua Resend com `noreply@timezoni.com`).
-- Não mexer no template do e-mail nem na página `/reset-password` (já funcionais).
-- Não alterar rate-limit nem regras de signup.
+- Não trocar provedor de e-mail.
+- Não configurar Resend.
+- Não alterar regras de cadastro/login.
+- Não mexer em tabelas ou políticas RLS.
+- Não criar templates customizados de e-mail agora; primeiro vamos restaurar a entrega confiável da recuperação de senha.
