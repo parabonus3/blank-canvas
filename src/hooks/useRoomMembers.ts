@@ -26,6 +26,9 @@ export interface RoomMember {
   
 }
 
+const ONLINE_FRESHNESS_MS = 120_000; // 2 minutes
+const HEARTBEAT_MS = 60_000; // 1 minute
+
 export function useRoomMembers(roomId: string | undefined) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -33,26 +36,67 @@ export function useRoomMembers(roomId: string | undefined) {
   useEffect(() => {
     if (!roomId || !user) return;
 
-    supabase
-      .from("room_members")
-      .update({ is_online: true, last_active_at: new Date().toISOString() } as any)
-      .eq("room_id", roomId)
-      .eq("user_id", user.id)
-      .then();
+    let cancelled = false;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    const beat = (online: boolean) => {
+      const payload: Record<string, unknown> = { last_active_at: new Date().toISOString() };
+      if (online !== undefined) payload.is_online = online;
+      supabase
+        .from("room_members")
+        .update(payload as any)
+        .eq("room_id", roomId)
+        .eq("user_id", user.id)
+        .then(() => {}, () => {});
+    };
+
+    const startInterval = () => {
+      if (intervalId) return;
+      intervalId = setInterval(() => {
+        if (document.visibilityState === "visible") beat(true);
+      }, HEARTBEAT_MS);
+    };
+
+    const stopInterval = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+
+    beat(true);
+    startInterval();
+
+    const handleVisibility = () => {
+      if (cancelled) return;
+      if (document.visibilityState === "visible") {
+        beat(true);
+        startInterval();
+      } else {
+        stopInterval();
+      }
+    };
 
     const handleOffline = () => {
       supabase
         .from("room_members")
-        .update({ is_online: false })
+        .update({ is_online: false } as any)
         .eq("room_id", roomId)
         .eq("user_id", user.id)
-        .then();
+        .then(() => {}, () => {});
     };
 
+    document.addEventListener("visibilitychange", handleVisibility);
     window.addEventListener("beforeunload", handleOffline);
+    window.addEventListener("pagehide", handleOffline);
+
     return () => {
-      handleOffline();
+      cancelled = true;
+      stopInterval();
+      document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("beforeunload", handleOffline);
+      window.removeEventListener("pagehide", handleOffline);
+      handleOffline();
     };
   }, [roomId, user]);
 
@@ -76,21 +120,25 @@ export function useRoomMembers(roomId: string | undefined) {
         (profiles || []).map((p: any) => [p.user_id, p])
       );
 
+      const now = Date.now();
       return (members || []).map((m: any) => {
         const p: any = profileMap.get(m.user_id);
+        const lastActive = m.last_active_at ? new Date(m.last_active_at).getTime() : 0;
+        const isOnlineEffective = !!lastActive && now - lastActive < ONLINE_FRESHNESS_MS;
         return {
           ...m,
+          is_online: isOnlineEffective,
           display_name: p?.display_name || "Usuário",
           friend_code: p?.friend_code || "",
           avatar_url: p?.avatar_url || null,
           plan_tier: p?.plan_tier || "free",
           avatar_flair: p?.avatar_flair || "default",
           avatar_flair_color: p?.avatar_flair_color || null,
-          
         };
       }) as RoomMember[];
     },
     enabled: !!roomId && !!user,
+    refetchInterval: 60_000,
   });
 
   useEffect(() => {
