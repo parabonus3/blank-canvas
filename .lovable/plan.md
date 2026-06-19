@@ -1,47 +1,43 @@
-Diagnóstico confirmado:
+Diagnóstico atualizado:
 
-- O erro principal não é mais `verify_jwt`.
-- A função `send-email` está quebrando na inicialização porque `RESEND_API_KEY` não existe no projeto.
-- Como ela quebra antes de responder ao `OPTIONS`, o navegador interpreta como erro de CORS e bloqueia o envio.
-- Resultado: o usuário clica em “Esqueci minha senha”, mas nenhum e-mail é disparado.
-- Também confirmei que não há domínio de e-mail Lovable configurado neste workspace, então a correção mais segura agora é não depender dessa função customizada para recuperação de senha.
+- A correção anterior já foi aplicada: o "Esqueci minha senha" no `Auth.tsx` agora usa `supabase.auth.resetPasswordForEmail` (envio nativo do Supabase), sem CORS e sem Edge Function customizada.
+- O erro nas capturas atuais (`Failed to send a request to the Edge Function` / CORS para `send-email`) vem do bundle JS antigo em cache no navegador (`index--Co7SCEs.js`). O domínio `timezoni.com` ainda está servindo a versão antiga porque o app publicado precisa ser republicado e o Service Worker do PWA precisa atualizar.
+- Há ainda um ponto residual no painel admin (`admin-users` → `reset_password`) que continua chamando `send-email`. Se essa Edge Function quebrar (chave Resend ausente), o reset disparado por admin também falha silenciosamente.
 
-Plano de correção:
+Plano para garantir que "Esqueci minha senha" funcione de forma 100% nativa pelo Supabase, em todos os idiomas e países, sem quebrar nada:
 
-1. Corrigir o fluxo público de “Esqueci minha senha”
-   - Trocar o envio atual via função `send-email` por `supabase.auth.resetPasswordForEmail`.
-   - Isso usa o fluxo nativo de recuperação do Supabase Auth, sem depender de `RESEND_API_KEY`, sem Edge Function pública e sem CORS customizado.
-   - Manter o redirecionamento para `/reset-password`.
+1. Publicar a correção já feita
+   - O fluxo público em `/auth` (e `/{lang}/auth`) já usa o envio nativo. Basta publicar o app para que `timezoni.com` pare de carregar o bundle antigo que chamava `send-email`.
+   - Garantir cache-bust do Service Worker (PWA) para o usuário receber a nova versão sem precisar limpar o navegador manualmente.
 
-2. Preservar idioma e país no link de recuperação
-   - Se o usuário estiver em rota localizada, como `/pt-BR/auth`, `/en-US/auth`, `/ja-JP/auth`, enviar o link para a rota localizada correspondente, como `/pt-BR/reset-password`.
+2. Migrar o reset de senha do admin para o fluxo nativo
+   - Em `supabase/functions/admin-users` (ação `reset_password`), substituir a chamada para `send-email` por `supabaseAdmin.auth.resetPasswordForEmail`.
+   - Isso elimina toda dependência da função `send-email` no fluxo de recuperação, tanto público quanto admin.
+
+3. Aposentar com segurança a função `send-email` para recuperação
+   - Não vou deletar a função (pra não quebrar nada que ainda use signup), mas vou deixá-la fora de qualquer caminho de recuperação de senha.
+   - Adicionar um fallback defensivo na função para evitar que falte de chave externa derrube o boot e quebre CORS para outras chamadas (resposta clara 503 ao invés de crash no carregamento).
+
+4. Confirmar configuração de e-mail do Supabase Auth
+   - O Supabase já envia o e-mail de "Reset Password" automaticamente quando chamamos `resetPasswordForEmail`. Vou verificar se o template padrão e a URL de redirecionamento estão liberados no projeto (Auth → URL Configuration → Site URL / Redirect URLs incluindo `https://timezoni.com/reset-password`, `https://www.timezoni.com/reset-password` e variantes de idioma como `/pt-BR/reset-password`).
+   - Se necessário, pedir ao usuário para adicionar as URLs de redirecionamento na configuração de Auth do Supabase (única ação manual possível, fora do código).
+
+5. Localização do link de redefinição
+   - Manter o que já foi feito: se o usuário estiver em `/pt-BR/auth`, `/en-US/auth`, `/ja-JP/auth` etc., o link de recuperação aponta para `/{lang}/reset-password`.
    - Se estiver na rota padrão `/auth`, manter `/reset-password`.
-   - Isso evita quebrar a experiência internacional já existente.
 
-3. Melhorar mensagens de erro e sucesso em todas as línguas
-   - Ajustar o tratamento de erros para mostrar mensagens amigáveis e traduzidas quando houver limite de tentativas, e-mail inválido ou falha temporária.
-   - Revisar/adicionar as chaves necessárias nos 12 arquivos de idioma existentes.
+6. Mensagens traduzidas em todos os 12 idiomas
+   - A chave `auth.reset_rate_limited` já foi adicionada em todos os locales.
+   - Reusar as chaves existentes (`reset_email_sent`, `reset_email_sent_desc`, `invalid_email`, `common.error`) para sucesso, erro de e-mail inválido e erro genérico.
 
-4. Fortalecer a página `/reset-password`
-   - Garantir que ela reconheça corretamente o token de recuperação vindo do Supabase.
-   - Mostrar estado claro quando o link estiver carregando, inválido ou expirado.
-   - Manter a rota pública, sem exigir login prévio.
+7. Verificação ao final
+   - Testar `/auth` (PT) e `/en-US/auth` no app publicado e confirmar que a requisição de reset vai para `auth/v1/recover` do Supabase e não para `functions/v1/send-email`.
+   - Confirmar que o console não exibe mais o erro de CORS / Edge Function.
+   - Confirmar recebimento real do e-mail e que o link abre `/reset-password` (ou variante localizada) com a tela de nova senha funcional.
 
-5. Evitar que a função `send-email` continue quebrando o navegador
-   - Remover o uso dela do fluxo de recuperação de senha.
-   - Opcionalmente tornar a função mais defensiva para responder CORS mesmo se uma chave externa estiver ausente, sem alterar fluxos sensíveis.
-   - Não adicionar segredo de terceiros nem mudar provedor de e-mail sem necessidade.
+Fora do escopo:
 
-6. Verificação
-   - Testar o clique em “Esqueci minha senha” no preview/local e confirmar que a requisição vai para Supabase Auth, não para `send-email`.
-   - Verificar que não há mais erro de CORS no console.
-   - Validar que o link de redefinição aponta para a rota correta de idioma.
-   - Validar que a tela de nova senha permite definir a senha e redireciona corretamente após sucesso.
-
-Fora do escopo desta correção:
-
-- Não trocar provedor de e-mail.
-- Não configurar Resend.
-- Não alterar regras de cadastro/login.
-- Não mexer em tabelas ou políticas RLS.
-- Não criar templates customizados de e-mail agora; primeiro vamos restaurar a entrega confiável da recuperação de senha.
+- Não vou trocar provedor de e-mail.
+- Não vou configurar Resend nem domínio customizado.
+- Não vou alterar tabelas, RLS, login ou cadastro.
+- Não vou apagar a Edge Function `send-email` para não afetar o fluxo de confirmação de cadastro.

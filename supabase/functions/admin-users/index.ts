@@ -482,28 +482,12 @@ serve(async (req) => {
         const { data: targetUser } = await supabaseAdmin.auth.admin.getUserById(user_id);
         if (!targetUser?.user?.email) throw new Error("User not found");
 
-        const { error } = await supabaseAdmin.auth.admin.generateLink({
-          type: "recovery",
-          email: targetUser.user.email,
-          options: { redirectTo: `${req.headers.get("origin")}/reset-password` },
-        });
+        // Use Supabase native password recovery email (no custom Edge Function dependency).
+        const { error } = await supabaseAdmin.auth.resetPasswordForEmail(
+          targetUser.user.email,
+          { redirectTo: `${req.headers.get("origin")}/reset-password` },
+        );
         if (error) throw error;
-
-        try {
-          const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-          await fetch(`${supabaseUrl}/functions/v1/send-email`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
-            },
-            body: JSON.stringify({
-              email: targetUser.user.email,
-              type: "recovery",
-              redirect_to: `${req.headers.get("origin")}/reset-password`,
-            }),
-          });
-        } catch {}
 
         return new Response(JSON.stringify({ success: true }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
