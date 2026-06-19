@@ -5,7 +5,10 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { RecoveryEmail } from './_templates/recovery.tsx'
 import { SignupEmail } from './_templates/signup.tsx'
 
-const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string)
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? ''
+// Lazily construct Resend so a missing key does NOT crash function boot
+// (which previously broke CORS preflight for every caller).
+const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
