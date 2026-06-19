@@ -144,7 +144,8 @@
     "passwords_not_match": "Le password non corrispondono",
     "password_updated": "Password aggiornata con successo!",
     "updating_password": "Aggiornamento...",
-    "back_to_login": "Torna al login"
+    "back_to_login": "Torna al login",
+    "reset_rate_limited": "Troppi tentativi. Attendi qualche minuto e riprova."
   },
   "timer": {
     "title": "Timer",

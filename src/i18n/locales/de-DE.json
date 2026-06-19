@@ -144,7 +144,8 @@
     "passwords_not_match": "Passwörter stimmen nicht überein",
     "password_updated": "Passwort erfolgreich aktualisiert!",
     "updating_password": "Wird aktualisiert...",
-    "back_to_login": "Zurück zur Anmeldung"
+    "back_to_login": "Zurück zur Anmeldung",
+    "reset_rate_limited": "Zu viele Versuche. Bitte warten Sie einige Minuten und versuchen Sie es erneut."
   },
   "timer": {
     "title": "Timer",

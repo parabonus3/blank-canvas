@@ -144,7 +144,8 @@
     "passwords_not_match": "Kata sandi tidak cocok",
     "password_updated": "Kata sandi berhasil diperbarui!",
     "updating_password": "Memperbarui...",
-    "back_to_login": "Kembali ke masuk"
+    "back_to_login": "Kembali ke masuk",
+    "reset_rate_limited": "Terlalu banyak percobaan. Harap tunggu beberapa menit dan coba lagi."
   },
   "timer": {
     "title": "Timer",

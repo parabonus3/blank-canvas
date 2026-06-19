@@ -146,7 +146,8 @@
     "passwords_not_match": "As senhas não coincidem",
     "password_updated": "Senha atualizada com sucesso!",
     "updating_password": "Atualizando...",
-    "back_to_login": "Voltar ao login"
+    "back_to_login": "Voltar ao login",
+    "reset_rate_limited": "Muitas tentativas. Aguarde alguns minutos e tente novamente."
   },
   "timer": {
     "title": "Cronômetro",

@@ -144,7 +144,8 @@
     "passwords_not_match": "Passwords do not match",
     "password_updated": "Password updated successfully!",
     "updating_password": "Updating...",
-    "back_to_login": "Back to login"
+    "back_to_login": "Back to login",
+    "reset_rate_limited": "Too many attempts. Please wait a few minutes and try again."
   },
   "timer": {
     "title": "Timer",
