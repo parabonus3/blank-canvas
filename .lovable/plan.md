@@ -1,43 +1,64 @@
-Diagnóstico atualizado:
+## Diagnóstico
 
-- A correção anterior já foi aplicada: o "Esqueci minha senha" no `Auth.tsx` agora usa `supabase.auth.resetPasswordForEmail` (envio nativo do Supabase), sem CORS e sem Edge Function customizada.
-- O erro nas capturas atuais (`Failed to send a request to the Edge Function` / CORS para `send-email`) vem do bundle JS antigo em cache no navegador (`index--Co7SCEs.js`). O domínio `timezoni.com` ainda está servindo a versão antiga porque o app publicado precisa ser republicado e o Service Worker do PWA precisa atualizar.
-- Há ainda um ponto residual no painel admin (`admin-users` → `reset_password`) que continua chamando `send-email`. Se essa Edge Function quebrar (chave Resend ausente), o reset disparado por admin também falha silenciosamente.
+O status "Online" hoje vem do campo `room_members.is_online`, que é setado como `true` quando o usuário abre a sala e só vira `false` no evento `beforeunload` do navegador (`src/hooks/useRoomMembers.ts`).
 
-Plano para garantir que "Esqueci minha senha" funcione de forma 100% nativa pelo Supabase, em todos os idiomas e países, sem quebrar nada:
+Isso falha em praticamente todos os cenários reais:
+- Fechar a aba pelo gestor de tarefas, celular indo pra background, perda de conexão, crash do browser, sair do Wi-Fi: o `beforeunload` não dispara.
+- PWA/mobile raramente entrega `beforeunload`.
+- Resultado: o flag `is_online=true` fica "preso" por dias, exatamente como na imagem (Nicolas marcado como Online mas sem entrar há dias).
 
-1. Publicar a correção já feita
-   - O fluxo público em `/auth` (e `/{lang}/auth`) já usa o envio nativo. Basta publicar o app para que `timezoni.com` pare de carregar o bundle antigo que chamava `send-email`.
-   - Garantir cache-bust do Service Worker (PWA) para o usuário receber a nova versão sem precisar limpar o navegador manualmente.
+## Plano (sem quebrar nada que já funciona)
 
-2. Migrar o reset de senha do admin para o fluxo nativo
-   - Em `supabase/functions/admin-users` (ação `reset_password`), substituir a chamada para `send-email` por `supabaseAdmin.auth.resetPasswordForEmail`.
-   - Isso elimina toda dependência da função `send-email` no fluxo de recuperação, tanto público quanto admin.
+A correção é usar **presença derivada de heartbeat**, não um booleano persistente. O campo `last_active_at` já existe e é confiável — vamos passar a confiar nele.
 
-3. Aposentar com segurança a função `send-email` para recuperação
-   - Não vou deletar a função (pra não quebrar nada que ainda use signup), mas vou deixá-la fora de qualquer caminho de recuperação de senha.
-   - Adicionar um fallback defensivo na função para evitar que falte de chave externa derrube o boot e quebre CORS para outras chamadas (resposta clara 503 ao invés de crash no carregamento).
+### 1. Heartbeat no cliente (sala aberta)
+Em `useRoomMembers.ts`:
+- Ao entrar na sala: atualizar `last_active_at = now()` e `is_online = true` (como já faz).
+- Iniciar um `setInterval` de **60s** que atualiza só `last_active_at` enquanto a aba existir.
+- Pausar o heartbeat quando `document.visibilityState === "hidden"` e retomar quando voltar a "visible".
+- Ao sair da sala / desmontar / `beforeunload` / `pagehide`: tentar marcar `is_online = false` (best-effort, como hoje).
 
-4. Confirmar configuração de e-mail do Supabase Auth
-   - O Supabase já envia o e-mail de "Reset Password" automaticamente quando chamamos `resetPasswordForEmail`. Vou verificar se o template padrão e a URL de redirecionamento estão liberados no projeto (Auth → URL Configuration → Site URL / Redirect URLs incluindo `https://timezoni.com/reset-password`, `https://www.timezoni.com/reset-password` e variantes de idioma como `/pt-BR/reset-password`).
-   - Se necessário, pedir ao usuário para adicionar as URLs de redirecionamento na configuração de Auth do Supabase (única ação manual possível, fora do código).
+### 2. Online "real" derivado de frescor
+A verdade passa a ser: **online = `last_active_at` nos últimos 2 minutos**, independente do flag.
 
-5. Localização do link de redefinição
-   - Manter o que já foi feito: se o usuário estiver em `/pt-BR/auth`, `/en-US/auth`, `/ja-JP/auth` etc., o link de recuperação aponta para `/{lang}/reset-password`.
-   - Se estiver na rota padrão `/auth`, manter `/reset-password`.
+- No `useRoomMembers` (mapeamento dos membros), calcular:
+  - `is_online_effective = last_active_at && (now - last_active_at) < 120s`
+  - Sobrescrever `member.is_online` com esse valor antes de devolver.
+- Assim, `RoomMemberGrid`, `MemberProfileModal` e `RoomStatsHeader` continuam lendo `member.is_online` sem mudança nenhuma — não quebra nada.
 
-6. Mensagens traduzidas em todos os 12 idiomas
-   - A chave `auth.reset_rate_limited` já foi adicionada em todos os locales.
-   - Reusar as chaves existentes (`reset_email_sent`, `reset_email_sent_desc`, `invalid_email`, `common.error`) para sucesso, erro de e-mail inválido e erro genérico.
+### 3. Auto-refresh do grid
+A frescura muda com o tempo, então o React precisa reavaliar:
+- Adicionar um `refetchInterval` de 60s no `useQuery` de `roomMembers` (ou um `setInterval` que invalida a query a cada 60s).
+- Isso garante que alguém que ficou inativo passe de verde para cinza sem precisar recarregar.
 
-7. Verificação ao final
-   - Testar `/auth` (PT) e `/en-US/auth` no app publicado e confirmar que a requisição de reset vai para `auth/v1/recover` do Supabase e não para `functions/v1/send-email`.
-   - Confirmar que o console não exibe mais o erro de CORS / Edge Function.
-   - Confirmar recebimento real do e-mail e que o link abre `/reset-password` (ou variante localizada) com a tela de nova senha funcional.
+### 4. Limpeza no servidor (defesa em profundidade)
+Sem isso, registros antigos com `is_online=true` continuam até alguém abrir/fechar a sala. Adicionar uma rotina leve para zerar:
 
-Fora do escopo:
+- Migration com função `mark_stale_members_offline()` (SECURITY DEFINER) que faz:
+  ```sql
+  UPDATE public.room_members
+     SET is_online = false
+   WHERE is_online = true
+     AND (last_active_at IS NULL OR last_active_at < now() - interval '3 minutes');
+  ```
+- Agendar via `pg_cron` a cada 2 minutos (`SELECT cron.schedule(...)`).
+- Isso só corrige o lixo histórico; a UI já é confiável pelo passo 2.
 
-- Não vou trocar provedor de e-mail.
-- Não vou configurar Resend nem domínio customizado.
-- Não vou alterar tabelas, RLS, login ou cadastro.
-- Não vou apagar a Edge Function `send-email` para não afetar o fluxo de confirmação de cadastro.
+### 5. Mesma correção para "estudando agora"
+`is_timer_active` tem o mesmo risco quando o timer é interrompido por crash. Como já existe `timer_started_at` e existe lógica de inatividade dedicada (InactivityCheckModal), **não vamos mexer agora** para não acoplar a esse outro fluxo. Fica de melhoria futura se aparecer relato semelhante.
+
+## O que NÃO muda
+- Schema público: nenhum campo novo no front. Continuamos lendo `member.is_online`.
+- Componentes de UI (`RoomMemberGrid`, `MemberProfileModal`, `RoomStatsHeader`): **zero alteração**.
+- Lógica de chat, timer, conquistas, ranking, atividade: intocadas.
+- Apenas `useRoomMembers.ts` ganha heartbeat + derivação de online, mais uma migration de cron de limpeza.
+
+## Detalhes técnicos
+- Janela de frescor: 2 minutos no cliente, 3 minutos no servidor (margem para evitar flicker entre tick do heartbeat e job do cron).
+- Heartbeat pausa em `visibilitychange` para não consumir bateria/quota em abas em background.
+- Tudo client-side é best-effort: se a chamada falhar, ignora silenciosamente (sem toast).
+- `pg_cron` e `pg_net` já são extensões padrão no Supabase; só precisamos do `cron.schedule`.
+
+<presentation-actions>
+<presentation-link url="https://supabase.com/dashboard/project/iukwvfyhforubyqgguwl/database/extensions">Verificar extensões (pg_cron) no Supabase</presentation-link>
+</presentation-actions>
