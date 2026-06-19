@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.sync-all-plan-tiers]
 verify_jwt = true
+
+[functions.send-email]
+verify_jwt = false
