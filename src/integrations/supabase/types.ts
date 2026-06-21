@@ -2032,6 +2032,7 @@ export type Database = {
         Args: { _member_user_id: string; _room_id: string }
         Returns: undefined
       }
+      mark_stale_members_offline: { Args: never; Returns: undefined }
       pause_time_entry: {
         Args: { _client_seconds?: number; _entry_id: string }
         Returns: {
