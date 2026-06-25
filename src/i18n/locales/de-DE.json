@@ -2009,5 +2009,28 @@
     "manual_desc_other": "Dein Browser unterstützt keine direkte Installation. Probiere Chrome oder Edge.",
     "desktop_step_1": "Klicke auf das Installations-Symbol in der Adressleiste.",
     "desktop_step_2": "Bestätige mit Installieren im Browser-Dialog."
+  },
+  "push": {
+    "title": "Push-Benachrichtigungen",
+    "description": "Erhalte Benachrichtigungen auf Handy oder Desktop, auch wenn die App geschlossen ist.",
+    "unsupported": "Dein Browser unterstützt keine Push-Benachrichtigungen.",
+    "ios_install_required": "Auf iPhone/iPad: Installiere die App auf dem Startbildschirm, um Benachrichtigungen zu aktivieren.",
+    "denied": "Benachrichtigungen sind blockiert. Aktiviere sie in den Browsereinstellungen.",
+    "enable": "Benachrichtigungen aktivieren",
+    "disable": "Deaktivieren",
+    "send_test": "Test senden",
+    "test_sent": "Testbenachrichtigung gesendet!",
+    "quiet_start": "Ruhezeit Start (h)",
+    "quiet_end": "Ruhezeit Ende (h)",
+    "max_per_day": "Max. pro Tag",
+    "kinds": {
+      "room_goal": "Raumziel",
+      "streak": "Serie in Gefahr",
+      "challenge": "Challenge-Frist",
+      "weekly": "Wochenrückblick",
+      "friends": "Freundesaktivität",
+      "mentions": "Erwähnungen",
+      "reengage": "Wir vermissen dich"
+    }
   }
 }

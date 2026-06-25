@@ -1995,5 +1995,28 @@
     "manual_desc_other": "Il tuo browser non supporta l'installazione diretta. Prova Chrome o Edge.",
     "desktop_step_1": "Clicca sull'icona di installazione nella barra degli indirizzi.",
     "desktop_step_2": "Conferma con Installa nella finestra del browser."
+  },
+  "push": {
+    "title": "Notifiche push",
+    "description": "Ricevi avvisi su cellulare o desktop, anche con l'app chiusa.",
+    "unsupported": "Il tuo browser non supporta le notifiche push.",
+    "ios_install_required": "Su iPhone/iPad, installa l'app nella schermata Home per attivare le notifiche.",
+    "denied": "Le notifiche sono bloccate. Attivale nelle impostazioni del browser.",
+    "enable": "Attiva notifiche",
+    "disable": "Disattiva",
+    "send_test": "Invia test",
+    "test_sent": "Notifica di prova inviata!",
+    "quiet_start": "Inizio modalità silenziosa (h)",
+    "quiet_end": "Fine modalità silenziosa (h)",
+    "max_per_day": "Max al giorno",
+    "kinds": {
+      "room_goal": "Obiettivo stanza",
+      "streak": "Streak a rischio",
+      "challenge": "Scadenza sfida",
+      "weekly": "Riepilogo settimanale",
+      "friends": "Attività amici",
+      "mentions": "Menzioni",
+      "reengage": "Ci manchi"
+    }
   }
 }

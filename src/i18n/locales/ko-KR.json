@@ -1995,5 +1995,28 @@
     "manual_desc_other": "이 브라우저는 직접 설치를 지원하지 않아요. Chrome이나 Edge를 사용해보세요.",
     "desktop_step_1": "주소 표시줄의 설치 아이콘을 클릭하세요.",
     "desktop_step_2": "브라우저 대화상자에서 설치를 누르세요."
+  },
+  "push": {
+    "title": "푸시 알림",
+    "description": "앱이 닫혀 있어도 휴대폰이나 데스크톱에서 알림을 받으세요.",
+    "unsupported": "이 브라우저는 푸시 알림을 지원하지 않습니다.",
+    "ios_install_required": "iPhone/iPad에서는 홈 화면에 앱을 설치해야 알림이 활성화됩니다.",
+    "denied": "알림이 차단되었습니다. 브라우저 설정에서 허용하세요.",
+    "enable": "알림 켜기",
+    "disable": "끄기",
+    "send_test": "테스트 보내기",
+    "test_sent": "테스트 알림을 보냈습니다!",
+    "quiet_start": "방해 금지 시작 (시)",
+    "quiet_end": "방해 금지 종료 (시)",
+    "max_per_day": "하루 최대",
+    "kinds": {
+      "room_goal": "룸 목표",
+      "streak": "연속 기록 위험",
+      "challenge": "챌린지 마감",
+      "weekly": "주간 요약",
+      "friends": "친구 활동",
+      "mentions": "멘션",
+      "reengage": "보고 싶어요"
+    }
   }
 }

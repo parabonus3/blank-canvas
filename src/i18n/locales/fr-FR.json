@@ -2009,5 +2009,28 @@
     "manual_desc_other": "Votre navigateur ne permet pas l'installation directe. Essayez Chrome ou Edge.",
     "desktop_step_1": "Cliquez sur l'icône d'installation dans la barre d'adresse.",
     "desktop_step_2": "Confirmez avec « Installer » dans la fenêtre du navigateur."
+  },
+  "push": {
+    "title": "Notifications push",
+    "description": "Recevez des alertes sur votre mobile ou ordinateur, même app fermée.",
+    "unsupported": "Votre navigateur ne prend pas en charge les notifications push.",
+    "ios_install_required": "Sur iPhone/iPad, installez l'app sur l'écran d'accueil pour activer les notifications.",
+    "denied": "Les notifications sont bloquées. Activez-les dans les paramètres du navigateur.",
+    "enable": "Activer les notifications",
+    "disable": "Désactiver",
+    "send_test": "Envoyer un test",
+    "test_sent": "Notification de test envoyée !",
+    "quiet_start": "Début mode silencieux (h)",
+    "quiet_end": "Fin mode silencieux (h)",
+    "max_per_day": "Max par jour",
+    "kinds": {
+      "room_goal": "Objectif de salle",
+      "streak": "Série en danger",
+      "challenge": "Échéance du défi",
+      "weekly": "Récap hebdo",
+      "friends": "Activité des amis",
+      "mentions": "Mentions",
+      "reengage": "Vous nous manquez"
+    }
   }
 }

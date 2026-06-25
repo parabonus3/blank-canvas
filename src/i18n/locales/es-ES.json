@@ -2016,5 +2016,28 @@
     "manual_desc_other": "Tu navegador no permite instalación directa. Prueba Chrome o Edge.",
     "desktop_step_1": "Haz clic en el icono de instalar en la barra de direcciones.",
     "desktop_step_2": "Confirma en \"Instalar\" en el cuadro del navegador."
+  },
+  "push": {
+    "title": "Notificaciones push",
+    "description": "Recibe alertas en tu móvil o escritorio, incluso con la app cerrada.",
+    "unsupported": "Tu navegador no admite notificaciones push.",
+    "ios_install_required": "En iPhone/iPad, instala la app en la pantalla de inicio para activar las notificaciones.",
+    "denied": "Las notificaciones están bloqueadas. Actívalas en la configuración del navegador.",
+    "enable": "Activar notificaciones",
+    "disable": "Desactivar",
+    "send_test": "Enviar prueba",
+    "test_sent": "¡Notificación de prueba enviada!",
+    "quiet_start": "Inicio modo silencio (h)",
+    "quiet_end": "Fin modo silencio (h)",
+    "max_per_day": "Máx. por día",
+    "kinds": {
+      "room_goal": "Meta de sala",
+      "streak": "Racha en riesgo",
+      "challenge": "Plazo de reto",
+      "weekly": "Resumen semanal",
+      "friends": "Actividad de amigos",
+      "mentions": "Menciones",
+      "reengage": "Te extrañamos"
+    }
   }
 }
