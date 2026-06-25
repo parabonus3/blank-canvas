@@ -371,6 +371,9 @@ export default function Settings() {
           </CardContent>
         </Card>
 
+        <PushNotificationsSection />
+
+
         {/* Pomodoro Settings */}
         <Card>
           <CardHeader>
