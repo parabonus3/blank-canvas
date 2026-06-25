@@ -627,6 +627,84 @@ export type Database = {
           },
         ]
       }
+      notification_log: {
+        Row: {
+          clicked_at: string | null
+          id: string
+          kind: string
+          lang: string | null
+          meta: Json | null
+          payload_hash: string | null
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          clicked_at?: string | null
+          id?: string
+          kind: string
+          lang?: string | null
+          meta?: Json | null
+          payload_hash?: string | null
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          clicked_at?: string | null
+          id?: string
+          kind?: string
+          lang?: string | null
+          meta?: Json | null
+          payload_hash?: string | null
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          chat_mentions: boolean
+          friend_activity: boolean
+          max_per_day: number
+          quiet_hours_end: number
+          quiet_hours_start: number
+          re_engagement: boolean
+          room_challenge_deadline: boolean
+          room_goal_reminder: boolean
+          streak_risk: boolean
+          updated_at: string
+          user_id: string
+          weekly_recap: boolean
+        }
+        Insert: {
+          chat_mentions?: boolean
+          friend_activity?: boolean
+          max_per_day?: number
+          quiet_hours_end?: number
+          quiet_hours_start?: number
+          re_engagement?: boolean
+          room_challenge_deadline?: boolean
+          room_goal_reminder?: boolean
+          streak_risk?: boolean
+          updated_at?: string
+          user_id: string
+          weekly_recap?: boolean
+        }
+        Update: {
+          chat_mentions?: boolean
+          friend_activity?: boolean
+          max_per_day?: number
+          quiet_hours_end?: number
+          quiet_hours_start?: number
+          re_engagement?: boolean
+          room_challenge_deadline?: boolean
+          room_goal_reminder?: boolean
+          streak_risk?: boolean
+          updated_at?: string
+          user_id?: string
+          weekly_recap?: boolean
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           ambient_sound: string | null
@@ -799,6 +877,51 @@ export type Database = {
           total_purchased?: number
           total_used?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          failure_count: number
+          id: string
+          lang: string | null
+          last_error_at: string | null
+          last_seen_at: string
+          p256dh: string
+          timezone: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          failure_count?: number
+          id?: string
+          lang?: string | null
+          last_error_at?: string | null
+          last_seen_at?: string
+          p256dh: string
+          timezone?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          failure_count?: number
+          id?: string
+          lang?: string | null
+          last_error_at?: string | null
+          last_seen_at?: string
+          p256dh?: string
+          timezone?: string | null
+          user_agent?: string | null
           user_id?: string
         }
         Relationships: []
