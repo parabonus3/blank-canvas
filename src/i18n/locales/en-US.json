@@ -2104,5 +2104,28 @@
     "manual_desc_other": "Your browser does not support direct install. Try Chrome or Edge.",
     "desktop_step_1": "Click the install icon in the address bar (next to the star).",
     "desktop_step_2": "Confirm by clicking \"Install\" in the browser dialog."
+  },
+  "push": {
+    "title": "Push notifications",
+    "description": "Get alerts on your phone or desktop, even when the app is closed.",
+    "unsupported": "Your browser doesn't support push notifications.",
+    "ios_install_required": "On iPhone/iPad, install the app to your Home Screen to enable notifications.",
+    "denied": "Notifications are blocked. Enable them in your browser settings.",
+    "enable": "Enable notifications",
+    "disable": "Disable",
+    "send_test": "Send test",
+    "test_sent": "Test notification sent!",
+    "quiet_start": "Quiet hours start (h)",
+    "quiet_end": "Quiet hours end (h)",
+    "max_per_day": "Max per day",
+    "kinds": {
+      "room_goal": "Room goal",
+      "streak": "Streak at risk",
+      "challenge": "Challenge deadline",
+      "weekly": "Weekly recap",
+      "friends": "Friend activity",
+      "mentions": "Chat mentions",
+      "reengage": "We miss you"
+    }
   }
 }

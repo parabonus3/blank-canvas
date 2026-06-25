@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarFlairPicker } from "@/components/settings/AvatarFlairPicker";
 
 import { AvatarCropDialog } from "@/components/settings/AvatarCropDialog";
+import { PushNotificationsSection } from "@/components/pwa/PushNotificationsSection";
 
 const groupedTimezones = getGroupedTimezones();
 
@@ -370,6 +371,9 @@ export default function Settings() {
             </div>
           </CardContent>
         </Card>
+
+        <PushNotificationsSection />
+
 
         {/* Pomodoro Settings */}
         <Card>

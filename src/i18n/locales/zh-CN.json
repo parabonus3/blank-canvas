@@ -2009,5 +2009,28 @@
     "manual_desc_other": "当前浏览器不支持直接安装。请尝试 Chrome 或 Edge。",
     "desktop_step_1": "点击地址栏中的安装图标。",
     "desktop_step_2": "在浏览器对话框中点击「安装」确认。"
+  },
+  "push": {
+    "title": "推送通知",
+    "description": "即使应用关闭，也能在手机或桌面接收提醒。",
+    "unsupported": "您的浏览器不支持推送通知。",
+    "ios_install_required": "在 iPhone/iPad 上，请先把应用添加到主屏幕以开启通知。",
+    "denied": "通知已被阻止。请在浏览器设置中允许。",
+    "enable": "开启通知",
+    "disable": "关闭",
+    "send_test": "发送测试",
+    "test_sent": "测试通知已发送！",
+    "quiet_start": "勿扰开始 (时)",
+    "quiet_end": "勿扰结束 (时)",
+    "max_per_day": "每日上限",
+    "kinds": {
+      "room_goal": "房间目标",
+      "streak": "连续打卡风险",
+      "challenge": "挑战截止",
+      "weekly": "周报",
+      "friends": "好友动态",
+      "mentions": "提及",
+      "reengage": "想你了"
+    }
   }
 }

@@ -2009,5 +2009,28 @@
     "manual_desc_other": "このブラウザは直接インストール非対応。ChromeかEdgeでお試しください。",
     "desktop_step_1": "アドレスバーのインストールアイコンをクリック。",
     "desktop_step_2": "ダイアログで「インストール」を確認。"
+  },
+  "push": {
+    "title": "プッシュ通知",
+    "description": "アプリが閉じていてもスマホやPCで通知を受け取れます。",
+    "unsupported": "このブラウザはプッシュ通知に対応していません。",
+    "ios_install_required": "iPhone/iPadではホーム画面にアプリを追加すると通知が有効になります。",
+    "denied": "通知がブロックされています。ブラウザの設定で有効にしてください。",
+    "enable": "通知を有効にする",
+    "disable": "無効にする",
+    "send_test": "テスト送信",
+    "test_sent": "テスト通知を送信しました！",
+    "quiet_start": "おやすみモード開始 (時)",
+    "quiet_end": "おやすみモード終了 (時)",
+    "max_per_day": "1日の上限",
+    "kinds": {
+      "room_goal": "ルーム目標",
+      "streak": "連続記録の危機",
+      "challenge": "チャレンジ期限",
+      "weekly": "週次まとめ",
+      "friends": "友達のアクティビティ",
+      "mentions": "メンション",
+      "reengage": "会いたかった"
+    }
   }
 }

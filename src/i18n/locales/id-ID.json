@@ -2009,5 +2009,28 @@
     "manual_desc_other": "Peramban kamu tidak mendukung pemasangan langsung. Coba Chrome atau Edge.",
     "desktop_step_1": "Klik ikon pasang di bilah alamat.",
     "desktop_step_2": "Konfirmasi dengan klik Pasang di dialog peramban."
+  },
+  "push": {
+    "title": "Notifikasi push",
+    "description": "Dapatkan pemberitahuan di ponsel atau desktop, meski aplikasi tertutup.",
+    "unsupported": "Peramban Anda tidak mendukung notifikasi push.",
+    "ios_install_required": "Di iPhone/iPad, instal aplikasi ke Layar Utama untuk mengaktifkan notifikasi.",
+    "denied": "Notifikasi diblokir. Aktifkan di pengaturan peramban.",
+    "enable": "Aktifkan notifikasi",
+    "disable": "Nonaktifkan",
+    "send_test": "Kirim tes",
+    "test_sent": "Notifikasi tes terkirim!",
+    "quiet_start": "Mulai mode senyap (j)",
+    "quiet_end": "Akhir mode senyap (j)",
+    "max_per_day": "Maks per hari",
+    "kinds": {
+      "room_goal": "Target ruang",
+      "streak": "Streak berisiko",
+      "challenge": "Tenggat tantangan",
+      "weekly": "Ringkasan mingguan",
+      "friends": "Aktivitas teman",
+      "mentions": "Sebutan",
+      "reengage": "Kami rindu kamu"
+    }
   }
 }

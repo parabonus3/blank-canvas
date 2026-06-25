@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => ({
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: false,
+        importScripts: ["/push-sw.js"],
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [
           /^\/~oauth/,
@@ -40,6 +41,7 @@ export default defineConfig(({ mode }) => ({
         ],
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+
         runtimeCaching: [
           {
             // HTML navigations: always try network first so updates ship instantly
