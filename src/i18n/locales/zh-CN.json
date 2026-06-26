@@ -1166,7 +1166,170 @@
       "tooltip_period": "每日：目标每天重置。每周：目标在一周内累计，周日重置。",
       "tooltip_target_minutes": "每位成员需要在房间计时器上累计的分钟数，以达成该周期的目标。",
       "tooltip_duration_days": "挑战保持活跃的天数。留空表示无期限挑战。",
-      "help": "帮助"
+      "help": "帮助",
+      "templates": {
+        "pick_template": "选择模板",
+        "customize": "自定义（高级）",
+        "start_blank_cta": "从空白开始",
+        "categories": {
+          "study": "学习",
+          "reading": "阅读",
+          "spirituality": "心灵",
+          "classes": "课程",
+          "language": "语言",
+          "work": "工作",
+          "fitness": "健身",
+          "creative": "创意",
+          "mindfulness": "正念",
+          "custom": "空白"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "每日番茄钟",
+            "desc": "每天一个深度专注块"
+          },
+          "study_exam_prep": {
+            "title": "备考",
+            "desc": "直到考试每日强化学习"
+          },
+          "study_flashcards": {
+            "title": "每日闪卡",
+            "desc": "间隔重复以巩固"
+          },
+          "study_summaries": {
+            "title": "每日总结",
+            "desc": "梳理今天学到的内容"
+          },
+          "study_review_weekly": {
+            "title": "每周复习",
+            "desc": "每周一次的复习时段"
+          },
+          "reading_pages_daily": {
+            "title": "每天阅读",
+            "desc": "大约每天 20 页"
+          },
+          "reading_finish_book": {
+            "title": "每周一本书",
+            "desc": "读完一本书所需时间"
+          },
+          "reading_technical": {
+            "title": "技术阅读",
+            "desc": "慢而专注地阅读"
+          },
+          "reading_audiobook": {
+            "title": "每日有声书",
+            "desc": "通勤或休息时收听"
+          },
+          "reading_journaling": {
+            "title": "阅读日记",
+            "desc": "读后记录感悟"
+          },
+          "spirituality_prayer": {
+            "title": "每日祈祷",
+            "desc": "专心祈祷的时间"
+          },
+          "spirituality_bible": {
+            "title": "圣经阅读",
+            "desc": "每日一段经文"
+          },
+          "spirituality_meditation": {
+            "title": "灵性冥想",
+            "desc": "沉默与默观"
+          },
+          "spirituality_gratitude": {
+            "title": "每日感恩",
+            "desc": "写下感恩的事"
+          },
+          "spirituality_silence": {
+            "title": "神圣静默",
+            "desc": "离开屏幕的静默"
+          },
+          "classes_one_per_day": {
+            "title": "每日一节课",
+            "desc": "每天看完整一节课"
+          },
+          "classes_marathon": {
+            "title": "每周冲刺",
+            "desc": "每周大块时间推进"
+          },
+          "classes_rewatch_notes": {
+            "title": "回看 + 笔记",
+            "desc": "边复习边做笔记"
+          },
+          "classes_course": {
+            "title": "课程进度",
+            "desc": "每日小幅推进"
+          },
+          "language_vocabulary": {
+            "title": "词汇",
+            "desc": "学习并复习新词"
+          },
+          "language_conversation": {
+            "title": "会话",
+            "desc": "口语或影子跟读"
+          },
+          "language_immersion": {
+            "title": "每日浸入",
+            "desc": "电影、播客或阅读"
+          },
+          "language_grammar": {
+            "title": "语法",
+            "desc": "规则与练习"
+          },
+          "work_deep_work": {
+            "title": "深度工作",
+            "desc": "无干扰的专注块"
+          },
+          "work_side_project": {
+            "title": "副业项目",
+            "desc": "推进个人项目"
+          },
+          "work_learning_role": {
+            "title": "学习岗位",
+            "desc": "学习岗位所需"
+          },
+          "work_inbox_zero": {
+            "title": "收件箱归零",
+            "desc": "整理邮件与消息"
+          },
+          "fitness_workout": {
+            "title": "每日训练",
+            "desc": "在家或健身房锻炼"
+          },
+          "fitness_stretch": {
+            "title": "拉伸",
+            "desc": "柔韧与身体保养"
+          },
+          "fitness_run": {
+            "title": "每周跑步",
+            "desc": "累积每周跑步时间"
+          },
+          "creative_writing": {
+            "title": "每日写作",
+            "desc": "哪怕写一点也每天写"
+          },
+          "creative_music": {
+            "title": "音乐练习",
+            "desc": "演奏或学习音乐"
+          },
+          "creative_drawing": {
+            "title": "每日绘画",
+            "desc": "速写与线条练习"
+          },
+          "mindfulness_meditation": {
+            "title": "冥想",
+            "desc": "简短的正念练习"
+          },
+          "mindfulness_breathing": {
+            "title": "正念呼吸",
+            "desc": "呼吸练习"
+          },
+          "mindfulness_pause": {
+            "title": "有意停顿",
+            "desc": "一天中真正的休息"
+          }
+        }
+      }
     }
   },
   "explore": {

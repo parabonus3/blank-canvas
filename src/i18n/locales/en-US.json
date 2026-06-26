@@ -1900,7 +1900,170 @@
       "tooltip_period": "Daily: the goal resets every day. Weekly: the goal accumulates during the week and resets on Sunday.",
       "tooltip_target_minutes": "How many minutes each member must log on the room timer to meet the goal for the period.",
       "tooltip_duration_days": "How many days the challenge stays active. Leave blank for an open-ended challenge.",
-      "help": "Help"
+      "help": "Help",
+      "templates": {
+        "pick_template": "Pick a template",
+        "customize": "Customize (advanced)",
+        "start_blank_cta": "Start blank",
+        "categories": {
+          "study": "Study",
+          "reading": "Reading",
+          "spirituality": "Spiritual",
+          "classes": "Classes",
+          "language": "Languages",
+          "work": "Work",
+          "fitness": "Fitness",
+          "creative": "Creative",
+          "mindfulness": "Mindful",
+          "custom": "Blank"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Daily pomodoro",
+            "desc": "One deep-focus block per day"
+          },
+          "study_exam_prep": {
+            "title": "Exam prep",
+            "desc": "Daily intense study until exam day"
+          },
+          "study_flashcards": {
+            "title": "Daily flashcards",
+            "desc": "Spaced repetition to retain content"
+          },
+          "study_summaries": {
+            "title": "Daily summaries",
+            "desc": "Synthesize what you studied today"
+          },
+          "study_review_weekly": {
+            "title": "Weekly review",
+            "desc": "A weekly block to review material"
+          },
+          "reading_pages_daily": {
+            "title": "Read every day",
+            "desc": "About 20 pages per day"
+          },
+          "reading_finish_book": {
+            "title": "Finish a book/week",
+            "desc": "Reading time to complete a book"
+          },
+          "reading_technical": {
+            "title": "Technical reading",
+            "desc": "Field book, slow and focused"
+          },
+          "reading_audiobook": {
+            "title": "Daily audiobook",
+            "desc": "Listen on commute or breaks"
+          },
+          "reading_journaling": {
+            "title": "Reading journal",
+            "desc": "Capture insights after reading"
+          },
+          "spirituality_prayer": {
+            "title": "Daily prayer",
+            "desc": "Dedicated prayer time each day"
+          },
+          "spirituality_bible": {
+            "title": "Bible reading",
+            "desc": "One passage per day"
+          },
+          "spirituality_meditation": {
+            "title": "Spiritual meditation",
+            "desc": "Daily silence and contemplation"
+          },
+          "spirituality_gratitude": {
+            "title": "Daily gratitude",
+            "desc": "List what you're grateful for"
+          },
+          "spirituality_silence": {
+            "title": "Sacred silence",
+            "desc": "Screen-free silent pause"
+          },
+          "classes_one_per_day": {
+            "title": "1 class per day",
+            "desc": "Watch one full class each day"
+          },
+          "classes_marathon": {
+            "title": "Weekly marathon",
+            "desc": "Weekly block to push through course"
+          },
+          "classes_rewatch_notes": {
+            "title": "Rewatch + notes",
+            "desc": "Review class with notes"
+          },
+          "classes_course": {
+            "title": "Course progress",
+            "desc": "Small daily progress on a course"
+          },
+          "language_vocabulary": {
+            "title": "Vocabulary",
+            "desc": "Learn and review new words"
+          },
+          "language_conversation": {
+            "title": "Conversation",
+            "desc": "Practice speaking or shadowing"
+          },
+          "language_immersion": {
+            "title": "Daily immersion",
+            "desc": "Film, podcast or reading in the language"
+          },
+          "language_grammar": {
+            "title": "Grammar",
+            "desc": "Study rules and do exercises"
+          },
+          "work_deep_work": {
+            "title": "Deep work",
+            "desc": "Daily no-interruption block"
+          },
+          "work_side_project": {
+            "title": "Side project",
+            "desc": "Make progress on your project"
+          },
+          "work_learning_role": {
+            "title": "Learn your role",
+            "desc": "Study what your role requires"
+          },
+          "work_inbox_zero": {
+            "title": "Inbox zero",
+            "desc": "Organize email and messages"
+          },
+          "fitness_workout": {
+            "title": "Daily workout",
+            "desc": "Exercise at home or gym"
+          },
+          "fitness_stretch": {
+            "title": "Stretching",
+            "desc": "Mobility and body care"
+          },
+          "fitness_run": {
+            "title": "Weekly run",
+            "desc": "Accumulate running time per week"
+          },
+          "creative_writing": {
+            "title": "Daily writing",
+            "desc": "Write every day, even a little"
+          },
+          "creative_music": {
+            "title": "Music practice",
+            "desc": "Play or study music"
+          },
+          "creative_drawing": {
+            "title": "Daily drawing",
+            "desc": "Sketches and line practice"
+          },
+          "mindfulness_meditation": {
+            "title": "Meditation",
+            "desc": "Short mindfulness session"
+          },
+          "mindfulness_breathing": {
+            "title": "Mindful breathing",
+            "desc": "Breathing exercises"
+          },
+          "mindfulness_pause": {
+            "title": "Intentional pause",
+            "desc": "A real pause in your day"
+          }
+        }
+      }
     }
   },
   "explore": {

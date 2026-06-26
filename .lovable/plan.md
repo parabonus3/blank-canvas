@@ -1,142 +1,159 @@
 
-# Notificações push no PWA TimeZoni
+# Templates de desafios de sala por categoria
 
-Sim, é totalmente possível mandar notificações estilo "app nativo" em um PWA usando **Web Push + VAPID**. Funciona em Android (Chrome/Edge/Firefox/Samsung), desktop e — desde iOS 16.4 — também em iPhone/iPad **se** o usuário tiver adicionado o app à Tela de Início. Não precisa de loja, é grátis, e a notificação chega mesmo com o app fechado.
+## Contexto e decisão de arquitetura
 
-A seguir, um plano completo e enxuto.
+Hoje o `CreateChallengeDialog` mostra só campos crus (emoji, título, período, minutos, duração). O usuário precisa imaginar tudo do zero, o que funciona pra oração mas não ajuda quem quer "ler 20 páginas/dia" ou "assistir 2 aulas".
 
----
+**Decisão importante:** desafios de sala são contabilizados pelo **tempo cronometrado dentro da sala** (é a única coisa que o sistema mede objetivamente — não dá pra auditar "20 páginas lidas"). Então os templates vão **traduzir cada tipo de objetivo em uma meta de tempo realista** (ex: "Ler 20 páginas/dia" → 25 min/dia), e o título/descrição comunicam a intenção para os membros. Isso mantém integridade com `room_challenge_progress`, `time_entries` e os jobs de push já existentes — zero migração de schema.
 
-## 1. Fundação técnica (uma vez só)
-
-**Service Worker push handler**
-- Hoje usamos `vite-plugin-pwa` com `generateSW`. Vamos adicionar `workbox.importScripts: ['/push-sw.js']` apontando para um arquivo estático em `public/push-sw.js` com os listeners `push` e `notificationclick`.
-- Isso preserva todo o offline/cache atual (nada quebra) e só adiciona o comportamento de push.
-
-**Chaves VAPID**
-- Geramos um par VAPID (público/privado) uma única vez.
-- `VAPID_PUBLIC_KEY` vai no `.env` (lido no frontend pra fazer `subscribe`).
-- `VAPID_PRIVATE_KEY` e `VAPID_SUBJECT` vão em **Supabase Secrets** (usados só nas edge functions).
-
-**Permissão e inscrição**
-- Componente `EnablePushButton` (em Settings + um nudge contextual na primeira sessão completa, nunca on-load) que:
-  1. Pede `Notification.requestPermission()`.
-  2. Faz `registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey })`.
-  3. Salva a subscription via RPC no Supabase.
-- No iOS, detectamos `navigator.standalone === true` e, se não estiver instalado, mostramos um diálogo amigável "Instale na tela de início para receber notificações" (já temos `IOSInstallDialog`).
+Quem quiser número exato continua usando os campos avançados (sempre visíveis abaixo da galeria).
 
 ---
 
-## 2. Modelo de dados (migração)
+## 1. Estrutura de templates
 
-Tabela `push_subscriptions`:
-- `id uuid pk`, `user_id uuid` (FK soft pro `auth.users`), `endpoint text unique`, `p256dh text`, `auth text`, `user_agent text`, `lang text`, `timezone text`, `created_at`, `last_seen_at`, `last_error_at`, `failure_count int`.
-- RLS: usuário vê/deleta as suas; `service_role` lê todas. GRANTs explícitos.
+Novo arquivo `src/lib/roomChallengeTemplates.ts`:
 
-Tabela `notification_preferences` (1:1 com profile, default tudo ON):
-- `room_goal_reminder`, `streak_risk`, `room_challenge_deadline`, `friend_activity`, `re_engagement`, `chat_mentions`.
-- `quiet_hours_start` (ex 22:00), `quiet_hours_end` (ex 08:00), respeitado no fuso do usuário.
-- `max_per_day int default 3` (anti-spam).
+```ts
+export type ChallengeCategory =
+  | "study" | "reading" | "spirituality" | "work"
+  | "classes" | "language" | "fitness" | "creative"
+  | "mindfulness" | "custom";
 
-Tabela `notification_log`:
-- `user_id`, `kind`, `sent_at`, `lang`, `payload_hash`, `clicked_at`.
-- Usada pra deduplicação ("já mandei essa hoje?") e métricas de CTR.
+export interface ChallengeTemplate {
+  id: string;                 // ex "reading_pages_daily"
+  category: ChallengeCategory;
+  emoji: string;
+  i18nKey: string;            // rooms.challenges.templates.items.{key}.{title|desc}
+  period: "daily" | "weekly";
+  targetMinutes: number;      // tempo equivalente sugerido
+  durationDays: number | null;
+  hintKey?: string;           // dica curta abaixo do título ("≈ 20 páginas")
+}
+```
 
----
+10 categorias × 4–6 templates ≈ **~50 templates curados**. Exemplos:
 
-## 3. Envio (edge function `send-push`)
+- **reading**: ler X páginas/dia (25 min), terminar 1 livro/semana (210 min/sem), revisão diária (15 min), leitura técnica (45 min)
+- **spirituality**: oração diária (20 min), leitura bíblica (15 min), jejum de tela (30 min), meditação cristã (10 min)
+- **study**: revisão pomodoro (50 min), prova em X dias (90 min), flashcards (20 min), resumos (30 min)
+- **classes**: assistir 1 aula/dia (45 min), maratona semanal (180 min/sem), reassistir + anotar (60 min)
+- **language**: vocabulário (15 min), conversação (25 min), imersão diária (30 min), gramática (20 min)
+- **work**: deep work (90 min), inbox-zero (20 min), side project (60 min), aprendizado da função (45 min)
+- **fitness**: treino diário (45 min), alongamento (10 min), corrida (30 min)
+- **creative**: escrita (30 min), prática musical (40 min), desenho (25 min)
+- **mindfulness**: meditação (10 min), respiração consciente (5 min), gratidão (10 min)
+- **custom**: 1 template em branco que abre só os campos crus
 
-Função única `send-push` (Deno + lib `web-push`) que recebe `{ user_id, kind, vars }`:
-1. Busca todas as subscriptions do usuário.
-2. Resolve a língua: `subscription.lang ?? profile.lang ?? 'en-US'`.
-3. Renderiza título/corpo do template (ver §5) com interpolação.
-4. Envia em paralelo. Em erro 404/410, deleta a subscription. Em erro transitório, incrementa `failure_count`.
-5. Grava em `notification_log`.
-
-Respeita preferências, quiet hours e `max_per_day` antes de despachar.
-
----
-
-## 4. Agendamento inteligente (pg_cron + edge functions)
-
-Cada job roda de hora em hora, mas só dispara pro usuário quando **a hora local dele** bate com a janela definida. Assim atendemos todos os fusos sem ter 24 crons.
-
-| Job | Hora local | Regra |
-|---|---|---|
-| `notify-room-goal-pending` | 19:00 | tem sala com `goal_hours`, e progresso de hoje < meta |
-| `notify-streak-risk` | 20:30 | streak ≥ 2 dias e nenhum `time_entry` hoje |
-| `notify-room-challenge-deadline` | 09:00 | desafio ativo termina em ≤ 24h e progresso < 80% |
-| `notify-re-engagement` | 11:00 (sáb) | sem login há 3, 7, 14 dias (cada um manda só 1x) |
-| `notify-friend-back-online` | em tempo real (trigger) | amigo entrou em sala (já existe lógica) |
-| `notify-weekly-recap` | dom 18:00 | resumo da semana com stats da sala |
-
-Defesas embutidas em todo job:
-- só dispara se `notification_preferences[kind] = true`;
-- só dispara fora de quiet hours;
-- dedup por `payload_hash` nas últimas 24h;
-- respeita `max_per_day`.
+Toda categoria tem ícone Lucide (igual `goalTemplates.ts`) e cor sutil pra diferenciar visualmente.
 
 ---
 
-## 5. Conteúdo multilíngue, profissional e divertido
+## 2. Redesenho do `CreateChallengeDialog`
 
-Templates ficam em `supabase/functions/_shared/notifications/{lang}.json` para as 12 línguas já suportadas (`pt-BR, en-US, es-ES, fr-FR, ja-JP, de-DE, ar-SA, ko-KR, zh-CN, it-IT, ru-RU, id-ID`). Mesma estrutura do `src/i18n/locales/*.json`, mas só com as chaves de notificação. Variáveis tipo `{{room_name}}`, `{{streak_days}}`, `{{hours_left}}`.
+Fluxo em **2 passos** no mesmo dialog (sem trocar de tela):
 
-Cada `kind` tem **3 variações** que rotacionam aleatoriamente pra não cansar. Exemplos em PT (mesma ideia em todas):
+```text
+┌────────────────────────────────────────┐
+│ Novo desafio                            │
+│                                         │
+│ [📚 Leitura] [🙏 Espiritual] [💼 Trab.] │  ← tabs com scroll-x mobile
+│ [🎓 Aulas] [🗣 Idiomas] [🏃 Fitness] … │
+│                                         │
+│ ┌─────────┐ ┌─────────┐ ┌─────────┐    │
+│ │📖 20 pgs│ │📕 1 livro│ │✍️ Revisão│   │  ← cards 2-col mobile, 3-col desktop
+│ │ /dia    │ │ /semana  │ │ diária  │   │
+│ │ ≈25min  │ │ ≈210min  │ │ ≈15min  │   │
+│ └─────────┘ └─────────┘ └─────────┘    │
+│                                         │
+│ ▼ Personalizar (avançado)               │  ← collapsible, abre sozinho ao escolher
+│   Título, emoji, período, minutos, dur. │
+│                                         │
+│        [Cancelar]  [Criar desafio]      │
+└────────────────────────────────────────┘
+```
 
-**Meta da sala pendente**
-- "📚 Ainda dá tempo! Sua meta de hoje em **{{room_name}}** te espera."
-- "⏰ Faltam {{remaining_h}}h pra bater sua meta em **{{room_name}}**. Bora?"
-- "🎯 Seus colegas de **{{room_name}}** já contabilizaram. E você?"
+Comportamento:
+1. Ao abrir, mostra **galeria + accordion "Personalizar" fechado**.
+2. Clicar num template **pré-preenche todos os campos** (título traduzido, emoji, período, minutos, duração) e abre o accordion automaticamente — o usuário só ajusta o que quiser.
+3. Card selecionado fica destacado (borda primary + check). Trocar = sobrescrever campos.
+4. Editar desafio existente pula a galeria (vai direto pros campos avançados).
+5. Categoria "Custom" = comportamento atual (campos vazios).
+6. Tabs com `overflow-x-auto` + `snap-x` no mobile; grid responsivo nos cards (`grid-cols-2 sm:grid-cols-3`).
+7. Tooltips de ajuda permanecem em cada campo avançado (já temos).
 
-**Risco de streak**
-- "🔥 Não perca sua ofensiva de **{{streak_days}} dias**! Bastam 10 minutos hoje."
-- "❄️ Sua streak de {{streak_days}} dias tá em risco. Contabilize antes da meia-noite!"
-- "🏆 Você chegou longe — {{streak_days}} dias. Não para agora."
-
-**Prazo de desafio**
-- "🚨 O desafio **{{challenge_name}}** acaba em {{hours_left}}h. Sprint final!"
-
-**Reengajamento**
-- "👀 Faz {{days}} dias… tá tudo bem? Suas plantinhas sentem sua falta 🌱"
-
-Todos os textos vão pra revisão num arquivo só, fáceis de polir.
-
----
-
-## 6. Clique inteligente
-
-`notificationclick` no `push-sw.js` foca a janela aberta (ou abre nova) numa URL passada no payload (`/rooms/{id}`, `/timer`, `/dashboard`). Marca `clicked_at` no log via `fetch` keepalive.
-
----
-
-## 7. UI/UX
-
-- **Settings → Notificações**: toggles por categoria, quiet hours, botão "Ativar notificações" + "Enviar teste".
-- **Onboarding**: depois da primeira sessão de timer concluída, banner discreto "Quer lembretes pra não perder sua streak?" (CTA único, pode dispensar).
-- **iOS PWA**: se não instalado, abre `IOSInstallDialog` explicando o passo extra.
+Sem mudanças em `useRoomChallenges` ou nas RPCs — só consome os mesmos parâmetros já existentes.
 
 ---
 
-## 8. Entregáveis (ordem de execução)
+## 3. Internacionalização (12 línguas)
 
-1. Migration: `push_subscriptions`, `notification_preferences`, `notification_log` (com GRANTs + RLS).
-2. Secrets: gerar VAPID e adicionar `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
-3. `public/push-sw.js` + ajuste em `vite.config.ts` (`workbox.importScripts`).
-4. Frontend: `usePushSubscription` hook, `EnablePushButton`, seção em `Settings`.
-5. Edge function `send-push` + lib `web-push` + helper de templates i18n.
-6. Edge functions agendadas: `notify-room-goal-pending`, `notify-streak-risk`, `notify-room-challenge-deadline`, `notify-re-engagement`, `notify-weekly-recap`.
-7. pg_cron schedules (hora em hora) chamando cada função.
-8. Templates JSON nas 12 línguas.
-9. Teste end-to-end (botão "enviar teste") + verificação no Android e iOS instalado.
+Para cada template, 2 chaves: `title` e `desc`. Mais nomes de categoria, hints e labels da UI nova.
+
+```jsonc
+"rooms": {
+  "challenges": {
+    "templates": {
+      "pick_template": "Escolha um modelo",
+      "or_start_blank": "ou comece em branco",
+      "customize": "Personalizar",
+      "selected": "Selecionado",
+      "categories": {
+        "study": "Estudos", "reading": "Leitura",
+        "spirituality": "Espiritual", "work": "Trabalho",
+        "classes": "Aulas", "language": "Idiomas",
+        "fitness": "Fitness", "creative": "Criativo",
+        "mindfulness": "Mente", "custom": "Em branco"
+      },
+      "items": {
+        "reading_pages_daily": {
+          "title": "Ler {{pages}} páginas/dia",
+          "desc": "Cerca de {{minutes}} min de leitura focada"
+        },
+        "spirituality_prayer_daily": { "title": "Oração diária", "desc": "..." },
+        "classes_one_per_day":       { "title": "1 aula por dia",  "desc": "..." }
+        // ... ~50 chaves
+      }
+    }
+  }
+}
+```
+
+Mesma estrutura replicada em: `pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ru-RU, ja-JP, ko-KR, zh-CN, ar-SA, id-ID`. Traduções nativas, não literais (ex: "deep work" vira "trabalho profundo", "集中作業", etc.). Variáveis (`{{pages}}`, `{{minutes}}`) resolvidas no componente.
 
 ---
 
-## Observações importantes
+## 4. Responsividade mobile
 
-- **iOS exige app instalado** na Tela de Início para receber push — vamos comunicar isso claramente.
-- **Nada quebra** do que existe hoje: o SW atual continua funcionando, só ganha um `importScripts` extra. Offline/cache intactos.
-- Push é **gratuito** (usa servidores do navegador, FCM/APNs). Custo zero por mensagem.
-- Cada usuário pode ter várias subscriptions (celular + desktop). Tudo já tratado.
+- Dialog já é `max-h-[92dvh] flex flex-col` — só ajustar conteúdo.
+- Tabs horizontais com scroll suave, chip ativo grudando à esquerda (`snap-start`).
+- Cards de template: padding generoso pra toque, mínimo 44px de altura, texto truncado em 2 linhas.
+- Accordion "Personalizar" colapsado por padrão no mobile (economiza scroll), aberto auto após seleção.
+- Botões do footer empilham (`flex-col-reverse sm:flex-row`) — já é assim.
 
-Se aprovar, começo pela migração + VAPID + SW handler, depois a UI de opt-in, e por fim os jobs agendados com os templates nas 12 línguas.
+---
+
+## 5. Detalhes técnicos
+
+Arquivos a criar:
+- `src/lib/roomChallengeTemplates.ts` — catálogo + helper `getTemplatesByCategory()`.
+- `src/components/rooms/ChallengeTemplatePicker.tsx` — tabs + grid + card.
+
+Arquivos a editar:
+- `src/components/rooms/CreateChallengeDialog.tsx` — integra picker + accordion "Personalizar".
+- `src/i18n/locales/*.json` (12 arquivos) — bloco `rooms.challenges.templates`.
+
+Sem mudanças em: schema do banco, RPCs, `useRoomChallenges`, `RoomChallengesCard`, jobs de push (`notification-scheduler` continua usando `target_minutes`/`name`).
+
+---
+
+## 6. Entregáveis (ordem)
+
+1. Catálogo `roomChallengeTemplates.ts` com ~50 templates organizados por categoria.
+2. Componente `ChallengeTemplatePicker` (tabs + grid responsivo + estado de seleção).
+3. Refatorar `CreateChallengeDialog` em 2 zonas (picker → accordion avançado), preservando fluxo de edição.
+4. Adicionar bloco `rooms.challenges.templates` nas 12 línguas com traduções nativas.
+5. Validar visualmente no mobile e desktop, e conferir que edição de desafio existente continua direta.
+
+Se aprovar, executo na ordem acima — nada quebra do fluxo atual e o "começar em branco" continua disponível pra quem prefere.

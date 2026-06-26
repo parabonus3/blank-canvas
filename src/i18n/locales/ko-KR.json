@@ -1166,7 +1166,170 @@
       "tooltip_period": "매일: 매일 목표가 초기화됩니다. 매주: 일주일 동안 누적되며 일요일에 초기화됩니다.",
       "tooltip_target_minutes": "각 멤버가 기간 내 목표를 달성하기 위해 방 타이머로 기록해야 하는 분.",
       "tooltip_duration_days": "챌린지가 활성화되는 일수. 기한 없는 챌린지는 비워두세요.",
-      "help": "도움말"
+      "help": "도움말",
+      "templates": {
+        "pick_template": "템플릿 선택",
+        "customize": "맞춤 설정 (고급)",
+        "start_blank_cta": "빈 상태로 시작",
+        "categories": {
+          "study": "공부",
+          "reading": "독서",
+          "spirituality": "영성",
+          "classes": "강의",
+          "language": "언어",
+          "work": "업무",
+          "fitness": "피트니스",
+          "creative": "창작",
+          "mindfulness": "마음챙김",
+          "custom": "비어 있음"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "매일 포모도로",
+            "desc": "하루 한 집중 블록"
+          },
+          "study_exam_prep": {
+            "title": "시험 준비",
+            "desc": "시험까지 매일 집중 학습"
+          },
+          "study_flashcards": {
+            "title": "매일 플래시카드",
+            "desc": "간격 반복으로 기억"
+          },
+          "study_summaries": {
+            "title": "매일 요약",
+            "desc": "오늘 배운 것을 정리"
+          },
+          "study_review_weekly": {
+            "title": "주간 복습",
+            "desc": "한 주를 복습하는 시간"
+          },
+          "reading_pages_daily": {
+            "title": "매일 독서",
+            "desc": "하루 약 20쪽"
+          },
+          "reading_finish_book": {
+            "title": "주 1권 완독",
+            "desc": "책 한 권을 끝낼 시간"
+          },
+          "reading_technical": {
+            "title": "기술서 읽기",
+            "desc": "천천히 집중해서"
+          },
+          "reading_audiobook": {
+            "title": "매일 오디오북",
+            "desc": "이동 중이나 휴식 시간"
+          },
+          "reading_journaling": {
+            "title": "독서 일기",
+            "desc": "읽은 후 통찰 기록"
+          },
+          "spirituality_prayer": {
+            "title": "매일 기도",
+            "desc": "기도에 집중하는 시간"
+          },
+          "spirituality_bible": {
+            "title": "성경 읽기",
+            "desc": "하루 한 구절"
+          },
+          "spirituality_meditation": {
+            "title": "영적 명상",
+            "desc": "침묵과 묵상"
+          },
+          "spirituality_gratitude": {
+            "title": "매일 감사",
+            "desc": "감사한 일 적기"
+          },
+          "spirituality_silence": {
+            "title": "거룩한 침묵",
+            "desc": "화면 없는 고요"
+          },
+          "classes_one_per_day": {
+            "title": "하루 한 강의",
+            "desc": "매일 한 강의 수강"
+          },
+          "classes_marathon": {
+            "title": "주간 마라톤",
+            "desc": "주말에 크게 진도"
+          },
+          "classes_rewatch_notes": {
+            "title": "재시청 + 필기",
+            "desc": "필기하며 복습"
+          },
+          "classes_course": {
+            "title": "코스 진행",
+            "desc": "매일 작은 진전"
+          },
+          "language_vocabulary": {
+            "title": "어휘",
+            "desc": "새 단어 학습"
+          },
+          "language_conversation": {
+            "title": "회화",
+            "desc": "말하기 또는 섀도잉"
+          },
+          "language_immersion": {
+            "title": "매일 몰입",
+            "desc": "영화, 팟캐스트, 독서"
+          },
+          "language_grammar": {
+            "title": "문법",
+            "desc": "규칙과 연습 문제"
+          },
+          "work_deep_work": {
+            "title": "딥워크",
+            "desc": "방해 없는 집중 블록"
+          },
+          "work_side_project": {
+            "title": "사이드 프로젝트",
+            "desc": "개인 프로젝트 진행"
+          },
+          "work_learning_role": {
+            "title": "직무 학습",
+            "desc": "역할에 필요한 것 학습"
+          },
+          "work_inbox_zero": {
+            "title": "받은편지함 비우기",
+            "desc": "메일과 메시지 정리"
+          },
+          "fitness_workout": {
+            "title": "매일 운동",
+            "desc": "집이나 헬스장에서"
+          },
+          "fitness_stretch": {
+            "title": "스트레칭",
+            "desc": "유연성과 몸 관리"
+          },
+          "fitness_run": {
+            "title": "주간 러닝",
+            "desc": "주간 러닝 시간 누적"
+          },
+          "creative_writing": {
+            "title": "매일 쓰기",
+            "desc": "조금이라도 매일 쓰기"
+          },
+          "creative_music": {
+            "title": "음악 연습",
+            "desc": "연주 또는 음악 공부"
+          },
+          "creative_drawing": {
+            "title": "매일 드로잉",
+            "desc": "스케치와 선 연습"
+          },
+          "mindfulness_meditation": {
+            "title": "명상",
+            "desc": "짧은 마음챙김 세션"
+          },
+          "mindfulness_breathing": {
+            "title": "마음챙김 호흡",
+            "desc": "호흡 운동"
+          },
+          "mindfulness_pause": {
+            "title": "의도적인 쉼",
+            "desc": "하루의 진짜 쉼"
+          }
+        }
+      }
     }
   },
   "explore": {

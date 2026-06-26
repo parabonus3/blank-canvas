@@ -1166,7 +1166,170 @@
       "tooltip_period": "Täglich: das Ziel wird jeden Tag zurückgesetzt. Wöchentlich: das Ziel sammelt sich über die Woche und wird sonntags zurückgesetzt.",
       "tooltip_target_minutes": "Wie viele Minuten jedes Mitglied im Raum-Timer erfassen muss, um das Ziel im Zeitraum zu erreichen.",
       "tooltip_duration_days": "Wie viele Tage die Herausforderung aktiv bleibt. Leer lassen für eine unbefristete Herausforderung.",
-      "help": "Hilfe"
+      "help": "Hilfe",
+      "templates": {
+        "pick_template": "Vorlage wählen",
+        "customize": "Anpassen (erweitert)",
+        "start_blank_cta": "Leer beginnen",
+        "categories": {
+          "study": "Lernen",
+          "reading": "Lesen",
+          "spirituality": "Spirituell",
+          "classes": "Kurse",
+          "language": "Sprachen",
+          "work": "Arbeit",
+          "fitness": "Fitness",
+          "creative": "Kreativ",
+          "mindfulness": "Achtsamkeit",
+          "custom": "Leer"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Tägliches Pomodoro",
+            "desc": "Ein Fokusblock pro Tag"
+          },
+          "study_exam_prep": {
+            "title": "Prüfungsvorbereitung",
+            "desc": "Tägliche intensive Lerneinheit"
+          },
+          "study_flashcards": {
+            "title": "Tägliche Karteikarten",
+            "desc": "Verteilte Wiederholung"
+          },
+          "study_summaries": {
+            "title": "Tägliche Zusammenfassungen",
+            "desc": "Heutiges Lernen synthetisieren"
+          },
+          "study_review_weekly": {
+            "title": "Wöchentliche Wiederholung",
+            "desc": "Wochenblock zur Wiederholung"
+          },
+          "reading_pages_daily": {
+            "title": "Täglich lesen",
+            "desc": "Etwa 20 Seiten pro Tag"
+          },
+          "reading_finish_book": {
+            "title": "Buch pro Woche",
+            "desc": "Lesezeit für ein ganzes Buch"
+          },
+          "reading_technical": {
+            "title": "Fachbuch lesen",
+            "desc": "Langsam und fokussiert"
+          },
+          "reading_audiobook": {
+            "title": "Tägliches Hörbuch",
+            "desc": "Unterwegs oder in Pausen"
+          },
+          "reading_journaling": {
+            "title": "Lesetagebuch",
+            "desc": "Erkenntnisse festhalten"
+          },
+          "spirituality_prayer": {
+            "title": "Tägliches Gebet",
+            "desc": "Feste Gebetszeit jeden Tag"
+          },
+          "spirituality_bible": {
+            "title": "Bibellesen",
+            "desc": "Eine Stelle pro Tag"
+          },
+          "spirituality_meditation": {
+            "title": "Spirituelle Meditation",
+            "desc": "Stille und Kontemplation"
+          },
+          "spirituality_gratitude": {
+            "title": "Tägliche Dankbarkeit",
+            "desc": "Dankbarkeit aufschreiben"
+          },
+          "spirituality_silence": {
+            "title": "Heilige Stille",
+            "desc": "Bildschirmfreie Stille"
+          },
+          "classes_one_per_day": {
+            "title": "1 Kurs pro Tag",
+            "desc": "Eine ganze Lektion täglich"
+          },
+          "classes_marathon": {
+            "title": "Wochenmarathon",
+            "desc": "Wochenblock zum Vorankommen"
+          },
+          "classes_rewatch_notes": {
+            "title": "Erneut ansehen + Notizen",
+            "desc": "Mit Notizen wiederholen"
+          },
+          "classes_course": {
+            "title": "Kursfortschritt",
+            "desc": "Kleiner täglicher Fortschritt"
+          },
+          "language_vocabulary": {
+            "title": "Vokabeln",
+            "desc": "Neue Wörter lernen"
+          },
+          "language_conversation": {
+            "title": "Konversation",
+            "desc": "Sprechen oder Shadowing"
+          },
+          "language_immersion": {
+            "title": "Tägliches Eintauchen",
+            "desc": "Film, Podcast oder Lesen"
+          },
+          "language_grammar": {
+            "title": "Grammatik",
+            "desc": "Regeln und Übungen"
+          },
+          "work_deep_work": {
+            "title": "Tiefenarbeit",
+            "desc": "Block ohne Unterbrechungen"
+          },
+          "work_side_project": {
+            "title": "Nebenprojekt",
+            "desc": "Am eigenen Projekt arbeiten"
+          },
+          "work_learning_role": {
+            "title": "Rolle lernen",
+            "desc": "Studieren, was die Rolle braucht"
+          },
+          "work_inbox_zero": {
+            "title": "Inbox zero",
+            "desc": "E-Mails und Nachrichten ordnen"
+          },
+          "fitness_workout": {
+            "title": "Tägliches Training",
+            "desc": "Sport zu Hause oder im Studio"
+          },
+          "fitness_stretch": {
+            "title": "Dehnen",
+            "desc": "Mobilität und Körperpflege"
+          },
+          "fitness_run": {
+            "title": "Wöchentlicher Lauf",
+            "desc": "Laufzeit pro Woche sammeln"
+          },
+          "creative_writing": {
+            "title": "Tägliches Schreiben",
+            "desc": "Jeden Tag schreiben, auch wenig"
+          },
+          "creative_music": {
+            "title": "Musikpraxis",
+            "desc": "Spielen oder Musik lernen"
+          },
+          "creative_drawing": {
+            "title": "Tägliches Zeichnen",
+            "desc": "Skizzen und Linienübung"
+          },
+          "mindfulness_meditation": {
+            "title": "Meditation",
+            "desc": "Kurze Achtsamkeitssitzung"
+          },
+          "mindfulness_breathing": {
+            "title": "Achtsames Atmen",
+            "desc": "Atemübungen"
+          },
+          "mindfulness_pause": {
+            "title": "Bewusste Pause",
+            "desc": "Eine echte Pause im Tag"
+          }
+        }
+      }
     }
   },
   "explore": {

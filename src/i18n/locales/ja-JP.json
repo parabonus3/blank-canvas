@@ -1166,7 +1166,170 @@
       "tooltip_period": "毎日: 目標は毎日リセットされます。毎週: 目標は1週間で累積し、日曜日にリセットされます。",
       "tooltip_target_minutes": "期間内に目標達成するため、各メンバーがルームのタイマーで記録する必要のある分数。",
       "tooltip_duration_days": "チャレンジが有効な日数。期限なしにする場合は空欄にしてください。",
-      "help": "ヘルプ"
+      "help": "ヘルプ",
+      "templates": {
+        "pick_template": "テンプレートを選ぶ",
+        "customize": "カスタマイズ（詳細）",
+        "start_blank_cta": "白紙から始める",
+        "categories": {
+          "study": "勉強",
+          "reading": "読書",
+          "spirituality": "スピリチュアル",
+          "classes": "授業",
+          "language": "語学",
+          "work": "仕事",
+          "fitness": "フィットネス",
+          "creative": "クリエイティブ",
+          "mindfulness": "マインドフル",
+          "custom": "白紙"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "毎日のポモドーロ",
+            "desc": "1日1ブロックの集中"
+          },
+          "study_exam_prep": {
+            "title": "試験対策",
+            "desc": "試験まで毎日集中学習"
+          },
+          "study_flashcards": {
+            "title": "毎日フラッシュカード",
+            "desc": "間隔反復で定着"
+          },
+          "study_summaries": {
+            "title": "毎日のまとめ",
+            "desc": "今日学んだことを整理"
+          },
+          "study_review_weekly": {
+            "title": "週次レビュー",
+            "desc": "週ごとに復習する時間"
+          },
+          "reading_pages_daily": {
+            "title": "毎日読書",
+            "desc": "1日約20ページ"
+          },
+          "reading_finish_book": {
+            "title": "週1冊読破",
+            "desc": "本1冊を読み切る時間"
+          },
+          "reading_technical": {
+            "title": "専門書を読む",
+            "desc": "ゆっくり集中して"
+          },
+          "reading_audiobook": {
+            "title": "毎日オーディオブック",
+            "desc": "移動中や休憩に"
+          },
+          "reading_journaling": {
+            "title": "読書日記",
+            "desc": "読んだ後に気づきを記録"
+          },
+          "spirituality_prayer": {
+            "title": "毎日の祈り",
+            "desc": "祈りに専念する時間"
+          },
+          "spirituality_bible": {
+            "title": "聖書を読む",
+            "desc": "1日1節"
+          },
+          "spirituality_meditation": {
+            "title": "瞑想",
+            "desc": "沈黙と観想"
+          },
+          "spirituality_gratitude": {
+            "title": "毎日の感謝",
+            "desc": "感謝することを書く"
+          },
+          "spirituality_silence": {
+            "title": "神聖な沈黙",
+            "desc": "画面のない静寂"
+          },
+          "classes_one_per_day": {
+            "title": "1日1授業",
+            "desc": "毎日1コマ受講"
+          },
+          "classes_marathon": {
+            "title": "週末マラソン",
+            "desc": "週次で大きく進める"
+          },
+          "classes_rewatch_notes": {
+            "title": "再視聴＋ノート",
+            "desc": "ノートを取りながら復習"
+          },
+          "classes_course": {
+            "title": "コースを進める",
+            "desc": "毎日少しずつ進歩"
+          },
+          "language_vocabulary": {
+            "title": "語彙",
+            "desc": "新しい単語を学ぶ"
+          },
+          "language_conversation": {
+            "title": "会話",
+            "desc": "会話やシャドーイング"
+          },
+          "language_immersion": {
+            "title": "毎日のイマージョン",
+            "desc": "映画、ポッドキャスト、読書"
+          },
+          "language_grammar": {
+            "title": "文法",
+            "desc": "規則と練習問題"
+          },
+          "work_deep_work": {
+            "title": "ディープワーク",
+            "desc": "中断なしの集中ブロック"
+          },
+          "work_side_project": {
+            "title": "サイドプロジェクト",
+            "desc": "個人プロジェクトを進める"
+          },
+          "work_learning_role": {
+            "title": "仕事を学ぶ",
+            "desc": "役割に必要なことを学習"
+          },
+          "work_inbox_zero": {
+            "title": "受信トレイゼロ",
+            "desc": "メールとメッセージを整理"
+          },
+          "fitness_workout": {
+            "title": "毎日トレーニング",
+            "desc": "自宅やジムで運動"
+          },
+          "fitness_stretch": {
+            "title": "ストレッチ",
+            "desc": "柔軟性と体のケア"
+          },
+          "fitness_run": {
+            "title": "週次ランニング",
+            "desc": "週ごとに走行時間を蓄積"
+          },
+          "creative_writing": {
+            "title": "毎日書く",
+            "desc": "少しでも毎日書く"
+          },
+          "creative_music": {
+            "title": "音楽の練習",
+            "desc": "演奏や音楽の学習"
+          },
+          "creative_drawing": {
+            "title": "毎日のドローイング",
+            "desc": "スケッチと線の練習"
+          },
+          "mindfulness_meditation": {
+            "title": "瞑想",
+            "desc": "短いマインドフルセッション"
+          },
+          "mindfulness_breathing": {
+            "title": "マインドフル呼吸",
+            "desc": "呼吸エクササイズ"
+          },
+          "mindfulness_pause": {
+            "title": "意図的な休憩",
+            "desc": "1日の中の本当の休息"
+          }
+        }
+      }
     }
   },
   "explore": {

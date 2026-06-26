@@ -1166,7 +1166,170 @@
       "tooltip_period": "Diaria: la meta se reinicia cada día. Semanal: la meta se acumula durante la semana y se reinicia el domingo.",
       "tooltip_target_minutes": "Cuántos minutos debe registrar cada miembro en el temporizador de la sala para alcanzar la meta del período.",
       "tooltip_duration_days": "Cuántos días permanece activo el desafío. Déjalo en blanco para un desafío sin plazo.",
-      "help": "Ayuda"
+      "help": "Ayuda",
+      "templates": {
+        "pick_template": "Elige una plantilla",
+        "customize": "Personalizar (avanzado)",
+        "start_blank_cta": "Empezar en blanco",
+        "categories": {
+          "study": "Estudio",
+          "reading": "Lectura",
+          "spirituality": "Espiritual",
+          "classes": "Clases",
+          "language": "Idiomas",
+          "work": "Trabajo",
+          "fitness": "Fitness",
+          "creative": "Creativo",
+          "mindfulness": "Mente",
+          "custom": "En blanco"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Pomodoro diario",
+            "desc": "Un bloque de enfoque profundo al día"
+          },
+          "study_exam_prep": {
+            "title": "Preparación de examen",
+            "desc": "Sesión intensa diaria hasta el examen"
+          },
+          "study_flashcards": {
+            "title": "Flashcards diarios",
+            "desc": "Repetición espaciada para fijar"
+          },
+          "study_summaries": {
+            "title": "Resúmenes diarios",
+            "desc": "Sintetiza lo estudiado hoy"
+          },
+          "study_review_weekly": {
+            "title": "Repaso semanal",
+            "desc": "Bloque semanal para repasar"
+          },
+          "reading_pages_daily": {
+            "title": "Leer cada día",
+            "desc": "Unas 20 páginas al día"
+          },
+          "reading_finish_book": {
+            "title": "Terminar un libro/semana",
+            "desc": "Tiempo de lectura para acabar un libro"
+          },
+          "reading_technical": {
+            "title": "Lectura técnica",
+            "desc": "Libro técnico, lento y enfocado"
+          },
+          "reading_audiobook": {
+            "title": "Audiolibro diario",
+            "desc": "Escucha en trayectos o pausas"
+          },
+          "reading_journaling": {
+            "title": "Diario de lectura",
+            "desc": "Anota ideas tras leer"
+          },
+          "spirituality_prayer": {
+            "title": "Oración diaria",
+            "desc": "Tiempo dedicado de oración"
+          },
+          "spirituality_bible": {
+            "title": "Lectura bíblica",
+            "desc": "Un pasaje al día"
+          },
+          "spirituality_meditation": {
+            "title": "Meditación espiritual",
+            "desc": "Silencio y contemplación diaria"
+          },
+          "spirituality_gratitude": {
+            "title": "Gratitud diaria",
+            "desc": "Lista motivos de gratitud"
+          },
+          "spirituality_silence": {
+            "title": "Silencio sagrado",
+            "desc": "Pausa silenciosa sin pantalla"
+          },
+          "classes_one_per_day": {
+            "title": "1 clase al día",
+            "desc": "Mira una clase completa al día"
+          },
+          "classes_marathon": {
+            "title": "Maratón semanal",
+            "desc": "Bloque semanal para avanzar"
+          },
+          "classes_rewatch_notes": {
+            "title": "Repasar + apuntes",
+            "desc": "Revisión con apuntes"
+          },
+          "classes_course": {
+            "title": "Avanzar en el curso",
+            "desc": "Pequeño progreso diario"
+          },
+          "language_vocabulary": {
+            "title": "Vocabulario",
+            "desc": "Aprender y repasar palabras"
+          },
+          "language_conversation": {
+            "title": "Conversación",
+            "desc": "Practicar habla o shadowing"
+          },
+          "language_immersion": {
+            "title": "Inmersión diaria",
+            "desc": "Cine, podcast o lectura en el idioma"
+          },
+          "language_grammar": {
+            "title": "Gramática",
+            "desc": "Reglas y ejercicios"
+          },
+          "work_deep_work": {
+            "title": "Trabajo profundo",
+            "desc": "Bloque diario sin interrupciones"
+          },
+          "work_side_project": {
+            "title": "Proyecto paralelo",
+            "desc": "Avanza en tu proyecto"
+          },
+          "work_learning_role": {
+            "title": "Aprender del rol",
+            "desc": "Estudia lo que tu rol requiere"
+          },
+          "work_inbox_zero": {
+            "title": "Bandeja a cero",
+            "desc": "Organiza emails y mensajes"
+          },
+          "fitness_workout": {
+            "title": "Entreno diario",
+            "desc": "Ejercicio en casa o gimnasio"
+          },
+          "fitness_stretch": {
+            "title": "Estiramientos",
+            "desc": "Movilidad y cuidado corporal"
+          },
+          "fitness_run": {
+            "title": "Carrera semanal",
+            "desc": "Acumula tiempo de carrera"
+          },
+          "creative_writing": {
+            "title": "Escritura diaria",
+            "desc": "Escribe cada día, aunque poco"
+          },
+          "creative_music": {
+            "title": "Práctica musical",
+            "desc": "Toca o estudia música"
+          },
+          "creative_drawing": {
+            "title": "Dibujo diario",
+            "desc": "Bocetos y práctica de trazo"
+          },
+          "mindfulness_meditation": {
+            "title": "Meditación",
+            "desc": "Sesión corta de mindfulness"
+          },
+          "mindfulness_breathing": {
+            "title": "Respiración consciente",
+            "desc": "Ejercicios de respiración"
+          },
+          "mindfulness_pause": {
+            "title": "Pausa intencional",
+            "desc": "Una pausa real del día"
+          }
+        }
+      }
     }
   },
   "explore": {

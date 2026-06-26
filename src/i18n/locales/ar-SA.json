@@ -1166,7 +1166,170 @@
       "tooltip_period": "يومي: يُعاد ضبط الهدف كل يوم. أسبوعي: يتراكم خلال الأسبوع ويُعاد ضبطه يوم الأحد.",
       "tooltip_target_minutes": "عدد الدقائق التي يجب أن يسجلها كل عضو على مؤقت الغرفة لتحقيق هدف الفترة.",
       "tooltip_duration_days": "عدد أيام بقاء التحدي نشطًا. اتركه فارغًا لتحدٍ بلا مدة محددة.",
-      "help": "مساعدة"
+      "help": "مساعدة",
+      "templates": {
+        "pick_template": "اختر قالبًا",
+        "customize": "تخصيص (متقدم)",
+        "start_blank_cta": "ابدأ من الصفر",
+        "categories": {
+          "study": "دراسة",
+          "reading": "قراءة",
+          "spirituality": "روحاني",
+          "classes": "دروس",
+          "language": "لغات",
+          "work": "عمل",
+          "fitness": "لياقة",
+          "creative": "إبداع",
+          "mindfulness": "يقظة",
+          "custom": "فارغ"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "بومودورو يومي",
+            "desc": "جلسة تركيز عميق كل يوم"
+          },
+          "study_exam_prep": {
+            "title": "التحضير للاختبار",
+            "desc": "جلسة مكثفة يومية"
+          },
+          "study_flashcards": {
+            "title": "بطاقات يومية",
+            "desc": "تكرار متباعد للتثبيت"
+          },
+          "study_summaries": {
+            "title": "ملخصات يومية",
+            "desc": "لخّص ما درست اليوم"
+          },
+          "study_review_weekly": {
+            "title": "مراجعة أسبوعية",
+            "desc": "جلسة مراجعة كل أسبوع"
+          },
+          "reading_pages_daily": {
+            "title": "القراءة يوميًا",
+            "desc": "نحو 20 صفحة يوميًا"
+          },
+          "reading_finish_book": {
+            "title": "كتاب أسبوعيًا",
+            "desc": "وقت إنهاء كتاب"
+          },
+          "reading_technical": {
+            "title": "قراءة تخصصية",
+            "desc": "ببطء وتركيز"
+          },
+          "reading_audiobook": {
+            "title": "كتاب صوتي يومي",
+            "desc": "استمع في التنقل أو الراحة"
+          },
+          "reading_journaling": {
+            "title": "يوميات القراءة",
+            "desc": "سجّل أفكارك بعد القراءة"
+          },
+          "spirituality_prayer": {
+            "title": "صلاة يومية",
+            "desc": "وقت مخصص للصلاة"
+          },
+          "spirituality_bible": {
+            "title": "قراءة الكتاب",
+            "desc": "فقرة كل يوم"
+          },
+          "spirituality_meditation": {
+            "title": "تأمل روحي",
+            "desc": "صمت وتأمل"
+          },
+          "spirituality_gratitude": {
+            "title": "شكر يومي",
+            "desc": "اكتب ما تشكر عليه"
+          },
+          "spirituality_silence": {
+            "title": "صمت مقدس",
+            "desc": "استراحة صامتة بلا شاشة"
+          },
+          "classes_one_per_day": {
+            "title": "درس واحد يوميًا",
+            "desc": "شاهد درسًا كاملاً يوميًا"
+          },
+          "classes_marathon": {
+            "title": "ماراثون أسبوعي",
+            "desc": "تقدّم كبير كل أسبوع"
+          },
+          "classes_rewatch_notes": {
+            "title": "إعادة + تدوين",
+            "desc": "راجع مع كتابة الملاحظات"
+          },
+          "classes_course": {
+            "title": "تقدّم الدورة",
+            "desc": "تقدّم يومي صغير"
+          },
+          "language_vocabulary": {
+            "title": "المفردات",
+            "desc": "تعلم كلمات جديدة"
+          },
+          "language_conversation": {
+            "title": "المحادثة",
+            "desc": "تحدث أو تظليل"
+          },
+          "language_immersion": {
+            "title": "انغماس يومي",
+            "desc": "فيلم أو بودكاست أو قراءة"
+          },
+          "language_grammar": {
+            "title": "القواعد",
+            "desc": "قواعد وتمارين"
+          },
+          "work_deep_work": {
+            "title": "عمل عميق",
+            "desc": "جلسة بلا مقاطعات"
+          },
+          "work_side_project": {
+            "title": "مشروع جانبي",
+            "desc": "تقدّم في مشروعك"
+          },
+          "work_learning_role": {
+            "title": "تعلم دورك",
+            "desc": "ادرس ما يتطلبه دورك"
+          },
+          "work_inbox_zero": {
+            "title": "صندوق صفر",
+            "desc": "نظّم البريد والرسائل"
+          },
+          "fitness_workout": {
+            "title": "تمرين يومي",
+            "desc": "في المنزل أو النادي"
+          },
+          "fitness_stretch": {
+            "title": "تمدد",
+            "desc": "مرونة والعناية بالجسم"
+          },
+          "fitness_run": {
+            "title": "ركض أسبوعي",
+            "desc": "اجمع وقت الركض"
+          },
+          "creative_writing": {
+            "title": "كتابة يومية",
+            "desc": "اكتب كل يوم ولو قليلًا"
+          },
+          "creative_music": {
+            "title": "ممارسة موسيقية",
+            "desc": "عزف أو دراسة موسيقى"
+          },
+          "creative_drawing": {
+            "title": "رسم يومي",
+            "desc": "رسومات وتمارين خطوط"
+          },
+          "mindfulness_meditation": {
+            "title": "تأمل",
+            "desc": "جلسة قصيرة من اليقظة"
+          },
+          "mindfulness_breathing": {
+            "title": "تنفس واعٍ",
+            "desc": "تمارين تنفس"
+          },
+          "mindfulness_pause": {
+            "title": "استراحة مقصودة",
+            "desc": "استراحة حقيقية في يومك"
+          }
+        }
+      }
     }
   },
   "explore": {
