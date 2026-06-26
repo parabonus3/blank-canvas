@@ -1166,7 +1166,170 @@
       "tooltip_period": "Harian: target di-reset setiap hari. Mingguan: target terakumulasi selama seminggu dan di-reset hari Minggu.",
       "tooltip_target_minutes": "Berapa menit yang harus dicatat setiap anggota di timer ruangan untuk mencapai target periode.",
       "tooltip_duration_days": "Berapa hari tantangan tetap aktif. Kosongkan untuk tantangan tanpa batas waktu.",
-      "help": "Bantuan"
+      "help": "Bantuan",
+      "templates": {
+        "pick_template": "Pilih templat",
+        "customize": "Sesuaikan (lanjutan)",
+        "start_blank_cta": "Mulai dari kosong",
+        "categories": {
+          "study": "Belajar",
+          "reading": "Membaca",
+          "spirituality": "Spiritual",
+          "classes": "Kelas",
+          "language": "Bahasa",
+          "work": "Kerja",
+          "fitness": "Kebugaran",
+          "creative": "Kreatif",
+          "mindfulness": "Kesadaran",
+          "custom": "Kosong"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Pomodoro harian",
+            "desc": "Satu blok fokus per hari"
+          },
+          "study_exam_prep": {
+            "title": "Persiapan ujian",
+            "desc": "Sesi intens setiap hari"
+          },
+          "study_flashcards": {
+            "title": "Kartu harian",
+            "desc": "Pengulangan berjarak"
+          },
+          "study_summaries": {
+            "title": "Ringkasan harian",
+            "desc": "Rangkum yang dipelajari hari ini"
+          },
+          "study_review_weekly": {
+            "title": "Tinjauan mingguan",
+            "desc": "Blok mingguan untuk mengulang"
+          },
+          "reading_pages_daily": {
+            "title": "Baca setiap hari",
+            "desc": "Sekitar 20 halaman per hari"
+          },
+          "reading_finish_book": {
+            "title": "Selesaikan buku/minggu",
+            "desc": "Waktu untuk satu buku"
+          },
+          "reading_technical": {
+            "title": "Bacaan teknis",
+            "desc": "Pelan dan fokus"
+          },
+          "reading_audiobook": {
+            "title": "Audiobook harian",
+            "desc": "Dengar saat perjalanan"
+          },
+          "reading_journaling": {
+            "title": "Jurnal bacaan",
+            "desc": "Catat wawasan setelah membaca"
+          },
+          "spirituality_prayer": {
+            "title": "Doa harian",
+            "desc": "Waktu khusus untuk berdoa"
+          },
+          "spirituality_bible": {
+            "title": "Baca Alkitab",
+            "desc": "Satu bagian per hari"
+          },
+          "spirituality_meditation": {
+            "title": "Meditasi spiritual",
+            "desc": "Hening dan kontemplasi"
+          },
+          "spirituality_gratitude": {
+            "title": "Syukur harian",
+            "desc": "Tulis hal yang disyukuri"
+          },
+          "spirituality_silence": {
+            "title": "Hening suci",
+            "desc": "Jeda tanpa layar"
+          },
+          "classes_one_per_day": {
+            "title": "1 kelas per hari",
+            "desc": "Tonton satu kelas penuh"
+          },
+          "classes_marathon": {
+            "title": "Maraton mingguan",
+            "desc": "Blok mingguan untuk maju"
+          },
+          "classes_rewatch_notes": {
+            "title": "Tonton ulang + catatan",
+            "desc": "Ulas sambil mencatat"
+          },
+          "classes_course": {
+            "title": "Kemajuan kursus",
+            "desc": "Kemajuan kecil setiap hari"
+          },
+          "language_vocabulary": {
+            "title": "Kosakata",
+            "desc": "Pelajari kata baru"
+          },
+          "language_conversation": {
+            "title": "Percakapan",
+            "desc": "Latih bicara atau shadowing"
+          },
+          "language_immersion": {
+            "title": "Imersi harian",
+            "desc": "Film, podcast atau bacaan"
+          },
+          "language_grammar": {
+            "title": "Tata bahasa",
+            "desc": "Aturan dan latihan"
+          },
+          "work_deep_work": {
+            "title": "Kerja mendalam",
+            "desc": "Blok tanpa gangguan"
+          },
+          "work_side_project": {
+            "title": "Proyek sampingan",
+            "desc": "Majukan proyek pribadi"
+          },
+          "work_learning_role": {
+            "title": "Pelajari peran",
+            "desc": "Pelajari kebutuhan peran"
+          },
+          "work_inbox_zero": {
+            "title": "Inbox kosong",
+            "desc": "Tata email dan pesan"
+          },
+          "fitness_workout": {
+            "title": "Latihan harian",
+            "desc": "Di rumah atau gym"
+          },
+          "fitness_stretch": {
+            "title": "Peregangan",
+            "desc": "Mobilitas dan perawatan tubuh"
+          },
+          "fitness_run": {
+            "title": "Lari mingguan",
+            "desc": "Akumulasi waktu lari"
+          },
+          "creative_writing": {
+            "title": "Menulis harian",
+            "desc": "Menulis setiap hari, sedikit pun"
+          },
+          "creative_music": {
+            "title": "Latihan musik",
+            "desc": "Bermain atau belajar musik"
+          },
+          "creative_drawing": {
+            "title": "Menggambar harian",
+            "desc": "Sketsa dan latihan garis"
+          },
+          "mindfulness_meditation": {
+            "title": "Meditasi",
+            "desc": "Sesi singkat kesadaran"
+          },
+          "mindfulness_breathing": {
+            "title": "Napas sadar",
+            "desc": "Latihan pernapasan"
+          },
+          "mindfulness_pause": {
+            "title": "Jeda sengaja",
+            "desc": "Jeda yang nyata dalam hari"
+          }
+        }
+      }
     }
   },
   "explore": {

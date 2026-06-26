@@ -1166,7 +1166,170 @@
       "tooltip_period": "Ежедневно: цель сбрасывается каждый день. Еженедельно: цель копится за неделю и сбрасывается в воскресенье.",
       "tooltip_target_minutes": "Сколько минут каждый участник должен накопить на таймере комнаты, чтобы выполнить цель за период.",
       "tooltip_duration_days": "Сколько дней челлендж активен. Оставьте пустым для бессрочного челленджа.",
-      "help": "Справка"
+      "help": "Справка",
+      "templates": {
+        "pick_template": "Выберите шаблон",
+        "customize": "Настроить (расширенно)",
+        "start_blank_cta": "Начать с чистого листа",
+        "categories": {
+          "study": "Учёба",
+          "reading": "Чтение",
+          "spirituality": "Духовное",
+          "classes": "Уроки",
+          "language": "Языки",
+          "work": "Работа",
+          "fitness": "Фитнес",
+          "creative": "Творчество",
+          "mindfulness": "Осознанность",
+          "custom": "Пусто"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Ежедневный помидор",
+            "desc": "Один блок глубокого фокуса в день"
+          },
+          "study_exam_prep": {
+            "title": "Подготовка к экзамену",
+            "desc": "Интенсивная сессия каждый день"
+          },
+          "study_flashcards": {
+            "title": "Карточки ежедневно",
+            "desc": "Интервальное повторение"
+          },
+          "study_summaries": {
+            "title": "Ежедневные конспекты",
+            "desc": "Синтез изученного за день"
+          },
+          "study_review_weekly": {
+            "title": "Недельный обзор",
+            "desc": "Недельный блок для повторения"
+          },
+          "reading_pages_daily": {
+            "title": "Читать каждый день",
+            "desc": "Около 20 страниц в день"
+          },
+          "reading_finish_book": {
+            "title": "Книга в неделю",
+            "desc": "Время на одну книгу"
+          },
+          "reading_technical": {
+            "title": "Техническое чтение",
+            "desc": "Медленно и сосредоточенно"
+          },
+          "reading_audiobook": {
+            "title": "Аудиокнига ежедневно",
+            "desc": "Слушать в пути или на паузах"
+          },
+          "reading_journaling": {
+            "title": "Дневник чтения",
+            "desc": "Запишите мысли после чтения"
+          },
+          "spirituality_prayer": {
+            "title": "Ежедневная молитва",
+            "desc": "Время для молитвы"
+          },
+          "spirituality_bible": {
+            "title": "Чтение Библии",
+            "desc": "Один отрывок в день"
+          },
+          "spirituality_meditation": {
+            "title": "Духовная медитация",
+            "desc": "Тишина и созерцание"
+          },
+          "spirituality_gratitude": {
+            "title": "Ежедневная благодарность",
+            "desc": "Запишите за что благодарны"
+          },
+          "spirituality_silence": {
+            "title": "Священная тишина",
+            "desc": "Пауза без экрана"
+          },
+          "classes_one_per_day": {
+            "title": "1 урок в день",
+            "desc": "Один полный урок ежедневно"
+          },
+          "classes_marathon": {
+            "title": "Недельный марафон",
+            "desc": "Недельный блок прогресса"
+          },
+          "classes_rewatch_notes": {
+            "title": "Пересмотр + заметки",
+            "desc": "Повтор с заметками"
+          },
+          "classes_course": {
+            "title": "Прогресс по курсу",
+            "desc": "Маленький ежедневный шаг"
+          },
+          "language_vocabulary": {
+            "title": "Словарь",
+            "desc": "Учить новые слова"
+          },
+          "language_conversation": {
+            "title": "Разговор",
+            "desc": "Практика речи или shadowing"
+          },
+          "language_immersion": {
+            "title": "Погружение ежедневно",
+            "desc": "Фильм, подкаст или чтение"
+          },
+          "language_grammar": {
+            "title": "Грамматика",
+            "desc": "Правила и упражнения"
+          },
+          "work_deep_work": {
+            "title": "Глубокая работа",
+            "desc": "Блок без отвлечений"
+          },
+          "work_side_project": {
+            "title": "Личный проект",
+            "desc": "Двигайте свой проект"
+          },
+          "work_learning_role": {
+            "title": "Учить роль",
+            "desc": "Изучайте требования роли"
+          },
+          "work_inbox_zero": {
+            "title": "Inbox zero",
+            "desc": "Разберите почту и сообщения"
+          },
+          "fitness_workout": {
+            "title": "Ежедневная тренировка",
+            "desc": "Дома или в зале"
+          },
+          "fitness_stretch": {
+            "title": "Растяжка",
+            "desc": "Подвижность и забота о теле"
+          },
+          "fitness_run": {
+            "title": "Бег за неделю",
+            "desc": "Накопите время бега"
+          },
+          "creative_writing": {
+            "title": "Ежедневное письмо",
+            "desc": "Пишите каждый день"
+          },
+          "creative_music": {
+            "title": "Музыкальная практика",
+            "desc": "Играйте или изучайте музыку"
+          },
+          "creative_drawing": {
+            "title": "Ежедневный рисунок",
+            "desc": "Скетчи и работа с линией"
+          },
+          "mindfulness_meditation": {
+            "title": "Медитация",
+            "desc": "Короткая сессия осознанности"
+          },
+          "mindfulness_breathing": {
+            "title": "Осознанное дыхание",
+            "desc": "Дыхательные упражнения"
+          },
+          "mindfulness_pause": {
+            "title": "Намеренная пауза",
+            "desc": "Настоящая пауза в дне"
+          }
+        }
+      }
     }
   },
   "explore": {

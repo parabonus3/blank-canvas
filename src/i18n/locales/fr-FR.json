@@ -1166,7 +1166,170 @@
       "tooltip_period": "Quotidien : l'objectif se réinitialise chaque jour. Hebdomadaire : l'objectif s'accumule sur la semaine et se réinitialise le dimanche.",
       "tooltip_target_minutes": "Combien de minutes chaque membre doit enregistrer sur le minuteur de la salle pour atteindre l'objectif de la période.",
       "tooltip_duration_days": "Durée d'activité du défi en jours. Laissez vide pour un défi sans échéance.",
-      "help": "Aide"
+      "help": "Aide",
+      "templates": {
+        "pick_template": "Choisir un modèle",
+        "customize": "Personnaliser (avancé)",
+        "start_blank_cta": "Partir de zéro",
+        "categories": {
+          "study": "Études",
+          "reading": "Lecture",
+          "spirituality": "Spirituel",
+          "classes": "Cours",
+          "language": "Langues",
+          "work": "Travail",
+          "fitness": "Fitness",
+          "creative": "Créatif",
+          "mindfulness": "Pleine conscience",
+          "custom": "Vierge"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Pomodoro quotidien",
+            "desc": "Un bloc de concentration par jour"
+          },
+          "study_exam_prep": {
+            "title": "Préparation d'examen",
+            "desc": "Session intense quotidienne"
+          },
+          "study_flashcards": {
+            "title": "Flashcards quotidiens",
+            "desc": "Répétition espacée"
+          },
+          "study_summaries": {
+            "title": "Résumés quotidiens",
+            "desc": "Synthétiser ce que vous avez étudié"
+          },
+          "study_review_weekly": {
+            "title": "Révision hebdo",
+            "desc": "Bloc hebdomadaire de révision"
+          },
+          "reading_pages_daily": {
+            "title": "Lire chaque jour",
+            "desc": "Environ 20 pages par jour"
+          },
+          "reading_finish_book": {
+            "title": "Finir un livre/semaine",
+            "desc": "Temps de lecture pour un livre"
+          },
+          "reading_technical": {
+            "title": "Lecture technique",
+            "desc": "Livre de spécialité, lent et concentré"
+          },
+          "reading_audiobook": {
+            "title": "Audiolivre quotidien",
+            "desc": "Écouter en transport ou en pause"
+          },
+          "reading_journaling": {
+            "title": "Journal de lecture",
+            "desc": "Noter les idées après lecture"
+          },
+          "spirituality_prayer": {
+            "title": "Prière quotidienne",
+            "desc": "Temps dédié à la prière"
+          },
+          "spirituality_bible": {
+            "title": "Lecture biblique",
+            "desc": "Un passage par jour"
+          },
+          "spirituality_meditation": {
+            "title": "Méditation spirituelle",
+            "desc": "Silence et contemplation"
+          },
+          "spirituality_gratitude": {
+            "title": "Gratitude quotidienne",
+            "desc": "Listez vos motifs de gratitude"
+          },
+          "spirituality_silence": {
+            "title": "Silence sacré",
+            "desc": "Pause silencieuse sans écran"
+          },
+          "classes_one_per_day": {
+            "title": "1 cours par jour",
+            "desc": "Regarder un cours entier par jour"
+          },
+          "classes_marathon": {
+            "title": "Marathon hebdo",
+            "desc": "Bloc hebdo pour avancer"
+          },
+          "classes_rewatch_notes": {
+            "title": "Revoir + notes",
+            "desc": "Révision avec prise de notes"
+          },
+          "classes_course": {
+            "title": "Progresser dans le cours",
+            "desc": "Petit progrès quotidien"
+          },
+          "language_vocabulary": {
+            "title": "Vocabulaire",
+            "desc": "Apprendre et revoir des mots"
+          },
+          "language_conversation": {
+            "title": "Conversation",
+            "desc": "Parler ou faire du shadowing"
+          },
+          "language_immersion": {
+            "title": "Immersion quotidienne",
+            "desc": "Film, podcast ou lecture"
+          },
+          "language_grammar": {
+            "title": "Grammaire",
+            "desc": "Règles et exercices"
+          },
+          "work_deep_work": {
+            "title": "Travail profond",
+            "desc": "Bloc sans interruption"
+          },
+          "work_side_project": {
+            "title": "Projet perso",
+            "desc": "Avancer sur votre projet"
+          },
+          "work_learning_role": {
+            "title": "Apprendre votre métier",
+            "desc": "Étudier ce que demande le poste"
+          },
+          "work_inbox_zero": {
+            "title": "Inbox zéro",
+            "desc": "Organiser e-mails et messages"
+          },
+          "fitness_workout": {
+            "title": "Entraînement quotidien",
+            "desc": "Sport à la maison ou en salle"
+          },
+          "fitness_stretch": {
+            "title": "Étirements",
+            "desc": "Mobilité et soin du corps"
+          },
+          "fitness_run": {
+            "title": "Course hebdo",
+            "desc": "Cumuler du temps de course"
+          },
+          "creative_writing": {
+            "title": "Écriture quotidienne",
+            "desc": "Écrire chaque jour, même peu"
+          },
+          "creative_music": {
+            "title": "Pratique musicale",
+            "desc": "Jouer ou étudier la musique"
+          },
+          "creative_drawing": {
+            "title": "Dessin quotidien",
+            "desc": "Croquis et pratique du trait"
+          },
+          "mindfulness_meditation": {
+            "title": "Méditation",
+            "desc": "Courte session de pleine conscience"
+          },
+          "mindfulness_breathing": {
+            "title": "Respiration consciente",
+            "desc": "Exercices de respiration"
+          },
+          "mindfulness_pause": {
+            "title": "Pause intentionnelle",
+            "desc": "Une vraie pause dans la journée"
+          }
+        }
+      }
     }
   },
   "explore": {

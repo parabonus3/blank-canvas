@@ -1955,7 +1955,170 @@
       "tooltip_period": "Diária: a meta zera todo dia. Semanal: a meta acumula durante a semana e zera no domingo.",
       "tooltip_target_minutes": "Quantos minutos cada membro precisa registrar no timer da sala para bater a meta no período.",
       "tooltip_duration_days": "Por quantos dias o desafio fica ativo. Deixe em branco para um desafio sem prazo.",
-      "help": "Ajuda"
+      "help": "Ajuda",
+      "templates": {
+        "pick_template": "Escolha um modelo",
+        "customize": "Personalizar (avançado)",
+        "start_blank_cta": "Começar em branco",
+        "categories": {
+          "study": "Estudos",
+          "reading": "Leitura",
+          "spirituality": "Espiritual",
+          "classes": "Aulas",
+          "language": "Idiomas",
+          "work": "Trabalho",
+          "fitness": "Fitness",
+          "creative": "Criativo",
+          "mindfulness": "Mente",
+          "custom": "Em branco"
+        },
+        "items": {
+          "study_pomodoro_daily": {
+            "title": "Pomodoro diário",
+            "desc": "Um ciclo de foco profundo por dia"
+          },
+          "study_exam_prep": {
+            "title": "Preparação para prova",
+            "desc": "Sessão intensa diária até a prova"
+          },
+          "study_flashcards": {
+            "title": "Flashcards diários",
+            "desc": "Revisão espaçada para fixar conteúdo"
+          },
+          "study_summaries": {
+            "title": "Resumos diários",
+            "desc": "Sintetize o que estudou hoje"
+          },
+          "study_review_weekly": {
+            "title": "Revisão semanal",
+            "desc": "Bloco semanal para revisar a matéria"
+          },
+          "reading_pages_daily": {
+            "title": "Ler todos os dias",
+            "desc": "Aproximadamente 20 páginas por dia"
+          },
+          "reading_finish_book": {
+            "title": "Terminar um livro/semana",
+            "desc": "Tempo de leitura para fechar um livro"
+          },
+          "reading_technical": {
+            "title": "Leitura técnica",
+            "desc": "Livro de área, devagar e com atenção"
+          },
+          "reading_audiobook": {
+            "title": "Audiolivro diário",
+            "desc": "Ouvir durante o trajeto ou pausas"
+          },
+          "reading_journaling": {
+            "title": "Diário de leitura",
+            "desc": "Anote insights após a leitura"
+          },
+          "spirituality_prayer": {
+            "title": "Oração diária",
+            "desc": "Tempo dedicado de oração todo dia"
+          },
+          "spirituality_bible": {
+            "title": "Leitura bíblica",
+            "desc": "Um trecho da Bíblia por dia"
+          },
+          "spirituality_meditation": {
+            "title": "Meditação espiritual",
+            "desc": "Silêncio e contemplação diária"
+          },
+          "spirituality_gratitude": {
+            "title": "Gratidão diária",
+            "desc": "Liste motivos de gratidão"
+          },
+          "spirituality_silence": {
+            "title": "Silêncio sagrado",
+            "desc": "Pausa de silêncio sem tela"
+          },
+          "classes_one_per_day": {
+            "title": "1 aula por dia",
+            "desc": "Assista uma aula completa por dia"
+          },
+          "classes_marathon": {
+            "title": "Maratona semanal",
+            "desc": "Bloco semanal para avançar no curso"
+          },
+          "classes_rewatch_notes": {
+            "title": "Reassistir + anotar",
+            "desc": "Revisão com anotações da aula"
+          },
+          "classes_course": {
+            "title": "Avançar no curso",
+            "desc": "Pequeno progresso diário no curso"
+          },
+          "language_vocabulary": {
+            "title": "Vocabulário",
+            "desc": "Aprender e revisar palavras novas"
+          },
+          "language_conversation": {
+            "title": "Conversação",
+            "desc": "Praticar fala ou shadowing"
+          },
+          "language_immersion": {
+            "title": "Imersão diária",
+            "desc": "Filme, podcast ou leitura no idioma"
+          },
+          "language_grammar": {
+            "title": "Gramática",
+            "desc": "Estudar regras e fazer exercícios"
+          },
+          "work_deep_work": {
+            "title": "Trabalho profundo",
+            "desc": "Bloco diário sem interrupções"
+          },
+          "work_side_project": {
+            "title": "Projeto paralelo",
+            "desc": "Progredir no seu projeto pessoal"
+          },
+          "work_learning_role": {
+            "title": "Aprender da função",
+            "desc": "Estudar o que sua função pede"
+          },
+          "work_inbox_zero": {
+            "title": "Inbox zero",
+            "desc": "Organizar e-mails e mensagens"
+          },
+          "fitness_workout": {
+            "title": "Treino diário",
+            "desc": "Exercício físico em casa ou academia"
+          },
+          "fitness_stretch": {
+            "title": "Alongamento",
+            "desc": "Mobilidade e cuidado com o corpo"
+          },
+          "fitness_run": {
+            "title": "Corrida semanal",
+            "desc": "Acumular tempo de corrida na semana"
+          },
+          "creative_writing": {
+            "title": "Escrita diária",
+            "desc": "Escreva todo dia, mesmo que pouco"
+          },
+          "creative_music": {
+            "title": "Prática musical",
+            "desc": "Tocar ou estudar música"
+          },
+          "creative_drawing": {
+            "title": "Desenho diário",
+            "desc": "Esboços e prática de traço"
+          },
+          "mindfulness_meditation": {
+            "title": "Meditação",
+            "desc": "Sessão curta de mindfulness"
+          },
+          "mindfulness_breathing": {
+            "title": "Respiração consciente",
+            "desc": "Exercícios de respiração"
+          },
+          "mindfulness_pause": {
+            "title": "Pausa intencional",
+            "desc": "Uma pausa real do dia"
+          }
+        }
+      }
     }
   },
   "explore": {
