@@ -25,6 +25,33 @@ function isStandalone(): boolean {
   );
 }
 
+async function upsertSubscription(
+  userId: string,
+  sub: PushSubscription,
+  lang: string,
+): Promise<void> {
+  const json = sub.toJSON();
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const { error } = await supabase.from("push_subscriptions").upsert(
+    {
+      user_id: userId,
+      endpoint: sub.endpoint,
+      p256dh: json.keys?.p256dh ?? "",
+      auth: json.keys?.auth ?? "",
+      user_agent: navigator.userAgent,
+      lang,
+      timezone: tz,
+      last_seen_at: new Date().toISOString(),
+      failure_count: 0,
+    },
+    { onConflict: "endpoint" },
+  );
+  if (error) {
+    console.error("[push] upsert failed", error);
+    throw new Error(error.message || "Failed to save subscription");
+  }
+}
+
 export function usePushSubscription() {
   const { user } = useAuth();
   const { i18n } = useTranslation();
@@ -34,7 +61,6 @@ export function usePushSubscription() {
   const refresh = useCallback(async () => {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      // iOS Safari hides PushManager when not installed
       if (isIOS() && !isStandalone()) {
         setStatus("needs-install");
       } else {
@@ -49,13 +75,37 @@ export function usePushSubscription() {
     try {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
-      if (sub) setStatus("subscribed");
-      else if (Notification.permission === "granted") setStatus("granted-not-subscribed");
-      else setStatus("default");
-    } catch {
+      if (sub) {
+        setStatus("subscribed");
+        // Reconcile: if the browser still has a subscription but the DB row is
+        // missing (e.g. from the era when GRANTs were missing), re-upsert it
+        // silently so future scheduled pushes can find this device.
+        if (user) {
+          try {
+            const { data } = await supabase
+              .from("push_subscriptions")
+              .select("id")
+              .eq("endpoint", sub.endpoint)
+              .maybeSingle();
+            if (!data) {
+              const lang = (i18n.language || "en-US").slice(0, 5);
+              await upsertSubscription(user.id, sub, lang);
+              console.info("[push] reconciled missing subscription row");
+            }
+          } catch (e) {
+            console.warn("[push] reconcile check failed", e);
+          }
+        }
+      } else if (Notification.permission === "granted") {
+        setStatus("granted-not-subscribed");
+      } else {
+        setStatus("default");
+      }
+    } catch (e) {
+      console.warn("[push] refresh error", e);
       setStatus("default");
     }
-  }, []);
+  }, [user, i18n.language]);
 
   useEffect(() => {
     void refresh();
@@ -67,39 +117,28 @@ export function usePushSubscription() {
     try {
       if (isIOS() && !isStandalone()) {
         setStatus("needs-install");
-        return;
+        throw new Error("ios-install-required");
       }
       const perm = await Notification.requestPermission();
       if (perm !== "granted") {
         setStatus(perm === "denied" ? "denied" : "default");
-        return;
+        throw new Error(perm === "denied" ? "permission-denied" : "permission-dismissed");
       }
       const reg = await navigator.serviceWorker.ready;
       let sub = await reg.pushManager.getSubscription();
       if (!sub) {
-        sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY).buffer as ArrayBuffer,
-        });
+        try {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY).buffer as ArrayBuffer,
+          });
+        } catch (e: any) {
+          console.error("[push] pushManager.subscribe failed", e);
+          throw new Error(e?.message || "push-subscribe-failed");
+        }
       }
-      const json = sub.toJSON();
       const lang = (i18n.language || "en-US").slice(0, 5);
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const { error } = await supabase.from("push_subscriptions").upsert(
-        {
-          user_id: user.id,
-          endpoint: sub.endpoint,
-          p256dh: json.keys?.p256dh ?? "",
-          auth: json.keys?.auth ?? "",
-          user_agent: navigator.userAgent,
-          lang,
-          timezone: tz,
-          last_seen_at: new Date().toISOString(),
-          failure_count: 0,
-        },
-        { onConflict: "endpoint" },
-      );
-      if (error) throw error;
+      await upsertSubscription(user.id, sub, lang);
       setStatus("subscribed");
     } finally {
       setLoading(false);
@@ -128,5 +167,54 @@ export function usePushSubscription() {
     if (error) throw error;
   }, []);
 
-  return { status, loading, subscribe, unsubscribe, refresh, sendTest, isIOSNotInstalled: isIOS() && !isStandalone() };
+  const runDiagnostics = useCallback(async () => {
+    const result = {
+      permission: typeof Notification !== "undefined" ? Notification.permission : "unsupported",
+      serviceWorker: false as boolean | string,
+      pushSubscription: null as string | null,
+      dbRow: false,
+      lastSent: null as string | null,
+    };
+    try {
+      if ("serviceWorker" in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration();
+        result.serviceWorker = reg ? reg.scope : false;
+        if (reg) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            result.pushSubscription = sub.endpoint.slice(0, 60) + "…";
+            const { data } = await supabase
+              .from("push_subscriptions")
+              .select("id")
+              .eq("endpoint", sub.endpoint)
+              .maybeSingle();
+            result.dbRow = !!data;
+          }
+        }
+      }
+      if (user) {
+        const { data } = await supabase
+          .from("notification_log")
+          .select("sent_at")
+          .eq("user_id", user.id)
+          .order("sent_at", { ascending: false })
+          .limit(1);
+        result.lastSent = data?.[0]?.sent_at ?? null;
+      }
+    } catch (e) {
+      console.warn("[push] diagnostics error", e);
+    }
+    return result;
+  }, [user]);
+
+  return {
+    status,
+    loading,
+    subscribe,
+    unsubscribe,
+    refresh,
+    sendTest,
+    runDiagnostics,
+    isIOSNotInstalled: isIOS() && !isStandalone(),
+  };
 }
