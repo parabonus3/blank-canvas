@@ -2,12 +2,14 @@ import { useTranslation } from "react-i18next";
 import { Target } from "lucide-react";
 import { useAnnualGoals, useLifeCategories } from "@/hooks/useAnnualGoals";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 interface ActiveGoalsStripProps {
   variant?: "default" | "fullscreen";
   className?: string;
 }
+
 
 /**
  * Discreet horizontal strip showing in-progress annual goals (excludes completed).
