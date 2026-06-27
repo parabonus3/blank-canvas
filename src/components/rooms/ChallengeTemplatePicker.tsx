@@ -22,30 +22,29 @@ export function ChallengeTemplatePicker({ selectedId, onSelect, onPickBlank }: P
 
   return (
     <div className="space-y-3">
-      <div className="-mx-1 overflow-x-auto pb-1">
-        <div className="flex gap-1.5 px-1 snap-x snap-mandatory">
-          {CHALLENGE_CATEGORIES.map((c) => {
-            const Icon = c.icon;
-            const active = cat === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setCat(c.id)}
-                className={cn(
-                  "snap-start shrink-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                  active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background hover:bg-muted text-foreground",
-                )}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {t(`rooms.challenges.templates.categories.${c.id}`)}
-              </button>
-            );
-          })}
-        </div>
+      <div className="flex flex-wrap gap-1.5">
+        {CHALLENGE_CATEGORIES.map((c) => {
+          const Icon = c.icon;
+          const active = cat === c.id;
+          return (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setCat(c.id)}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                active
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-background hover:bg-muted text-foreground",
+              )}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {t(`rooms.challenges.templates.categories.${c.id}`)}
+            </button>
+          );
+        })}
       </div>
+
 
       {cat === "custom" ? (
         <button
