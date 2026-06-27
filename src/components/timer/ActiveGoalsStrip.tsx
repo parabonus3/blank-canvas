@@ -19,6 +19,7 @@ export function ActiveGoalsStrip({ variant = "default", className }: ActiveGoals
   const { t } = useTranslation();
   const { data: goals = [] } = useAnnualGoals();
   const { data: categories = [] } = useLifeCategories();
+  const isMobile = useIsMobile();
 
   // Only show goals not yet completed and with progress < 100
   const active = goals.filter((g) => {
@@ -28,9 +29,10 @@ export function ActiveGoalsStrip({ variant = "default", className }: ActiveGoals
   });
   if (active.length === 0) return null;
 
-  const visible = active.slice(0, 3);
-  const extra = active.slice(3);
   const isFs = variant === "fullscreen";
+  const visibleCount = isFs ? 3 : isMobile ? 1 : 3;
+  const visible = active.slice(0, visibleCount);
+  const extra = active.slice(visibleCount);
 
   const colorFor = (catId: string | null) =>
     (catId && categories.find((c) => c.id === catId)?.color) || "hsl(var(--primary))";
@@ -41,8 +43,8 @@ export function ActiveGoalsStrip({ variant = "default", className }: ActiveGoals
     return (
       <div
         className={cn(
-          "flex items-center gap-2 rounded-full border bg-muted/40 px-2.5 py-1 snap-start shrink-0",
-          isFs ? "text-[11px]" : "text-xs"
+          "flex items-center gap-2 rounded-full border bg-muted/40 px-2.5 py-1 shrink-0",
+          isFs ? "text-[11px] snap-start" : "text-xs",
         )}
         title={`${g.title} • ${pct}%`}
       >
@@ -51,7 +53,7 @@ export function ActiveGoalsStrip({ variant = "default", className }: ActiveGoals
           style={{ backgroundColor: color }}
           aria-hidden
         />
-        <span className="truncate max-w-[120px] text-foreground/80">{g.title}</span>
+        <span className="truncate max-w-[100px] sm:max-w-[160px] text-foreground/80">{g.title}</span>
         <div className="w-12 h-1 rounded-full bg-foreground/10 overflow-hidden">
           <div
             className="h-full rounded-full transition-all"
@@ -66,9 +68,9 @@ export function ActiveGoalsStrip({ variant = "default", className }: ActiveGoals
   return (
     <div
       className={cn(
-        "flex items-center gap-2 overflow-x-auto snap-x scrollbar-none",
-        isFs ? "max-w-[92vw]" : "w-full",
-        className
+        "flex items-center gap-2",
+        isFs ? "overflow-x-auto snap-x scrollbar-none max-w-[92vw]" : "flex-wrap w-full",
+        className,
       )}
     >
       <Target
