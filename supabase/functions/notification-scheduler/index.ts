@@ -156,16 +156,32 @@ async function processReEngagement(users: { user_id: string; tz: string }[]) {
   }
 }
 
+async function cleanupDeadSubscriptions(): Promise<number> {
+  const cutoff = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
+  const { data, error } = await admin
+    .from("push_subscriptions")
+    .delete()
+    .gte("failure_count", 5)
+    .lt("last_error_at", cutoff)
+    .select("id");
+  if (error) {
+    console.warn("[cleanup] failed", error.message);
+    return 0;
+  }
+  return data?.length ?? 0;
+}
+
 Deno.serve(async (_req) => {
   try {
     const users = await eligibleUsers();
-    await Promise.all([
+    const [, , , , cleaned] = await Promise.all([
       processRoomGoalReminders(users),
       processStreakRisk(users),
       processChallengeDeadlines(users),
       processReEngagement(users),
+      cleanupDeadSubscriptions(),
     ]);
-    return new Response(JSON.stringify({ ok: true, users: users.length }), {
+    return new Response(JSON.stringify({ ok: true, users: users.length, cleaned }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err: any) {
