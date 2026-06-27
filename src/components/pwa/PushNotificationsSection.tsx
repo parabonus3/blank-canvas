@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, BellOff, BellRing, Smartphone } from "lucide-react";
+import { Bell, BellOff, BellRing, Smartphone, Stethoscope, CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -37,12 +37,24 @@ const DEFAULTS: Prefs = {
   max_per_day: 3,
 };
 
+type Diag = Awaited<ReturnType<ReturnType<typeof usePushSubscription>["runDiagnostics"]>>;
+
+function explainError(msg: string, t: (k: string) => string): string {
+  if (msg.includes("ios-install-required")) return t("push.ios_install_required");
+  if (msg.includes("permission-denied")) return t("push.denied");
+  if (msg.includes("permission-dismissed")) return t("push.permission_dismissed") || "Permissão não concedida.";
+  if (msg.includes("push-subscribe-failed")) return t("push.subscribe_failed") || "Falha ao registrar no navegador.";
+  return msg;
+}
+
 export function PushNotificationsSection() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { status, loading, subscribe, unsubscribe, sendTest } = usePushSubscription();
+  const { status, loading, subscribe, unsubscribe, sendTest, runDiagnostics } = usePushSubscription();
   const [prefs, setPrefs] = useState<Prefs>(DEFAULTS);
   const [savingTest, setSavingTest] = useState(false);
+  const [diag, setDiag] = useState<Diag | null>(null);
+  const [showDiag, setShowDiag] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -60,7 +72,27 @@ export function PushNotificationsSection() {
     if (!user) return;
     const next = { ...prefs, ...patch };
     setPrefs(next);
-    await supabase.from("notification_preferences").upsert({ user_id: user.id, ...next });
+    const { error } = await supabase
+      .from("notification_preferences")
+      .upsert({ user_id: user.id, ...next });
+    if (error) toast.error(error.message);
+  };
+
+  const handleSubscribe = async () => {
+    try {
+      await subscribe();
+      toast.success(t("push.enabled_ok") || "Notificações ativadas!");
+    } catch (e: any) {
+      toast.error(explainError(String(e?.message ?? e), t));
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    try {
+      await unsubscribe();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Error");
+    }
   };
 
   const handleTest = async () => {
@@ -73,6 +105,12 @@ export function PushNotificationsSection() {
     } finally {
       setSavingTest(false);
     }
+  };
+
+  const handleDiag = async () => {
+    setShowDiag(true);
+    const r = await runDiagnostics();
+    setDiag(r);
   };
 
   const subscribed = status === "subscribed";
@@ -102,14 +140,14 @@ export function PushNotificationsSection() {
 
         <div className="flex flex-wrap items-center gap-2">
           {!subscribed && status !== "needs-install" && status !== "unsupported" && status !== "denied" && (
-            <Button onClick={subscribe} disabled={loading} className="gap-2">
+            <Button onClick={handleSubscribe} disabled={loading} className="gap-2">
               <Bell className="h-4 w-4" />
               {t("push.enable")}
             </Button>
           )}
           {subscribed && (
             <>
-              <Button variant="outline" onClick={unsubscribe} disabled={loading} className="gap-2">
+              <Button variant="outline" onClick={handleUnsubscribe} disabled={loading} className="gap-2">
                 <BellOff className="h-4 w-4" />
                 {t("push.disable")}
               </Button>
@@ -119,7 +157,38 @@ export function PushNotificationsSection() {
               </Button>
             </>
           )}
+          <Button variant="ghost" size="sm" onClick={handleDiag} className="gap-2">
+            <Stethoscope className="h-4 w-4" />
+            {t("push.diagnostics") || "Diagnóstico"}
+          </Button>
         </div>
+
+        {showDiag && (
+          <div className="rounded-md border p-3 space-y-1.5 text-xs bg-muted/30">
+            <DiagRow label="Permissão" value={diag?.permission ?? "…"} ok={diag?.permission === "granted"} />
+            <DiagRow
+              label="Service Worker"
+              value={diag ? (diag.serviceWorker ? `OK (${diag.serviceWorker})` : "não registrado") : "…"}
+              ok={!!diag?.serviceWorker}
+            />
+            <DiagRow
+              label="Inscrição no navegador"
+              value={diag ? (diag.pushSubscription ?? "nenhuma") : "…"}
+              ok={!!diag?.pushSubscription}
+            />
+            <DiagRow
+              label="Inscrição salva no servidor"
+              value={diag ? (diag.dbRow ? "sim" : "NÃO — recarregue a página") : "…"}
+              ok={!!diag?.dbRow}
+            />
+            <DiagRow
+              label="Última notificação enviada"
+              value={diag?.lastSent ? new Date(diag.lastSent).toLocaleString() : "nenhuma ainda"}
+              ok={!!diag?.lastSent}
+              neutral={!diag?.lastSent}
+            />
+          </div>
+        )}
 
         {subscribed && (
           <>
@@ -182,5 +251,31 @@ export function PushNotificationsSection() {
         )}
       </CardContent>
     </Card>
+  );
+}
+
+function DiagRow({
+  label,
+  value,
+  ok,
+  neutral,
+}: {
+  label: string;
+  value: string;
+  ok: boolean;
+  neutral?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="flex items-center gap-1 font-mono">
+        {!neutral && (ok ? (
+          <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+        ) : (
+          <XCircle className="h-3.5 w-3.5 text-destructive" />
+        ))}
+        <span className={!neutral && !ok ? "text-destructive" : ""}>{value}</span>
+      </span>
+    </div>
   );
 }
