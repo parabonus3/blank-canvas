@@ -429,7 +429,10 @@
     "delete_folder_cascade_desc": "Folder dan SEMUA catatan di dalamnya akan dihapus secara permanen.",
     "delete_folder_warning": "Semua catatan di folder ini akan dihapus secara permanen.",
     "enter_password_to_delete": "Masukkan kata sandi folder untuk mengonfirmasi",
-    "download_pdf": "Unduh sebagai PDF"
+    "download_pdf": "Unduh sebagai PDF",
+    "pdf": {
+      "empty": "Catatan ini kosong."
+    }
   },
   "settings": {
     "title": "Pengaturan",
@@ -2194,6 +2197,11 @@
       "friends": "Aktivitas teman",
       "mentions": "Sebutan",
       "reengage": "Kami rindu kamu"
+    },
+    "diagnostics": "Diagnostik",
+    "errors": {
+      "unreachable": "Server notifikasi tidak tersedia. Coba lagi sebentar lagi.",
+      "not_configured": "Notifikasi push belum dikonfigurasi di lingkungan ini."
     }
   }
 }

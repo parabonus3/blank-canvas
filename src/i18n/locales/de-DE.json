@@ -429,7 +429,10 @@
     "delete_folder_cascade_desc": "Der Ordner und ALLE Notizen darin werden dauerhaft gelöscht.",
     "delete_folder_warning": "Alle Notizen in diesem Ordner werden dauerhaft gelöscht.",
     "enter_password_to_delete": "Geben Sie das Ordnerpasswort ein, um zu bestätigen",
-    "download_pdf": "Als PDF herunterladen"
+    "download_pdf": "Als PDF herunterladen",
+    "pdf": {
+      "empty": "Diese Notiz ist leer."
+    }
   },
   "settings": {
     "title": "Einstellungen",
@@ -2194,6 +2197,11 @@
       "friends": "Freundesaktivität",
       "mentions": "Erwähnungen",
       "reengage": "Wir vermissen dich"
+    },
+    "diagnostics": "Diagnose",
+    "errors": {
+      "unreachable": "Benachrichtigungsserver nicht erreichbar. Bitte versuche es gleich erneut.",
+      "not_configured": "Push-Benachrichtigungen sind in dieser Umgebung noch nicht konfiguriert."
     }
   }
 }

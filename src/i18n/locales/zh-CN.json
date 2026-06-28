@@ -429,7 +429,10 @@
     "delete_folder_cascade_desc": "文件夹及其中的所有笔记将被永久删除。",
     "delete_folder_warning": "此文件夹中的所有笔记将被永久删除。",
     "enter_password_to_delete": "输入文件夹密码以确认删除",
-    "download_pdf": "下载为 PDF"
+    "download_pdf": "下载为 PDF",
+    "pdf": {
+      "empty": "此笔记为空。"
+    }
   },
   "settings": {
     "title": "设置",
@@ -2194,6 +2197,11 @@
       "friends": "好友动态",
       "mentions": "提及",
       "reengage": "想你了"
+    },
+    "diagnostics": "诊断",
+    "errors": {
+      "unreachable": "通知服务器不可用，请稍后重试。",
+      "not_configured": "此环境尚未配置推送通知。"
     }
   }
 }

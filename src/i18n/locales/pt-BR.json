@@ -1100,7 +1100,10 @@
     "delete_folder_cascade_desc": "Isso excluirá permanentemente a pasta E todas as anotações dentro dela. Esta ação não pode ser desfeita.",
     "delete_folder_warning": "Todas as anotações nesta pasta serão excluídas permanentemente. Isso não pode ser revertido.",
     "enter_password_to_delete": "Digite a senha da pasta para confirmar a exclusão",
-    "download_pdf": "Baixar em PDF"
+    "download_pdf": "Baixar em PDF",
+    "pdf": {
+      "empty": "Esta anotação está vazia."
+    }
   },
   "settings": {
     "title": "Configurações",
@@ -2344,6 +2347,11 @@
       "friends": "Atividade de amigos",
       "mentions": "Menções no chat",
       "reengage": "Sentimos sua falta"
+    },
+    "diagnostics": "Diagnóstico",
+    "errors": {
+      "unreachable": "Servidor de notificações indisponível. Tente novamente em instantes.",
+      "not_configured": "As notificações push ainda não foram configuradas neste ambiente."
     }
   }
 }
