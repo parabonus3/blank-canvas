@@ -118,6 +118,11 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
     }
   }
 
+  if (!initWebPush()) {
+    console.error("[send-push] VAPID keys missing - cannot send");
+    return { sent: 0, skipped: "not-configured" };
+  }
+
   let sent = 0;
   for (const s of subs) {
     const lang = s.lang || "en-US";
