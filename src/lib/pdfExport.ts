@@ -404,6 +404,7 @@ export interface NotePDFData {
     folder: string;
     createdOn: string;
     updatedOn: string;
+    empty?: string;         // e.g. "Esta anotação está vazia."
     footer: string;         // e.g. "TimeZoni · Gerado em ..."
     pageOf: (page: number, total: number) => string;
   };
