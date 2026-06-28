@@ -521,61 +521,167 @@ function parseMarkdown(md: string): ParsedBlock[] {
   return blocks;
 }
 
+// Brand palette — professional navy blue (Timezoni)
+const NOTE_COLORS = {
+  navy:    [11, 30, 63] as [number, number, number],     // #0B1E3F header
+  accent:  [30, 64, 175] as [number, number, number],    // #1E40AF details
+  ink:     [15, 23, 42] as [number, number, number],     // #0F172A body text
+  muted:   [100, 116, 139] as [number, number, number],  // #64748B meta
+  surface: [248, 250, 252] as [number, number, number],  // #F8FAFC cards/code
+  border:  [226, 232, 240] as [number, number, number],  // #E2E8F0
+  white:   [255, 255, 255] as [number, number, number],
+};
+
+function noteDrawHeader(pdf: jsPDF, pageWidth: number, docTitle: string, noteTitle: string, compact = false) {
+  const h = compact ? 14 : 26;
+  pdf.setFillColor(...NOTE_COLORS.navy);
+  pdf.rect(0, 0, pageWidth, h, 'F');
+  // accent hairline
+  pdf.setFillColor(...NOTE_COLORS.accent);
+  pdf.rect(0, h, pageWidth, 0.8, 'F');
+
+  pdf.setTextColor(...NOTE_COLORS.white);
+  if (compact) {
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(10);
+    pdf.text('TimeZoni', 16, 9);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(8.5);
+    const truncated = noteTitle.length > 60 ? noteTitle.slice(0, 57) + '…' : noteTitle;
+    pdf.text(truncated, pageWidth - 16, 9, { align: 'right' });
+  } else {
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(16);
+    pdf.text('TimeZoni', 16, 12);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    pdf.setTextColor(220, 230, 245);
+    pdf.text(docTitle, 16, 20);
+  }
+}
+
+function noteDrawFooter(pdf: jsPDF, pageWidth: number, pageHeight: number, footerText: string, pageLabel: string) {
+  const y = pageHeight - 10;
+  pdf.setDrawColor(...NOTE_COLORS.border);
+  pdf.setLineWidth(0.3);
+  pdf.line(18, y - 5, pageWidth - 18, y - 5);
+  pdf.setFontSize(7.5);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setTextColor(...NOTE_COLORS.muted);
+  pdf.text(footerText, 18, y);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setTextColor(...NOTE_COLORS.accent);
+  pdf.text(pageLabel, pageWidth - 18, y, { align: 'right' });
+}
+
+function drawMetaPill(
+  pdf: jsPDF,
+  x: number,
+  y: number,
+  label: string,
+  value: string,
+): number {
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(7);
+  const labelW = pdf.getTextWidth(label.toUpperCase());
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(9);
+  const valueW = pdf.getTextWidth(value);
+  const padX = 4;
+  const gap = 4;
+  const w = labelW + gap + valueW + padX * 2;
+  const h = 8;
+
+  pdf.setFillColor(...NOTE_COLORS.surface);
+  pdf.setDrawColor(...NOTE_COLORS.border);
+  pdf.setLineWidth(0.3);
+  pdf.roundedRect(x, y, w, h, 1.5, 1.5, 'FD');
+
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(7);
+  pdf.setTextColor(...NOTE_COLORS.accent);
+  pdf.text(label.toUpperCase(), x + padX, y + 5.2);
+
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(9);
+  pdf.setTextColor(...NOTE_COLORS.ink);
+  pdf.text(value, x + padX + labelW + gap, y + 5.4);
+
+  return w;
+}
+
 export async function exportNoteToPDF(data: NotePDFData): Promise<void> {
   const pdf = new jsPDF('p', 'mm', 'a4');
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  const marginX = 18;
+  const marginX = 20;
   const contentW = pageWidth - marginX * 2;
   const bottomLimit = pageHeight - 16;
+  const noteTitle = (data.title || '—').normalize('NFC');
+  const content = (data.content || '').normalize('NFC');
 
-  drawHeader(pdf, pageWidth, data.i18n.docTitle);
+  noteDrawHeader(pdf, pageWidth, data.i18n.docTitle, noteTitle, false);
 
-  let y = 48;
+  let y = 38;
 
   // Title
-  pdf.setTextColor(...COLORS.black);
+  pdf.setTextColor(...NOTE_COLORS.ink);
   pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(20);
-  const titleLines = pdf.splitTextToSize(data.title || '—', contentW);
-  pdf.text(titleLines, marginX, y);
-  y += titleLines.length * 8 + 2;
+  pdf.setFontSize(22);
+  const titleLines = pdf.splitTextToSize(noteTitle, contentW);
+  for (const line of titleLines) {
+    pdf.text(line, marginX, y);
+    y += 8.5;
+  }
+  y += 2;
 
-  // Meta line
-  const metaParts: string[] = [];
-  if (data.projectName) metaParts.push(`${data.i18n.project}: ${data.projectName}`);
-  if (data.folderName) metaParts.push(`${data.i18n.folder}: ${data.folderName}`);
-  metaParts.push(`${data.i18n.createdOn} ${data.createdAt}`);
-  if (data.updatedAt) metaParts.push(`${data.i18n.updatedOn} ${data.updatedAt}`);
+  // Meta pills row (wrap if needed)
+  const pills: Array<[string, string]> = [];
+  if (data.projectName) pills.push([data.i18n.project, data.projectName]);
+  if (data.folderName) pills.push([data.i18n.folder, data.folderName]);
+  pills.push([data.i18n.createdOn.replace(/[:\s]+$/, ''), data.createdAt]);
+  if (data.updatedAt) pills.push([data.i18n.updatedOn.replace(/[:\s]+$/, ''), data.updatedAt]);
 
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(9);
-  pdf.setTextColor(...COLORS.gray600);
-  const metaLines = pdf.splitTextToSize(metaParts.join('  ·  '), contentW);
-  pdf.text(metaLines, marginX, y);
-  y += metaLines.length * 4.5 + 4;
+  let px = marginX;
+  for (const [label, value] of pills) {
+    const w = drawMetaPill(pdf, px, y, label, value);
+    if (px + w > pageWidth - marginX) {
+      // wrap to next line
+      y += 10;
+      px = marginX;
+      drawMetaPill(pdf, px, y, label, value);
+      px += w + 4;
+    } else {
+      px += w + 4;
+    }
+  }
+  y += 12;
 
-  // Divider
-  pdf.setDrawColor(...COLORS.primary);
-  pdf.setLineWidth(0.6);
-  pdf.line(marginX, y, marginX + 28, y);
-  y += 6;
+  // Accent divider
+  pdf.setDrawColor(...NOTE_COLORS.border);
+  pdf.setLineWidth(0.3);
+  pdf.line(marginX, y, pageWidth - marginX, y);
+  pdf.setDrawColor(...NOTE_COLORS.accent);
+  pdf.setLineWidth(0.9);
+  pdf.line(marginX, y, marginX + 36, y);
+  y += 7;
 
   const ensureSpace = (need: number) => {
     if (y + need > bottomLimit) {
       pdf.addPage();
-      drawHeader(pdf, pageWidth, data.i18n.docTitle);
-      y = 48;
+      noteDrawHeader(pdf, pageWidth, data.i18n.docTitle, noteTitle, true);
+      y = 22;
     }
   };
 
-  const writeText = (text: string, opts: { size: number; bold?: boolean; color?: [number, number, number]; indent?: number; lineGap?: number }) => {
-    pdf.setFont('helvetica', opts.bold ? 'bold' : 'normal');
+  const writeText = (text: string, opts: { size: number; bold?: boolean; italic?: boolean; color?: [number, number, number]; indent?: number; lineGap?: number }) => {
+    const style = opts.bold && opts.italic ? 'bolditalic' : opts.bold ? 'bold' : opts.italic ? 'italic' : 'normal';
+    pdf.setFont('helvetica', style);
     pdf.setFontSize(opts.size);
-    pdf.setTextColor(...(opts.color || COLORS.black));
+    pdf.setTextColor(...(opts.color || NOTE_COLORS.ink));
     const indent = opts.indent || 0;
     const wrapped = pdf.splitTextToSize(text, contentW - indent);
-    const lineH = opts.size * 0.45 + (opts.lineGap || 0);
+    const lineH = opts.size * 0.5 + (opts.lineGap || 0);
     for (const line of wrapped) {
       ensureSpace(lineH);
       pdf.text(line, marginX + indent, y);
@@ -583,75 +689,80 @@ export async function exportNoteToPDF(data: NotePDFData): Promise<void> {
     }
   };
 
-  const blocks = parseMarkdown(data.content || '');
-  if (blocks.length === 0) {
-    writeText('—', { size: 11, color: COLORS.gray600 });
+  const blocks = parseMarkdown(content);
+  if (blocks.length === 0 || (blocks.length === 1 && blocks[0].type === 'spacer')) {
+    writeText(data.i18n.empty || '—', { size: 10.5, italic: true, color: NOTE_COLORS.muted });
   }
 
   for (const b of blocks) {
     switch (b.type) {
-      case 'h1':
-        ensureSpace(12);
-        y += 2;
-        writeText(b.text!, { size: 16, bold: true, lineGap: 1.5 });
+      case 'h1': {
+        ensureSpace(14);
+        y += 3;
+        // accent left bar
+        const startY = y - 5;
+        pdf.setFillColor(...NOTE_COLORS.accent);
+        pdf.rect(marginX - 2.5, startY, 1.5, 8, 'F');
+        writeText(b.text!, { size: 16, bold: true, color: NOTE_COLORS.accent, lineGap: 1.5 });
         y += 2;
         break;
+      }
       case 'h2':
-        ensureSpace(10);
-        y += 1.5;
-        writeText(b.text!, { size: 13, bold: true, lineGap: 1 });
+        ensureSpace(11);
+        y += 2;
+        writeText(b.text!, { size: 13, bold: true, color: NOTE_COLORS.accent, lineGap: 1 });
         y += 1.5;
         break;
       case 'h3':
-        ensureSpace(8);
-        writeText(b.text!, { size: 11, bold: true, lineGap: 0.5 });
+        ensureSpace(9);
+        y += 1;
+        writeText(b.text!, { size: 11, bold: true, color: NOTE_COLORS.ink, lineGap: 0.5 });
         y += 1;
         break;
       case 'p':
-        writeText(b.text!, { size: 10.5, lineGap: 1 });
-        y += 1.5;
+        writeText(b.text!, { size: 10.5, lineGap: 1.5 });
+        y += 2;
         break;
       case 'ul':
         for (const item of b.items!) {
           ensureSpace(6);
-          pdf.setFont('helvetica', 'bold');
-          pdf.setFontSize(10.5);
-          pdf.setTextColor(...COLORS.primary);
-          pdf.text('•', marginX + 2, y);
-          writeText(item, { size: 10.5, indent: 7, lineGap: 1 });
+          pdf.setFillColor(...NOTE_COLORS.accent);
+          pdf.circle(marginX + 1.5, y - 1.4, 0.9, 'F');
+          writeText(item, { size: 10.5, indent: 6, lineGap: 1.2 });
         }
-        y += 1.5;
+        y += 2;
         break;
       case 'ol':
         b.items!.forEach((item, idx) => {
           ensureSpace(6);
           pdf.setFont('helvetica', 'bold');
           pdf.setFontSize(10.5);
-          pdf.setTextColor(...COLORS.primary);
-          pdf.text(`${idx + 1}.`, marginX + 1, y);
-          writeText(item, { size: 10.5, indent: 8, lineGap: 1 });
+          pdf.setTextColor(...NOTE_COLORS.accent);
+          pdf.text(`${idx + 1}.`, marginX, y);
+          writeText(item, { size: 10.5, indent: 8, lineGap: 1.2 });
         });
-        y += 1.5;
+        y += 2;
         break;
       case 'code': {
         const codeLines = (b.text || '').split('\n');
-        const lineH = 4.5;
+        const lineH = 4.6;
         const boxH = codeLines.length * lineH + 6;
         ensureSpace(boxH);
-        pdf.setFillColor(...COLORS.gray50);
-        pdf.setDrawColor(...COLORS.gray100);
-        pdf.roundedRect(marginX, y - 1, contentW, boxH, 1.5, 1.5, 'FD');
+        pdf.setFillColor(...NOTE_COLORS.surface);
+        pdf.setDrawColor(...NOTE_COLORS.border);
+        pdf.setLineWidth(0.3);
+        pdf.roundedRect(marginX, y - 1, contentW, boxH, 1.8, 1.8, 'FD');
         pdf.setFont('courier', 'normal');
         pdf.setFontSize(9);
-        pdf.setTextColor(...COLORS.black);
+        pdf.setTextColor(...NOTE_COLORS.ink);
         let cy = y + 4;
         for (const line of codeLines) {
           const wrapped = pdf.splitTextToSize(line || ' ', contentW - 6);
           for (const w of wrapped) {
             if (cy + lineH > bottomLimit) {
               pdf.addPage();
-              drawHeader(pdf, pageWidth, data.i18n.docTitle);
-              y = 48;
+              noteDrawHeader(pdf, pageWidth, data.i18n.docTitle, noteTitle, true);
+              y = 22;
               cy = y + 4;
             }
             pdf.text(w, marginX + 3, cy);
@@ -662,27 +773,28 @@ export async function exportNoteToPDF(data: NotePDFData): Promise<void> {
         break;
       }
       case 'quote': {
-        const wrapped = pdf.splitTextToSize(b.text || '', contentW - 8);
-        const blockH = wrapped.length * 5 + 4;
+        const wrapped = pdf.splitTextToSize(b.text || '', contentW - 10);
+        const blockH = wrapped.length * 5.2 + 6;
         ensureSpace(blockH);
-        pdf.setDrawColor(...COLORS.primary);
-        pdf.setLineWidth(1.5);
-        pdf.line(marginX, y - 2, marginX, y - 2 + blockH);
+        pdf.setFillColor(...NOTE_COLORS.surface);
+        pdf.roundedRect(marginX, y - 2, contentW, blockH, 1.5, 1.5, 'F');
+        pdf.setFillColor(...NOTE_COLORS.accent);
+        pdf.rect(marginX, y - 2, 1.6, blockH, 'F');
         pdf.setFont('helvetica', 'italic');
         pdf.setFontSize(10.5);
-        pdf.setTextColor(...COLORS.gray600);
-        let qy = y + 2;
+        pdf.setTextColor(...NOTE_COLORS.muted);
+        let qy = y + 2.5;
         for (const line of wrapped) {
-          pdf.text(line, marginX + 5, qy);
-          qy += 5;
+          pdf.text(line, marginX + 6, qy);
+          qy += 5.2;
         }
         y = qy + 2;
         break;
       }
       case 'hr':
         ensureSpace(6);
-        pdf.setDrawColor(...COLORS.gray100);
-        pdf.setLineWidth(0.4);
+        pdf.setDrawColor(...NOTE_COLORS.border);
+        pdf.setLineWidth(0.3);
         pdf.line(marginX, y, pageWidth - marginX, y);
         y += 5;
         break;
@@ -695,7 +807,7 @@ export async function exportNoteToPDF(data: NotePDFData): Promise<void> {
   const totalPages = pdf.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     pdf.setPage(i);
-    drawFooter(pdf, pageWidth, pageHeight, i, totalPages, data.i18n.footer, data.i18n.pageOf(i, totalPages));
+    noteDrawFooter(pdf, pageWidth, pageHeight, data.i18n.footer, data.i18n.pageOf(i, totalPages));
   }
 
   const safeTitle = (data.title || 'note').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'note';
