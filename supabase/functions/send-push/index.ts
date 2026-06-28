@@ -176,6 +176,12 @@ Deno.serve(async (req) => {
       url: body.url || "/",
       bypassPrefs: body.kind === "test",
     });
+    if (result.skipped === "not-configured") {
+      return new Response(
+        JSON.stringify({ error: "push-not-configured", ...result }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
