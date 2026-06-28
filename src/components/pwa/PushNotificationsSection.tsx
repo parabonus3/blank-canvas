@@ -103,7 +103,11 @@ export function PushNotificationsSection() {
       await sendTest();
       toast.success(t("push.test_sent"));
     } catch (e: any) {
-      toast.error(e?.message ?? "Error");
+      toast.error(explainError(String(e?.message ?? e), t));
+      // Auto-open diagnostics so user can see what failed
+      setShowDiag(true);
+      const r = await runDiagnostics();
+      setDiag(r);
     } finally {
       setSavingTest(false);
     }
