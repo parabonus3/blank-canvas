@@ -1,62 +1,50 @@
-## Diagnóstico (o que descobri investigando)
+## Problema
 
-Investiguei a infraestrutura de push de ponta a ponta e o problema **é nosso, não dos usuários**:
+A seção "Missões de Defensiva" aparece de forma intermitente porque o RPC `get_freeze_missions_progress` retorna **HTTP 400** com o erro do Postgres:
 
-1. **`push_subscriptions` tem ZERO linhas no banco.** Nenhum usuário, em nenhum dispositivo, conseguiu salvar a inscrição — mesmo aqueles que clicaram em "Ativar" e que o navegador mostrou o popup de permissão.
-2. **Causa raiz:** as três tabelas do sistema de push (`push_subscriptions`, `notification_log`, `notification_preferences`) foram criadas **sem `GRANT` para `authenticated` / `service_role` / `anon`**. RLS está OK, mas o PostgREST barra antes mesmo da RLS por falta de privilégio de tabela. Resultado: o `upsert` do navegador devolve erro de permissão.
-3. **Por que ninguém percebeu:** o `subscribe()` do `usePushSubscription.ts` tem `if (error) throw error`, mas o `PushNotificationsSection` não mostra toast em caso de falha — só mostra sucesso. O `Notification.permission` fica como `granted` no navegador, então a UI marca o usuário como "inscrito" mesmo sem ter gravado nada.
-4. **Consequência em cascata:** o cron `tz-notification-scheduler` (rodando de hora em hora, OK) consulta `push_subscriptions`, encontra 0 usuários elegíveis e não dispara nada. `notification_log` está vazio. `send-push` nunca recebeu chamada.
-5. Tudo o mais está correto: VAPID keys configuradas, `push-sw.js` registrado via `importScripts` no workbox, cron ativo, edge functions com `verify_jwt` certo.
-
-## O Plano
-
-### 1. Corrigir os GRANTs (migration)
-Sem isso nada mais funciona.
-
-```sql
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.push_subscriptions TO authenticated;
-GRANT ALL ON public.push_subscriptions TO service_role;
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.notification_preferences TO authenticated;
-GRANT ALL ON public.notification_preferences TO service_role;
-
-GRANT SELECT ON public.notification_log TO authenticated;
-GRANT ALL ON public.notification_log TO service_role;
+```
+column reference "mission_type" is ambiguous
 ```
 
-### 2. Tornar falhas visíveis (UX)
-No `PushNotificationsSection.tsx`, envolver `subscribe()`/`unsubscribe()` em `try/catch` com `toast.error(err.message)`. No `usePushSubscription.ts`, logar com `console.error` antes de propagar e devolver mensagens claras para os casos comuns:
-- permissão negada
-- iOS sem instalar à tela inicial
-- erro de gravação no banco
-- VAPID inválida
+Confirmei isso nos logs do Postgres — toda chamada feita pelo `useFreezeMissions` está falhando. Quando o React Query tem o cache antigo válido, o card aparece; quando não tem, fica oculto. Daí o "às vezes sim, às vezes não".
 
-### 3. Reconciliar o estado real do navegador com o banco
-O hook `refresh()` hoje confia no `pushManager.getSubscription()` local. Vou adicionar uma verificação cruzada: se o navegador tem subscription mas o banco não tem o `endpoint`, refaz o `upsert` automaticamente. Isso recupera todos os usuários que "ativaram" antes do fix sem pedir nada a eles.
+### Causa raiz
 
-### 4. Saneamento de inscrições mortas
-Manter o tratamento de `404/410` no `send-push` (já existe). Adicionar um job leve no `notification-scheduler` que apaga inscrições com `failure_count >= 5` e `last_error_at` há mais de 7 dias.
+Dentro da função `get_freeze_missions_progress`, os parâmetros `OUT` da `RETURNS TABLE(mission_type text, period_key text, ...)` colidem com as colunas reais da tabela `freeze_missions` dentro dos subqueries `EXISTS(...)`:
 
-### 5. Endpoint de diagnóstico para o admin
-Pequena rota em `Settings → Notificações` que mostra:
-- Permissão do navegador
-- Existe ServiceWorker registrado? Qual scope?
-- Existe PushSubscription local? Endpoint truncado.
-- Existe linha em `push_subscriptions` para este endpoint?
-- Último envio em `notification_log`.
+```sql
+EXISTS(SELECT 1 FROM public.freeze_missions
+       WHERE user_id=v_user
+         AND mission_type='weekly_bronze'     -- ambíguo: OUT vs coluna
+         AND period_key=v_week_key)            -- ambíguo: OUT vs coluna
+```
 
-Isso transforma cada usuário em um auto-diagnóstico, sem precisar de logs.
+O Postgres não consegue resolver se `mission_type`/`period_key` referem-se à coluna da tabela ou ao parâmetro de saída da função, então aborta com 42702 — devolvido como 400 pelo PostgREST.
 
-### 6. Validar com o botão "Enviar teste"
-Depois do deploy: clicar em "Enviar teste" em pelo menos um dispositivo desktop e um mobile instalado. Confirmar linha em `notification_log` e notificação chegando. Sem isso não declaro resolvido.
+## Correção
 
-### Detalhes técnicos
-- Arquivos: nova migration SQL; `src/hooks/usePushSubscription.ts`; `src/components/pwa/PushNotificationsSection.tsx`; `supabase/functions/notification-scheduler/index.ts` (limpeza); pequeno componente `PushDiagnosticsCard.tsx`.
-- Sem mudanças em VAPID, no `push-sw.js`, no `vite.config.ts` ou no `send-push`.
-- Sem mudanças de schema, só privilégios e código cliente.
+Migration única, cirúrgica, sem alterar assinatura, retorno, grants nem comportamento:
 
-### O que NÃO vou mexer
-- Templates de notificação (já em 12 idiomas).
-- Horários do scheduler.
-- Workbox / Service Worker.
-- Conteúdo de outras funcionalidades.
+1. `CREATE OR REPLACE FUNCTION public.get_freeze_missions_progress()` reescrevendo apenas os três blocos `EXISTS(...)` para qualificar as colunas com alias da tabela:
+
+```sql
+EXISTS(SELECT 1 FROM public.freeze_missions fm
+       WHERE fm.user_id = v_user
+         AND fm.mission_type = 'weekly_bronze'
+         AND fm.period_key  = v_week_key)
+```
+
+(e o equivalente para `weekly_gold` e `monthly_legendary`).
+
+Tudo o resto — timezone do perfil, janelas semanais/mensais, cálculo de bronze/gold/legendary, valores retornados — permanece idêntico.
+
+## Por que isso não quebra nada
+
+- Mesma assinatura (`RETURNS TABLE(...)`) → tipos gerados em `src/integrations/supabase/types.ts` continuam válidos.
+- Mesmos grants (`EXECUTE TO PUBLIC` já existente é preservado pelo `CREATE OR REPLACE`).
+- Nenhuma mudança em tabelas, RLS, triggers ou `check_and_grant_freeze_missions`.
+- Frontend (`useFreezeMissions.ts`, `FreezeMissionsCard.tsx`) não muda.
+
+## Resultado esperado
+
+Após a migration, o RPC volta a responder 200 com as 3 linhas (bronze/gold/legendary) e o card "Missões de Defensiva" aparece de forma consistente em todos os carregamentos da página Conquistas.
