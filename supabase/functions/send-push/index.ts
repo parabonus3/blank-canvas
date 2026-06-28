@@ -9,15 +9,35 @@ import { pickTemplate, type NotifKind } from "../_shared/notif-templates.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
 };
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY")!;
-const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE_KEY")!;
+const VAPID_PUBLIC = Deno.env.get("VAPID_PUBLIC_KEY") ?? "";
+const VAPID_PRIVATE = Deno.env.get("VAPID_PRIVATE_KEY") ?? "";
 const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT") || "mailto:contato@timezoni.com";
 
-webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
+console.log("[send-push] boot", {
+  hasPub: !!VAPID_PUBLIC,
+  hasPriv: !!VAPID_PRIVATE,
+  hasSR: !!SERVICE_ROLE,
+});
+
+let vapidReady = false;
+function initWebPush(): boolean {
+  if (vapidReady) return true;
+  if (!VAPID_PUBLIC || !VAPID_PRIVATE) return false;
+  try {
+    webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE);
+    vapidReady = true;
+    return true;
+  } catch (e) {
+    console.error("[send-push] setVapidDetails failed", e);
+    return false;
+  }
+}
 
 const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
