@@ -44,6 +44,8 @@ function explainError(msg: string, t: (k: string) => string): string {
   if (msg.includes("permission-denied")) return t("push.denied");
   if (msg.includes("permission-dismissed")) return t("push.permission_dismissed") || "Permissão não concedida.";
   if (msg.includes("push-subscribe-failed")) return t("push.subscribe_failed") || "Falha ao registrar no navegador.";
+  if (msg.includes("push-unreachable")) return t("push.errors.unreachable");
+  if (msg.includes("push-not-configured")) return t("push.errors.not_configured");
   return msg;
 }
 
