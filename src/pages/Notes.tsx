@@ -938,6 +938,7 @@ export default function Notes() {
                                   folder: t("notes.folder"),
                                   createdOn: t("notes.created_at") + ":",
                                   updatedOn: t("notes.updated_at") + ":",
+                                  empty: t("notes.pdf.empty"),
                                   footer: `TimeZoni · ${formatInTz(new Date(), "PPp")}`,
                                   pageOf: (p, total) => `${p} / ${total}`,
                                 },
