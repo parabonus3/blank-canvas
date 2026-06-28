@@ -429,7 +429,10 @@
     "delete_folder_cascade_desc": "フォルダとその中のすべてのノートが完全に削除されます。",
     "delete_folder_warning": "このフォルダ内のすべてのノートが完全に削除されます。",
     "enter_password_to_delete": "削除を確認するためにフォルダのパスワードを入力してください",
-    "download_pdf": "PDFでダウンロード"
+    "download_pdf": "PDFでダウンロード",
+    "pdf": {
+      "empty": "このノートは空です。"
+    }
   },
   "settings": {
     "title": "設定",
@@ -2194,6 +2197,11 @@
       "friends": "友達のアクティビティ",
       "mentions": "メンション",
       "reengage": "会いたかった"
+    },
+    "diagnostics": "診断",
+    "errors": {
+      "unreachable": "通知サーバーに接続できません。しばらくしてから再度お試しください。",
+      "not_configured": "この環境ではプッシュ通知がまだ設定されていません。"
     }
   }
 }

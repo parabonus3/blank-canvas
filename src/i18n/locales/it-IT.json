@@ -429,7 +429,10 @@
     "delete_folder_cascade_desc": "La cartella e TUTTE le note al suo interno verranno eliminate definitivamente.",
     "delete_folder_warning": "Tutte le note in questa cartella verranno eliminate definitivamente.",
     "enter_password_to_delete": "Inserisci la password della cartella per confermare",
-    "download_pdf": "Scarica in PDF"
+    "download_pdf": "Scarica in PDF",
+    "pdf": {
+      "empty": "Questa nota è vuota."
+    }
   },
   "settings": {
     "title": "Impostazioni",
@@ -2180,6 +2183,11 @@
       "friends": "Attività amici",
       "mentions": "Menzioni",
       "reengage": "Ci manchi"
+    },
+    "diagnostics": "Diagnostica",
+    "errors": {
+      "unreachable": "Server di notifiche non disponibile. Riprova tra poco.",
+      "not_configured": "Le notifiche push non sono ancora configurate in questo ambiente."
     }
   }
 }

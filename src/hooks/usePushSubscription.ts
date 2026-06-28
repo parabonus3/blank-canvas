@@ -161,10 +161,30 @@ export function usePushSubscription() {
   }, []);
 
   const sendTest = useCallback(async () => {
-    const { error } = await supabase.functions.invoke("send-push", {
-      body: { kind: "test" },
-    });
-    if (error) throw error;
+    try {
+      const { data, error } = await supabase.functions.invoke("send-push", {
+        body: { kind: "test" },
+      });
+      if (error) {
+        const msg = String(error.message || "");
+        if (msg.toLowerCase().includes("failed to send") || msg.toLowerCase().includes("failed to fetch")) {
+          throw new Error("push-unreachable");
+        }
+        if ((data as any)?.error === "push-not-configured" || msg.includes("503")) {
+          throw new Error("push-not-configured");
+        }
+        throw error;
+      }
+      if ((data as any)?.error === "push-not-configured") {
+        throw new Error("push-not-configured");
+      }
+    } catch (e: any) {
+      const msg = String(e?.message || e);
+      if (msg.toLowerCase().includes("failed to send") || msg.toLowerCase().includes("failed to fetch")) {
+        throw new Error("push-unreachable");
+      }
+      throw e;
+    }
   }, []);
 
   const runDiagnostics = useCallback(async () => {

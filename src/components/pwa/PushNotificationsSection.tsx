@@ -44,6 +44,8 @@ function explainError(msg: string, t: (k: string) => string): string {
   if (msg.includes("permission-denied")) return t("push.denied");
   if (msg.includes("permission-dismissed")) return t("push.permission_dismissed") || "Permissão não concedida.";
   if (msg.includes("push-subscribe-failed")) return t("push.subscribe_failed") || "Falha ao registrar no navegador.";
+  if (msg.includes("push-unreachable")) return t("push.errors.unreachable");
+  if (msg.includes("push-not-configured")) return t("push.errors.not_configured");
   return msg;
 }
 
@@ -101,7 +103,11 @@ export function PushNotificationsSection() {
       await sendTest();
       toast.success(t("push.test_sent"));
     } catch (e: any) {
-      toast.error(e?.message ?? "Error");
+      toast.error(explainError(String(e?.message ?? e), t));
+      // Auto-open diagnostics so user can see what failed
+      setShowDiag(true);
+      const r = await runDiagnostics();
+      setDiag(r);
     } finally {
       setSavingTest(false);
     }
