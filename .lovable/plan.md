@@ -1,93 +1,49 @@
-## Causa raiz confirmada pela imagem
+## Causa raiz confirmada (não é código, é deploy)
 
-Console mostra:
+Testei o preflight direto no gateway do Supabase:
+
 ```
-Access to fetch at '.../send-push' from origin 'https://timezoni.com' has been blocked
-by CORS policy: Response to preflight request doesn't pass access control check:
-It does not have HTTP ok status.
-POST .../send-push  net::ERR_FAILED
+curl -X OPTIONS https://iukwvfyhforubyqgguwl.supabase.co/functions/v1/send-push
+→ HTTP/2 404
+{"code":"NOT_FOUND","message":"Requested function was not found"}
 ```
 
-Ou seja, o navegador dispara um `OPTIONS` (preflight) antes do `POST`, e o Supabase está respondendo com não-2xx. Há dois culpados, ambos vamos corrigir:
+Ou seja: **a Edge Function `send-push` não está publicada no projeto Supabase**. Todas as correções anteriores (CORS expandido, `verify_jwt = false`, init lazy do web-push, mapeamento de erros no frontend) estão corretas no código-fonte, mas nunca chegaram ao runtime — o gateway responde 404 no `OPTIONS`, o navegador interpreta como "preflight sem HTTP ok" e mostra o erro de CORS que aparece na screenshot. Por isso o usuário continua vendo "Servidor de notificações indisponível" mesmo depois das mudanças.
 
-1. **Boot crash da function** — `webpush.setVapidDetails(...)` roda no escopo de módulo. Se os secrets `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` não estiverem definidos no projeto Supabase (só estão no `.env` local), o worker quebra antes do `Deno.serve`, e qualquer request — inclusive o preflight `OPTIONS` — vira erro de rede. É exatamente o sintoma da imagem.
-2. **CORS preflight + `verify_jwt`** — quando uma function tem `verify_jwt = true`, o gateway Supabase exige token também no `OPTIONS`, e o navegador nunca envia Authorization em preflight. Algumas regiões/configs respondem 401 no `OPTIONS` → preflight fail.
+Confirmei também via `fetch_secrets` que `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` e `VAPID_SUBJECT` **já existem** como secrets do projeto. Então, uma vez publicada, a função deve subir sem 503.
 
-Bônus visível na imagem: o botão de diagnóstico mostra a key crua `push.diagnostics` — falta tradução em pt-BR (e provavelmente outras).
+## Plano de correção (mínimo, sem quebrar nada)
 
-## Plano de correção
+### 1. Publicar `send-push`
+- Rodar `deploy_edge_functions(["send-push"])`.
+- Como a função `notification-scheduler` importa `sendPushToUser` do `send-push` e também está no `config.toml`, publicar as duas juntas para manter compatibilidade: `deploy_edge_functions(["send-push", "notification-scheduler"])`.
 
-### A. `supabase/functions/send-push/index.ts` (resiliência + CORS)
+### 2. Verificar deploy no gateway
+- Repetir o `curl -X OPTIONS .../send-push` e conferir:
+  - status `200`
+  - header `access-control-allow-headers` inclui `content-type` (vem do nosso `corsHeaders`, não do fallback do gateway)
+  - header `access-control-allow-methods: POST, OPTIONS`
+- Ler `edge_function_logs("send-push")` e confirmar a linha `[send-push] boot { hasPub: true, hasPriv: true, hasSR: true }`.
 
-- Mover `webpush.setVapidDetails` para `initWebPush()` **lazy**, dentro de try/catch. Se faltar key, retornar `503 { error: "push-not-configured" }` em vez de derrubar o worker.
-- Expandir CORS headers:
-  ```ts
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Max-Age": "86400",
-  };
-  ```
-- Garantir que o handler `OPTIONS` responda **sempre** `200 ok` antes de qualquer outra lógica (já faz, mas confirmamos que não há código que possa lançar antes).
-- Log defensivo no boot (sem expor valores): `console.log("[send-push] boot", { hasPub: !!VAPID_PUBLIC, hasPriv: !!VAPID_PRIVATE, hasSR: !!SERVICE_ROLE });`
+### 3. Executar chamada real de teste
+- `curl_edge_functions POST /send-push { kind: "test" }` autenticado como o usuário do preview.
+- Esperado: `{ sent: >=1, skipped: null }` e uma linha nova em `notification_log`.
+- Se `sent = 0` com `skipped = "no-subs"`, o problema restante é só o navegador do usuário não ter subscription salva — o botão "Enviar teste" precisa dela; nesse caso a UI deve pedir para reativar as notificações (já cobrimos isso no `refresh` que reconcilia a subscription).
 
-### B. `supabase/config.toml` — destravar preflight
+### 4. Nenhuma mudança de código adicional
+- Não mexer em `send-push/index.ts`, `usePushSubscription.ts`, `PushNotificationsSection.tsx`, i18n, nem `config.toml`. O código atual já está preparado para o cenário; o único bloqueio era o deploy ausente.
+- Nenhuma migration, nenhum novo secret, nenhuma alteração de RLS ou `verify_jwt`.
 
-Trocar:
-```toml
-[functions.send-push]
-verify_jwt = false
-```
-e validar o JWT manualmente dentro da function (já lemos `Authorization` e chamamos `userClient.auth.getUser(token)`, então a autenticação continua segura — só removemos a verificação dupla no gateway que está rejeitando o preflight).
-
-### C. Secrets
-
-Verificar via `fetch_secrets` se `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` existem no projeto Supabase. Se não, definir com os valores do `.env` local usando `set_secret`. Sem eles, mesmo com tudo certo, o envio real falha (mas pelo menos retorna 503 amigável).
-
-### D. Frontend — UX dos erros
-
-`src/hooks/usePushSubscription.ts` — em `sendTest`, distinguir:
-- `FunctionsFetchError` / "Failed to send a request" → mensagem traduzida `push.errors.unreachable`
-- 503 `push-not-configured` → `push.errors.not_configured`
-- 4xx → mensagem do servidor
-
-`src/components/pwa/PushNotificationsSection.tsx` — mostrar painel de diagnóstico automaticamente em caso de falha.
-
-### E. i18n faltando (12 locales)
-
-Adicionar:
-```json
-"push": {
-  "diagnostics": "Diagnóstico",
-  "errors": {
-    "unreachable": "Servidor de notificações indisponível. Tente novamente em instantes.",
-    "not_configured": "Notificações push ainda não foram configuradas neste ambiente."
-  }
-}
-```
-Em todos os 12 arquivos `src/i18n/locales/*.json`, traduzidos.
-
-### F. PDF de Anotações — redesign profissional (mantido do plano anterior)
-
-Reescrever apenas `exportNoteToPDF` em `src/lib/pdfExport.ts` com paleta azul-marinho da marca:
-- `navy #0B1E3F`, `accent #1E40AF`, `ink #0F172A`, `muted #64748B`, `surface #F8FAFC`, `border #E2E8F0`.
-- Cabeçalho sólido único (sem faixa dupla), linha accent fina.
-- Título 24pt; metadados em pílulas chave/valor; H1/H2/H3 com cor `accent` e barra lateral no H1; listas com marcador `accent`; citações com barra + fundo `surface`; code box `surface`; rodapé refinado com paginação `accent`.
-- Estado vazio: texto i18n "Esta anotação está vazia." em vez de `—`.
-- Header compacto nas páginas seguintes.
-- `exportHistoryToPDF` e `exportDashboardStructuredPDF` ficam intocados.
-- Adicionar `notes.pdf.empty` em todos os 12 locales.
+## Riscos e por que isso não quebra nada
+- Publicar uma função que hoje responde 404 só pode melhorar: qualquer outro fluxo que dependia dela já estava quebrado silenciosamente (ex.: `notification-scheduler` chamando `sendPushToUser`).
+- Como `notification-scheduler` já está listada no `config.toml` com `verify_jwt = false`, republicar mantém o mesmo contrato.
+- Se por algum motivo o deploy falhar (ex.: lockfile), o fallback é remover `supabase/functions/send-push/deno.lock` (se existir) e redeployar; sem tocar no código de aplicação.
 
 ## Arquivos afetados
+Nenhum arquivo do repositório é editado. Apenas ações de infraestrutura:
 
 ```text
-supabase/config.toml                              # send-push: verify_jwt = false
-supabase/functions/send-push/index.ts             # CORS expandido + boot lazy + logs
-src/hooks/usePushSubscription.ts                  # mapeamento de erros
-src/components/pwa/PushNotificationsSection.tsx   # abrir diagnóstico em falha
-src/lib/pdfExport.ts                              # redesign exportNoteToPDF
-src/i18n/locales/*.json (12)                      # push.diagnostics, push.errors.*, notes.pdf.empty
+deploy: supabase/functions/send-push
+deploy: supabase/functions/notification-scheduler
+verify: OPTIONS preflight + POST test
 ```
-
-Secrets (se ausentes): `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`. Sem migrations. Segurança mantida — JWT continua validado dentro da function.
