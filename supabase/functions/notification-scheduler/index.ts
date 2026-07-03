@@ -30,10 +30,9 @@ function localWeekday(tz: string, now = new Date()): number {
 
 function localDate(tz: string, now = new Date()): string {
   try {
-    const parts = new Intl.DateTimeFormat("en-CA", {
+    return new Intl.DateTimeFormat("en-CA", {
       year: "numeric", month: "2-digit", day: "2-digit", timeZone: tz,
     }).format(now);
-    return parts; // YYYY-MM-DD
   } catch {
     return now.toISOString().slice(0, 10);
   }
@@ -52,8 +51,11 @@ async function eligibleUsers(): Promise<{ user_id: string; tz: string }[]> {
 
 async function processRoomGoalReminders(users: { user_id: string; tz: string }[]) {
   for (const u of users) {
-    if (localHour(u.tz) !== 19) continue;
-    // Find a room of this user with goal_hours > 0 and progress today < goal
+    const h = localHour(u.tz);
+    // Two windows: midday check (only if < 25% done) and 19h final push
+    const isMidday = h === 13;
+    const isEvening = h === 19;
+    if (!isMidday && !isEvening) continue;
     const today = localDate(u.tz);
     const { data: rooms } = await admin
       .from("room_members")
@@ -69,15 +71,18 @@ async function processRoomGoalReminders(users: { user_id: string; tz: string }[]
         .eq("user_id", u.user_id)
         .gte("start_time", `${today}T00:00:00`);
       const seconds = (entries || []).reduce((s: number, e: any) => s + (e.duration || 0), 0);
-      if (seconds / 3600 >= goal) continue;
-      const remaining = Math.max(1, Math.ceil(goal - seconds / 3600));
+      const hoursDone = seconds / 3600;
+      if (hoursDone >= goal) continue;
+      // At midday, only nudge if user hasn't started much yet
+      if (isMidday && hoursDone > goal * 0.25) continue;
+      const remaining = Math.max(1, Math.ceil(goal - hoursDone));
       await sendPushToUser({
         userId: u.user_id,
         kind: "room_goal_reminder",
         vars: { room_name: r.study_rooms.name, remaining_h: remaining },
         url: `/rooms/${r.room_id}`,
       });
-      break; // only one room reminder per user per pass
+      break;
     }
   }
 }
@@ -98,7 +103,7 @@ async function processStreakRisk(users: { user_id: string; tz: string }[]) {
       .eq("user_id", u.user_id)
       .maybeSingle();
     const streak = prof?.last_known_streak ?? 0;
-    if (streak < 2) continue;
+    if (streak < 1) continue; // loosened: alert even at 1 day
     await sendPushToUser({
       userId: u.user_id,
       kind: "streak_risk",
@@ -136,7 +141,6 @@ async function processChallengeDeadlines(users: { user_id: string; tz: string }[
 async function processReEngagement(users: { user_id: string; tz: string }[]) {
   for (const u of users) {
     if (localHour(u.tz) !== 11) continue;
-    if (localWeekday(u.tz) !== 6) continue; // saturday
     const { data: last } = await admin
       .from("time_entries")
       .select("start_time")
@@ -146,12 +150,96 @@ async function processReEngagement(users: { user_id: string; tz: string }[]) {
     const lastTime = last?.[0]?.start_time;
     if (!lastTime) continue;
     const daysAway = Math.floor((Date.now() - new Date(lastTime).getTime()) / 86400000);
-    if (![3, 7, 14].includes(daysAway)) continue;
+    // Loosened: any day >= 3 (dedup inside send-push prevents spam, cap 1/day)
+    if (daysAway < 3 || daysAway > 60) continue;
+    // Only send on Mon/Wed/Sat to avoid daily nagging
+    const wd = localWeekday(u.tz);
+    if (wd !== 1 && wd !== 3 && wd !== 6) continue;
     await sendPushToUser({
       userId: u.user_id,
       kind: "re_engagement",
       vars: { days: daysAway },
       url: "/dashboard",
+    });
+  }
+}
+
+async function processWeeklyRecap(users: { user_id: string; tz: string }[]) {
+  for (const u of users) {
+    // Sundays 10h local
+    if (localWeekday(u.tz) !== 0 || localHour(u.tz) !== 10) continue;
+    const sinceMs = Date.now() - 7 * 86400000;
+    const { data: entries } = await admin
+      .from("time_entries")
+      .select("duration")
+      .eq("user_id", u.user_id)
+      .gte("start_time", new Date(sinceMs).toISOString());
+    const seconds = (entries || []).reduce((s: number, e: any) => s + (e.duration || 0), 0);
+    const sessions = entries?.length ?? 0;
+    if (sessions === 0) continue;
+    const hours = Math.round((seconds / 3600) * 10) / 10;
+    await sendPushToUser({
+      userId: u.user_id,
+      kind: "weekly_recap",
+      vars: { hours, sessions },
+      url: "/dashboard",
+    });
+  }
+}
+
+async function processFriendActivity(users: { user_id: string; tz: string }[]) {
+  for (const u of users) {
+    // 20h local — daily digest of friend activity today
+    if (localHour(u.tz) !== 20) continue;
+    const today = localDate(u.tz);
+
+    // Fetch accepted friend ids
+    const { data: friendships } = await admin
+      .from("friendships")
+      .select("requester_id,addressee_id,status")
+      .or(`requester_id.eq.${u.user_id},addressee_id.eq.${u.user_id}`)
+      .eq("status", "accepted");
+    if (!friendships || friendships.length === 0) continue;
+    const friendIds = friendships.map((f: any) =>
+      f.requester_id === u.user_id ? f.addressee_id : f.requester_id,
+    );
+    if (friendIds.length === 0) continue;
+
+    const { data: entries } = await admin
+      .from("time_entries")
+      .select("user_id,duration")
+      .in("user_id", friendIds)
+      .gte("start_time", `${today}T00:00:00`);
+    if (!entries || entries.length === 0) continue;
+
+    // Aggregate per friend, keep only those with >= 30min
+    const perFriend = new Map<string, number>();
+    for (const e of entries as any[]) {
+      perFriend.set(e.user_id, (perFriend.get(e.user_id) || 0) + (e.duration || 0));
+    }
+    const activeFriends = Array.from(perFriend.entries()).filter(([, s]) => s >= 1800);
+    if (activeFriends.length === 0) continue;
+
+    // Pick top friend by hours for headline
+    activeFriends.sort((a, b) => b[1] - a[1]);
+    const [topId, topSecs] = activeFriends[0];
+    const { data: topProf } = await admin
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", topId)
+      .maybeSingle();
+    const friendName = topProf?.display_name || "Um amigo";
+    const topHours = Math.round((topSecs / 3600) * 10) / 10;
+
+    await sendPushToUser({
+      userId: u.user_id,
+      kind: "friend_activity",
+      vars: {
+        friend_count: activeFriends.length,
+        friend_name: friendName,
+        hours: topHours,
+      },
+      url: "/friends",
     });
   }
 }
@@ -174,17 +262,21 @@ async function cleanupDeadSubscriptions(): Promise<number> {
 Deno.serve(async (_req) => {
   try {
     const users = await eligibleUsers();
-    const [, , , , cleaned] = await Promise.all([
+    console.info("[scheduler] tick", { users: users.length });
+    const [, , , , , , cleaned] = await Promise.all([
       processRoomGoalReminders(users),
       processStreakRisk(users),
       processChallengeDeadlines(users),
       processReEngagement(users),
+      processWeeklyRecap(users),
+      processFriendActivity(users),
       cleanupDeadSubscriptions(),
     ]);
     return new Response(JSON.stringify({ ok: true, users: users.length, cleaned }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err: any) {
+    console.error("[scheduler] error", err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

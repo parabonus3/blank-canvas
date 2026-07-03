@@ -1,5 +1,7 @@
-// Notification templates: 12 languages, 3 variations per kind.
-// Variables: {{room_name}}, {{streak_days}}, {{remaining_h}}, {{challenge_name}}, {{hours_left}}, {{days}}.
+// Notification templates: 12 languages, multiple variations per kind.
+// Variables: {{room_name}}, {{streak_days}}, {{remaining_h}}, {{challenge_name}},
+// {{hours_left}}, {{days}}, {{hours}}, {{sessions}}, {{friend_name}}, {{friend_count}},
+// {{sender_name}}.
 
 export type NotifKind =
   | "test"
@@ -7,7 +9,9 @@ export type NotifKind =
   | "streak_risk"
   | "room_challenge_deadline"
   | "re_engagement"
-  | "weekly_recap";
+  | "weekly_recap"
+  | "friend_activity"
+  | "chat_mentions";
 
 type LangPack = Record<NotifKind, { title: string; body: string }[]>;
 
@@ -35,9 +39,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Que bom te ver de novo", body: "Comece com 15 minutos. O resto vem." },
     ],
     weekly_recap: [
-      { title: "📊 Resumo da semana", body: "Veja seu progresso na sala {{room_name}}." },
-      { title: "🗓️ Como foi sua semana?", body: "Confira seus números e planeje a próxima." },
-      { title: "🚀 Semana fechada!", body: "Dá uma olhada no que você conquistou." },
+      { title: "📊 Resumo da semana", body: "Você focou {{hours}}h em {{sessions}} sessões. Bora pra próxima?" },
+      { title: "🗓️ Como foi sua semana?", body: "{{hours}}h de foco na conta. Confira o detalhado." },
+      { title: "🚀 Semana fechada!", body: "{{sessions}} sessões, {{hours}}h totais. Veja o resumo." },
+    ],
+    friend_activity: [
+      { title: "👥 Seus amigos focaram hoje", body: "{{friend_count}} amigos treinaram. Sua vez!" },
+      { title: "🎉 {{friend_name}} completou {{hours}}h hoje", body: "Não fique de fora — vamos focar!" },
+      { title: "🔥 Movimento entre amigos", body: "{{friend_count}} amigos no ritmo hoje. Bora junto!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} mencionou você", body: "Nova menção em {{room_name}}." },
+      { title: "@ Você foi citado em {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "en-US": {
@@ -63,9 +76,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Good to see you again", body: "Start with 15 minutes. The rest follows." },
     ],
     weekly_recap: [
-      { title: "📊 Weekly recap", body: "Check your progress in {{room_name}}." },
-      { title: "🗓️ How was your week?", body: "See your numbers and plan the next." },
-      { title: "🚀 Week wrapped!", body: "Take a look at what you accomplished." },
+      { title: "📊 Weekly recap", body: "You focused {{hours}}h across {{sessions}} sessions. Onward!" },
+      { title: "🗓️ How was your week?", body: "{{hours}}h logged. Check the details." },
+      { title: "🚀 Week wrapped!", body: "{{sessions}} sessions, {{hours}}h total. See the recap." },
+    ],
+    friend_activity: [
+      { title: "👥 Your friends focused today", body: "{{friend_count}} friends studied. Your turn!" },
+      { title: "🎉 {{friend_name}} logged {{hours}}h today", body: "Don't fall behind — let's focus!" },
+      { title: "🔥 Friends in motion", body: "{{friend_count}} friends kept the rhythm today. Join in!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} mentioned you", body: "New mention in {{room_name}}." },
+      { title: "@ You were mentioned in {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "es-ES": {
@@ -91,9 +113,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Qué bueno verte", body: "Empieza con 15 minutos. Lo demás llega solo." },
     ],
     weekly_recap: [
-      { title: "📊 Resumen semanal", body: "Mira tu progreso en {{room_name}}." },
-      { title: "🗓️ ¿Cómo fue tu semana?", body: "Revisa tus números y planea la próxima." },
-      { title: "🚀 ¡Semana cerrada!", body: "Echa un vistazo a lo que lograste." },
+      { title: "📊 Resumen semanal", body: "Enfocaste {{hours}}h en {{sessions}} sesiones. ¡A por más!" },
+      { title: "🗓️ ¿Cómo fue tu semana?", body: "{{hours}}h registradas. Mira el detalle." },
+      { title: "🚀 ¡Semana cerrada!", body: "{{sessions}} sesiones, {{hours}}h totales." },
+    ],
+    friend_activity: [
+      { title: "👥 Tus amigos se enfocaron hoy", body: "{{friend_count}} amigos estudiaron. ¡Tu turno!" },
+      { title: "🎉 {{friend_name}} registró {{hours}}h hoy", body: "No te quedes atrás — ¡a enfocarte!" },
+      { title: "🔥 Amigos en movimiento", body: "{{friend_count}} amigos hoy. ¡Únete!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} te mencionó", body: "Nueva mención en {{room_name}}." },
+      { title: "@ Fuiste mencionado en {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "fr-FR": {
@@ -119,9 +150,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Ravi de vous revoir", body: "Commencez par 15 minutes. La suite viendra." },
     ],
     weekly_recap: [
-      { title: "📊 Récap de la semaine", body: "Voyez vos progrès dans {{room_name}}." },
-      { title: "🗓️ Quelle semaine ?", body: "Consultez vos chiffres et préparez la suite." },
-      { title: "🚀 Semaine bouclée !", body: "Regardez ce que vous avez accompli." },
+      { title: "📊 Récap de la semaine", body: "{{hours}}h de focus en {{sessions}} sessions. On continue !" },
+      { title: "🗓️ Quelle semaine ?", body: "{{hours}}h enregistrées. Voir le détail." },
+      { title: "🚀 Semaine bouclée !", body: "{{sessions}} sessions, {{hours}}h au total." },
+    ],
+    friend_activity: [
+      { title: "👥 Vos amis ont bossé aujourd'hui", body: "{{friend_count}} amis ont étudié. À vous !" },
+      { title: "🎉 {{friend_name}} a fait {{hours}}h aujourd'hui", body: "Ne restez pas à la traîne !" },
+      { title: "🔥 Amis en action", body: "{{friend_count}} amis dans le rythme. Rejoignez-les !" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} vous a mentionné", body: "Nouvelle mention dans {{room_name}}." },
+      { title: "@ Vous avez été mentionné dans {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "de-DE": {
@@ -147,9 +187,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Schön, dich zu sehen", body: "Starte mit 15 Minuten. Der Rest folgt." },
     ],
     weekly_recap: [
-      { title: "📊 Wochenrückblick", body: "Sieh deinen Fortschritt in {{room_name}}." },
-      { title: "🗓️ Wie war deine Woche?", body: "Schau dir die Zahlen an und plane weiter." },
-      { title: "🚀 Woche abgeschlossen!", body: "Wirf einen Blick auf deine Erfolge." },
+      { title: "📊 Wochenrückblick", body: "{{hours}}h Fokus in {{sessions}} Sessions. Weiter so!" },
+      { title: "🗓️ Wie war deine Woche?", body: "{{hours}}h geloggt. Details ansehen." },
+      { title: "🚀 Woche abgeschlossen!", body: "{{sessions}} Sessions, insgesamt {{hours}}h." },
+    ],
+    friend_activity: [
+      { title: "👥 Deine Freunde waren fokussiert", body: "{{friend_count}} Freunde haben gelernt. Du bist dran!" },
+      { title: "🎉 {{friend_name}} hat heute {{hours}}h geschafft", body: "Bleib nicht zurück!" },
+      { title: "🔥 Freunde in Bewegung", body: "{{friend_count}} Freunde heute im Rhythmus. Mach mit!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} hat dich erwähnt", body: "Neue Erwähnung in {{room_name}}." },
+      { title: "@ Erwähnung in {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "it-IT": {
@@ -175,9 +224,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Bello rivederti", body: "Inizia con 15 minuti. Il resto arriva." },
     ],
     weekly_recap: [
-      { title: "📊 Riepilogo settimanale", body: "Vedi i tuoi progressi in {{room_name}}." },
-      { title: "🗓️ Com'è andata la settimana?", body: "Controlla i numeri e pianifica." },
-      { title: "🚀 Settimana chiusa!", body: "Guarda cosa hai ottenuto." },
+      { title: "📊 Riepilogo settimanale", body: "{{hours}}h di focus in {{sessions}} sessioni. Avanti!" },
+      { title: "🗓️ Com'è andata la settimana?", body: "{{hours}}h registrate. Guarda i dettagli." },
+      { title: "🚀 Settimana chiusa!", body: "{{sessions}} sessioni, {{hours}}h totali." },
+    ],
+    friend_activity: [
+      { title: "👥 I tuoi amici si sono concentrati oggi", body: "{{friend_count}} amici hanno studiato. Tocca a te!" },
+      { title: "🎉 {{friend_name}} ha fatto {{hours}}h oggi", body: "Non restare indietro!" },
+      { title: "🔥 Amici in movimento", body: "{{friend_count}} amici oggi. Unisciti!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} ti ha menzionato", body: "Nuova menzione in {{room_name}}." },
+      { title: "@ Menzione in {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "ja-JP": {
@@ -203,9 +261,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ また会えて嬉しい", body: "15分から始めよう。あとは続きます。" },
     ],
     weekly_recap: [
-      { title: "📊 週間まとめ", body: "{{room_name}} の進捗を確認しよう。" },
-      { title: "🗓️ 今週はどうでしたか？", body: "数字を見て来週を計画しよう。" },
-      { title: "🚀 一週間完了！", body: "達成したものを見てみよう。" },
+      { title: "📊 週間まとめ", body: "{{sessions}}セッションで{{hours}}時間集中しました！" },
+      { title: "🗓️ 今週はどうでしたか？", body: "{{hours}}時間記録。詳細を確認しよう。" },
+      { title: "🚀 一週間完了！", body: "{{sessions}}セッション、合計{{hours}}時間。" },
+    ],
+    friend_activity: [
+      { title: "👥 友達が今日集中しました", body: "{{friend_count}}人の友達が学習中。あなたの番！" },
+      { title: "🎉 {{friend_name}} が今日{{hours}}時間", body: "遅れないように！" },
+      { title: "🔥 友達が動いています", body: "{{friend_count}}人が今日リズム中。参加しよう！" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} があなたにメンション", body: "{{room_name}} で新しいメンション。" },
+      { title: "@ {{room_name}} でメンション", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "ko-KR": {
@@ -231,9 +298,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ 다시 봐서 반가워요", body: "15분으로 시작하세요. 나머지는 따라옵니다." },
     ],
     weekly_recap: [
-      { title: "📊 주간 요약", body: "{{room_name}}의 진행 상황을 확인하세요." },
-      { title: "🗓️ 이번 주 어땠나요?", body: "수치를 보고 다음 주를 계획하세요." },
-      { title: "🚀 한 주 마감!", body: "성취를 살펴보세요." },
+      { title: "📊 주간 요약", body: "{{sessions}}세션 동안 {{hours}}시간 집중했어요!" },
+      { title: "🗓️ 이번 주 어땠나요?", body: "{{hours}}시간 기록. 상세 보기." },
+      { title: "🚀 한 주 마감!", body: "{{sessions}}세션, 총 {{hours}}시간." },
+    ],
+    friend_activity: [
+      { title: "👥 친구들이 오늘 집중했어요", body: "{{friend_count}}명의 친구가 학습 중. 당신 차례!" },
+      { title: "🎉 {{friend_name}}이 오늘 {{hours}}시간", body: "뒤처지지 마세요!" },
+      { title: "🔥 친구들이 움직여요", body: "{{friend_count}}명이 오늘 리듬 중. 함께해요!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}}이 당신을 언급", body: "{{room_name}}의 새 언급." },
+      { title: "@ {{room_name}}에서 언급", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "zh-CN": {
@@ -259,9 +335,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ 很高兴再见", body: "从 15 分钟开始，其他自然跟上。" },
     ],
     weekly_recap: [
-      { title: "📊 周回顾", body: "查看你在 {{room_name}} 的进展。" },
-      { title: "🗓️ 这周怎么样？", body: "看看数据，规划下一周。" },
-      { title: "🚀 一周结束！", body: "看看你完成了什么。" },
+      { title: "📊 周回顾", body: "本周你专注了 {{hours}} 小时，共 {{sessions}} 次会话。" },
+      { title: "🗓️ 这周怎么样？", body: "{{hours}} 小时已记录。查看详情。" },
+      { title: "🚀 一周结束！", body: "{{sessions}} 次会话，共 {{hours}} 小时。" },
+    ],
+    friend_activity: [
+      { title: "👥 你的朋友今天专注了", body: "{{friend_count}} 位朋友在学习。到你了！" },
+      { title: "🎉 {{friend_name}} 今天完成 {{hours}} 小时", body: "别落后！" },
+      { title: "🔥 朋友都在行动", body: "{{friend_count}} 位朋友今天保持节奏。加入吧！" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} 提到了你", body: "{{room_name}} 有新提及。" },
+      { title: "@ 在 {{room_name}} 被提及", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "ru-RU": {
@@ -287,9 +372,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Рады видеть снова", body: "Начните с 15 минут. Остальное приложится." },
     ],
     weekly_recap: [
-      { title: "📊 Итоги недели", body: "Посмотрите прогресс в {{room_name}}." },
-      { title: "🗓️ Как прошла неделя?", body: "Проверьте цифры и спланируйте следующую." },
-      { title: "🚀 Неделя закрыта!", body: "Взгляните на достижения." },
+      { title: "📊 Итоги недели", body: "Вы сфокусировались {{hours}}ч за {{sessions}} сессий." },
+      { title: "🗓️ Как прошла неделя?", body: "{{hours}}ч записано. Детали внутри." },
+      { title: "🚀 Неделя закрыта!", body: "{{sessions}} сессий, {{hours}}ч всего." },
+    ],
+    friend_activity: [
+      { title: "👥 Друзья фокусировались сегодня", body: "{{friend_count}} друзей учились. Ваша очередь!" },
+      { title: "🎉 {{friend_name}} провёл {{hours}}ч сегодня", body: "Не отставайте!" },
+      { title: "🔥 Друзья в движении", body: "{{friend_count}} друзей в ритме. Присоединяйтесь!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} упомянул вас", body: "Новое упоминание в {{room_name}}." },
+      { title: "@ Упоминание в {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "ar-SA": {
@@ -315,9 +409,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ سعداء برؤيتك", body: "ابدأ بـ 15 دقيقة. الباقي يأتي." },
     ],
     weekly_recap: [
-      { title: "📊 ملخص الأسبوع", body: "اطلع على تقدمك في {{room_name}}." },
-      { title: "🗓️ كيف كان أسبوعك؟", body: "راجع الأرقام وخطط للأسبوع القادم." },
-      { title: "🚀 انتهى الأسبوع!", body: "ألقِ نظرة على إنجازاتك." },
+      { title: "📊 ملخص الأسبوع", body: "ركزت {{hours}} ساعة في {{sessions}} جلسات." },
+      { title: "🗓️ كيف كان أسبوعك؟", body: "{{hours}} ساعة مسجلة. اطلع على التفاصيل." },
+      { title: "🚀 انتهى الأسبوع!", body: "{{sessions}} جلسات، إجمالي {{hours}} ساعة." },
+    ],
+    friend_activity: [
+      { title: "👥 أصدقاؤك ركزوا اليوم", body: "{{friend_count}} أصدقاء درسوا. دورك!" },
+      { title: "🎉 {{friend_name}} أنجز {{hours}} ساعة اليوم", body: "لا تتأخر!" },
+      { title: "🔥 الأصدقاء في حركة", body: "{{friend_count}} أصدقاء في الإيقاع. انضم!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} ذكرك", body: "إشارة جديدة في {{room_name}}." },
+      { title: "@ تمت الإشارة إليك في {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
   "id-ID": {
@@ -343,9 +446,18 @@ const T: Record<string, LangPack> = {
       { title: "✨ Senang bertemu lagi", body: "Mulai dengan 15 menit. Sisanya menyusul." },
     ],
     weekly_recap: [
-      { title: "📊 Ringkasan mingguan", body: "Lihat progresmu di {{room_name}}." },
-      { title: "🗓️ Bagaimana mingguanmu?", body: "Cek angka dan rencanakan minggu depan." },
-      { title: "🚀 Minggu selesai!", body: "Lihat apa yang sudah kamu capai." },
+      { title: "📊 Ringkasan mingguan", body: "Kamu fokus {{hours}} jam dalam {{sessions}} sesi." },
+      { title: "🗓️ Bagaimana mingguanmu?", body: "{{hours}} jam tercatat. Lihat detailnya." },
+      { title: "🚀 Minggu selesai!", body: "{{sessions}} sesi, total {{hours}} jam." },
+    ],
+    friend_activity: [
+      { title: "👥 Temanmu fokus hari ini", body: "{{friend_count}} teman belajar. Giliranmu!" },
+      { title: "🎉 {{friend_name}} mencatat {{hours}} jam hari ini", body: "Jangan tertinggal!" },
+      { title: "🔥 Teman-teman bergerak", body: "{{friend_count}} teman dalam ritme. Ayo gabung!" },
+    ],
+    chat_mentions: [
+      { title: "💬 {{sender_name}} menyebutmu", body: "Sebutan baru di {{room_name}}." },
+      { title: "@ Disebut di {{room_name}}", body: "{{sender_name}}: {{content}}" },
     ],
   },
 };
@@ -361,7 +473,7 @@ export function pickTemplate(
 ): { title: string; body: string } {
   const normalized = (lang || "en-US").replace("_", "-");
   const pack = T[normalized] || T[normalized.slice(0, 2)] || T["en-US"];
-  const list = pack[kind] || T["en-US"][kind];
+  const list = pack[kind] || T["en-US"][kind] || T["en-US"]["test"];
   const choice = list[Math.floor(Math.random() * list.length)];
   return { title: render(choice.title, vars), body: render(choice.body, vars) };
 }
