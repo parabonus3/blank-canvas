@@ -2,11 +2,39 @@
 // push subscriptions' timezone) and dispatches the appropriate notification.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { sendPushToUser } from "../send-push/index.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+
+async function sendPushToUser(args: {
+  userId: string;
+  kind: string;
+  vars?: Record<string, string | number>;
+  url?: string;
+}): Promise<void> {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-push`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": ANON_KEY,
+        "Authorization": `Bearer ${ANON_KEY}`,
+      },
+      body: JSON.stringify({
+        user_id: args.userId,
+        kind: args.kind,
+        vars: args.vars || {},
+        url: args.url || "/",
+      }),
+    });
+    const txt = await res.text();
+    if (!res.ok) console.warn("[scheduler] send-push non-ok", res.status, txt.slice(0, 200));
+  } catch (e) {
+    console.error("[scheduler] send-push failed", e);
+  }
+}
 
 function localHour(tz: string, now = new Date()): number {
   try {
