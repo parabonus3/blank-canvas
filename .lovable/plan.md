@@ -1,102 +1,114 @@
-## Diagnóstico (o que investiguei)
+## Diagnóstico (por que hoje não vai pro final)
 
-Consultei o banco e o código. Descobertas concretas:
+Li `RoomChat.tsx` e `useRoomMessages.ts`. Três coisas explicam tudo:
 
-**1. Teste funciona, o resto não — por 3 motivos distintos:**
+1. **Auto-scroll está quebrado.** O `ref` está no `<ScrollArea>` do shadcn/Radix, mas o elemento realmente rolável é um `<div data-radix-scroll-area-viewport>` interno. `scrollRef.current.scrollTop = scrollHeight` não faz nada — o container externo tem overflow hidden. Por isso ao abrir o chat você não é levado às mensagens mais recentes.
+2. **Enter envia hoje**, e você quer o oposto: Enter = quebra de linha, botão "Enviar" (ou atalho Ctrl/Cmd+Enter) = envia. Isso é fundamental pra virar bloco de notas coletivo.
+3. **Input é `<Input>` single-line**, sem toolbar de formatação e sem renderização de markdown. Texto longo fica horrível.
 
-| Notificação | Existe template? | Existe código que dispara? | Status real |
-|---|---|---|---|
-| `test` | ✅ | ✅ botão manual | ✅ chegando |
-| `room_goal_reminder` | ✅ | ✅ scheduler (19h local) | ⚠️ só dispara se sala tem `goal_hours > 0` e progresso < meta |
-| `streak_risk` | ✅ | ✅ scheduler (20h local) | ⚠️ só dispara com streak ≥ 2 e zero sessões no dia |
-| `room_challenge_deadline` | ✅ | ✅ scheduler (9h local) | ⚠️ só se restam 1–24h e há progresso do usuário |
-| `re_engagement` | ✅ | ✅ scheduler (sáb 11h) | ⚠️ só se ausente exatamente 3, 7 ou 14 dias |
-| `weekly_recap` | ✅ | ❌ **não existe processador** | 🔴 nunca dispara |
-| `friend_activity` | ❌ **sem template** | ❌ **sem trigger nem scheduler** | 🔴 nunca dispara |
-| `chat_mentions` | ❌ **sem template** | ❌ **sem trigger** | 🔴 nunca dispara |
-
-Confirmei em `notification_log`: só existem 10 registros, todos `kind=test`. Nenhum agendado disparou porque as condições são muito estritas E porque 3 tipos nem foram implementados.
-
-**2. Cron OK**: `tz-notification-scheduler` rodando de hora em hora. Sem problema aí.
-
-**3. Preferências no BD já vêm todas com default `true`** — não precisa migração pra isso, mas o UI ainda mostra os toggles avançados que você quer remover.
+Além disso o `content` no BD é `text` simples — dá pra guardar markdown nele sem migração alguma. E `react-markdown` **já está instalado** no projeto. Nenhuma dependência nova precisa entrar.
 
 ---
 
-## Plano — sem quebrar o que funciona
+## Plano — mais inteligente do que só "adicionar negrito"
 
-### Frente 1 — UI enxuta (Settings → Notificações)
+### 1. Composer novo — bloco de escrita, não input de bate-papo
 
-**Remover:**
-- Botão "Enviar teste"
-- Botão "Diagnóstico" + card de resultado
-- Inputs de "quiet hours start/end" e "max per day"
-- Função `sendTest` e `runDiagnostics` do hook (deixa só se algum outro lugar usar — não usa)
+**Componente `RoomChatComposer.tsx` novo**, isolado, com:
 
-**Manter:**
-- Botão único **Ativar notificações** (subscribe) / **Desativar** (unsubscribe)
-- Explicação curta do que o app envia
-- Lista de 7 toggles individuais (meta de sala, streak, desafio, resumo semanal, amigos, menções, re-engajamento) — cada um `true` por padrão, o usuário desliga o que não quiser
-- Aviso especial pra iOS não instalado (needs-install) e permissão negada
+- **Textarea autosize** (min 1 linha, max 8) usando `<Textarea>` do shadcn com `field-sizing: content` + fallback JS pra Safari
+- **Enter = nova linha** (comportamento padrão do textarea). Envio só via botão "Enviar" ou **Ctrl/Cmd+Enter** (padrão universal Slack/Discord/Linear)
+- **Toolbar de formatação** acima do textarea, com botões que envolvem a seleção com markdown:
+  - **B** (Ctrl+B) → `**texto**`
+  - **I** (Ctrl+I) → `*texto*`
+  - **S̶** → `~~texto~~`
+  - `<>` código inline → `` `texto` ``
+  - `""` citação → `> texto` (linha)
+  - `•` lista → `- texto` (por linha selecionada)
+  - `🔗` link → `[texto](url)` (abre mini popover pra colar url)
+- **Contador discreto** (aparece só quando >800/1000 chars) — limite educacional, não bloqueia
+- **Emoji picker** compacto em popover (substitui a fileira fixa de 6 emojis que ocupa espaço); mantém os 6 favoritos como "recentes" logo abaixo
+- **@menções com autocomplete**: ao digitar `@`, popover flutuante com membros da sala (usa `memberProfiles` já disponível). Insere `@display_name` — o trigger `dispatch_chat_mentions` no BD já dispara push (confirmado)
+- **Ctrl/Cmd+Z e Y** funcionam nativamente no textarea. Nada especial.
+- **Enviar**: botão largo em mobile ("Enviar" com texto), ícone-only em desktop se preferir; sempre `variant="default"` bem visível; disabled quando `content.trim().length === 0`
+- **Preview toggle** (ícone 👁️): alterna entre textarea e preview markdown renderizado, útil pra revisar antes de enviar textos longos
 
-### Frente 2 — Fazer as notificações faltantes existirem
+### 2. Renderização das mensagens — markdown seguro
 
-**2.1 `weekly_recap`** — adicionar no `notification-scheduler`:
-- Roda quando `localWeekday() === 0` (domingo) e `localHour() === 10`
-- Soma segundos do usuário nos últimos 7 dias em `time_entries`
-- Envia com `vars: { hours: X, sessions: Y }`
-- Adicionar variação `{{hours}}` e `{{sessions}}` nos templates existentes de `weekly_recap` (já tem os 12 idiomas, só ajustar body)
+Substituir o `{msg.content}` cru por `<MessageBody content={msg.content} />`:
 
-**2.2 `friend_activity`** — event-driven, não agendado:
-- Adicionar template `friend_activity` nos 12 idiomas (ex.: "🎉 {{friend_name}} completou {{hours}}h hoje")
-- Criar trigger no BD em `time_entries` (AFTER INSERT) que, quando duração ≥ 30min, chama `pg_net.http_post` pra `send-push` pra cada amigo confirmado (`friendships.status='accepted'`) do usuário — respeitando cap de 1 por amigo por dia
-- Alternativa mais simples: consolidar no scheduler noturno (20h), varrendo `time_entries` do dia dos amigos e mandando um resumo — evita spam e é mais seguro. **Vou usar essa** por padrão.
+- Usa `react-markdown` (já instalado) com whitelist: `strong`, `em`, `del`, `code`, `pre`, `blockquote`, `ul/ol/li`, `a`, `p`, `br`
+- Sem `img`, sem `iframe`, sem HTML raw (`skipHtml`)
+- Links: `target="_blank" rel="noopener noreferrer nofollow"` + ícone externo
+- Code blocks com fundo `bg-muted/50` e wrap
+- @menções destacadas visualmente (regex depois do render → span com `bg-primary/10 text-primary`)
+- Mensagens só-emoji (até 3) ganham `text-4xl` (padrão iMessage/Telegram)
 
-**2.3 `chat_mentions`** — event-driven:
-- Adicionar template `chat_mentions` (ex.: "💬 {{sender_name}} mencionou você em {{room_name}}")
-- Criar trigger em `room_messages` (AFTER INSERT) que detecta `@nome` no `content`, resolve pra `user_id`, e chama `send-push` via `pg_net` com `kind=chat_mentions`
-- Só notifica se o mencionado NÃO está online na sala (`room_members.status='online'` do usuário → pular)
+### 3. Auto-scroll que realmente funciona
 
-**2.4 Afrouxar condições dos jobs existentes** (pra parar de "quase nunca disparar"):
-- `streak_risk`: remover o mínimo de 2 dias → passa a alertar com streak ≥ 1
-- `re_engagement`: em vez de dias exatos 3/7/14, mudar pra "≥ 3 e primeira sessão do dia inexistente" com dedup interno (já existe dedup de 12h) e cap semanal
-- `room_goal_reminder`: manter, mas adicionar segunda janela às 12h (só se progresso < 25% da meta)
+Reescrever a lógica:
 
-### Frente 3 — Ampliar templates
+- Trocar `<ScrollArea>` por um `<div ref={viewportRef} className="overflow-y-auto">` — sem Radix. Radix ScrollArea é bom pra listas curtas mas complica scroll programático em chat.
+- **Ao montar** e **quando `messages.length` passa de 0**: forçar `viewportRef.current.scrollTop = scrollHeight` (dupla RAF pra garantir layout aplicado). Isso resolve "ao abrir vejo as últimas".
+- **Quando chega mensagem nova**: só auto-scroll se o usuário já está a ≤120px do fundo (variável `nearBottom`). Se estiver rolando pra cima lendo histórico, **não** roubar o scroll.
+- **Se não estiver perto do fundo e chegar mensagem nova**: mostrar pill flutuante **"↓ Novas mensagens (N)"** no canto inferior. Clicar rola pro fim e zera o contador.
+- **Ao enviar sua própria mensagem**: sempre rolar pro fim (você é a origem, quer ver).
 
-Adicionar `friend_activity` e `chat_mentions` em `notif-templates.ts` nos 12 idiomas. Atualizar `NotifKind`. O `send-push` já respeita `notification_preferences` — só precisa mapear as duas chaves novas no `prefKey` (já existem lá).
+### 4. Mobile-first (prioridade explícita)
 
-### Frente 4 — Higiene / logs
+- **Toolbar**: em telas `<640px` colapsa em popover único com todos os botões (ícone `Type`), pra não roubar altura vertical
+- **Textarea**: `text-base` em mobile (16px+ evita zoom do iOS ao focar) — regra crítica
+- **Composer sticky ao teclado**: usar `env(safe-area-inset-bottom)` + `inset-block-end: 0` no wrapper do composer, sem `position: fixed` (fica dentro do card da sala)
+- **Botão Enviar em mobile**: full-width abaixo do textarea, altura `h-11` (44px, mínimo Apple HIG). Ctrl+Enter é bônus desktop
+- **Emoji quick-bar** vira grid `grid-cols-6` compacto dentro do popover em mobile
+- **Bolhas**: em mobile subir `max-w-[85%]` (era 75%), reduzir avatar pra `h-6 w-6` em bolhas consecutivas
+- **Header do chat**: em mobile mostrar contagem de mensagens novas na aba (se o chat estiver em tabs) — depende de como `RoomDetail` monta isso; verificar
 
-- Toda vez que uma função scheduler pular um usuário, logar o `skipped` (já existe, mas escrever com `console.info` pra ver na aba de logs)
-- Adicionar tabela `notification_dispatch_errors` opcional? **Não** — o `notification_log` já basta
+### 5. Extras "além do que você falou" (por que fazem sentido)
+
+- **Editar mensagem própria** (últimos 15 min): ícone lápis no hover; envia com sufixo "(editado)". Requer coluna `edited_at` — **migração pequena** proposta.
+- **Apagar mensagem própria**: ícone lixeira no hover; soft delete via `content = "[mensagem apagada]"` — sem migração adicional se aceitarmos isso, ou hard delete via RLS existente.
+- **Preservar rascunho**: `localStorage[`draft-${roomId}`]` — se você fecha o chat/troca de aba sem enviar, ao voltar o texto tá lá. Útil pra textos longos.
+- **"Enviando..." otimista**: mensagem aparece imediatamente com opacidade 60% até o realtime confirmar. React-Query optimistic update.
+- **Sons já existem** (`playMessageSent`/`playMessageReceived`) — mantidos.
+- **Copiar texto da mensagem**: menu de contexto (long-press mobile, right-click desktop) via Radix ContextMenu.
+- **Timestamp completo em hover/long-press**: hoje mostra só HH:mm; adicionar `title` com data/hora completa.
+- **Realtime que hoje refaz o fetch inteiro**: manter (invalidateQueries), mas adicionar dedup no cliente pra otimista não duplicar.
+
+### 6. O que não vou mexer (pra não quebrar o que funciona)
+
+- Permissões (`chatMode`, `myRole`, `isMuted`) — lógica atual está correta
+- `useRoomMessages` — só adiciono optimistic update, não muda contrato
+- Trigger `dispatch_chat_mentions` no BD — continua funcionando (regex `@nome` no `content`)
+- `RoomDetail.tsx` — não toco
+- Sons, sound effects, notification browser API — mantidos
 
 ---
 
-## O que precisa vir de você antes de eu começar
+## Perguntas antes de eu programar
 
-1. **Confirma que quer remover mesmo o "Enviar teste"?** Uma vez removido, se um usuário reclamar "não recebo nada", só vamos ter logs do scheduler pra diagnosticar. Sugestão: manter o botão de teste escondido atrás de um clique longo no ícone 🔔 ou só pra admin. Me diz qual prefere:
-   - (a) Remover completamente
-   - (b) Manter escondido / só admin
-2. **Menção no chat = `@usuario` no texto ou lista explícita de menções?** Hoje `room_messages` não tem coluna `mentions` — ou detectamos por regex ou criamos a coluna.
-3. **`friend_activity` diário resumido (uma notificação com "3 amigos treinaram hoje") ou uma por amigo?** Diário resumido é o padrão saudável.
+1. **Migração pra editar/apagar mensagem**: quer que eu adicione `edited_at timestamptz` + `deleted_at timestamptz` em `room_messages` pra habilitar os extras (5), ou prefere deixar de fora nessa primeira leva?
+2. **Menções com autocomplete**: hoje o trigger casa `@nome` exato com `lower(display_name)`. Se o nome tiver espaço tipo "João Silva", o `@` só pega até o espaço. Sugestão: no autocomplete, inserir o nome com underscore (`@joão_silva`) e atualizar o regex do trigger pra aceitar espaço opcional dentro de `@[...]`. Alternativa: armazenar mentions numa coluna `mentions uuid[]` populada pelo cliente (mais robusto). Prefere:
+   - (a) Regex + underscore (zero mudança de schema, funciona hoje)
+   - (b) Coluna `mentions uuid[]` + atualizar trigger (mais robusto, migração pequena)
+3. **Toolbar visível fixa** ou **escondida atrás de um botão "Aa"** que expande? Sugestão minha: fixa em desktop, escondida atrás de "Aa" em mobile.
 
 ---
 
 ## Ordem de execução (quando aprovar)
 
-1. Migração: adicionar coluna `mentions text[]` em `room_messages` (se você escolher essa opção) e trigger de `chat_mentions`
-2. `notif-templates.ts`: adicionar `friend_activity`, `chat_mentions` + variação de `weekly_recap` com {{hours}}
-3. `send-push`: incluir novas kinds no `prefKey`
-4. `notification-scheduler`: adicionar `processWeeklyRecap`, `processFriendActivity`, afrouxar condições existentes
-5. `PushNotificationsSection.tsx`: remover teste/diagnóstico/quiet-hours/max-per-day
-6. `usePushSubscription.ts`: remover `sendTest` e `runDiagnostics` (opção a) ou manter escondido (opção b)
-7. Testar cada job manualmente via `curl_edge_functions` na `notification-scheduler` (não afeta produção — o cron continua)
+1. (Se você aprovar a migração) `ALTER TABLE room_messages ADD COLUMN edited_at timestamptz, ADD COLUMN mentions uuid[]` + policy de UPDATE só para o próprio user + trigger updated de mentions
+2. Criar `src/components/rooms/MessageBody.tsx` (render markdown seguro)
+3. Criar `src/components/rooms/RoomChatComposer.tsx` (textarea + toolbar + menções + emoji + preview)
+4. Reescrever `src/components/rooms/RoomChat.tsx`:
+   - trocar `<ScrollArea>` por div rolável simples
+   - lógica `nearBottom` + pill "novas mensagens"
+   - usar `MessageBody` e `RoomChatComposer`
+   - draft em localStorage
+   - optimistic update
+5. Atualizar `useRoomMessages`/`useSendMessage` com optimistic mutation
+6. Testar em viewport mobile (375×667) e desktop, verificar: scroll ao abrir vai pro fim, Enter faz newline, Ctrl+Enter envia, negrito/itálico/menção renderizam, autocomplete de menção aparece
 
-Nada quebra o que funciona hoje porque:
-- Push infra (VAPID, service worker, endpoint) não é tocada
-- Preferências existentes no BD já são compatíveis
-- Templates novos são adição, não substituição
-- Botão de teste continua funcionando durante o desenvolvimento; só removo do UI no passo 5
+Nada quebra o restante da sala porque só toco em `RoomChat.tsx`, `useRoomMessages.ts`, e crio dois arquivos novos. O contrato do componente pra `RoomDetail.tsx` continua igual (mesmas props).
 
-Confirma as 3 perguntas e eu implemento na sequência.
+Confirma as 3 perguntas e eu implemento.
