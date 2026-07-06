@@ -171,7 +171,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   }, [playNotificationSound]);
 
   // Create time entry for work phase
-  const createPomodoroEntry = useCallback(async (projectId: string, pomodoroType: string, roomId?: string | null) => {
+  const createPomodoroEntry = useCallback(async (projectId: string, pomodoroType: string, roomId?: string | null, challengeId?: string | null) => {
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -183,6 +183,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
         is_pomodoro: true,
         pomodoro_type: pomodoroType,
         room_id: roomId || null,
+        challenge_id: roomId ? (challengeId || null) : null,
       } as any)
       .select()
       .single();
