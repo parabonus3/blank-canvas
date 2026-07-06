@@ -11,6 +11,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { useActiveTimeEntry, useStartTimer, useStopTimer } from "@/hooks/useTimeEntries";
 import { useAmbientSoundContext } from "@/contexts/AmbientSoundContext";
 import { useRoomChallenges } from "@/hooks/useRoomChallenges";
+import { RoomChallengePicker } from "@/components/timer/RoomChallengePicker";
 import { cn } from "@/lib/utils";
 
 interface Props {
