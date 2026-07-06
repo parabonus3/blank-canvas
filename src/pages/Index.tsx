@@ -57,6 +57,7 @@ export default function Index() {
   const [timerMode, setTimerMode] = useState<"normal" | "pomodoro">("normal");
   const [showStopDialog, setShowStopDialog] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<string>("none");
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
