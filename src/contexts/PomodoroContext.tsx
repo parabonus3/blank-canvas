@@ -20,6 +20,7 @@ export interface PomodoroState {
   phaseStartTime: number | null;
   phaseDuration: number;
   activeRoomId: string | null;
+  activeChallengeId: string | null;
 }
 
 interface PomodoroConfig {
