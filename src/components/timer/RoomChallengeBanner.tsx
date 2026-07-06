@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 
 interface Props {
   roomId?: string;
+  /** When set, only this challenge shows the "counting now" highlight. */
+  activeChallengeId?: string | null;
 }
 
 function fmtMin(seconds: number) {
