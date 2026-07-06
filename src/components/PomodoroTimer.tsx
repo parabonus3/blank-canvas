@@ -61,7 +61,7 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
   const handleStart = () => {
     if (selectedProject) {
       const roomId = selectedRoom !== 'none' ? selectedRoom : undefined;
-      start(selectedProject, roomId);
+      start(selectedProject, roomId, roomId ? selectedChallenge : null);
     }
   };
 
