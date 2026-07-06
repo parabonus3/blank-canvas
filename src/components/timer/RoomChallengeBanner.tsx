@@ -44,14 +44,18 @@ export function RoomChallengeBanner({ roomId, activeChallengeId }: Props) {
         const remainingSec = Math.max(0, targetSec - seconds);
         const pct = Math.min(100, (seconds / targetSec) * 100);
 
+        const isActive = !activeChallengeId || activeChallengeId === c.challenge_id;
+
         return (
           <div
             key={c.challenge_id}
             className={cn(
-              "rounded-lg border p-2.5 sm:p-3 flex items-center gap-2.5 text-xs sm:text-sm",
+              "rounded-lg border p-2.5 sm:p-3 flex items-center gap-2.5 text-xs sm:text-sm transition-opacity",
               completed
                 ? "border-green-500/40 bg-green-500/10"
-                : "border-primary/30 bg-primary/5",
+                : isActive
+                ? "border-primary/30 bg-primary/5"
+                : "border-border bg-muted/30 opacity-60",
             )}
           >
             <span className="text-base shrink-0">{c.emoji}</span>
