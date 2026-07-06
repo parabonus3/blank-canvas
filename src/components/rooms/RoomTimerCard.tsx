@@ -253,6 +253,11 @@ export function RoomTimerCard({ roomId }: Props) {
             projects={projects}
             placeholder={t("timer.select_project", "Escolher projeto")}
           />
+          <RoomChallengePicker
+            roomId={roomId}
+            value={selectedChallenge}
+            onChange={setSelectedChallenge}
+          />
           <Button
             size="lg"
             className="w-full font-semibold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
