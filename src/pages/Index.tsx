@@ -568,7 +568,12 @@ export default function Index() {
                     value={selectedRoom}
                     onValueChange={setSelectedRoom}
                   />
-                  <RoomChallengeBanner roomId={selectedRoom} />
+                  <RoomChallengePicker
+                    roomId={selectedRoom}
+                    value={selectedChallenge}
+                    onChange={setSelectedChallenge}
+                  />
+                  <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
