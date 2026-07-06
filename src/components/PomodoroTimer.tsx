@@ -22,6 +22,7 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
   const { data: projects } = useProjects();
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [selectedRoom, setSelectedRoom] = useState<string>('none');
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
   const {
