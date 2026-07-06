@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { StopTimerDialog } from "@/components/StopTimerDialog";
 import { RoomPicker } from "@/components/RoomPicker";
 import { RoomChallengeBanner } from "@/components/timer/RoomChallengeBanner";
+import { RoomChallengePicker } from "@/components/timer/RoomChallengePicker";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
 import { InactivityCheckModal, resetInactivityCheck, initInactivityCheck } from "@/components/InactivityCheckModal";
