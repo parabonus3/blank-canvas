@@ -18,7 +18,7 @@ function fmtMin(seconds: number) {
   return `${m}min`;
 }
 
-export function RoomChallengeBanner({ roomId }: Props) {
+export function RoomChallengeBanner({ roomId, activeChallengeId }: Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { data: profile } = useProfile();
