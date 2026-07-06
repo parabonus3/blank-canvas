@@ -389,9 +389,9 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
     showNotification
   ]);
 
-  const start = useCallback(async (projectId: string, roomId?: string) => {
+  const start = useCallback(async (projectId: string, roomId?: string, challengeId?: string | null) => {
     playPageStart();
-    const entry = await createPomodoroEntry(projectId, 'work', roomId || null);
+    const entry = await createPomodoroEntry(projectId, 'work', roomId || null, challengeId || null);
     const duration = config.workDuration;
 
     // Set timer active in room if selected
@@ -419,6 +419,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
       totalPausedTime: 0,
       pauseStartTime: null,
       activeRoomId: roomId || null,
+      activeChallengeId: roomId ? (challengeId || null) : null,
     });
   }, [config.workDuration, createPomodoroEntry, user]);
 
