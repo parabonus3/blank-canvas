@@ -35,7 +35,7 @@ interface PomodoroConfig {
 interface PomodoroContextType {
   state: PomodoroState;
   config: PomodoroConfig;
-  start: (projectId: string, roomId?: string) => void;
+  start: (projectId: string, roomId?: string, challengeId?: string | null) => void;
   pause: () => void;
   resume: () => void;
   stop: () => void;
