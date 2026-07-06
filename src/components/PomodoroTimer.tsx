@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProjectPicker } from '@/components/ProjectPicker';
 import { RoomPicker } from '@/components/RoomPicker';
 import { RoomChallengeBanner } from '@/components/timer/RoomChallengeBanner';
+import { RoomChallengePicker } from '@/components/timer/RoomChallengePicker';
 import { Progress } from '@/components/ui/progress';
 import { Play, Pause, Square, SkipForward, RotateCcw, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,7 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
   const { data: projects } = useProjects();
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [selectedRoom, setSelectedRoom] = useState<string>('none');
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
   const {
@@ -59,7 +61,7 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
   const handleStart = () => {
     if (selectedProject) {
       const roomId = selectedRoom !== 'none' ? selectedRoom : undefined;
-      start(selectedProject, roomId);
+      start(selectedProject, roomId, roomId ? selectedChallenge : null);
     }
   };
 
@@ -155,7 +157,12 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
               value={selectedRoom}
               onValueChange={setSelectedRoom}
             />
-            <RoomChallengeBanner roomId={selectedRoom} />
+            <RoomChallengePicker
+              roomId={selectedRoom}
+              value={selectedChallenge}
+              onChange={setSelectedChallenge}
+            />
+            <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
           </div>
         )}
 

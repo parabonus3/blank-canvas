@@ -11,6 +11,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { useActiveTimeEntry, useStartTimer, useStopTimer } from "@/hooks/useTimeEntries";
 import { useAmbientSoundContext } from "@/contexts/AmbientSoundContext";
 import { useRoomChallenges } from "@/hooks/useRoomChallenges";
+import { RoomChallengePicker } from "@/components/timer/RoomChallengePicker";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -36,6 +37,7 @@ export function RoomTimerCard({ roomId }: Props) {
   const stop = useStopTimer();
 
   const [projectId, setProjectId] = useState<string>("");
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [showSounds, setShowSounds] = useState(false);
   const [fsOpen, setFsOpen] = useState(false);
@@ -89,7 +91,7 @@ export function RoomTimerCard({ roomId }: Props) {
     if (!projectId) return;
     resetPause();
     localStorage.setItem("lastProjectId", projectId);
-    start.mutate({ projectId, roomId });
+    start.mutate({ projectId, roomId, challengeId: selectedChallenge });
   };
 
   const handleStop = () => {
@@ -250,6 +252,11 @@ export function RoomTimerCard({ roomId }: Props) {
             onValueChange={setProjectId}
             projects={projects}
             placeholder={t("timer.select_project", "Escolher projeto")}
+          />
+          <RoomChallengePicker
+            roomId={roomId}
+            value={selectedChallenge}
+            onChange={setSelectedChallenge}
           />
           <Button
             size="lg"

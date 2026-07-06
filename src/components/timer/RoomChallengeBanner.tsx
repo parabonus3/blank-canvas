@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 
 interface Props {
   roomId?: string;
+  /** When set, only this challenge shows the "counting now" highlight. */
+  activeChallengeId?: string | null;
 }
 
 function fmtMin(seconds: number) {
@@ -16,7 +18,7 @@ function fmtMin(seconds: number) {
   return `${m}min`;
 }
 
-export function RoomChallengeBanner({ roomId }: Props) {
+export function RoomChallengeBanner({ roomId, activeChallengeId }: Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { data: profile } = useProfile();
@@ -42,14 +44,18 @@ export function RoomChallengeBanner({ roomId }: Props) {
         const remainingSec = Math.max(0, targetSec - seconds);
         const pct = Math.min(100, (seconds / targetSec) * 100);
 
+        const isActive = !activeChallengeId || activeChallengeId === c.challenge_id;
+
         return (
           <div
             key={c.challenge_id}
             className={cn(
-              "rounded-lg border p-2.5 sm:p-3 flex items-center gap-2.5 text-xs sm:text-sm",
+              "rounded-lg border p-2.5 sm:p-3 flex items-center gap-2.5 text-xs sm:text-sm transition-opacity",
               completed
                 ? "border-green-500/40 bg-green-500/10"
-                : "border-primary/30 bg-primary/5",
+                : isActive
+                ? "border-primary/30 bg-primary/5"
+                : "border-border bg-muted/30 opacity-60",
             )}
           >
             <span className="text-base shrink-0">{c.emoji}</span>

@@ -20,6 +20,7 @@ export interface PomodoroState {
   phaseStartTime: number | null;
   phaseDuration: number;
   activeRoomId: string | null;
+  activeChallengeId: string | null;
 }
 
 interface PomodoroConfig {
@@ -34,7 +35,7 @@ interface PomodoroConfig {
 interface PomodoroContextType {
   state: PomodoroState;
   config: PomodoroConfig;
-  start: (projectId: string, roomId?: string) => void;
+  start: (projectId: string, roomId?: string, challengeId?: string | null) => void;
   pause: () => void;
   resume: () => void;
   stop: () => void;
@@ -57,6 +58,7 @@ const initialState: PomodoroState = {
   phaseStartTime: null,
   phaseDuration: 0,
   activeRoomId: null,
+  activeChallengeId: null,
 };
 
 const defaultConfig: PomodoroConfig = {
@@ -171,7 +173,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
   }, [playNotificationSound]);
 
   // Create time entry for work phase
-  const createPomodoroEntry = useCallback(async (projectId: string, pomodoroType: string, roomId?: string | null) => {
+  const createPomodoroEntry = useCallback(async (projectId: string, pomodoroType: string, roomId?: string | null, challengeId?: string | null) => {
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -183,6 +185,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
         is_pomodoro: true,
         pomodoro_type: pomodoroType,
         room_id: roomId || null,
+        challenge_id: roomId ? (challengeId || null) : null,
       } as any)
       .select()
       .single();
@@ -333,7 +336,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
       let newActiveEntryId: string | null = null;
 
       if (nextPhase === 'work' && state.currentProjectId) {
-        const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
+        const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId, state.activeChallengeId);
         newActiveEntryId = entry?.id || null;
       }
 
@@ -386,9 +389,9 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
     showNotification
   ]);
 
-  const start = useCallback(async (projectId: string, roomId?: string) => {
+  const start = useCallback(async (projectId: string, roomId?: string, challengeId?: string | null) => {
     playPageStart();
-    const entry = await createPomodoroEntry(projectId, 'work', roomId || null);
+    const entry = await createPomodoroEntry(projectId, 'work', roomId || null, challengeId || null);
     const duration = config.workDuration;
 
     // Set timer active in room if selected
@@ -416,6 +419,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
       totalPausedTime: 0,
       pauseStartTime: null,
       activeRoomId: roomId || null,
+      activeChallengeId: roomId ? (challengeId || null) : null,
     });
   }, [config.workDuration, createPomodoroEntry, user]);
 
@@ -513,7 +517,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
     let newActiveEntryId: string | null = null;
 
     if (nextPhase === 'work' && state.currentProjectId) {
-      const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
+      const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId, state.activeChallengeId);
       newActiveEntryId = entry?.id || null;
     }
 
@@ -600,7 +604,7 @@ export function PomodoroProvider({ children }: { children: ReactNode }) {
       <PomodoroContext.Provider value={{
         state: initialState,
         config: defaultConfig,
-        start: noopAsync as (projectId: string, roomId?: string) => void,
+        start: noopAsync as (projectId: string, roomId?: string, challengeId?: string | null) => void,
         pause: noop,
         resume: noop,
         stop: noopAsync as () => void,

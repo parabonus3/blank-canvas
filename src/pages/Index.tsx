@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { StopTimerDialog } from "@/components/StopTimerDialog";
 import { RoomPicker } from "@/components/RoomPicker";
 import { RoomChallengeBanner } from "@/components/timer/RoomChallengeBanner";
+import { RoomChallengePicker } from "@/components/timer/RoomChallengePicker";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
 import { InactivityCheckModal, resetInactivityCheck, initInactivityCheck } from "@/components/InactivityCheckModal";
@@ -56,6 +57,7 @@ export default function Index() {
   const [timerMode, setTimerMode] = useState<"normal" | "pomodoro">("normal");
   const [showStopDialog, setShowStopDialog] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<string>("none");
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
@@ -380,7 +382,7 @@ export default function Index() {
       resetInactivityCheck(); // Clear stale check from previous session
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
-      startTimer.mutate({ projectId: selectedProject, roomId });
+      startTimer.mutate({ projectId: selectedProject, roomId, challengeId: roomId ? selectedChallenge : null });
     }
   };
 
@@ -566,7 +568,12 @@ export default function Index() {
                     value={selectedRoom}
                     onValueChange={setSelectedRoom}
                   />
-                  <RoomChallengeBanner roomId={selectedRoom} />
+                  <RoomChallengePicker
+                    roomId={selectedRoom}
+                    value={selectedChallenge}
+                    onChange={setSelectedChallenge}
+                  />
+                  <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
