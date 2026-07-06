@@ -112,7 +112,7 @@ export function useStartTimer() {
   const { toast } = useToast();
   
   return useMutation({
-    mutationFn: async ({ projectId, roomId }: { projectId: string; roomId?: string }) => {
+    mutationFn: async ({ projectId, roomId, challengeId }: { projectId: string; roomId?: string; challengeId?: string | null }) => {
       if (!user) throw new Error("User not authenticated");
       
       // Check if there's already an active timer
@@ -134,6 +134,7 @@ export function useStartTimer() {
           project_id: projectId,
           start_time: new Date().toISOString(),
           room_id: roomId || null,
+          challenge_id: roomId ? (challengeId || null) : null,
         } as any)
         .select(`
           *,
