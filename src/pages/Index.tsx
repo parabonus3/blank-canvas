@@ -382,7 +382,7 @@ export default function Index() {
       resetInactivityCheck(); // Clear stale check from previous session
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
-      startTimer.mutate({ projectId: selectedProject, roomId });
+      startTimer.mutate({ projectId: selectedProject, roomId, challengeId: roomId ? selectedChallenge : null });
     }
   };
 
