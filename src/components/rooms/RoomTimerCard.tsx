@@ -37,6 +37,7 @@ export function RoomTimerCard({ roomId }: Props) {
   const stop = useStopTimer();
 
   const [projectId, setProjectId] = useState<string>("");
+  const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [showSounds, setShowSounds] = useState(false);
   const [fsOpen, setFsOpen] = useState(false);
