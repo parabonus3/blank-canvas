@@ -157,7 +157,12 @@ export function PomodoroTimer({ className }: PomodoroTimerProps) {
               value={selectedRoom}
               onValueChange={setSelectedRoom}
             />
-            <RoomChallengeBanner roomId={selectedRoom} />
+            <RoomChallengePicker
+              roomId={selectedRoom}
+              value={selectedChallenge}
+              onChange={setSelectedChallenge}
+            />
+            <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
           </div>
         )}
 
