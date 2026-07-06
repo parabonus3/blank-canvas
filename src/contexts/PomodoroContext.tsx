@@ -604,7 +604,7 @@ export function PomodoroProvider({ children }: { children: ReactNode }) {
       <PomodoroContext.Provider value={{
         state: initialState,
         config: defaultConfig,
-        start: noopAsync as (projectId: string, roomId?: string) => void,
+        start: noopAsync as (projectId: string, roomId?: string, challengeId?: string | null) => void,
         pause: noop,
         resume: noop,
         stop: noopAsync as () => void,
