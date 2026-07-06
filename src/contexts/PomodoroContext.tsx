@@ -58,6 +58,7 @@ const initialState: PomodoroState = {
   phaseStartTime: null,
   phaseDuration: 0,
   activeRoomId: null,
+  activeChallengeId: null,
 };
 
 const defaultConfig: PomodoroConfig = {
