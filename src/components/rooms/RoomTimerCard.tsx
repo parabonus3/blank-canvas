@@ -91,7 +91,7 @@ export function RoomTimerCard({ roomId }: Props) {
     if (!projectId) return;
     resetPause();
     localStorage.setItem("lastProjectId", projectId);
-    start.mutate({ projectId, roomId });
+    start.mutate({ projectId, roomId, challengeId: selectedChallenge });
   };
 
   const handleStop = () => {
