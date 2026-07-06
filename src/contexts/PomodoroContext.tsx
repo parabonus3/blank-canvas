@@ -336,7 +336,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
       let newActiveEntryId: string | null = null;
 
       if (nextPhase === 'work' && state.currentProjectId) {
-        const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
+        const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId, state.activeChallengeId);
         newActiveEntryId = entry?.id || null;
       }
 
@@ -517,7 +517,7 @@ function PomodoroProviderInner({ children }: { children: ReactNode }) {
     let newActiveEntryId: string | null = null;
 
     if (nextPhase === 'work' && state.currentProjectId) {
-      const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId);
+      const entry = await createPomodoroEntry(state.currentProjectId, 'work', state.activeRoomId, state.activeChallengeId);
       newActiveEntryId = entry?.id || null;
     }
 
