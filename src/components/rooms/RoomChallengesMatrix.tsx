@@ -1,27 +1,36 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pencil, Trash2, Flame, Search, ChevronDown, HelpCircle, CheckCircle2, Circle, Clock, AlertTriangle } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Flame,
+  Search,
+  HelpCircle,
+  CheckCircle2,
+  Circle,
+  Clock,
+  AlertTriangle,
+  MoreVertical,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { AvatarFlair } from "@/components/avatar/AvatarFlair";
 import { cn } from "@/lib/utils";
 import type { RoomChallenge, RoomChallengeMember } from "@/hooks/useRoomChallenges";
@@ -36,8 +45,10 @@ interface Props {
 
 type Filter = "all" | "done_today" | "missing" | "not_started";
 
+const COLLAPSE_THRESHOLD = 6; // desafios acima disso colapsam por padrão dentro do card
+
 // -----------------------------------------------------------------------------
-// Cell status helpers
+// Status helpers
 // -----------------------------------------------------------------------------
 
 function memberChallengeStatus(m: RoomChallengeMember) {
@@ -48,7 +59,16 @@ function memberChallengeStatus(m: RoomChallengeMember) {
   return "not_started" as const;
 }
 
-function StatusIcon({ status, className }: { status: ReturnType<typeof memberChallengeStatus>; className?: string }) {
+type Status = ReturnType<typeof memberChallengeStatus>;
+
+const statusRank: Record<Status, number> = {
+  at_risk: 0,
+  in_progress: 1,
+  not_started: 2,
+  done: 3,
+};
+
+function StatusIcon({ status, className }: { status: Status; className?: string }) {
   const base = cn("h-3.5 w-3.5 shrink-0", className);
   if (status === "done") return <CheckCircle2 className={cn(base, "text-green-500")} />;
   if (status === "in_progress") return <Clock className={cn(base, "text-primary")} />;
@@ -60,14 +80,27 @@ function StatusIcon({ status, className }: { status: ReturnType<typeof memberCha
 // Public component
 // -----------------------------------------------------------------------------
 
-export function RoomChallengesMatrix({ challenges, isOwner, onEdit, onDelete, onOpenMember }: Props) {
+export function RoomChallengesMatrix({
+  challenges,
+  isOwner,
+  onEdit,
+  onDelete,
+  onOpenMember,
+}: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
 
-  // Union of members across all challenges (some members might only appear in some).
   const memberIndex = useMemo(() => {
-    const map = new Map<string, { user_id: string; display_name: string | null; avatar_url: string | null; avatar_flair: string | null }>();
+    const map = new Map<
+      string,
+      {
+        user_id: string;
+        display_name: string | null;
+        avatar_url: string | null;
+        avatar_flair: string | null;
+      }
+    >();
     for (const c of challenges) {
       for (const m of c.members) {
         if (!map.has(m.user_id)) {
@@ -83,7 +116,6 @@ export function RoomChallengesMatrix({ challenges, isOwner, onEdit, onDelete, on
     return map;
   }, [challenges]);
 
-  // For each member, the map of challenge_id → member data (or null)
   type Row = {
     user_id: string;
     display_name: string | null;
@@ -134,7 +166,15 @@ export function RoomChallengesMatrix({ challenges, isOwner, onEdit, onDelete, on
   return (
     <TooltipProvider delayDuration={200}>
       <div className="space-y-3">
-        {/* Filter bar */}
+        {/* Chips resumo por desafio */}
+        <ChallengeSummaryChips
+          challenges={challenges}
+          isOwner={isOwner}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+
+        {/* Filtros + busca */}
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex flex-wrap gap-1">
             {(["all", "done_today", "missing", "not_started"] as Filter[]).map((f) => (
@@ -176,58 +216,37 @@ export function RoomChallengesMatrix({ challenges, isOwner, onEdit, onDelete, on
             </TooltipTrigger>
             <TooltipContent side="left" className="text-[11px] leading-relaxed max-w-[240px]">
               <div className="space-y-1">
-                <div className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-green-500" /> {t("rooms.challenges.legend_done", "Meta batida hoje")}</div>
-                <div className="flex items-center gap-2"><Clock className="h-3 w-3 text-primary" /> {t("rooms.challenges.legend_in_progress", "Em andamento")}</div>
-                <div className="flex items-center gap-2"><AlertTriangle className="h-3 w-3 text-amber-500" /> {t("rooms.challenges.legend_at_risk", "Faltou dias seguidos")}</div>
-                <div className="flex items-center gap-2"><Circle className="h-3 w-3 text-muted-foreground/60" /> {t("rooms.challenges.legend_not_started", "Não começou")}</div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-3 w-3 text-green-500" />{" "}
+                  {t("rooms.challenges.legend_done", "Meta batida hoje")}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-3 w-3 text-primary" />{" "}
+                  {t("rooms.challenges.legend_in_progress", "Em andamento")}
+                </div>
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-3 w-3 text-amber-500" />{" "}
+                  {t("rooms.challenges.legend_at_risk", "Faltou dias seguidos")}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Circle className="h-3 w-3 text-muted-foreground/60" />{" "}
+                  {t("rooms.challenges.legend_not_started", "Não começou")}
+                </div>
               </div>
             </TooltipContent>
           </Tooltip>
         </div>
 
-        {/* Desktop: matrix table */}
-        <div className="hidden md:block">
-          <MatrixTable
-            challenges={challenges}
-            rows={filtered}
-            isOwner={isOwner}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onOpenMember={onOpenMember}
-          />
-        </div>
-
-        {/* Mobile: tabs */}
-        <div className="md:hidden">
-          <Tabs defaultValue="per_challenge" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 h-9">
-              <TabsTrigger value="per_challenge" className="text-xs">
-                {t("rooms.challenges.tab_per_challenge", "Por desafio")}
-              </TabsTrigger>
-              <TabsTrigger value="per_member" className="text-xs">
-                {t("rooms.challenges.tab_per_member", "Por membro")}
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="per_challenge" className="mt-3">
-              <MobilePerChallenge
-                challenges={challenges}
-                filteredMemberIds={new Set(filtered.map((r) => r.user_id))}
-                isOwner={isOwner}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onOpenMember={onOpenMember}
-              />
-            </TabsContent>
-
-            <TabsContent value="per_member" className="mt-3">
-              <MobilePerMember
-                challenges={challenges}
-                rows={filtered}
-                onOpenMember={onOpenMember}
-              />
-            </TabsContent>
-          </Tabs>
+        {/* Grid responsiva de cards de membro */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          {filtered.map((r) => (
+            <MemberCard
+              key={r.user_id}
+              row={r}
+              challenges={challenges}
+              onOpenMember={onOpenMember}
+            />
+          ))}
         </div>
 
         {filtered.length === 0 && (
@@ -254,273 +273,88 @@ function defaultFilterLabel(f: Filter) {
 }
 
 // -----------------------------------------------------------------------------
-// Desktop matrix
+// Chips resumo por desafio (substitui o cabeçalho de colunas)
 // -----------------------------------------------------------------------------
 
-function MatrixTable({
+function ChallengeSummaryChips({
   challenges,
-  rows,
   isOwner,
   onEdit,
   onDelete,
-  onOpenMember,
 }: {
   challenges: RoomChallenge[];
-  rows: Array<{
-    user_id: string;
-    display_name: string | null;
-    avatar_url: string | null;
-    avatar_flair: string | null;
-    doneToday: number;
-    totalSecondsToday: number;
-    perChallenge: Map<string, RoomChallengeMember | null>;
-  }>;
   isOwner: boolean;
   onEdit: (c: RoomChallenge) => void;
   onDelete: (c: RoomChallenge) => void;
-  onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
 }) {
   const { t } = useTranslation();
-
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="w-full min-w-max text-sm border-separate border-spacing-0">
-        <thead>
-          <tr className="bg-muted/40">
-            <th className="sticky left-0 z-20 bg-muted/40 text-left px-3 py-2 border-b border-border font-medium text-xs text-muted-foreground">
-              {t("rooms.challenges.col_member", "Membro")}
-            </th>
-            {challenges.map((c) => {
-              const done = c.members.filter((m) => m.completed_current).length;
-              const pct = c.members.length > 0 ? Math.round((done / c.members.length) * 100) : 0;
-              return (
-                <th key={c.challenge_id} className="px-3 py-2 border-b border-border align-top min-w-[180px]">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-base leading-none">{c.emoji}</span>
-                        <span className="font-medium text-xs truncate max-w-[130px]">{c.title}</span>
-                      </div>
-                      <div className="text-[10px] text-muted-foreground mt-0.5">
-                        {c.target_minutes}min · {done}/{c.members.length} ({pct}%)
-                      </div>
-                    </div>
-                    {isOwner && (
-                      <div className="flex gap-0.5 shrink-0">
-                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => onEdit(c)}>
-                          <Pencil className="h-3 w-3" />
-                        </Button>
-                        <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive" onClick={() => onDelete(c)}>
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                  <Progress value={pct} className="h-1 mt-1.5" />
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.user_id} className="hover:bg-accent/30 transition-colors">
-              <td className="sticky left-0 z-10 bg-card px-3 py-2 border-b border-border">
-                <div className="flex items-center gap-2 min-w-0">
-                  <AvatarFlair tier="free" flairId={r.avatar_flair}>
-                    <Avatar className="h-7 w-7 shrink-0">
-                      <AvatarImage src={r.avatar_url || undefined} />
-                      <AvatarFallback className="text-[10px]">
-                        {(r.display_name || "?").slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </AvatarFlair>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium truncate max-w-[140px]">{r.display_name || "—"}</p>
-                    {r.doneToday > 0 && (
-                      <p className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                        <Flame className="h-2.5 w-2.5 text-orange-500" />
-                        {r.doneToday}/{challenges.length}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </td>
-              {challenges.map((c) => {
-                const m = r.perChallenge.get(c.challenge_id);
-                if (!m) {
-                  return (
-                    <td key={c.challenge_id} className="px-3 py-2 border-b border-border text-center text-[10px] text-muted-foreground/50">
-                      —
-                    </td>
-                  );
-                }
-                const status = memberChallengeStatus(m);
-                const targetSec = c.target_minutes * 60;
-                const pct = Math.min(100, Math.round((m.seconds_current / targetSec) * 100));
-                const min = Math.floor(m.seconds_current / 60);
-                return (
-                  <td key={c.challenge_id} className="px-3 py-2 border-b border-border align-middle">
-                    <button
-                      onClick={() => onOpenMember(c, m)}
-                      className={cn(
-                        "w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors",
-                        "hover:bg-accent",
-                        status === "done" && "bg-green-500/10",
-                        status === "at_risk" && "bg-amber-500/10",
-                      )}
-                      aria-label={`${r.display_name} — ${c.title} — ${min} de ${c.target_minutes}min`}
-                    >
-                      <StatusIcon status={status} />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline justify-between gap-1">
-                          <span className="text-[11px] font-medium tabular-nums">
-                            {min}/{c.target_minutes}m
-                          </span>
-                          <span className="text-[10px] text-muted-foreground tabular-nums">{pct}%</span>
-                        </div>
-                        <div className="mt-0.5 h-1 rounded-full bg-muted overflow-hidden">
-                          <div
-                            className={cn(
-                              "h-full transition-all",
-                              status === "done" ? "bg-green-500" : "bg-primary",
-                            )}
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                      </div>
-                    </button>
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-// -----------------------------------------------------------------------------
-// Mobile: swipeable carousel per challenge
-// -----------------------------------------------------------------------------
-
-function MobilePerChallenge({
-  challenges,
-  filteredMemberIds,
-  isOwner,
-  onEdit,
-  onDelete,
-  onOpenMember,
-}: {
-  challenges: RoomChallenge[];
-  filteredMemberIds: Set<string>;
-  isOwner: boolean;
-  onEdit: (c: RoomChallenge) => void;
-  onDelete: (c: RoomChallenge) => void;
-  onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
-}) {
-  const { t } = useTranslation();
-
-  return (
-    <div className="flex snap-x snap-mandatory overflow-x-auto gap-3 -mx-1 px-1 pb-2 scroll-smooth">
-      {challenges.map((c, i) => {
+    <div className="flex flex-wrap gap-1.5">
+      {challenges.map((c) => {
         const done = c.members.filter((m) => m.completed_current).length;
-        const pct = c.members.length > 0 ? Math.round((done / c.members.length) * 100) : 0;
-        const targetSec = c.target_minutes * 60;
-        const members = c.members.filter((m) => filteredMemberIds.has(m.user_id));
+        const total = c.members.length;
+        const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        const chip = (
+          <div
+            className={cn(
+              "group inline-flex items-center gap-1.5 rounded-full border pl-1.5 pr-2 py-1 text-[11px] max-w-full",
+              pct === 100
+                ? "border-green-500/30 bg-green-500/10"
+                : "border-border bg-muted/30",
+            )}
+          >
+            <span className="text-sm leading-none">{c.emoji}</span>
+            <span className="font-medium truncate max-w-[120px] sm:max-w-[160px]">
+              {c.title}
+            </span>
+            <span className="text-muted-foreground tabular-nums shrink-0">
+              {done}/{total}
+            </span>
+            <span
+              className={cn(
+                "tabular-nums font-medium shrink-0",
+                pct === 100 ? "text-green-600 dark:text-green-400" : "text-primary",
+              )}
+            >
+              {pct}%
+            </span>
+            {isOwner && <MoreVertical className="h-3 w-3 text-muted-foreground shrink-0" />}
+          </div>
+        );
+
+        if (!isOwner) return <div key={c.challenge_id}>{chip}</div>;
 
         return (
-          <div
-            key={c.challenge_id}
-            className="snap-start shrink-0 w-full rounded-lg border border-border bg-muted/20 p-3 space-y-3"
-          >
-            {/* Header */}
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex items-start gap-2 min-w-0">
-                <span className="text-2xl shrink-0">{c.emoji}</span>
-                <div className="min-w-0">
-                  <p className="font-medium text-sm truncate">{c.title}</p>
-                  <p className="text-[11px] text-muted-foreground">
-                    {c.period_type === "daily"
-                      ? t("rooms.challenges.period_daily_short", "Diário")
-                      : t("rooms.challenges.period_weekly_short", "Semanal")}{" "}
-                    · {c.target_minutes}min
-                    {c.duration_days ? ` · ${c.duration_days}d` : ""}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <span className="text-[10px] text-muted-foreground">
-                  {i + 1}/{challenges.length}
-                </span>
-                {isOwner && (
-                  <>
-                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => onEdit(c)}>
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => onDelete(c)}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Room progress */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-muted-foreground">
-                  {t("rooms.challenges.completed_today", "{{done}} de {{total}} bateram hoje", { done, total: c.members.length })}
-                </span>
-                <span className="font-medium tabular-nums">{pct}%</span>
-              </div>
-              <Progress value={pct} className="h-1.5" />
-            </div>
-
-            {/* Compact member list */}
-            <div className="space-y-1">
-              {members.map((m) => {
-                const status = memberChallengeStatus(m);
-                const p = Math.min(100, Math.round((m.seconds_current / targetSec) * 100));
-                const min = Math.floor(m.seconds_current / 60);
-                return (
-                  <button
-                    key={m.user_id}
-                    onClick={() => onOpenMember(c, m)}
-                    className={cn(
-                      "w-full flex items-center gap-2 rounded-md border border-border bg-card px-2 py-1.5 text-left transition-colors",
-                      status === "done" && "bg-green-500/10 border-green-500/30",
-                    )}
-                  >
-                    <AvatarFlair tier="free" flairId={m.avatar_flair} compact>
-                      <Avatar className="h-6 w-6 shrink-0">
-                        <AvatarImage src={m.avatar_url || undefined} />
-                        <AvatarFallback className="text-[9px]">
-                          {(m.display_name || "?").slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </AvatarFlair>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-xs font-medium truncate">{m.display_name || "—"}</span>
-                        <span className="text-[10px] text-muted-foreground tabular-nums">
-                          {min}/{c.target_minutes}m
-                        </span>
-                      </div>
-                      <div className="mt-0.5 h-1 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className={cn("h-full", status === "done" ? "bg-green-500" : "bg-primary")}
-                          style={{ width: `${p}%` }}
-                        />
-                      </div>
-                    </div>
-                    <StatusIcon status={status} />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <Popover key={c.challenge_id}>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-full"
+                aria-label={c.title}
+              >
+                {chip}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-44 p-1">
+              <button
+                type="button"
+                onClick={() => onEdit(c)}
+                className="w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded-md hover:bg-accent"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                {t("common.edit", "Editar")}
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete(c)}
+                className="w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded-md hover:bg-accent text-destructive"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {t("common.delete", "Excluir")}
+              </button>
+            </PopoverContent>
+          </Popover>
         );
       })}
     </div>
@@ -528,16 +362,15 @@ function MobilePerChallenge({
 }
 
 // -----------------------------------------------------------------------------
-// Mobile: per-member accordion
+// Card por membro (mesmo layout em mobile e desktop)
 // -----------------------------------------------------------------------------
 
-function MobilePerMember({
+function MemberCard({
+  row,
   challenges,
-  rows,
   onOpenMember,
 }: {
-  challenges: RoomChallenge[];
-  rows: Array<{
+  row: {
     user_id: string;
     display_name: string | null;
     avatar_url: string | null;
@@ -545,61 +378,159 @@ function MobilePerMember({
     doneToday: number;
     totalSecondsToday: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
-  }>;
+  };
+  challenges: RoomChallenge[];
   onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
 }) {
+  const { t } = useTranslation();
+  const [expanded, setExpanded] = useState(false);
+
+  // Ordena: at_risk → in_progress → not_started → done, mantém ordem original como desempate.
+  const orderedChallenges = useMemo(() => {
+    return [...challenges].sort((a, b) => {
+      const ma = row.perChallenge.get(a.challenge_id);
+      const mb = row.perChallenge.get(b.challenge_id);
+      const sa = ma ? statusRank[memberChallengeStatus(ma)] : 4;
+      const sb = mb ? statusRank[memberChallengeStatus(mb)] : 4;
+      return sa - sb;
+    });
+  }, [challenges, row.perChallenge]);
+
+  const needsCollapse = orderedChallenges.length >= COLLAPSE_THRESHOLD;
+  const visible = needsCollapse && !expanded ? orderedChallenges.slice(0, 3) : orderedChallenges;
+  const hidden = needsCollapse && !expanded ? orderedChallenges.length - visible.length : 0;
+
+  const totalMin = Math.floor(row.totalSecondsToday / 60);
+  const totalPct =
+    challenges.length > 0 ? Math.round((row.doneToday / challenges.length) * 100) : 0;
+
   return (
-    <div className="space-y-2">
-      {rows.map((r) => (
-        <Collapsible key={r.user_id}>
-          <CollapsibleTrigger asChild>
-            <button className="w-full flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 hover:bg-accent/50 transition-colors">
-              <AvatarFlair tier="free" flairId={r.avatar_flair} compact>
-                <Avatar className="h-7 w-7 shrink-0">
-                  <AvatarImage src={r.avatar_url || undefined} />
-                  <AvatarFallback className="text-[10px]">
-                    {(r.display_name || "?").slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </AvatarFlair>
-              <div className="min-w-0 flex-1 text-left">
-                <p className="text-xs font-medium truncate">{r.display_name || "—"}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {r.doneToday}/{challenges.length} · {Math.floor(r.totalSecondsToday / 60)}min
-                </p>
+    <div className="rounded-xl border border-border bg-card p-3 space-y-2.5 min-w-0">
+      {/* Header */}
+      <div className="flex items-center gap-2.5 min-w-0">
+        <AvatarFlair tier="free" flairId={row.avatar_flair}>
+          <Avatar className="h-9 w-9 shrink-0">
+            <AvatarImage src={row.avatar_url || undefined} />
+            <AvatarFallback className="text-[11px]">
+              {(row.display_name || "?").slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </AvatarFlair>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold truncate">{row.display_name || "—"}</p>
+          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+            <Flame className="h-3 w-3 text-orange-500" />
+            <span className="tabular-nums">
+              {row.doneToday}/{challenges.length}
+            </span>
+            <span className="opacity-60">·</span>
+            <span className="tabular-nums">
+              {t("rooms.challenges.total_today", "{{n}}min hoje", { n: totalMin })}
+            </span>
+          </p>
+        </div>
+        <div className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground">
+          {totalPct}%
+        </div>
+      </div>
+
+      {/* Lista de desafios */}
+      <div className="space-y-1.5">
+        {visible.map((c) => {
+          const m = row.perChallenge.get(c.challenge_id);
+          if (!m) {
+            return (
+              <div
+                key={c.challenge_id}
+                className="flex items-center gap-2 rounded-md border border-dashed border-border/60 px-2 py-1.5 text-[11px] text-muted-foreground/60"
+              >
+                <span>{c.emoji}</span>
+                <span className="truncate flex-1">{c.title}</span>
+                <span>—</span>
               </div>
-              <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 transition-transform data-[state=open]:rotate-180" />
+            );
+          }
+          return (
+            <ChallengeRow
+              key={c.challenge_id}
+              challenge={c}
+              member={m}
+              onClick={() => onOpenMember(c, m)}
+            />
+          );
+        })}
+      </div>
+
+      {needsCollapse && (
+        <Collapsible open={expanded} onOpenChange={setExpanded}>
+          <CollapsibleContent />
+          <CollapsibleTrigger asChild>
+            <button
+              type="button"
+              className="w-full text-[11px] font-medium text-primary hover:underline py-1"
+            >
+              {expanded
+                ? t("rooms.challenges.see_less", "Ver menos")
+                : t("rooms.challenges.see_more", "Ver mais ({{n}})", { n: hidden })}
             </button>
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-1 space-y-1 pl-2">
-            {challenges.map((c) => {
-              const m = r.perChallenge.get(c.challenge_id);
-              if (!m) return null;
-              const status = memberChallengeStatus(m);
-              const targetSec = c.target_minutes * 60;
-              const p = Math.min(100, Math.round((m.seconds_current / targetSec) * 100));
-              const min = Math.floor(m.seconds_current / 60);
-              return (
-                <button
-                  key={c.challenge_id}
-                  onClick={() => onOpenMember(c, m)}
-                  className={cn(
-                    "w-full flex items-center gap-2 rounded-md border border-border bg-muted/20 px-2 py-1.5",
-                    status === "done" && "bg-green-500/10 border-green-500/30",
-                  )}
-                >
-                  <span className="text-sm">{c.emoji}</span>
-                  <span className="text-xs truncate flex-1 text-left">{c.title}</span>
-                  <StatusIcon status={status} />
-                  <span className="text-[10px] tabular-nums text-muted-foreground">
-                    {min}/{c.target_minutes}m ({p}%)
-                  </span>
-                </button>
-              );
-            })}
-          </CollapsibleContent>
         </Collapsible>
-      ))}
+      )}
     </div>
+  );
+}
+
+function ChallengeRow({
+  challenge,
+  member,
+  onClick,
+}: {
+  challenge: RoomChallenge;
+  member: RoomChallengeMember;
+  onClick: () => void;
+}) {
+  const status = memberChallengeStatus(member);
+  const targetSec = challenge.target_minutes * 60;
+  const pct = Math.min(100, Math.round((member.seconds_current / targetSec) * 100));
+  const min = Math.floor(member.seconds_current / 60);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "w-full flex items-center gap-2 rounded-md border px-2 py-1.5 text-left transition-colors min-h-[40px]",
+        status === "done" && "border-green-500/30 bg-green-500/10",
+        status === "at_risk" && "border-amber-500/30 bg-amber-500/10",
+        status === "in_progress" && "border-primary/25 bg-primary/5",
+        status === "not_started" && "border-border bg-muted/20 hover:bg-accent/40",
+      )}
+      aria-label={`${challenge.title} — ${min}/${challenge.target_minutes}min (${pct}%)`}
+    >
+      <StatusIcon status={status} />
+      <span className="text-sm leading-none shrink-0">{challenge.emoji}</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-[12px] font-medium truncate">{challenge.title}</span>
+          <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
+            {min}/{challenge.target_minutes}m
+            <span className="ml-1 opacity-70">{pct}%</span>
+          </span>
+        </div>
+        <div className="mt-1 h-1 rounded-full bg-muted overflow-hidden">
+          <div
+            className={cn(
+              "h-full transition-all",
+              status === "done"
+                ? "bg-green-500"
+                : status === "at_risk"
+                ? "bg-amber-500"
+                : "bg-primary",
+            )}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+    </button>
   );
 }
