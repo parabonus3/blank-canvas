@@ -301,7 +301,7 @@ export default function RoomDetail() {
                 {/* Room timer — destacado, antes do desafio */}
                 {room && <RoomTimerCard roomId={room.id} />}
 
-                {id && <RoomChallengesCard roomId={id} isOwner={isOwner} />}
+                {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
 
                 {/* Chalkboard section */}
                 <div className="classroom-chalkboard p-5 space-y-4">
@@ -330,12 +330,14 @@ export default function RoomDetail() {
                 </div>
 
 
-                {/* Floor + Desks area */}
-                <div className="classroom-floor rounded-b-xl p-5 pt-8">
-                  <div className="classroom-wall rounded-xl p-3 sm:p-5">
-                    <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
+                {/* Floor + Desks area — hidden when active challenges exist (avoids duplicating members). */}
+                {!hasActiveChallenges && (
+                  <div className="classroom-floor rounded-b-xl p-5 pt-8">
+                    <div className="classroom-wall rounded-xl p-3 sm:p-5">
+                      <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Sidebar */}
