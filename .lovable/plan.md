@@ -1,69 +1,67 @@
 
-# Plano — Matriz de desafios sem scroll horizontal
+## Parte 1 — Desafio obrigatório na sala
 
-## Problema atual
-- Mobile: `MatrixTable` renderiza `overflow-x-auto` + `min-w-max` → scroll horizontal ruim.
-- Desktop: com 5+ desafios a tabela também estoura e vira scroll horizontal.
-- A aba "Por membro" no mobile existe mas não é o padrão nem tem visual profissional.
+**Problema atual:** quando o usuário deixa "Nenhum", o tempo é creditado em **todos** os desafios ativos da sala. Causa raiz confirmada: existem duas versões da função `record_room_challenge_progress` no banco. A antiga (4 argumentos, sem `_challenge_id`) ainda existe e, quando é chamada, entra no loop que credita em cada desafio ativo.
 
-## Direção nova
-Substituir a metáfora de **tabela matricial** por uma lista de **cards de membro** onde os desafios ficam empilhados verticalmente. Um único layout responsivo serve mobile e desktop, com densidade ajustada por breakpoint. Sem scroll horizontal em nenhum caso.
+### Frontend — `RoomChallengePicker`
+- Remover a opção "Nenhum (não contar em desafios)".
+- Se a sala tiver ≥ 1 desafio ativo do qual o usuário é membro:
+  - Auto-selecionar o **primeiro** desafio ativo (ordenado por `created_at`) na primeira vez.
+  - Continuar respeitando a última escolha salva em `localStorage` (por sala).
+  - Nunca emitir `onChange(null)` quando existir pelo menos um desafio disponível.
+- Estilo visual: badge "Obrigatório" discreta ao lado do label, mantendo o design atual.
 
-### Card do membro (padrão em todos os tamanhos)
-```text
-┌───────────────────────────────────────────────┐
-│ [avatar] Nicky              🔥 2/2  ▸ expand │
-│          Total hoje: 66min                    │
-├───────────────────────────────────────────────┤
-│ ✅ 📖 Leitura bíblica            23/10m 100% │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │
-│ ✅ 🙏 Desafio de Oração         43/10m 100% │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │
-│ ⚠ 🎯 Foco profundo               3/60m   5% │
-│ ▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ │
-└───────────────────────────────────────────────┘
-```
-- 1 linha por desafio: `[status] [emoji] [título truncado]  [min/target] [%]` + barra fina.
-- Título do desafio truncado com `...`; nunca quebra layout.
-- Toque/click na linha abre o `ChallengeCalendarModal` (mantém a UX atual do matrix).
-- Anel/avatar mostra progresso agregado (`doneToday/total`).
+### Frontend — bloqueio do play
+- Nos três pontos onde o timer inicia (`src/pages/Index.tsx`, `src/components/PomodoroTimer.tsx`, `src/components/rooms/RoomTimerCard.tsx`):
+  - Se houver sala selecionada **com** desafios ativos e `challengeId` estiver `null`, desabilitar o botão de play com tooltip "Escolha um desafio para começar".
+  - Se não houver desafios ativos na sala, comportamento atual (play livre, nenhum crédito).
 
-### Breakpoints
-- **Mobile (<640px)**: 1 coluna, cards em largura total, densidade compacta (texto `text-xs`, barra `h-1`, padding `p-3`). Sem scroll horizontal.
-- **Tablet (≥640px)**: 2 colunas via `grid-cols-2 gap-3`.
-- **Desktop (≥1024px)**: 2–3 colunas conforme largura (`lg:grid-cols-2 xl:grid-cols-3`). Cada card mantém desafios empilhados — escalável para 4, 8, 20 desafios sem scroll lateral.
+### Backend — remover comportamento "credita em tudo"
+Migração SQL:
+- `DROP FUNCTION public.record_room_challenge_progress(uuid, uuid, integer, timestamptz);` (a assinatura antiga de 4 argumentos).
+- Manter apenas a versão nova com `_challenge_id uuid DEFAULT NULL`.
+- Alterar essa versão para: **se `_challenge_id` for NULL, retornar sem creditar nada** (em vez de creditar todos). Isso protege contra qualquer caller legado.
+- Confirmar que o trigger `trg_time_entry_room_progress` passa `NEW.challenge_id` corretamente.
 
-### Cabeçalho de desafios (novo bloco acima da lista)
-Substitui as "colunas" da tabela por um resumo horizontal de chips **com wrap**:
-```text
-[📖 Leitura 4/18 22%]  [🙏 Oração 3/18 17%]  [🎯 Foco 0/18 0%]  +Novo
-```
-- Wrap natural (`flex flex-wrap gap-2`), nunca gera scroll.
-- Cada chip clicável abre um mini-menu com editar/excluir (owner) e mostra progresso agregado.
-- Owner vê ações inline via popover para não sobrecarregar o card.
+## Parte 2 — Notificações automáticas não chegam
 
-### Filtros e busca
-- Mantém a barra atual (`Todos / Bateram hoje / Faltam / Não começaram`) + busca (auto-visível ≥10 membros).
-- Ordenação: mais desafios batidos hoje → mais tempo total hoje → nome.
+**Diagnóstico:** o edge function `notification-scheduler` existe e está correto, mas **nenhum job de `pg_cron`** o invoca. Por isso o botão "enviar teste" funciona (chama `send-push` direto), mas `streak_risk`, `room_goal_reminder`, `weekly_recap`, etc. nunca disparam.
 
-### Colapsar/expandir (opcional, ativo em ≥ 6 desafios)
-- Quando a sala tiver muitos desafios, o card do membro mostra os 3 primeiros (priorizando "em risco" + "em andamento") e um botão `Ver mais (N)` que expande via `Collapsible`. Evita cards gigantes sem esconder informação.
+### Agendamento do cron
+Usar `supabase--insert` (não migração — contém URL/anon key do projeto) para:
+- Habilitar `pg_cron` e `pg_net` (idempotente).
+- Criar job `invoke-notification-scheduler-hourly` rodando a cada hora (`0 * * * *`), fazendo `net.http_post` para `https://iukwvfyhforubyqgguwl.supabase.co/functions/v1/notification-scheduler` com header `apikey` + `Authorization: Bearer <anon>`.
 
-## Arquivos a alterar
-- `src/components/rooms/RoomChallengesMatrix.tsx` — substituir `MatrixTable`, `MobilePerChallenge`, `MobilePerMember` por:
-  - `ChallengeSummaryChips` (novo, interno)
-  - `MemberCard` (novo, interno) — layout único responsivo
-  - Remover `Tabs` de mobile: layout unificado dispensa alternância.
-- Sem mudanças de backend, RPC, tipos ou hooks (`useRoomChallenges`, `RoomChallengesCard`, `ChallengeCalendarModal` continuam iguais).
-- Traduções: reutilizar chaves existentes; adicionar `rooms.challenges.total_today`, `rooms.challenges.see_more`, `rooms.challenges.see_less` em pt-BR + fallback default nos `t()`.
+### Robustez do scheduler
+Pequenos ajustes em `supabase/functions/notification-scheduler/index.ts`:
+- Adicionar log de resumo por categoria (quantos usuários elegíveis por janela de hora), para diagnóstico futuro nos logs do edge function.
+- Corrigir o `Promise.all` desestruturação (hoje só a última posição é lida em `cleaned`; o resto ignora resultados, ok, mas trocar por `await` sequenciais dentro de try/catch por categoria para uma falha não abortar as outras).
 
-## Detalhes técnicos
-- Container principal: `<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">`.
-- Cada `MemberCard`: `rounded-xl border bg-card p-3 space-y-2` com header sticky-free (não sobrepõe).
-- Linha de desafio: `<button className="w-full flex items-center gap-2 py-1.5">` para manter alvo de toque ≥40px no mobile.
-- Estados de cor via classes já usadas (`bg-green-500/10`, `bg-amber-500/10`); status calculado por `memberChallengeStatus` (reaproveitado).
-- Sem `overflow-x-auto` em nenhum ponto do componente.
-- Preservar `AvatarFlair`, tooltips de legenda e handlers `onEdit/onDelete/onOpenMember`.
+### Verificação pós-deploy
+Após o cron ser aprovado, checar logs do edge function e a tabela `notification_log` na próxima hora cheia para confirmar disparo real (não código — apenas leitura de logs).
 
-## Rollout
-Mudança apenas de UI, drop-in em `RoomChallengesCard`. Nada quebra caso o usuário tenha 1, 2, 5 ou 20 desafios — sempre empilha e faz wrap.
+## Arquivos afetados
+
+**Migração (banco):**
+- `DROP` da assinatura antiga + `CREATE OR REPLACE` da função com early-return quando `_challenge_id IS NULL`.
+
+**Insert direto (cron, não migração):**
+- `pg_cron` job hourly → `notification-scheduler`.
+
+**Frontend:**
+- `src/components/timer/RoomChallengePicker.tsx` — remove "Nenhum", auto-seleciona 1º, badge "Obrigatório".
+- `src/pages/Index.tsx` — desabilita play quando desafio faltando.
+- `src/components/PomodoroTimer.tsx` — idem.
+- `src/components/rooms/RoomTimerCard.tsx` — idem.
+
+**Edge function:**
+- `supabase/functions/notification-scheduler/index.ts` — logs por categoria + isolamento de erros.
+
+**i18n (pt-BR + en-US mínimos):**
+- `rooms.challenges.required_badge` = "Obrigatório"
+- `rooms.challenges.pick_to_start` = "Escolha um desafio para começar"
+
+## Fora do escopo
+- Não mexer no layout do `RoomChallengesMatrix` (já refatorado na iteração anterior).
+- Não alterar RPCs de leitura de desafios (`get_room_challenges_with_status`).
+- Não mexer nas preferências, quiet-hours ou dedup do `send-push` — o problema é apenas ausência de gatilho.
