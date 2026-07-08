@@ -100,6 +100,9 @@ export function RoomChallengesMatrix({
   onEdit,
   onDelete,
   onOpenMember,
+  memberExtras,
+  onOpenProfile,
+  currentUserId,
 }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
