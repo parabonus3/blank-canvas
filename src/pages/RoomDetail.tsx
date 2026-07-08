@@ -18,6 +18,7 @@ import { RoomChat } from "@/components/rooms/RoomChat";
 import { RoomGoalProgress } from "@/components/rooms/RoomGoalProgress";
 import { RoomStatsHeader } from "@/components/rooms/RoomStatsHeader";
 import { RoomChallengesCard } from "@/components/rooms/RoomChallengesCard";
+import { useRoomChallenges } from "@/hooks/useRoomChallenges";
 import { PinnedMessage } from "@/components/rooms/PinnedMessage";
 import { InviteMemberDialog } from "@/components/rooms/InviteMemberDialog";
 import { RoomActivityFeed } from "@/components/rooms/RoomActivityFeed";
