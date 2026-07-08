@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus, Trophy, Clock, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,33 +11,44 @@ import {
 import { useRoomTodayWindow } from "@/hooks/useRoomTodayWindow";
 import { CreateChallengeDialog } from "./CreateChallengeDialog";
 import { ChallengeCalendarModal } from "./ChallengeCalendarModal";
-import { RoomChallengesMatrix } from "./RoomChallengesMatrix";
+import { RoomChallengesMatrix, type MatrixMemberExtra } from "./RoomChallengesMatrix";
+import { MemberProfileModal } from "./MemberProfileModal";
+import type { RoomMember } from "@/hooks/useRoomMembers";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   roomId: string;
   isOwner: boolean;
+  members?: RoomMember[];
 }
 
-function memberStatus(m: RoomChallengeMember, t: (k: string, opts?: any) => string) {
-  if (m.completed_current) {
-    return { label: t("rooms.challenges.status_on_track"), color: "bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30" };
-  }
-  if (m.completed_periods_total === 0) {
-    return { label: t("rooms.challenges.status_not_started"), color: "bg-muted text-muted-foreground border-border" };
-  }
-  const days = m.days_since_completed ?? 0;
-  if (days <= 1) return { label: t("rooms.challenges.status_missed_short", { count: days }), color: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30" };
-  return { label: t("rooms.challenges.status_missed_days", { count: days }), color: "bg-red-500/15 text-red-700 dark:text-red-400 border-red-500/30" };
-}
-
-export function RoomChallengesCard({ roomId, isOwner }: Props) {
+export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { data: challenges = [], isLoading } = useRoomChallenges(roomId);
   const { data: todayWindow } = useRoomTodayWindow(roomId);
   const del = useDeleteChallenge();
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<RoomChallenge | null>(null);
   const [calendarFor, setCalendarFor] = useState<{ c: RoomChallenge; m: RoomChallengeMember } | null>(null);
+  const [profileMember, setProfileMember] = useState<RoomMember | null>(null);
+
+  const memberExtras = useMemo(() => {
+    const map = new Map<string, MatrixMemberExtra>();
+    for (const m of members) {
+      map.set(m.user_id, {
+        plan_tier: (m as any).plan_tier,
+        is_timer_active: m.is_timer_active,
+        last_active_at: m.last_active_at,
+        is_online: m.is_online,
+        total_seconds: m.total_seconds,
+        status_text: m.status_text,
+        role: m.role,
+        avatar_flair_color: (m as any).avatar_flair_color,
+      });
+    }
+    return map;
+  }, [members]);
 
   if (isLoading) return null;
 
@@ -78,7 +89,6 @@ export function RoomChallengesCard({ roomId, isOwner }: Props) {
         </div>
       )}
 
-
       {active.length === 0 ? (
         <p className="text-xs text-muted-foreground py-2">{t("rooms.challenges.empty_owner")}</p>
       ) : (
@@ -90,6 +100,12 @@ export function RoomChallengesCard({ roomId, isOwner }: Props) {
             if (confirm(t("rooms.challenges.delete_confirm"))) del.mutate({ id: c.challenge_id, roomId });
           }}
           onOpenMember={(c, m) => setCalendarFor({ c, m })}
+          memberExtras={memberExtras}
+          currentUserId={user?.id ?? null}
+          onOpenProfile={(userId) => {
+            const found = members.find((m) => m.user_id === userId) || null;
+            if (found) setProfileMember(found);
+          }}
         />
       )}
 
@@ -103,7 +119,13 @@ export function RoomChallengesCard({ roomId, isOwner }: Props) {
           displayName={calendarFor.m.display_name}
         />
       )}
+      <MemberProfileModal
+        open={!!profileMember}
+        onOpenChange={(o) => !o && setProfileMember(null)}
+        member={profileMember}
+        roomId={roomId}
+        totalMembers={members.length}
+      />
     </div>
   );
 }
-

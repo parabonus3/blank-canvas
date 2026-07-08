@@ -15,6 +15,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Shield } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -32,8 +34,36 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { AvatarFlair } from "@/components/avatar/AvatarFlair";
+import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { cn } from "@/lib/utils";
 import type { RoomChallenge, RoomChallengeMember } from "@/hooks/useRoomChallenges";
+
+const PRESENCE_WINDOW_MS = 2 * 60 * 60 * 1000 + 5 * 60 * 1000;
+
+function isActivelyStudying(is_timer_active?: boolean, last_active_at?: string | null) {
+  if (!is_timer_active || !last_active_at) return false;
+  return Date.now() - new Date(last_active_at).getTime() < PRESENCE_WINDOW_MS;
+}
+
+function getMemberTitle(totalSeconds: number, t: (key: string) => string) {
+  const hours = totalSeconds / 3600;
+  if (hours >= 500) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
+  if (hours >= 200) return { label: t("rooms.level_master"), color: "text-purple-500" };
+  if (hours >= 50) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
+  if (hours >= 10) return { label: t("rooms.level_dedicated"), color: "text-green-500" };
+  return { label: t("rooms.level_novice"), color: "text-muted-foreground" };
+}
+
+export interface MatrixMemberExtra {
+  plan_tier?: string;
+  is_timer_active?: boolean;
+  last_active_at?: string | null;
+  is_online?: boolean;
+  total_seconds?: number;
+  status_text?: string | null;
+  role?: string;
+  avatar_flair_color?: string | null;
+}
 
 interface Props {
   challenges: RoomChallenge[];
@@ -41,6 +71,9 @@ interface Props {
   onEdit: (c: RoomChallenge) => void;
   onDelete: (c: RoomChallenge) => void;
   onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
+  memberExtras?: Map<string, MatrixMemberExtra>;
+  onOpenProfile?: (userId: string) => void;
+  currentUserId?: string | null;
 }
 
 type Filter = "all" | "done_today" | "missing" | "not_started";
@@ -86,6 +119,9 @@ export function RoomChallengesMatrix({
   onEdit,
   onDelete,
   onOpenMember,
+  memberExtras,
+  onOpenProfile,
+  currentUserId,
 }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
@@ -245,6 +281,9 @@ export function RoomChallengesMatrix({
               row={r}
               challenges={challenges}
               onOpenMember={onOpenMember}
+              extra={memberExtras?.get(r.user_id)}
+              onOpenProfile={onOpenProfile}
+              isMe={currentUserId === r.user_id}
             />
           ))}
         </div>
@@ -369,6 +408,9 @@ function MemberCard({
   row,
   challenges,
   onOpenMember,
+  extra,
+  onOpenProfile,
+  isMe,
 }: {
   row: {
     user_id: string;
@@ -381,6 +423,9 @@ function MemberCard({
   };
   challenges: RoomChallenge[];
   onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
+  extra?: MatrixMemberExtra;
+  onOpenProfile?: (userId: string) => void;
+  isMe?: boolean;
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -404,21 +449,100 @@ function MemberCard({
   const totalPct =
     challenges.length > 0 ? Math.round((row.doneToday / challenges.length) * 100) : 0;
 
+  const tier = extra?.plan_tier || "free";
+  const isPremium = tier === "premium";
+  const isPro = tier === "pro";
+  const studyingNow = isActivelyStudying(extra?.is_timer_active, extra?.last_active_at);
+  const title = getMemberTitle(extra?.total_seconds ?? 0, t);
+  const clickable = !!onOpenProfile && !isMe;
+  const openProfile = () => {
+    if (clickable) onOpenProfile!(row.user_id);
+  };
+
   return (
-    <div className="rounded-xl border border-border bg-card p-3 space-y-2.5 min-w-0">
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-xl border p-3 space-y-2.5 min-w-0 transition-all",
+        isPremium
+          ? "border-amber-500/40 bg-gradient-to-br from-amber-500/5 via-card to-card shadow-[inset_0_0_0_1px_rgba(251,191,36,0.15)]"
+          : isPro
+          ? "border-blue-500/40 bg-gradient-to-br from-blue-500/5 via-card to-card shadow-[inset_0_0_0_1px_rgba(59,130,246,0.15)]"
+          : "border-border bg-card",
+        isMe && !isPremium && !isPro && "ring-1 ring-primary/30",
+        studyingNow && "ring-2 ring-green-500/40",
+      )}
+    >
       {/* Header */}
       <div className="flex items-center gap-2.5 min-w-0">
-        <AvatarFlair tier="free" flairId={row.avatar_flair}>
-          <Avatar className="h-9 w-9 shrink-0">
-            <AvatarImage src={row.avatar_url || undefined} />
-            <AvatarFallback className="text-[11px]">
-              {(row.display_name || "?").slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </AvatarFlair>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold truncate">{row.display_name || "—"}</p>
-          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+        <button
+          type="button"
+          onClick={openProfile}
+          disabled={!clickable}
+          className={cn(
+            "relative shrink-0 rounded-full",
+            clickable && "cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40",
+          )}
+          aria-label={row.display_name || "member"}
+        >
+          <PlanAvatarRing tier={tier} flairId={row.avatar_flair} compact>
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={row.avatar_url || undefined} />
+              <AvatarFallback className="text-[11px]">
+                {(row.display_name || "?").slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </PlanAvatarRing>
+          {studyingNow ? (
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-background" />
+            </span>
+          ) : extra?.is_online ? (
+            <span className="absolute -bottom-0.5 -right-0.5 inline-flex rounded-full h-2.5 w-2.5 bg-yellow-500 border-2 border-background" />
+          ) : (
+            <span className="absolute -bottom-0.5 -right-0.5 inline-flex rounded-full h-2.5 w-2.5 bg-muted-foreground/40 border-2 border-background" />
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={openProfile}
+          disabled={!clickable}
+          className={cn(
+            "min-w-0 flex-1 text-left",
+            clickable && "cursor-pointer",
+          )}
+        >
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span
+              className={cn(
+                "text-sm font-semibold truncate max-w-[160px]",
+                isPremium &&
+                  "font-extrabold bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 bg-clip-text text-transparent",
+                isPro &&
+                  "font-extrabold bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent",
+                !isPremium && !isPro && (isMe ? "text-primary" : "text-foreground"),
+              )}
+            >
+              {row.display_name || "—"}
+            </span>
+            <PlanBadge tier={tier} />
+            {isMe && (
+              <Badge variant="secondary" className="text-[9px] px-1 py-0 bg-primary/10 text-primary border-0">
+                {t("rooms.you", "Você")}
+              </Badge>
+            )}
+            {extra?.role === "owner" && (
+              <Badge variant="secondary" className="text-[9px] px-1 py-0">
+                👑
+              </Badge>
+            )}
+            {extra?.role === "moderator" && (
+              <Badge variant="secondary" className="text-[9px] px-1 py-0">
+                <Shield className="h-2.5 w-2.5" />
+              </Badge>
+            )}
+          </div>
+          <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
             <Flame className="h-3 w-3 text-orange-500" />
             <span className="tabular-nums">
               {row.doneToday}/{challenges.length}
@@ -428,11 +552,15 @@ function MemberCard({
               {t("rooms.challenges.total_today", "{{n}}min hoje", { n: totalMin })}
             </span>
           </p>
-        </div>
-        <div className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground">
+          <span className={cn("text-[10px] font-medium block mt-0.5", title.color)}>
+            {title.label}
+          </span>
+        </button>
+        <div className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground self-start">
           {totalPct}%
         </div>
       </div>
+
 
       {/* Lista de desafios */}
       <div className="space-y-1.5">

@@ -18,6 +18,7 @@ import { RoomChat } from "@/components/rooms/RoomChat";
 import { RoomGoalProgress } from "@/components/rooms/RoomGoalProgress";
 import { RoomStatsHeader } from "@/components/rooms/RoomStatsHeader";
 import { RoomChallengesCard } from "@/components/rooms/RoomChallengesCard";
+import { useRoomChallenges } from "@/hooks/useRoomChallenges";
 import { PinnedMessage } from "@/components/rooms/PinnedMessage";
 import { InviteMemberDialog } from "@/components/rooms/InviteMemberDialog";
 import { RoomActivityFeed } from "@/components/rooms/RoomActivityFeed";
@@ -171,6 +172,8 @@ export default function RoomDetail() {
 
   const isOwner = room?.owner_id === user?.id;
   const isOwnerOrMod = isOwner || myMember?.role === "moderator";
+  const { data: challengesData = [] } = useRoomChallenges(id);
+  const hasActiveChallenges = challengesData.some((c) => c.is_active);
 
   const handleLeave = async () => {
     if (!id) return;
@@ -298,7 +301,7 @@ export default function RoomDetail() {
                 {/* Room timer — destacado, antes do desafio */}
                 {room && <RoomTimerCard roomId={room.id} />}
 
-                {id && <RoomChallengesCard roomId={id} isOwner={isOwner} />}
+                {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
 
                 {/* Chalkboard section */}
                 <div className="classroom-chalkboard p-5 space-y-4">
@@ -327,12 +330,14 @@ export default function RoomDetail() {
                 </div>
 
 
-                {/* Floor + Desks area */}
-                <div className="classroom-floor rounded-b-xl p-5 pt-8">
-                  <div className="classroom-wall rounded-xl p-3 sm:p-5">
-                    <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
+                {/* Floor + Desks area — hidden when active challenges exist (avoids duplicating members). */}
+                {!hasActiveChallenges && (
+                  <div className="classroom-floor rounded-b-xl p-5 pt-8">
+                    <div className="classroom-wall rounded-xl p-3 sm:p-5">
+                      <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Sidebar */}
