@@ -2198,26 +2198,16 @@ export type Database = {
         Args: { _room_id: string; _user_id: string }
         Returns: undefined
       }
-      record_room_challenge_progress:
-        | {
-            Args: {
-              _at: string
-              _room_id: string
-              _seconds: number
-              _user_id: string
-            }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              _at: string
-              _challenge_id?: string
-              _room_id: string
-              _seconds: number
-              _user_id: string
-            }
-            Returns: undefined
-          }
+      record_room_challenge_progress: {
+        Args: {
+          _at: string
+          _challenge_id?: string
+          _room_id: string
+          _seconds: number
+          _user_id: string
+        }
+        Returns: undefined
+      }
       refresh_last_known_streak: { Args: never; Returns: number }
       resume_time_entry: {
         Args: { _entry_id: string }
