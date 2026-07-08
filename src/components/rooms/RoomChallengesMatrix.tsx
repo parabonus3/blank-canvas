@@ -262,6 +262,9 @@ export function RoomChallengesMatrix({
               row={r}
               challenges={challenges}
               onOpenMember={onOpenMember}
+              extra={memberExtras?.get(r.user_id)}
+              onOpenProfile={onOpenProfile}
+              isMe={currentUserId === r.user_id}
             />
           ))}
         </div>
