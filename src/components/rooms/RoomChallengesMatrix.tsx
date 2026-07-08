@@ -35,12 +35,26 @@ import { AvatarFlair } from "@/components/avatar/AvatarFlair";
 import { cn } from "@/lib/utils";
 import type { RoomChallenge, RoomChallengeMember } from "@/hooks/useRoomChallenges";
 
+export interface MatrixMemberExtra {
+  plan_tier?: string;
+  is_timer_active?: boolean;
+  last_active_at?: string | null;
+  is_online?: boolean;
+  total_seconds?: number;
+  status_text?: string | null;
+  role?: string;
+  avatar_flair_color?: string | null;
+}
+
 interface Props {
   challenges: RoomChallenge[];
   isOwner: boolean;
   onEdit: (c: RoomChallenge) => void;
   onDelete: (c: RoomChallenge) => void;
   onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
+  memberExtras?: Map<string, MatrixMemberExtra>;
+  onOpenProfile?: (userId: string) => void;
+  currentUserId?: string | null;
 }
 
 type Filter = "all" | "done_today" | "missing" | "not_started";
