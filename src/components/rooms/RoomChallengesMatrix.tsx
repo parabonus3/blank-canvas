@@ -15,6 +15,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Shield } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -32,8 +34,25 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { AvatarFlair } from "@/components/avatar/AvatarFlair";
+import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { cn } from "@/lib/utils";
 import type { RoomChallenge, RoomChallengeMember } from "@/hooks/useRoomChallenges";
+
+const PRESENCE_WINDOW_MS = 2 * 60 * 60 * 1000 + 5 * 60 * 1000;
+
+function isActivelyStudying(is_timer_active?: boolean, last_active_at?: string | null) {
+  if (!is_timer_active || !last_active_at) return false;
+  return Date.now() - new Date(last_active_at).getTime() < PRESENCE_WINDOW_MS;
+}
+
+function getMemberTitle(totalSeconds: number, t: (key: string) => string) {
+  const hours = totalSeconds / 3600;
+  if (hours >= 500) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
+  if (hours >= 200) return { label: t("rooms.level_master"), color: "text-purple-500" };
+  if (hours >= 50) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
+  if (hours >= 10) return { label: t("rooms.level_dedicated"), color: "text-green-500" };
+  return { label: t("rooms.level_novice"), color: "text-muted-foreground" };
+}
 
 export interface MatrixMemberExtra {
   plan_tier?: string;
