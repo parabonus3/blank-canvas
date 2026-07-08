@@ -287,22 +287,36 @@ async function cleanupDeadSubscriptions(): Promise<number> {
   return data?.length ?? 0;
 }
 
+async function runSafe(name: string, fn: () => Promise<unknown>): Promise<string> {
+  const t0 = Date.now();
+  try {
+    await fn();
+    const ms = Date.now() - t0;
+    console.info(`[scheduler] ${name} ok (${ms}ms)`);
+    return `${name}:ok`;
+  } catch (e: any) {
+    console.error(`[scheduler] ${name} FAILED`, e?.message || e);
+    return `${name}:err`;
+  }
+}
+
 Deno.serve(async (_req) => {
   try {
     const users = await eligibleUsers();
-    console.info("[scheduler] tick", { users: users.length });
-    const [, , , , , , cleaned] = await Promise.all([
-      processRoomGoalReminders(users),
-      processStreakRisk(users),
-      processChallengeDeadlines(users),
-      processReEngagement(users),
-      processWeeklyRecap(users),
-      processFriendActivity(users),
-      cleanupDeadSubscriptions(),
+    console.info("[scheduler] tick", { users: users.length, utcHour: new Date().getUTCHours() });
+    const results = await Promise.all([
+      runSafe("room_goal", () => processRoomGoalReminders(users)),
+      runSafe("streak_risk", () => processStreakRisk(users)),
+      runSafe("challenge_deadline", () => processChallengeDeadlines(users)),
+      runSafe("re_engagement", () => processReEngagement(users)),
+      runSafe("weekly_recap", () => processWeeklyRecap(users)),
+      runSafe("friend_activity", () => processFriendActivity(users)),
     ]);
-    return new Response(JSON.stringify({ ok: true, users: users.length, cleaned }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    const cleaned = await cleanupDeadSubscriptions().catch(() => 0);
+    return new Response(
+      JSON.stringify({ ok: true, users: users.length, cleaned, results }),
+      { headers: { "Content-Type": "application/json" } },
+    );
   } catch (err: any) {
     console.error("[scheduler] error", err);
     return new Response(JSON.stringify({ error: err.message }), {
