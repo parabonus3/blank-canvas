@@ -34,7 +34,7 @@ export function RoomChallengePicker({ roomId, value, onChange }: Props) {
   const mine = useMemo(
     () =>
       challenges
-        .filter((c) => c.is_active && c.members.some((m) => m.user_id === user?.id))
+        .filter((c) => c.is_active && !c.is_ended && c.members.some((m) => m.user_id === user?.id))
         .sort((a, b) => (a.created_at < b.created_at ? -1 : 1)),
     [challenges, user?.id],
   );
