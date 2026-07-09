@@ -632,16 +632,20 @@ function ChallengeRow({
   const pct = Math.min(100, Math.round((member.seconds_current / targetSec) * 100));
   const min = Math.floor(member.seconds_current / 60);
 
+  const ended = !!challenge.is_ended;
+
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={ended ? undefined : onClick}
+      disabled={ended}
       className={cn(
         "w-full flex items-center gap-2 rounded-md border px-2 py-1.5 text-left transition-colors min-h-[40px]",
-        status === "done" && "border-green-500/30 bg-green-500/10",
-        status === "at_risk" && "border-amber-500/30 bg-amber-500/10",
-        status === "in_progress" && "border-primary/25 bg-primary/5",
-        status === "not_started" && "border-border bg-muted/20 hover:bg-accent/40",
+        ended && "border-muted-foreground/20 bg-muted/20 opacity-60 cursor-not-allowed",
+        !ended && status === "done" && "border-green-500/30 bg-green-500/10",
+        !ended && status === "at_risk" && "border-amber-500/30 bg-amber-500/10",
+        !ended && status === "in_progress" && "border-primary/25 bg-primary/5",
+        !ended && status === "not_started" && "border-border bg-muted/20 hover:bg-accent/40",
       )}
       aria-label={`${challenge.title} — ${min}/${challenge.target_minutes}min (${pct}%)`}
     >
