@@ -26,6 +26,7 @@ export interface RoomChallenge {
   duration_days: number | null;
   start_date: string;
   is_active: boolean;
+  is_ended?: boolean;
   created_at: string;
   members: RoomChallengeMember[];
 }
