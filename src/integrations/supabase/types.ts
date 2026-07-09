@@ -2054,6 +2054,7 @@ export type Database = {
           duration_days: number
           emoji: string
           is_active: boolean
+          is_ended: boolean
           members: Json
           period_type: string
           start_date: string
