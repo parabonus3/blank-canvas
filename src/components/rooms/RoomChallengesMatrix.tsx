@@ -338,26 +338,36 @@ function ChallengeSummaryChips({
           <div
             className={cn(
               "group inline-flex items-center gap-1.5 rounded-full border pl-1.5 pr-2 py-1 text-[11px] max-w-full",
-              pct === 100
+              c.is_ended
+                ? "border-muted-foreground/30 bg-muted/40 opacity-70"
+                : pct === 100
                 ? "border-green-500/30 bg-green-500/10"
                 : "border-border bg-muted/30",
             )}
           >
             <span className="text-sm leading-none">{c.emoji}</span>
-            <span className="font-medium truncate max-w-[120px] sm:max-w-[160px]">
+            <span className={cn("font-medium truncate max-w-[120px] sm:max-w-[160px]", c.is_ended && "line-through")}>
               {c.title}
             </span>
-            <span className="text-muted-foreground tabular-nums shrink-0">
-              {done}/{total}
-            </span>
-            <span
-              className={cn(
-                "tabular-nums font-medium shrink-0",
-                pct === 100 ? "text-green-600 dark:text-green-400" : "text-primary",
-              )}
-            >
-              {pct}%
-            </span>
+            {c.is_ended ? (
+              <span className="text-[9px] uppercase tracking-wide font-semibold text-muted-foreground shrink-0 border border-muted-foreground/30 rounded px-1 py-0.5">
+                {t("rooms.challenges.ended_badge", "Encerrado")}
+              </span>
+            ) : (
+              <>
+                <span className="text-muted-foreground tabular-nums shrink-0">
+                  {done}/{total}
+                </span>
+                <span
+                  className={cn(
+                    "tabular-nums font-medium shrink-0",
+                    pct === 100 ? "text-green-600 dark:text-green-400" : "text-primary",
+                  )}
+                >
+                  {pct}%
+                </span>
+              </>
+            )}
             {isOwner && <MoreVertical className="h-3 w-3 text-muted-foreground shrink-0" />}
           </div>
         );
