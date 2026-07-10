@@ -469,10 +469,30 @@ function MemberCard({
     if (clickable) onOpenProfile!(row.user_id);
   };
 
+  const totalSecondsAllTime = extra?.total_seconds ?? 0;
+  const totalHoursExact = totalSecondsAllTime / 3600;
+  const exactLabel =
+    totalHoursExact >= 1
+      ? `${Math.floor(totalHoursExact)}h ${Math.floor((totalSecondsAllTime % 3600) / 60)}m`
+      : `${Math.floor(totalSecondsAllTime / 60)}m`;
+
+  // Accent color for the top strip. Prefer explicit flair color, then tier, then a
+  // stable hash color so cards with rich avatars (like custom photos) stand out.
+  const stripColor = (() => {
+    if (extra?.avatar_flair_color) return extra.avatar_flair_color;
+    if (isPremium) return "#f59e0b";
+    if (isPro) return "#3b82f6";
+    // deterministic per-user hue
+    let hash = 0;
+    for (let i = 0; i < row.user_id.length; i++) hash = row.user_id.charCodeAt(i) + ((hash << 5) - hash);
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 70%, 55%)`;
+  })();
+
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-xl border p-3 space-y-2.5 min-w-0 transition-all",
+        "relative overflow-hidden rounded-xl border p-3 pt-4 space-y-2.5 min-w-0 transition-all",
         isPremium
           ? "border-amber-500/40 bg-gradient-to-br from-amber-500/5 via-card to-card shadow-[inset_0_0_0_1px_rgba(251,191,36,0.15)]"
           : isPro
@@ -482,8 +502,18 @@ function MemberCard({
         studyingNow && "ring-2 ring-green-500/40",
       )}
     >
+      {/* Colored top strip that fades under the avatar */}
+      <div
+        className="absolute inset-x-0 top-0 h-14 pointer-events-none"
+        style={{
+          background: `linear-gradient(180deg, ${stripColor} 0%, transparent 100%)`,
+          opacity: 0.18,
+        }}
+        aria-hidden
+      />
+
       {/* Header */}
-      <div className="flex items-center gap-2.5 min-w-0">
+      <div className="relative flex items-center gap-3 min-w-0">
         <button
           type="button"
           onClick={openProfile}
@@ -495,22 +525,22 @@ function MemberCard({
           aria-label={row.display_name || "member"}
         >
           <PlanAvatarRing tier={tier} flairId={row.avatar_flair} compact>
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={row.avatar_url || undefined} />
-              <AvatarFallback className="text-[11px]">
+            <Avatar className={cn(isPremium ? "h-16 w-16" : "h-14 w-14")}>
+              <AvatarImage src={row.avatar_url || undefined} className="object-cover" />
+              <AvatarFallback className="text-[13px]">
                 {(row.display_name || "?").slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </PlanAvatarRing>
           {studyingNow ? (
-            <span className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3">
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border-2 border-background" />
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background" />
             </span>
           ) : extra?.is_online ? (
-            <span className="absolute -bottom-0.5 -right-0.5 inline-flex rounded-full h-2.5 w-2.5 bg-yellow-500 border-2 border-background" />
+            <span className="absolute -bottom-0.5 -right-0.5 inline-flex rounded-full h-3 w-3 bg-yellow-500 border-2 border-background" />
           ) : (
-            <span className="absolute -bottom-0.5 -right-0.5 inline-flex rounded-full h-2.5 w-2.5 bg-muted-foreground/40 border-2 border-background" />
+            <span className="absolute -bottom-0.5 -right-0.5 inline-flex rounded-full h-3 w-3 bg-muted-foreground/40 border-2 border-background" />
           )}
         </button>
         <button
@@ -562,9 +592,16 @@ function MemberCard({
               {t("rooms.challenges.total_today", "{{n}}min hoje", { n: totalMin })}
             </span>
           </p>
-          <span className={cn("text-[10px] font-medium block mt-0.5", title.color)}>
-            {title.label}
-          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className={cn("text-[10px] font-medium block mt-0.5 cursor-help", title.color)}>
+                {title.label}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-[11px]">
+              {exactLabel} {t("rooms.in_this_room", "nesta sala")}
+            </TooltipContent>
+          </Tooltip>
         </button>
         <div className="shrink-0 text-[10px] font-medium tabular-nums text-muted-foreground self-start">
           {totalPct}%
