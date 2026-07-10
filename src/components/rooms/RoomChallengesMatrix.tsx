@@ -610,7 +610,7 @@ function MemberCard({
 
 
       {/* Lista de desafios */}
-      <div className="space-y-1.5">
+      <div className="relative space-y-1.5">
         {visible.map((c) => {
           const m = row.perChallenge.get(c.challenge_id);
           if (!m) {
