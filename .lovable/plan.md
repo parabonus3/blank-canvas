@@ -1,51 +1,99 @@
-## Diagnóstico
+## Objetivo
 
-Confirmei olhando os dados do Nicky (`ef2c00f0…`) na sala:
+Três ajustes independentes na página da sala, sem quebrar o layout já aprovado:
 
-- Hoje (09/07 no fuso da sala) ele tem **3 sessões** em `time_entries` com `challenge_id = ffbddd36…` ("Desafio de Oração"), totalizando ~20 min.
-- Em `room_challenge_progress` **não existe linha para 09/07** desse desafio — só a de "Leitura bíblica".
-- O trigger `time_entries_room_progress` está correto e chama `record_room_challenge_progress` com o `challenge_id` da sessão.
-- **Causa raiz:** o desafio "Desafio de Oração" tem `start_date = 2026-06-09` e `duration_days = 30`. A RPC filtra por `(start_date + duration_days) > hoje`, ou seja `2026-07-09 > 2026-07-09` = **false**. O desafio já expirou (dia 31), então nada é creditado — mesmo com o desafio aparecendo ativo na UI.
+1. Corrigir o rótulo de nível (Novato/Dedicado/…) que hoje aparece errado para vários membros.
+2. Redesenhar o bloco "Conquistas da Sala" (hoje um chipzinho colorido sem graça) para virar uma vitrine gamificada que dá vontade de desbloquear mais.
+3. Deixar o avatar dos membros mais presente no novo card da matrix de desafios, para fundos como o do Bielzinho voltarem a aparecer bonito.
 
-A função `get_room_challenges_with_status` (usada pelo hook) **não aplica esse mesmo filtro de janela**, por isso a UI segue mostrando o desafio como se estivesse rodando e o membro tenta contabilizar em vão. Isso afeta **todos os membros** desse desafio, não só o Nicky.
+---
 
-A queixa "só está contabilizando um desafio" tem outra causa: desde a migração anterior, cada sessão credita apenas o `challenge_id` selecionado no picker. Um único timer não pode alimentar dois desafios ao mesmo tempo. Vou tratar isso separado (ver passo 3).
+## 1. Título de nível ("Novato" errado)
 
-## Plano
+### Diagnóstico
+Em `RoomChallengesMatrix.tsx`, `getMemberTitle` usa `extra?.total_seconds`, que vem de `room_members.total_seconds` (via `useRoomMembers`). Esse campo não está sincronizado com o total real: o ranking da lateral usa a RPC `get_room_ranking_by_period` (que soma `time_entries` de verdade) e mostra Miguel com 12h40, enquanto no card ele aparece como "Novato" (>10h deveria ser "Dedicado"). Ou seja, o número usado para decidir o título está desatualizado.
 
-### 1) Alinhar janela de validade entre UI e backend
-Migração única alterando duas funções:
+### Solução
+- Passar como fonte de verdade os segundos totais do ranking "all" já carregado no `RoomRankingSidebar` / `useRoomMembers`, em vez de `room_members.total_seconds`.
+  - Opção A (simples): em `RoomChallengesCard`, disparar a mesma RPC `get_room_ranking_by_period(_room_id, 'all')` e usar esse mapa `user_id → total_seconds` para popular `memberExtras.total_seconds`.
+  - Opção B (mais limpa): criar hook compartilhado `useRoomMembersAllTime(roomId)` reaproveitado pelo sidebar e pela matrix (evita 2 requests).
+- Manter thresholds atuais (10h / 50h / 200h / 500h) e nomes já traduzidos.
+- Bônus: adicionar tooltip no rótulo mostrando o total exato ("12h 40m nesta sala").
 
-- **`get_room_challenges_with_status`**: adicionar coluna `is_ended boolean` e filtrar/marcar desafios encerrados. Critério idêntico ao da RPC de crédito: `duration_days IS NULL OR (start_date + duration_days) > today_in_room_tz`. Manter no retorno os encerrados só se ainda estiverem `is_active = true`, marcados com `is_ended = true` (para o histórico do último dia continuar visível por 24h) — mas ordenados por último e sem entrar em fluxos ativos.
-- **`record_room_challenge_progress`**: manter o filtro atual (correto).
+Escopo apenas de UI + hook — sem migração.
 
-### 2) UI: refletir "encerrado"
-- `RoomChallenge` interface ganha `is_ended?: boolean`.
-- `ChallengeSummaryChips` mostra badge "Encerrado" cinza no chip quando `is_ended`.
-- `RoomChallengePicker` remove desafios com `is_ended` da lista selecionável (e reseleciona o primeiro válido restante).
-- `MemberCard`/`ChallengeRow`: exibe barra em cinza e desabilita o clique quando `is_ended`.
+---
 
-### 3) Auto-desativar desafios expirados (limpeza)
-Na mesma migração, um `UPDATE` one-shot: `UPDATE room_challenges SET is_active = false WHERE duration_days IS NOT NULL AND (start_date + duration_days) <= (now() AT TIME ZONE get_room_timezone(room_id))::date AND is_active = true;`
-Isso limpa o estado atual e evita confusão retroativa.
+## 2. Redesenhar "Conquistas da Sala"
 
-### 4) Contabilizar em múltiplos desafios simultâneos (opcional — decisão do usuário)
-Hoje: 1 sessão = 1 desafio (o selecionado). Para permitir 1 sessão contar em Leitura **e** Oração ao mesmo tempo, teríamos que:
-- trocar `challenge_id` (uuid) em `time_entries` por `challenge_ids` (uuid[]) **ou**
-- deixar o picker multi-select e o trigger iterar creditando cada um.
+### Diagnóstico
+Hoje `RoomAchievements.tsx` renderiza chips redondos pequenos ("5 membros", "10 membros", "10h estudadas") num quadradinho no canto. Visualmente pobre, sem hierarquia, sem progresso, sem incentivo pra próxima conquista.
 
-Isso é uma mudança maior e muda a semântica pedida na iteração passada ("obrigar escolha, auto-selecionar o 1º"). **Vou perguntar antes de implementar** — não entra automaticamente neste plano.
+### Nova experiência (sem mudar schema)
+Continuamos usando a tabela `room_achievements` e a mesma lista de `achievement_type`, mas o card ganha:
 
-### Arquivos afetados
-- Nova migração Supabase (funções `get_room_challenges_with_status`, update de limpeza).
-- `src/hooks/useRoomChallenges.ts` (tipo `RoomChallenge`).
-- `src/components/rooms/RoomChallengesMatrix.tsx` (badge encerrado, estilo desabilitado).
-- `src/components/timer/RoomChallengePicker.tsx` (filtrar `is_ended`).
+- **Header com destaque**: nome "Conquistas da Sala", contador `X / Y desbloqueadas`, e barra de progresso geral animada.
+- **Grade de medalhas** (2–3 colunas) no lugar dos chips:
+  - Cada medalha é um "coin" circular com:
+    - Ícone maior + gradiente por raridade (comum → azul, rara → roxo, épica → âmbar, lendária → gradiente arco-íris).
+    - Anel externo animado pra épica/lendária (mesmo motor CSS dos flairs).
+    - Nome curto + descrição em 1 linha.
+    - Data de desbloqueio ("há 3 dias") em micro-texto.
+  - Medalhas ainda **bloqueadas** aparecem em silhueta cinza + cadeado + mini-progresso ("42/50 membros", "78h / 100h"), servindo de objetivo visível.
+- **Categorias visuais** internas (Tempo / Streak / Comunidade / Especial) com um separador sutil.
+- **Raridade**:
+  - Comum: `members_5`, `total_10h`, `streak_3d`
+  - Rara: `members_10`, `total_50h`, `streak_7d`
+  - Épica: `members_25`, `total_100h`, `streak_30d`
+  - Lendária: `total_500h`, `total_1000h`
+- **Novas conquistas** (opcionais, ainda no mesmo schema `achievement_type = text`):
+  - `sync_10` — 10 membros estudando ao mesmo tempo
+  - `daily_perfect` — sala inteira bateu meta diária num dia
+  - `challenge_champion` — 1 desafio da sala concluído por 5+ membros
+  - `night_owl` / `early_bird` — sessão coletiva madrugada/manhã
+  - Detecção reaproveita o loop de `useEffect` que já existe em `RoomAchievements`; onde precisar de dado novo, calcula do lado do cliente com o que já vem em `members` (evita nova migração agora).
+- **Confetti já existe** ao desbloquear — mantido, mas trocamos por um "reveal" adicional: coin desbloqueado ganha animação de flip + brilho por 2s.
+- **Estado vazio**: em vez de esconder o card (`return null`), mostrar as próximas 3 conquistas mais próximas para incentivar a sala nova.
 
-### Detalhes técnicos
-- Nenhuma mudança em RLS, políticas ou grants.
-- A RPC continua `SECURITY DEFINER` com `search_path = public`.
-- Coluna `is_ended` é derivada (não persistida além do `is_active` que já cobre pós-limpeza).
-- Sem mudanças em `time_entries` nem no trigger.
+Arquivos:
+- `src/components/rooms/RoomAchievements.tsx` — reescrita da apresentação.
+- Novo `src/lib/roomAchievementDefs.ts` — catálogo central com `id`, `category`, `rarity`, `icon`, `label`, `description`, `condition(members, streak)`, `progress(members, streak)`.
+- Strings novas em `pt-BR.json` + `en-US.json` (fallbacks nas outras).
 
-Pergunta que faço junto com a implementação: quer que eu já habilite **multi-seleção de desafios por sessão** (passo 4), ou mantemos o modelo atual de 1 desafio por vez?
+Nenhum arquivo de SQL alterado.
+
+---
+
+## 3. Avatar / fundo mais presente no card da matrix
+
+### Diagnóstico
+No `MemberCard` (RoomChallengesMatrix.tsx) o avatar é `h-10 w-10` colado à esquerda. Membros como Bielzinho têm avatar com fundo temático caprichado que praticamente some.
+
+### Solução (sem quebrar layout atual)
+- **Aumentar o avatar** para `h-14 w-14` (`h-16 w-16` em Premium), mantendo o resto do header como está.
+- **Faixa de fundo sutil no topo do card** derivada da média de cor do avatar (ou do `avatar_flair_color` quando existir):
+  - `<div>` altura ~44px atrás do header, com `background: linear-gradient(180deg, {cor} 0%, transparent 100%)` e `opacity-15`.
+  - Avatar fica "meio-mergulhado" nessa faixa (padrão de perfis modernos).
+  - Fallback: usa cor do gradiente do tier (blue pro, amber premium) quando não houver cor.
+- **Ordem de camadas**: faixa → flair ring → avatar → status dot. Como já está tudo em `relative`, é só envelopar em um `<div className="relative">` novo com `overflow-hidden` no card.
+- Não muda alturas totais significativamente porque as duas linhas de metadados (streak/min/título) continuam ao lado.
+- Card Premium/Pro mantém a borda dourada/azul; só a faixa adiciona identidade extra.
+
+Arquivo:
+- `src/components/rooms/RoomChallengesMatrix.tsx` — só o `MemberCard`.
+
+Opcional (fase 2): usar a mesma faixa no `RoomMemberGrid` para consistência — deixo fora deste plano pra não expandir escopo.
+
+---
+
+## Ordem de execução
+
+1. Novo `roomAchievementDefs.ts` + reescrita do `RoomAchievements.tsx` + i18n.
+2. Ajuste do `MemberCard` (faixa de fundo + avatar maior).
+3. Hook/consulta de totais all-time reaproveitado + fix do `getMemberTitle`.
+4. Verificação visual na sala atual (Nicky, Miguel, Bielzinho).
+
+## Fora de escopo
+
+- Nenhuma alteração de RLS, migração ou lógica de créditos.
+- Ranking lateral, chat, chips de desafio e demais blocos permanecem intocados.

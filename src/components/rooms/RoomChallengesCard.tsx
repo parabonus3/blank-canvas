@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import { Plus, Trophy, Clock, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import {
   useRoomChallenges,
   useDeleteChallenge,
@@ -33,22 +35,43 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
   const [calendarFor, setCalendarFor] = useState<{ c: RoomChallenge; m: RoomChallengeMember } | null>(null);
   const [profileMember, setProfileMember] = useState<RoomMember | null>(null);
 
+  // All-time totals from time_entries (source of truth for level titles),
+  // since room_members.total_seconds can lag behind actual activity.
+  const { data: allTimeTotals } = useQuery({
+    queryKey: ["roomRanking", roomId, "all"],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as any)("get_room_ranking_by_period", {
+        _room_id: roomId,
+        _period: "all",
+      });
+      if (error) throw error;
+      const map = new Map<string, number>();
+      for (const r of (data || []) as { user_id: string; total_seconds: number }[]) {
+        map.set(r.user_id, Number(r.total_seconds || 0));
+      }
+      return map;
+    },
+    enabled: !!roomId,
+    staleTime: 60_000,
+  });
+
   const memberExtras = useMemo(() => {
     const map = new Map<string, MatrixMemberExtra>();
     for (const m of members) {
+      const trueTotal = allTimeTotals?.get(m.user_id);
       map.set(m.user_id, {
         plan_tier: (m as any).plan_tier,
         is_timer_active: m.is_timer_active,
         last_active_at: m.last_active_at,
         is_online: m.is_online,
-        total_seconds: m.total_seconds,
+        total_seconds: typeof trueTotal === "number" ? trueTotal : m.total_seconds,
         status_text: m.status_text,
         role: m.role,
         avatar_flair_color: (m as any).avatar_flair_color,
       });
     }
     return map;
-  }, [members]);
+  }, [members, allTimeTotals]);
 
   if (isLoading) return null;
 
