@@ -375,5 +375,4 @@ function MedalCard({
   );
 }
 
-// Keep exported type list synced for other consumers
-export { AVAILABLE_TYPES as ROOM_ACHIEVEMENT_TYPES };
+
