@@ -24,7 +24,7 @@ interface Props {
   members: RoomMember[];
 }
 
-const AVAILABLE_TYPES = new Set(ROOM_ACHIEVEMENTS.map((a) => a.id));
+
 
 // Localized names/descriptions (no i18n key explosion — inline PT/EN)
 const NAMES: Record<string, { pt: string; en: string }> = {
