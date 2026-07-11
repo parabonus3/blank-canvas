@@ -466,6 +466,8 @@ function MemberCard({
   extra,
   onOpenProfile,
   isMe,
+  weekRank,
+  showWeekRank,
 }: {
   row: {
     user_id: string;
@@ -474,6 +476,7 @@ function MemberCard({
     avatar_flair: string | null;
     doneToday: number;
     totalSecondsToday: number;
+    weekSeconds?: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
   };
   challenges: RoomChallenge[];
@@ -481,6 +484,8 @@ function MemberCard({
   extra?: MatrixMemberExtra;
   onOpenProfile?: (userId: string) => void;
   isMe?: boolean;
+  weekRank?: number;
+  showWeekRank?: boolean;
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
