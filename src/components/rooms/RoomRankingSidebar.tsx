@@ -47,7 +47,7 @@ interface Props {
 export function RoomRankingSidebar({ members, roomId }: Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [period, setPeriod] = useState<Period>("all");
+  const [period, setPeriod] = useState<Period>("week");
 
   // Batch streaks
   const { data: streaksMap = {} } = useQuery({
@@ -82,7 +82,7 @@ export function RoomRankingSidebar({ members, roomId }: Props) {
     refetchInterval: 60000,
   });
 
-  const displayData = (periodData || []).map(p => ({
+  const displayData = (Array.isArray(periodData) ? periodData : []).map(p => ({
     id: p.user_id,
     user_id: p.user_id,
     display_name: p.display_name,
@@ -91,13 +91,17 @@ export function RoomRankingSidebar({ members, roomId }: Props) {
   }));
 
   const periods: { key: Period; label: string }[] = [
-    { key: "today", label: t("rooms.ranking_today") },
     { key: "week", label: t("rooms.ranking_week") },
+    { key: "today", label: t("rooms.ranking_today") },
     { key: "month", label: t("rooms.ranking_month") },
     { key: "all", label: t("rooms.ranking_all") },
   ];
 
-  // Find my position + distance to next
+  const leaderSeconds = displayData[0]?.total_seconds || 0;
+  const weekLeader = period === "week" && displayData[0] && displayData[0].total_seconds > 0
+    ? displayData[0]
+    : null;
+
   const myIndex = displayData.findIndex(m => m.user_id === user?.id);
   const myRank = myIndex >= 0 ? myIndex + 1 : null;
   const distanceToNext = myIndex > 0
@@ -129,41 +133,78 @@ export function RoomRankingSidebar({ members, roomId }: Props) {
         ))}
       </div>
 
+      {/* Weekly leader chip */}
+      {weekLeader && (
+        <div className="flex items-center gap-1.5 text-[11px] bg-orange-500/10 border border-orange-500/30 rounded-lg px-2.5 py-1.5">
+          <Flame className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+          <span className="font-semibold text-orange-600 dark:text-orange-400 truncate">
+            {t("rooms.week_leader", "Líder da semana")}:
+          </span>
+          <span className="font-medium truncate flex-1">
+            {weekLeader.display_name || t("rooms.anonymous")}
+          </span>
+          <span className="font-mono font-bold tabular-nums text-orange-600 dark:text-orange-400 shrink-0">
+            {formatTime(weekLeader.total_seconds)}
+          </span>
+        </div>
+      )}
+
       <div className="space-y-1.5">
         {displayData.map((member, index) => {
           const rank = index + 1;
           const isMe = member.user_id === user?.id;
           const isLeader = rank === 1 && member.total_seconds > 0;
+          const relPct = leaderSeconds > 0
+            ? Math.round((member.total_seconds / leaderSeconds) * 100)
+            : 0;
           return (
             <div
               key={member.user_id}
               className={cn(
-                "flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-all",
+                "rounded-lg px-2 py-1.5 text-sm transition-all",
                 isMe && "bg-primary/5",
                 isLeader && "leader-glow"
               )}
             >
-              <div className="w-5 flex justify-center shrink-0">
-                {getRankIcon(rank)}
-              </div>
-              <Avatar className="h-6 w-6 shrink-0">
-                {member.avatar_url && <AvatarImage src={member.avatar_url} />}
-                <AvatarFallback className={cn("text-[10px] text-white", getAvatarColor(member.user_id))}>
-                  {getInitials(member.display_name)}
-                </AvatarFallback>
-              </Avatar>
-              <span className={cn("truncate flex-1 text-xs", isMe && "font-semibold text-primary")}>
-                {member.display_name || t("rooms.anonymous")}
-                {isMe && ` (${t("rooms.you")})`}
-              </span>
-              {(streaksMap[member.user_id] || 0) >= 2 && (
-                <span className="flex items-center gap-0.5 text-[10px] font-bold text-orange-500 shrink-0">
-                  <Flame className="h-3 w-3" />{streaksMap[member.user_id]}
+              <div className="flex items-center gap-2">
+                <div className="w-5 flex justify-center shrink-0">
+                  {getRankIcon(rank)}
+                </div>
+                <Avatar className="h-6 w-6 shrink-0">
+                  {member.avatar_url && <AvatarImage src={member.avatar_url} />}
+                  <AvatarFallback className={cn("text-[10px] text-white", getAvatarColor(member.user_id))}>
+                    {getInitials(member.display_name)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className={cn("truncate flex-1 text-xs", isMe && "font-semibold text-primary")}>
+                  {member.display_name || t("rooms.anonymous")}
+                  {isMe && ` (${t("rooms.you")})`}
                 </span>
+                {(streaksMap[member.user_id] || 0) >= 2 && (
+                  <span className="flex items-center gap-0.5 text-[10px] font-bold text-orange-500 shrink-0">
+                    <Flame className="h-3 w-3" />{streaksMap[member.user_id]}
+                  </span>
+                )}
+                <span className="font-mono text-xs font-bold tabular-nums shrink-0">
+                  {formatTime(member.total_seconds)}
+                </span>
+              </div>
+              {/* Relative progress bar (% of leader) */}
+              {leaderSeconds > 0 && member.total_seconds > 0 && (
+                <div className="mt-1 ml-7 h-0.5 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full transition-all",
+                      isLeader
+                        ? "bg-yellow-500"
+                        : isMe
+                        ? "bg-primary"
+                        : "bg-muted-foreground/50",
+                    )}
+                    style={{ width: `${relPct}%` }}
+                  />
+                </div>
               )}
-              <span className="font-mono text-xs font-bold tabular-nums shrink-0">
-                {formatTime(member.total_seconds)}
-              </span>
             </div>
           );
         })}

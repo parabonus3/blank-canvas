@@ -72,11 +72,13 @@ interface Props {
   onDelete: (c: RoomChallenge) => void;
   onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
   memberExtras?: Map<string, MatrixMemberExtra>;
+  weekTotals?: Map<string, number>;
   onOpenProfile?: (userId: string) => void;
   currentUserId?: string | null;
 }
 
 type Filter = "all" | "done_today" | "missing" | "not_started";
+type SortMode = "today" | "week";
 
 const COLLAPSE_THRESHOLD = 6; // desafios acima disso colapsam por padrão dentro do card
 
@@ -120,12 +122,14 @@ export function RoomChallengesMatrix({
   onDelete,
   onOpenMember,
   memberExtras,
+  weekTotals,
   onOpenProfile,
   currentUserId,
 }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("today");
 
   const memberIndex = useMemo(() => {
     const map = new Map<
@@ -159,6 +163,7 @@ export function RoomChallengesMatrix({
     avatar_flair: string | null;
     doneToday: number;
     totalSecondsToday: number;
+    weekSeconds: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
   };
 
@@ -174,10 +179,19 @@ export function RoomChallengesMatrix({
         if (m?.completed_current) doneToday += 1;
         if (m?.seconds_current) totalSecondsToday += m.seconds_current;
       }
-      list.push({ ...base, doneToday, totalSecondsToday, perChallenge: per });
+      const weekSeconds = weekTotals?.get(base.user_id) ?? 0;
+      list.push({ ...base, doneToday, totalSecondsToday, weekSeconds, perChallenge: per });
     }
     return list;
-  }, [challenges, memberIndex]);
+  }, [challenges, memberIndex, weekTotals]);
+
+  // Week ranking index (position among members with week activity > 0).
+  const weekRankMap = useMemo(() => {
+    const map = new Map<string, number>();
+    const sorted = [...rows].filter((r) => r.weekSeconds > 0).sort((a, b) => b.weekSeconds - a.weekSeconds);
+    sorted.forEach((r, i) => map.set(r.user_id, i + 1));
+    return map;
+  }, [rows]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -192,10 +206,13 @@ export function RoomChallengesMatrix({
         return true;
       })
       .sort((a, b) => {
+        if (sortMode === "week") {
+          if (b.weekSeconds !== a.weekSeconds) return b.weekSeconds - a.weekSeconds;
+        }
         if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
         return b.totalSecondsToday - a.totalSecondsToday;
       });
-  }, [rows, filter, search, challenges.length]);
+  }, [rows, filter, search, challenges.length, sortMode]);
 
   const showSearch = memberIndex.size > 10;
 
@@ -229,6 +246,32 @@ export function RoomChallengesMatrix({
               </button>
             ))}
           </div>
+
+          {/* Sort toggle: Today / Week */}
+          {weekTotals && weekTotals.size > 0 && (
+            <div className="flex items-center gap-0.5 rounded-md border border-border bg-muted/30 p-0.5">
+              <span className="text-[10px] text-muted-foreground px-1.5">
+                {t("rooms.challenges.sort_label", "Ordenar")}:
+              </span>
+              {(["today", "week"] as SortMode[]).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSortMode(s)}
+                  className={cn(
+                    "text-[10px] font-medium px-2 py-0.5 rounded transition-colors",
+                    sortMode === s
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {s === "today"
+                    ? t("rooms.challenges.sort_today", "Hoje")
+                    : t("rooms.challenges.sort_week", "Semana")}
+                </button>
+              ))}
+            </div>
+          )}
           {showSearch && (
             <div className="relative ml-auto w-full sm:w-56">
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -284,6 +327,8 @@ export function RoomChallengesMatrix({
               extra={memberExtras?.get(r.user_id)}
               onOpenProfile={onOpenProfile}
               isMe={currentUserId === r.user_id}
+              weekRank={weekRankMap.get(r.user_id)}
+              showWeekRank={sortMode === "week"}
             />
           ))}
         </div>
@@ -421,6 +466,8 @@ function MemberCard({
   extra,
   onOpenProfile,
   isMe,
+  weekRank,
+  showWeekRank,
 }: {
   row: {
     user_id: string;
@@ -429,6 +476,7 @@ function MemberCard({
     avatar_flair: string | null;
     doneToday: number;
     totalSecondsToday: number;
+    weekSeconds?: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
   };
   challenges: RoomChallenge[];
@@ -436,6 +484,8 @@ function MemberCard({
   extra?: MatrixMemberExtra;
   onOpenProfile?: (userId: string) => void;
   isMe?: boolean;
+  weekRank?: number;
+  showWeekRank?: boolean;
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -579,6 +629,21 @@ function MemberCard({
             {extra?.role === "moderator" && (
               <Badge variant="secondary" className="text-[9px] px-1 py-0">
                 <Shield className="h-2.5 w-2.5" />
+              </Badge>
+            )}
+            {showWeekRank && weekRank && (
+              <Badge
+                variant="secondary"
+                className={cn(
+                  "text-[9px] px-1 py-0 border-0 tabular-nums",
+                  weekRank === 1
+                    ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                    : weekRank <= 3
+                    ? "bg-orange-500/15 text-orange-600 dark:text-orange-400"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                #{weekRank} {t("rooms.challenges.pos_week_short", "sem")}
               </Badge>
             )}
           </div>

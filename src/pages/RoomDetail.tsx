@@ -303,31 +303,28 @@ export default function RoomDetail() {
 
                 {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
 
-                {/* Chalkboard section */}
-                <div className="classroom-chalkboard p-5 space-y-4">
-                  {room && !isOwner && room.pinned_message && (
-                    <div className="chalk-text text-sm opacity-90 border-b border-white/10 pb-3">
-                      📌 {room.pinned_message}
-                    </div>
-                  )}
+                {/* Chalkboard section: only rendered when there is real content
+                    (pinned message or an active room goal). The old "Em foco agora"
+                    fallback was removed — focus session feature is descontinuada. */}
+                {(room?.goal_hours || (room && !isOwner && room.pinned_message)) && (
+                  <div className="classroom-chalkboard p-5 space-y-4">
+                    {room && !isOwner && room.pinned_message && (
+                      <div className="chalk-text text-sm opacity-90 border-b border-white/10 pb-3">
+                        📌 {room.pinned_message}
+                      </div>
+                    )}
 
-                  {room?.goal_hours && (
-                    <RoomGoalProgress
-                      goalHours={room.goal_hours}
-                      goalLabel={room.goal_label}
-                      members={members}
-                      isChalkboard
-                      roomId={room.id}
-                    />
-                  )}
-
-                  {/* No focus & no goal — show a chalk welcome */}
-                  {!room?.goal_hours && !(room as any)?.focus_session_end_at && (
-                    <div className="chalk-text text-center py-4 opacity-70 text-sm">
-                      📚 {t("rooms.studying_now")}
-                    </div>
-                  )}
-                </div>
+                    {room?.goal_hours && (
+                      <RoomGoalProgress
+                        goalHours={room.goal_hours}
+                        goalLabel={room.goal_label}
+                        members={members}
+                        isChalkboard
+                        roomId={room.id}
+                      />
+                    )}
+                  </div>
+                )}
 
 
                 {/* Floor + Desks area — hidden when active challenges exist (avoids duplicating members). */}
