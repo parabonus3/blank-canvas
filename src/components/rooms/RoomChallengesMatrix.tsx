@@ -246,6 +246,32 @@ export function RoomChallengesMatrix({
               </button>
             ))}
           </div>
+
+          {/* Sort toggle: Today / Week */}
+          {weekTotals && weekTotals.size > 0 && (
+            <div className="flex items-center gap-0.5 rounded-md border border-border bg-muted/30 p-0.5">
+              <span className="text-[10px] text-muted-foreground px-1.5">
+                {t("rooms.challenges.sort_label", "Ordenar")}:
+              </span>
+              {(["today", "week"] as SortMode[]).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSortMode(s)}
+                  className={cn(
+                    "text-[10px] font-medium px-2 py-0.5 rounded transition-colors",
+                    sortMode === s
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {s === "today"
+                    ? t("rooms.challenges.sort_today", "Hoje")
+                    : t("rooms.challenges.sort_week", "Semana")}
+                </button>
+              ))}
+            </div>
+          )}
           {showSearch && (
             <div className="relative ml-auto w-full sm:w-56">
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
