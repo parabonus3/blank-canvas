@@ -147,6 +147,7 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
           }}
           onOpenMember={(c, m) => setCalendarFor({ c, m })}
           memberExtras={memberExtras}
+          weekTotals={weekTotals}
           currentUserId={user?.id ?? null}
           onOpenProfile={(userId) => {
             const found = members.find((m) => m.user_id === userId) || null;
