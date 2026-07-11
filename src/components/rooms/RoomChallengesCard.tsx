@@ -35,8 +35,7 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
   const [calendarFor, setCalendarFor] = useState<{ c: RoomChallenge; m: RoomChallengeMember } | null>(null);
   const [profileMember, setProfileMember] = useState<RoomMember | null>(null);
 
-  // All-time totals from time_entries (source of truth for level titles),
-  // since room_members.total_seconds can lag behind actual activity.
+  // All-time totals from time_entries (source of truth for level titles).
   const { data: allTimeTotals } = useQuery({
     queryKey: ["roomAllTimeTotalsMap", roomId],
     queryFn: async () => {
@@ -54,6 +53,30 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
     enabled: !!roomId,
     staleTime: 60_000,
   });
+
+  // Weekly totals used by the matrix "Semana" sort toggle.
+  // Shares cache key with RoomRankingSidebar so no extra request is made.
+  const { data: weekRanking } = useQuery({
+    queryKey: ["roomRanking", roomId, "week"],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as any)("get_room_ranking_by_period", {
+        _room_id: roomId,
+        _period: "week",
+      });
+      if (error) throw error;
+      return (data || []) as { user_id: string; total_seconds: number }[];
+    },
+    enabled: !!roomId,
+    refetchInterval: 60000,
+  });
+
+  const weekTotals = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const r of (Array.isArray(weekRanking) ? weekRanking : [])) {
+      map.set(r.user_id, Number(r.total_seconds || 0));
+    }
+    return map;
+  }, [weekRanking]);
 
   const memberExtras = useMemo(() => {
     const map = new Map<string, MatrixMemberExtra>();
