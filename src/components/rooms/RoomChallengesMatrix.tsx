@@ -72,11 +72,13 @@ interface Props {
   onDelete: (c: RoomChallenge) => void;
   onOpenMember: (c: RoomChallenge, m: RoomChallengeMember) => void;
   memberExtras?: Map<string, MatrixMemberExtra>;
+  weekTotals?: Map<string, number>;
   onOpenProfile?: (userId: string) => void;
   currentUserId?: string | null;
 }
 
 type Filter = "all" | "done_today" | "missing" | "not_started";
+type SortMode = "today" | "week";
 
 const COLLAPSE_THRESHOLD = 6; // desafios acima disso colapsam por padrão dentro do card
 
