@@ -163,6 +163,7 @@ export function RoomChallengesMatrix({
     avatar_flair: string | null;
     doneToday: number;
     totalSecondsToday: number;
+    weekSeconds: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
   };
 
@@ -178,10 +179,19 @@ export function RoomChallengesMatrix({
         if (m?.completed_current) doneToday += 1;
         if (m?.seconds_current) totalSecondsToday += m.seconds_current;
       }
-      list.push({ ...base, doneToday, totalSecondsToday, perChallenge: per });
+      const weekSeconds = weekTotals?.get(base.user_id) ?? 0;
+      list.push({ ...base, doneToday, totalSecondsToday, weekSeconds, perChallenge: per });
     }
     return list;
-  }, [challenges, memberIndex]);
+  }, [challenges, memberIndex, weekTotals]);
+
+  // Week ranking index (position among members with week activity > 0).
+  const weekRankMap = useMemo(() => {
+    const map = new Map<string, number>();
+    const sorted = [...rows].filter((r) => r.weekSeconds > 0).sort((a, b) => b.weekSeconds - a.weekSeconds);
+    sorted.forEach((r, i) => map.set(r.user_id, i + 1));
+    return map;
+  }, [rows]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -196,10 +206,13 @@ export function RoomChallengesMatrix({
         return true;
       })
       .sort((a, b) => {
+        if (sortMode === "week") {
+          if (b.weekSeconds !== a.weekSeconds) return b.weekSeconds - a.weekSeconds;
+        }
         if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
         return b.totalSecondsToday - a.totalSecondsToday;
       });
-  }, [rows, filter, search, challenges.length]);
+  }, [rows, filter, search, challenges.length, sortMode]);
 
   const showSearch = memberIndex.size > 10;
 
