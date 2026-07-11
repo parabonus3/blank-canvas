@@ -631,6 +631,21 @@ function MemberCard({
                 <Shield className="h-2.5 w-2.5" />
               </Badge>
             )}
+            {showWeekRank && weekRank && (
+              <Badge
+                variant="secondary"
+                className={cn(
+                  "text-[9px] px-1 py-0 border-0 tabular-nums",
+                  weekRank === 1
+                    ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                    : weekRank <= 3
+                    ? "bg-orange-500/15 text-orange-600 dark:text-orange-400"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                #{weekRank} {t("rooms.challenges.pos_week_short", "sem")}
+              </Badge>
+            )}
           </div>
           <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
             <Flame className="h-3 w-3 text-orange-500" />
