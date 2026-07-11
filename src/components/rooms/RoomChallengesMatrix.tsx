@@ -327,6 +327,8 @@ export function RoomChallengesMatrix({
               extra={memberExtras?.get(r.user_id)}
               onOpenProfile={onOpenProfile}
               isMe={currentUserId === r.user_id}
+              weekRank={weekRankMap.get(r.user_id)}
+              showWeekRank={sortMode === "week"}
             />
           ))}
         </div>
