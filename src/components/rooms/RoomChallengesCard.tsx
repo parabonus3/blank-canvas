@@ -38,7 +38,7 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
   // All-time totals from time_entries (source of truth for level titles),
   // since room_members.total_seconds can lag behind actual activity.
   const { data: allTimeTotals } = useQuery({
-    queryKey: ["roomRanking", roomId, "all"],
+    queryKey: ["roomAllTimeTotalsMap", roomId],
     queryFn: async () => {
       const { data, error } = await (supabase.rpc as any)("get_room_ranking_by_period", {
         _room_id: roomId,
