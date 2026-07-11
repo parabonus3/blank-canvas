@@ -122,12 +122,14 @@ export function RoomChallengesMatrix({
   onDelete,
   onOpenMember,
   memberExtras,
+  weekTotals,
   onOpenProfile,
   currentUserId,
 }: Props) {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
+  const [sortMode, setSortMode] = useState<SortMode>("today");
 
   const memberIndex = useMemo(() => {
     const map = new Map<
