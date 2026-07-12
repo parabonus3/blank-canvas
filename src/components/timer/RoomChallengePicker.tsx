@@ -15,13 +15,12 @@ function storageKey(roomId?: string) {
   return roomId ? `timezoni:room:${roomId}:challenge` : null;
 }
 
+type ChallengeState = "done" | "in_progress" | "not_started";
+
 /**
- * Chip-card picker to choose which room challenge the current timer session
- * should count towards. Shown when the selected room has ≥ 1 active challenge
- * where the current user is a member.
- *
- * Escolha obrigatória. Auto-seleciona o 1º (ou o salvo em localStorage).
- * Persistência por sala em localStorage.
+ * Card picker to choose which room challenge the current timer session
+ * should count towards. Stacks vertically on mobile (no horizontal scroll),
+ * uses semantic colors for state (red / orange / green).
  */
 export function RoomChallengePicker({ roomId, value, onChange }: Props) {
   const { t } = useTranslation();
@@ -70,7 +69,7 @@ export function RoomChallengePicker({ roomId, value, onChange }: Props) {
   return (
     <div className="space-y-1.5">
       {/* Header hint */}
-      <div className="flex items-center gap-1.5 px-0.5">
+      <div className="flex items-center gap-1.5 px-0.5 flex-wrap">
         <Target className="h-3.5 w-3.5 text-primary" />
         <span className="text-[11px] font-medium text-foreground/80">
           {isSingle
@@ -82,14 +81,26 @@ export function RoomChallengePicker({ roomId, value, onChange }: Props) {
         </span>
       </div>
 
-      {/* Chip-cards: horizontal scroll on mobile, grid on desktop */}
-      <div
-        className={cn(
-          isSingle
-            ? "grid grid-cols-1"
-            : "flex overflow-x-auto snap-x snap-mandatory gap-2 -mx-1 px-1 pb-1 sm:grid sm:overflow-visible sm:grid-cols-2 sm:snap-none xl:grid-cols-3",
-        )}
-      >
+      {/* Legend (only when multiple) */}
+      {!isSingle && (
+        <div className="flex items-center gap-2.5 px-0.5 text-[9.5px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500/70" />
+            {t("rooms.challenges.legend_todo", "a fazer")}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-orange-500/80" />
+            {t("rooms.challenges.legend_progress", "em andamento")}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500/80" />
+            {t("rooms.challenges.legend_done_short", "feito")}
+          </span>
+        </div>
+      )}
+
+      {/* Stacked grid: no horizontal scroll on mobile */}
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
         {mine.map((c) => {
           const me = c.members.find((m) => m.user_id === user?.id);
           const done = !!me?.completed_current;
@@ -100,31 +111,46 @@ export function RoomChallengePicker({ roomId, value, onChange }: Props) {
           const rMin = Math.ceil(remaining / 60);
           const isSelected = c.challenge_id === selected;
 
+          const state: ChallengeState = done
+            ? "done"
+            : seconds > 0
+              ? "in_progress"
+              : "not_started";
+
+          const stateClasses =
+            state === "done"
+              ? "border-green-500/70 bg-green-500/10"
+              : state === "in_progress"
+                ? "border-orange-500/70 bg-orange-500/5"
+                : "border-red-500/50 bg-red-500/5";
+
+          const barClass =
+            state === "done"
+              ? "bg-green-500"
+              : state === "in_progress"
+                ? "bg-orange-500"
+                : "bg-red-500/40";
+
           return (
             <button
               key={c.challenge_id}
               type="button"
               onClick={() => handleChange(c.challenge_id)}
               className={cn(
-                "group relative text-left rounded-lg border p-2.5 transition-all snap-start shrink-0",
-                isSingle ? "w-full" : "min-w-[220px] w-[80%] sm:w-auto sm:min-w-0",
+                "group relative text-left rounded-lg border-2 p-2 transition-all",
+                stateClasses,
                 isSelected
-                  ? "border-primary/60 bg-primary/10 ring-2 ring-primary/40 shadow-sm"
-                  : "border-border bg-card hover:bg-accent/40 opacity-80 hover:opacity-100",
+                  ? "ring-2 ring-primary/50 shadow-sm"
+                  : "opacity-90 hover:opacity-100",
               )}
               aria-pressed={isSelected}
             >
               {/* Top row: emoji + title + selected mark */}
               <div className="flex items-start gap-2 min-w-0">
-                <span className="text-lg leading-none shrink-0 mt-0.5">{c.emoji}</span>
+                <span className="text-base leading-none shrink-0 mt-0.5">{c.emoji}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span
-                      className={cn(
-                        "text-sm font-semibold truncate",
-                        isSelected ? "text-primary" : "text-foreground",
-                      )}
-                    >
+                    <span className="text-[13px] font-semibold truncate text-foreground">
                       {c.title}
                     </span>
                     {done && (
@@ -147,13 +173,10 @@ export function RoomChallengePicker({ roomId, value, onChange }: Props) {
               </div>
 
               {/* Progress bar */}
-              <div className="mt-2 h-1 rounded-full bg-muted overflow-hidden">
+              <div className="mt-1.5 h-1 rounded-full bg-muted overflow-hidden">
                 <div
-                  className={cn(
-                    "h-full transition-all",
-                    done ? "bg-green-500" : isSelected ? "bg-primary" : "bg-primary/50",
-                  )}
-                  style={{ width: `${pct}%` }}
+                  className={cn("h-full transition-all", barClass)}
+                  style={{ width: `${done ? 100 : pct}%` }}
                 />
               </div>
             </button>
