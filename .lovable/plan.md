@@ -1,109 +1,65 @@
 ## Objetivo
 
-Três melhorias focadas em clareza, competitividade e limpeza visual, todas responsivas (mobile-first):
+Eliminar o scroll horizontal do `RoomChallengePicker` no mobile e tornar visualmente óbvio o estado de cada desafio via cores semânticas.
 
-1. Deixar óbvio quando existem múltiplos desafios ativos e qual está selecionado (no timer e na sala).
-2. Trocar o ranking "por dia" implícito por uma lista de ranking clara com padrão semanal.
-3. Remover o placeholder "Em foco agora" que não tem mais função.
+## Arquivo alterado
 
-Nada muda no backend — só camada de UI/UX.
+`src/components/timer/RoomChallengePicker.tsx` (somente frontend/presentation).
 
----
+## Mudanças
 
-## 1. Picker de desafio (Timer + Sala)
+### 1. Layout empilhado (sem scroll horizontal)
 
-### Problema
-Hoje é um `<Select>` fino que mostra apenas o desafio ativo. Quando há 2+ desafios, o usuário não percebe a alternância nem vê o progresso comparado.
-
-### Solução — "Chip cards" horizontais rolantes
-
-Substituir o `<Select>` de `src/components/timer/RoomChallengePicker.tsx` por uma faixa de cards curtos (chips grandes), 1 por desafio, todos visíveis ao mesmo tempo:
-
+Trocar o container atual:
 ```
-┌─────────────────────┐  ┌─────────────────────┐
-│ 🙏 Oração diária    │  │ 📖 Leitura bíblica  │
-│ OBRIGATÓRIO         │  │                     │
-│ ▓▓▓░░░░ faltam 10m  │  │ ░░░░░░░ faltam 10m  │
-│ ✓ Selecionado       │  │  Tocar p/ escolher  │
-└─────────────────────┘  └─────────────────────┘
+flex overflow-x-auto snap-x snap-mandatory ...  sm:grid sm:grid-cols-2 xl:grid-cols-3
+```
+por um grid compacto que empilha bem em mobile:
+```
+grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3
 ```
 
-Regras:
-- Cada card mostra emoji, título, barra de progresso do período atual, tempo restante ou ✓ concluído.
-- Card selecionado ganha `ring-2 ring-primary`, fundo `bg-primary/10`, badge "Selecionado" e ícone check.
-- Cards não selecionados ficam com `opacity-70` e borda neutra.
-- Se houver 1 só desafio, mostra o card único em largura total (sem chips laterais).
-- Layout responsivo: `flex overflow-x-auto snap-x snap-mandatory gap-2` no mobile (rola horizontal com snap), `grid grid-cols-2 xl:grid-cols-3` no desktop.
-- Cabeçalho pequeno acima: "Escolha o desafio desta sessão — {n} disponíveis · Obrigatório".
-- Persistência atual (localStorage por sala) e auto-seleção do primeiro continuam iguais.
+- Card único (`isSingle`): continua `grid-cols-1`.
+- 2 desafios: um abaixo do outro no mobile, lado a lado em `sm+`.
+- Remover classes `min-w-[220px]`, `w-[80%]`, `snap-*`, `shrink-0`, `overflow-x-auto`.
+- Reduzir padding dos cards (`p-2` em vez de `p-2.5`) e tamanho da fonte do título para caber compacto em mobile.
 
-### Onde replicar na sala
-O `RoomChallengesCard` já lista todos os desafios em chips (topo do card, `ChallengeSummaryChips`), mas os chips lá são só resumo agregado (não selecionáveis). Não precisa refazer isso — o painel da sala é dashboard, não seletor de sessão. **Ação:** só melhorar o contraste do chip ativo/inativo (`is_ended`) já implementado e ajustar espaçamento no mobile (usar `gap-2`, chip mínimo `min-w-[140px]` com scroll horizontal).
+### 2. Estados de cor (borda + fundo)
 
-Onde há seletor de desafio dentro da sala (dropdown/aba de escolha por membro): validar se `RoomChallengePicker` também é usado em contexto de "iniciar timer dentro da sala". Se for, ele já herda o novo layout.
+Definir 3 estados derivados dos dados existentes (`me?.completed_current`, `me?.seconds_current`):
 
----
+| Estado | Condição | Cor da borda | Fundo | Barra de progresso |
+|---|---|---|---|---|
+| `done` | `completed_current === true` | verde (`border-green-500/70`) | `bg-green-500/10` | verde |
+| `in_progress` | `seconds_current > 0` e não `done` | laranja (`border-orange-500/70`) | `bg-orange-500/5` | laranja |
+| `not_started` | `seconds_current === 0` | vermelho suave (`border-red-500/50`) | `bg-red-500/5` | vermelho/40 |
 
-## 2. Ranking com foco no período (padrão: Semana)
+Selecionado ganha ring extra (`ring-2 ring-primary/50 shadow-sm`) sobreposto ao estado de cor — a cor de borda semântica é mantida para que o usuário reconheça o estado mesmo quando selecionado.
 
-### Problema
-`RoomRankingSidebar` já tem tabs (Hoje / Semana / Mês / Todos), mas abre em **"Todos"** por padrão, o que camufla quem está bombando na semana. E a matrix de desafios ordena membros por progresso do dia — quem lidera a semana não aparece em destaque.
+Ajustar também a cor do check "Selecionado" (fica azul do primary) e do ícone `CheckCircle2` do done (verde).
 
-### Solução
+### 3. Legenda mínima
 
-**A. Padrão semanal no ranking**
-- `src/components/rooms/RoomRankingSidebar.tsx`: mudar `useState<Period>("all")` → `useState<Period>("week")`.
-- Reordenar tabs para: `Semana · Hoje · Mês · Todos` (semana primeiro).
-- Adicionar chip "🔥 Líder da semana" no topo do card quando `period === "week"` com nome do 1º colocado.
+Adicionar micro-legenda opcional (dot vermelho / laranja / verde) ao lado do header quando houver `mine.length > 1`, para reforçar a leitura das cores. Texto curto:
+- 🔴 a fazer · 🟠 em andamento · 🟢 feito
 
-**B. Destaque visual dos top-3 em qualquer período**
-- Manter os ícones Trophy/Medal/Award para top-3.
-- Adicionar barra fina de progresso relativa (`% do líder`) em cada linha para dar noção de distância — já temos `distance_to_next` só para o "eu"; expandimos visualmente para todos.
-- Linha do usuário logado continua com `bg-primary/5` + label "(você)".
+Usando dots CSS (`h-1.5 w-1.5 rounded-full`), não emoji.
 
-**C. Ordenação dos cards de membro no `RoomChallengesMatrix`**
-- Hoje ordena por `doneToday` + `totalSecondsToday`. Adicionar toggle de ordenação no header do matrix (2 botões pequenos): **"Hoje"** (padrão atual) e **"Semana"** (usa dados semanais).
-- Buscar dados semanais reutilizando o mesmo `get_room_ranking_by_period(_room_id, 'week')` que o sidebar já chama (**mesmo cache do TanStack Query — sem request extra**).
-- Ao selecionar "Semana", cards são reordenados e mostram badge pequeno com posição semanal (`#1 sem`, `#2 sem`, etc.) ao lado do nome.
+### 4. i18n
 
----
+Adicionar chaves em `pt-BR.json` e `en-US.json`:
+- `rooms.challenges.legend_todo` = "a fazer" / "to do"
+- `rooms.challenges.legend_progress` = "em andamento" / "in progress"
+- `rooms.challenges.legend_done` = "feito" / "done"
 
-## 3. Limpeza da sala — remover placeholder "Em foco agora"
+## Não muda
 
-### Problema
-Em `src/pages/RoomDetail.tsx` linhas 306–330 há um bloco `classroom-chalkboard` que quando **não há goal_hours e não há focus_session_end_at** mostra só um retângulo verde vazio com "📚 Em foco agora". A funcionalidade de agendar focus session foi descontinuada (nenhum caminho ativo cria `focus_session_end_at`), então o placeholder aparece 100% do tempo em salas sem meta.
+- Lógica de seleção, persistência em `localStorage`, auto-seleção do 1º.
+- Hooks, RPCs, queries.
+- Nenhuma alteração em `RoomChallengesMatrix`, `RoomChallengesCard` ou backend.
 
-### Solução
-- Manter o bloco `classroom-chalkboard` **só quando houver conteúdo real**: `pinned_message` OU `goal_hours`. Remover totalmente o fallback "📚 Em foco agora".
-- Remover também o `RoomLiveBanner`? Não — ele só aparece quando alguém está estudando (`studying.length > 0` retorna null caso contrário). Mantém.
-- Ajustar espaçamento vertical do overview quando o chalkboard some (usar `space-y-4 sm:space-y-5` no container mesmo assim, já está OK).
-- Verificar que nenhum código produção ainda depende de `focus_session_end_at` / `focus_session_duration` / `focus_session_started_by`. Se não usar: manter os campos no banco (não removemos schema), só paramos de renderizar. Deixar comentário `// TODO: focus session feature descontinuada` no `useRooms.ts`.
+## Verificação
 
----
-
-## Responsividade mobile
-
-Todos os componentes acima usam breakpoints Tailwind mobile-first:
-- Chips de desafio: scroll horizontal com snap no `< sm`, grid no `≥ sm`.
-- Ranking sidebar: tabs com `text-[10px]` já compactas; card inteiro passa a full-width abaixo do main no `< lg` (já é assim).
-- Matrix cards: mantém `grid-cols-1 sm:grid-cols-2 xl:grid-cols-3`.
-
-## Arquivos afetados
-
-- `src/components/timer/RoomChallengePicker.tsx` — reescrever para chip-cards.
-- `src/components/rooms/RoomRankingSidebar.tsx` — padrão "week", chip líder, barra relativa.
-- `src/components/rooms/RoomChallengesMatrix.tsx` — toggle de ordenação Hoje/Semana + badge posição semanal.
-- `src/components/rooms/RoomChallengesCard.tsx` — passar `roomId` para a Matrix (já passa).
-- `src/pages/RoomDetail.tsx` — remover fallback do chalkboard.
-- `src/i18n/locales/pt-BR.json` + `en-US.json` — novas chaves: `challenges.pick_hint`, `challenges.selected_badge`, `ranking.week_leader`, `matrix.sort_today`, `matrix.sort_week`, `matrix.pos_week`.
-
-Sem migrações, sem mudanças no schema, sem novos RPCs.
-
-## Validação
-
-- Timer + sala com 2 desafios: os dois cards visíveis, selecionado tem contorno primary + check.
-- Sala com 1 desafio: card único full-width.
-- Ranking abre em "Semana" e mostra 1º colocado no topo com chip.
-- Toggle "Semana" no matrix reordena cards e mostra `#1 sem`.
-- Sala sem meta e sem mensagem fixada: bloco verde do chalkboard some.
-- Testar em viewport 360×800 (mobile) e 1280+ (desktop).
+- Preview em 390px: 2 desafios empilhados verticalmente, sem scroll horizontal.
+- Card sem progresso → contorno vermelho; com progresso parcial → laranja; concluído → verde.
+- Selecionar um card mantém a cor de estado + ring do primary.
