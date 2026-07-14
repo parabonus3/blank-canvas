@@ -15,6 +15,11 @@ import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { useSendFriendRequest, useFriendships } from "@/hooks/useFriendships";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import {
+  getMemberLevelProgress,
+  formatShortDuration,
+  levelBarBgColor,
+} from "@/lib/roomMemberLevel";
 
 function formatTime(seconds: number) {
   const h = Math.floor(seconds / 3600);
