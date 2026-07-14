@@ -214,9 +214,15 @@ export function RoomChallengesMatrix({
       .sort((a, b) => {
         if (sortMode === "week") {
           if (b.weekSeconds !== a.weekSeconds) return b.weekSeconds - a.weekSeconds;
+          if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
+          if (b.totalSecondsToday !== a.totalSecondsToday) return b.totalSecondsToday - a.totalSecondsToday;
+        } else {
+          if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
+          if (b.totalSecondsToday !== a.totalSecondsToday) return b.totalSecondsToday - a.totalSecondsToday;
+          if (b.weekSeconds !== a.weekSeconds) return b.weekSeconds - a.weekSeconds;
         }
-        if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
-        return b.totalSecondsToday - a.totalSecondsToday;
+        if (b.allTimeSeconds !== a.allTimeSeconds) return b.allTimeSeconds - a.allTimeSeconds;
+        return (a.display_name || "").localeCompare(b.display_name || "");
       });
   }, [rows, filter, search, challenges.length, sortMode]);
 
