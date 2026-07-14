@@ -45,15 +45,15 @@ function isActivelyStudying(is_timer_active?: boolean, last_active_at?: string |
   return Date.now() - new Date(last_active_at).getTime() < PRESENCE_WINDOW_MS;
 }
 
+import {
+  getMemberLevelProgress,
+  formatShortDuration,
+  levelBarBgColor,
+} from "@/lib/roomMemberLevel";
+
 function getMemberTitle(totalSeconds: number, t: (key: string) => string) {
-  const hours = totalSeconds / 3600;
-  if (hours >= 200) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
-  if (hours >= 80) return { label: t("rooms.level_master"), color: "text-purple-500" };
-  if (hours >= 30) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
-  if (hours >= 10) return { label: t("rooms.level_dedicated"), color: "text-green-500" };
-  if (hours >= 3) return { label: t("rooms.level_regular"), color: "text-cyan-500" };
-  if (hours >= 0.5) return { label: t("rooms.level_starter"), color: "text-orange-400" };
-  return { label: t("rooms.level_novice"), color: "text-muted-foreground" };
+  const { current } = getMemberLevelProgress(totalSeconds);
+  return { label: t(current.key), color: current.color };
 }
 
 export interface MatrixMemberExtra {
