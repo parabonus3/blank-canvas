@@ -672,9 +672,28 @@ function MemberCard({
           </p>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className={cn("text-[10px] font-medium block mt-0.5 cursor-help", title.color)}>
-                {title.label}
-              </span>
+              <div className="mt-0.5 cursor-help">
+                <div className="flex items-center gap-1 text-[10px] font-medium">
+                  <span className={cn(title.color)}>{title.label}</span>
+                  <span className="text-muted-foreground/70">·</span>
+                  <span className="text-muted-foreground tabular-nums">
+                    {levelProgress.isMax
+                      ? t("rooms.level_max", "nível máximo")
+                      : t("rooms.level_progress_to", "faltam {{time}} para {{next}}", {
+                          time: formatShortDuration(levelProgress.secondsToNext),
+                          next: t(levelProgress.next!.key),
+                        })}
+                  </span>
+                </div>
+                {!levelProgress.isMax && (
+                  <div className="mt-0.5 h-1 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className={cn("h-full transition-all", levelBarBgColor(levelProgress.current))}
+                      style={{ width: `${levelProgress.percentToNext}%` }}
+                    />
+                  </div>
+                )}
+              </div>
             </TooltipTrigger>
             <TooltipContent side="bottom" className="text-[11px]">
               {exactLabel} {t("rooms.in_this_room", "nesta sala")}
