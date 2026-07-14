@@ -1125,6 +1125,8 @@
     "level_dedicated": "Преданный",
     "level_starter": "Начинающий",
     "level_regular": "Постоянный",
+    "level_progress_to": "ещё {{time}} до {{next}}",
+    "level_max": "максимальный уровень",
     "level_veteran": "Ветеран",
     "level_master": "Мастер",
     "level_legend": "Легенда",

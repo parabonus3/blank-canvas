@@ -1125,6 +1125,8 @@
     "level_dedicated": "专注者",
     "level_starter": "入门",
     "level_regular": "常规",
+    "level_progress_to": "距 {{next}} 还差 {{time}}",
+    "level_max": "已达最高等级",
     "level_veteran": "老兵",
     "level_master": "大师",
     "level_legend": "传奇",
