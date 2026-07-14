@@ -168,6 +168,7 @@ export function RoomChallengesMatrix({
     doneToday: number;
     totalSecondsToday: number;
     weekSeconds: number;
+    allTimeSeconds: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
   };
 
@@ -184,10 +185,11 @@ export function RoomChallengesMatrix({
         if (m?.seconds_current) totalSecondsToday += m.seconds_current;
       }
       const weekSeconds = weekTotals?.get(base.user_id) ?? 0;
-      list.push({ ...base, doneToday, totalSecondsToday, weekSeconds, perChallenge: per });
+      const allTimeSeconds = memberExtras?.get(base.user_id)?.total_seconds ?? 0;
+      list.push({ ...base, doneToday, totalSecondsToday, weekSeconds, allTimeSeconds, perChallenge: per });
     }
     return list;
-  }, [challenges, memberIndex, weekTotals]);
+  }, [challenges, memberIndex, weekTotals, memberExtras]);
 
   // Week ranking index (position among members with week activity > 0).
   const weekRankMap = useMemo(() => {
