@@ -131,7 +131,9 @@ export function RoomChallengesMatrix({
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
-  const [sortMode, setSortMode] = useState<SortMode>("today");
+  const [sortMode, setSortMode] = useState<SortMode>(
+    weekTotals && weekTotals.size > 0 ? "week" : "today",
+  );
 
   const memberIndex = useMemo(() => {
     const map = new Map<
