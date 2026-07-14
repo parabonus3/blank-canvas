@@ -178,6 +178,7 @@ export function RoomMemberGrid({ members, roomId, isOwnerOrMod = false }: Props)
           const isMe = member.user_id === user?.id;
           const memberTier = (member as any).plan_tier || "free";
           const title = getMemberTitle(member.total_seconds, t);
+          const levelProgress = getMemberLevelProgress(member.total_seconds);
           const studyingNow = isActivelyStudying(member);
           const isPremium = memberTier === "premium";
           const isPro = memberTier === "pro";
