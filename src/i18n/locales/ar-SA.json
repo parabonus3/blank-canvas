@@ -1123,6 +1123,8 @@
     "distance_to_next": "تبقى {{time}} للوصول إلى #{{position}}",
     "level_novice": "مبتدئ",
     "level_dedicated": "مجتهد",
+    "level_starter": "مبتدئ",
+    "level_regular": "منتظم",
     "level_veteran": "محترف",
     "level_master": "خبير",
     "level_legend": "أسطورة",

@@ -1123,6 +1123,8 @@
     "distance_to_next": "До #{{position}} осталось {{time}}",
     "level_novice": "Новичок",
     "level_dedicated": "Преданный",
+    "level_starter": "Начинающий",
+    "level_regular": "Постоянный",
     "level_veteran": "Ветеран",
     "level_master": "Мастер",
     "level_legend": "Легенда",

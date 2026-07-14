@@ -1855,6 +1855,8 @@
     "distance_to_next": "{{time}} away from #{{position}}",
     "level_novice": "Novice",
     "level_dedicated": "Dedicated",
+    "level_starter": "Starter",
+    "level_regular": "Regular",
     "level_veteran": "Veteran",
     "level_master": "Master",
     "level_legend": "Legend",

@@ -1123,6 +1123,8 @@
     "distance_to_next": "Kurang {{time}} untuk #{{position}}",
     "level_novice": "Pemula",
     "level_dedicated": "Berdedikasi",
+    "level_starter": "Pemula",
+    "level_regular": "Reguler",
     "level_veteran": "Veteran",
     "level_master": "Master",
     "level_legend": "Legenda",

@@ -1123,6 +1123,8 @@
     "distance_to_next": "Noch {{time}} bis #{{position}}",
     "level_novice": "Anfänger",
     "level_dedicated": "Engagiert",
+    "level_starter": "Anfänger",
+    "level_regular": "Regelmäßig",
     "level_veteran": "Veteran",
     "level_master": "Meister",
     "level_legend": "Legende",
