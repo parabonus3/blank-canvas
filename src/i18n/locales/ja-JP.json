@@ -1123,6 +1123,8 @@
     "distance_to_next": "#{{position}}まであと{{time}}",
     "level_novice": "初心者",
     "level_dedicated": "熱心",
+    "level_starter": "初級",
+    "level_regular": "常連",
     "level_veteran": "ベテラン",
     "level_master": "マスター",
     "level_legend": "レジェンド",

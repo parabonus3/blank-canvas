@@ -47,10 +47,12 @@ function isActivelyStudying(is_timer_active?: boolean, last_active_at?: string |
 
 function getMemberTitle(totalSeconds: number, t: (key: string) => string) {
   const hours = totalSeconds / 3600;
-  if (hours >= 500) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
-  if (hours >= 200) return { label: t("rooms.level_master"), color: "text-purple-500" };
-  if (hours >= 50) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
+  if (hours >= 200) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
+  if (hours >= 80) return { label: t("rooms.level_master"), color: "text-purple-500" };
+  if (hours >= 30) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
   if (hours >= 10) return { label: t("rooms.level_dedicated"), color: "text-green-500" };
+  if (hours >= 3) return { label: t("rooms.level_regular"), color: "text-cyan-500" };
+  if (hours >= 0.5) return { label: t("rooms.level_starter"), color: "text-orange-400" };
   return { label: t("rooms.level_novice"), color: "text-muted-foreground" };
 }
 
@@ -129,7 +131,9 @@ export function RoomChallengesMatrix({
   const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
-  const [sortMode, setSortMode] = useState<SortMode>("today");
+  const [sortMode, setSortMode] = useState<SortMode>(
+    weekTotals && weekTotals.size > 0 ? "week" : "today",
+  );
 
   const memberIndex = useMemo(() => {
     const map = new Map<
@@ -164,6 +168,7 @@ export function RoomChallengesMatrix({
     doneToday: number;
     totalSecondsToday: number;
     weekSeconds: number;
+    allTimeSeconds: number;
     perChallenge: Map<string, RoomChallengeMember | null>;
   };
 
@@ -180,10 +185,11 @@ export function RoomChallengesMatrix({
         if (m?.seconds_current) totalSecondsToday += m.seconds_current;
       }
       const weekSeconds = weekTotals?.get(base.user_id) ?? 0;
-      list.push({ ...base, doneToday, totalSecondsToday, weekSeconds, perChallenge: per });
+      const allTimeSeconds = memberExtras?.get(base.user_id)?.total_seconds ?? 0;
+      list.push({ ...base, doneToday, totalSecondsToday, weekSeconds, allTimeSeconds, perChallenge: per });
     }
     return list;
-  }, [challenges, memberIndex, weekTotals]);
+  }, [challenges, memberIndex, weekTotals, memberExtras]);
 
   // Week ranking index (position among members with week activity > 0).
   const weekRankMap = useMemo(() => {
@@ -208,9 +214,15 @@ export function RoomChallengesMatrix({
       .sort((a, b) => {
         if (sortMode === "week") {
           if (b.weekSeconds !== a.weekSeconds) return b.weekSeconds - a.weekSeconds;
+          if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
+          if (b.totalSecondsToday !== a.totalSecondsToday) return b.totalSecondsToday - a.totalSecondsToday;
+        } else {
+          if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
+          if (b.totalSecondsToday !== a.totalSecondsToday) return b.totalSecondsToday - a.totalSecondsToday;
+          if (b.weekSeconds !== a.weekSeconds) return b.weekSeconds - a.weekSeconds;
         }
-        if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
-        return b.totalSecondsToday - a.totalSecondsToday;
+        if (b.allTimeSeconds !== a.allTimeSeconds) return b.allTimeSeconds - a.allTimeSeconds;
+        return (a.display_name || "").localeCompare(b.display_name || "");
       });
   }, [rows, filter, search, challenges.length, sortMode]);
 

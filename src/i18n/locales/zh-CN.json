@@ -1123,6 +1123,8 @@
     "distance_to_next": "距离 #{{position}} 还差 {{time}}",
     "level_novice": "新手",
     "level_dedicated": "专注者",
+    "level_starter": "入门",
+    "level_regular": "常规",
     "level_veteran": "老兵",
     "level_master": "大师",
     "level_legend": "传奇",

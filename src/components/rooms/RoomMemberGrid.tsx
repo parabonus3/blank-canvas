@@ -47,10 +47,12 @@ function getInitials(name?: string) {
 
 function getMemberTitle(totalSeconds: number, t: (key: string) => string) {
   const hours = totalSeconds / 3600;
-  if (hours >= 500) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
-  if (hours >= 200) return { label: t("rooms.level_master"), color: "text-purple-500" };
-  if (hours >= 50) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
+  if (hours >= 200) return { label: t("rooms.level_legend"), color: "text-yellow-500" };
+  if (hours >= 80) return { label: t("rooms.level_master"), color: "text-purple-500" };
+  if (hours >= 30) return { label: t("rooms.level_veteran"), color: "text-blue-500" };
   if (hours >= 10) return { label: t("rooms.level_dedicated"), color: "text-green-500" };
+  if (hours >= 3) return { label: t("rooms.level_regular"), color: "text-cyan-500" };
+  if (hours >= 0.5) return { label: t("rooms.level_starter"), color: "text-orange-400" };
   return { label: t("rooms.level_novice"), color: "text-muted-foreground" };
 }
 

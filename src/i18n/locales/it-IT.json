@@ -1123,6 +1123,8 @@
     "distance_to_next": "Mancano {{time}} per il #{{position}}",
     "level_novice": "Novizio",
     "level_dedicated": "Dedicato",
+    "level_starter": "Iniziante",
+    "level_regular": "Regolare",
     "level_veteran": "Veterano",
     "level_master": "Maestro",
     "level_legend": "Leggenda",
