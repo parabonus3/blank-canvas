@@ -229,10 +229,12 @@ export function MemberProfileModal({ open, onOpenChange, member, roomId, totalMe
                   let titleLabel = t("rooms.level_novice");
                   let titleColor = "text-muted-foreground";
                   let titleIcon = "🌱";
-                  if (hours >= 500) { titleLabel = t("rooms.level_legend"); titleColor = "text-yellow-500"; titleIcon = "👑"; }
-                  else if (hours >= 200) { titleLabel = t("rooms.level_master"); titleColor = "text-purple-500"; titleIcon = "🥇"; }
-                  else if (hours >= 50) { titleLabel = t("rooms.level_veteran"); titleColor = "text-blue-500"; titleIcon = "⚔️"; }
+                  if (hours >= 200) { titleLabel = t("rooms.level_legend"); titleColor = "text-yellow-500"; titleIcon = "👑"; }
+                  else if (hours >= 80) { titleLabel = t("rooms.level_master"); titleColor = "text-purple-500"; titleIcon = "🥇"; }
+                  else if (hours >= 30) { titleLabel = t("rooms.level_veteran"); titleColor = "text-blue-500"; titleIcon = "⚔️"; }
                   else if (hours >= 10) { titleLabel = t("rooms.level_dedicated"); titleColor = "text-green-500"; titleIcon = "📚"; }
+                  else if (hours >= 3) { titleLabel = t("rooms.level_regular"); titleColor = "text-cyan-500"; titleIcon = "🔁"; }
+                  else if (hours >= 0.5) { titleLabel = t("rooms.level_starter"); titleColor = "text-orange-400"; titleIcon = "✨"; }
                   return (
                     <p className={cn("text-sm font-semibold", titleColor)}>
                       {titleIcon} {titleLabel}
