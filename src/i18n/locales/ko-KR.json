@@ -1125,6 +1125,8 @@
     "level_dedicated": "열정가",
     "level_starter": "입문자",
     "level_regular": "정기",
+    "level_progress_to": "{{next}}까지 {{time}} 남음",
+    "level_max": "최고 레벨",
     "level_veteran": "베테랑",
     "level_master": "마스터",
     "level_legend": "전설",

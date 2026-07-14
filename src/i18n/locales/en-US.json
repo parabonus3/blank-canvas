@@ -1857,6 +1857,8 @@
     "level_dedicated": "Dedicated",
     "level_starter": "Starter",
     "level_regular": "Regular",
+    "level_progress_to": "{{time}} to {{next}}",
+    "level_max": "max level",
     "level_veteran": "Veteran",
     "level_master": "Master",
     "level_legend": "Legend",

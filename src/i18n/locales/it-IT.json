@@ -1125,6 +1125,8 @@
     "level_dedicated": "Dedicato",
     "level_starter": "Iniziante",
     "level_regular": "Regolare",
+    "level_progress_to": "mancano {{time}} a {{next}}",
+    "level_max": "livello massimo",
     "level_veteran": "Veterano",
     "level_master": "Maestro",
     "level_legend": "Leggenda",

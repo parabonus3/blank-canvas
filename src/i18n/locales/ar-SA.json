@@ -1125,6 +1125,8 @@
     "level_dedicated": "مجتهد",
     "level_starter": "مبتدئ",
     "level_regular": "منتظم",
+    "level_progress_to": "متبقٍ {{time}} للوصول إلى {{next}}",
+    "level_max": "أعلى مستوى",
     "level_veteran": "محترف",
     "level_master": "خبير",
     "level_legend": "أسطورة",

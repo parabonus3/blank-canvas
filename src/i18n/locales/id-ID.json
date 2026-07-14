@@ -1125,6 +1125,8 @@
     "level_dedicated": "Berdedikasi",
     "level_starter": "Pemula",
     "level_regular": "Reguler",
+    "level_progress_to": "{{time}} lagi ke {{next}}",
+    "level_max": "level maks",
     "level_veteran": "Veteran",
     "level_master": "Master",
     "level_legend": "Legenda",

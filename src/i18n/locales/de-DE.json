@@ -1125,6 +1125,8 @@
     "level_dedicated": "Engagiert",
     "level_starter": "Anfänger",
     "level_regular": "Regelmäßig",
+    "level_progress_to": "noch {{time}} bis {{next}}",
+    "level_max": "Höchststufe",
     "level_veteran": "Veteran",
     "level_master": "Meister",
     "level_legend": "Legende",
