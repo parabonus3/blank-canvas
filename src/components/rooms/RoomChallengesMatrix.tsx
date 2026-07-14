@@ -526,6 +526,7 @@ function MemberCard({
   const isPro = tier === "pro";
   const studyingNow = isActivelyStudying(extra?.is_timer_active, extra?.last_active_at);
   const title = getMemberTitle(extra?.total_seconds ?? 0, t);
+  const levelProgress = getMemberLevelProgress(extra?.total_seconds ?? 0);
   const clickable = !!onOpenProfile && !isMe;
   const openProfile = () => {
     if (clickable) onOpenProfile!(row.user_id);
