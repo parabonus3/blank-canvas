@@ -228,22 +228,36 @@ export function MemberProfileModal({ open, onOpenChange, member, roomId, totalMe
                   <PlanBadge tier={(member as any).plan_tier || "free"} size="md" />
                 </div>
 
-                {/* Title - prominent */}
+                {/* Title + progress to next level */}
                 {(() => {
-                  const hours = member.total_seconds / 3600;
-                  let titleLabel = t("rooms.level_novice");
-                  let titleColor = "text-muted-foreground";
-                  let titleIcon = "🌱";
-                  if (hours >= 200) { titleLabel = t("rooms.level_legend"); titleColor = "text-yellow-500"; titleIcon = "👑"; }
-                  else if (hours >= 80) { titleLabel = t("rooms.level_master"); titleColor = "text-purple-500"; titleIcon = "🥇"; }
-                  else if (hours >= 30) { titleLabel = t("rooms.level_veteran"); titleColor = "text-blue-500"; titleIcon = "⚔️"; }
-                  else if (hours >= 10) { titleLabel = t("rooms.level_dedicated"); titleColor = "text-green-500"; titleIcon = "📚"; }
-                  else if (hours >= 3) { titleLabel = t("rooms.level_regular"); titleColor = "text-cyan-500"; titleIcon = "🔁"; }
-                  else if (hours >= 0.5) { titleLabel = t("rooms.level_starter"); titleColor = "text-orange-400"; titleIcon = "✨"; }
+                  const progress = getMemberLevelProgress(member.total_seconds);
+                  const titleLabel = t(progress.current.key);
+                  const titleColor = progress.current.color;
+                  const titleIcon = progress.current.icon;
                   return (
-                    <p className={cn("text-sm font-semibold", titleColor)}>
-                      {titleIcon} {titleLabel}
-                    </p>
+                    <div className="space-y-1.5">
+                      <p className={cn("text-sm font-semibold", titleColor)}>
+                        {titleIcon} {titleLabel}
+                      </p>
+                      <div className="mx-auto max-w-[240px] space-y-1">
+                        <p className="text-[11px] text-muted-foreground tabular-nums">
+                          {progress.isMax
+                            ? t("rooms.level_max", "nível máximo")
+                            : t("rooms.level_progress_to", "faltam {{time}} para {{next}}", {
+                                time: formatShortDuration(progress.secondsToNext),
+                                next: t(progress.next!.key),
+                              })}
+                        </p>
+                        {!progress.isMax && (
+                          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className={cn("h-full transition-all", levelBarBgColor(progress.current))}
+                              style={{ width: `${progress.percentToNext}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   );
                 })()}
 
