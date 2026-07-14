@@ -454,6 +454,7 @@ export default function Index() {
 
   return (
     <MainLayout>
+      <SEO title="Timezoni" path="/timer" noindex localeOnly />
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 md:space-y-8">
         <div className="text-center space-y-1 sm:space-y-2">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('timer.title')}</h1>
