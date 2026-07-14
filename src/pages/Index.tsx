@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useSaveTimeEntryTags } from "@/hooks/useTags";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { SEO } from "@/components/SEO";
 import { ActiveGoalsStrip } from "@/components/timer/ActiveGoalsStrip";
 import { useProjects } from "@/hooks/useProjects";
 import { useActiveTimeEntry, useStartTimer, useStopTimer } from "@/hooks/useTimeEntries";
@@ -453,6 +454,7 @@ export default function Index() {
 
   return (
     <MainLayout>
+      <SEO title="Timezoni" path="/timer" noindex localeOnly />
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 md:space-y-8">
         <div className="text-center space-y-1 sm:space-y-2">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('timer.title')}</h1>
