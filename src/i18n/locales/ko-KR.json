@@ -1124,7 +1124,7 @@
     "level_novice": "초보자",
     "level_dedicated": "열정가",
     "level_starter": "입문자",
-    "level_regular": "정기",
+    "level_regular": "꾸준함",
     "level_progress_to": "{{next}}까지 {{time}} 남음",
     "level_max": "최고 레벨",
     "level_veteran": "베테랑",
@@ -1335,6 +1335,85 @@
             "title": "의도적인 쉼",
             "desc": "하루의 진짜 쉼"
           }
+        }
+      },
+      "total_today": "오늘 {{n}}분"
+    },
+    "heatmap_less": "적음",
+    "heatmap_more": "많음",
+    "heatmap_desc_v2": "매일 방이 얼마나 공부했는지. 진한 사각형일수록 분이 많습니다.",
+    "heatmap_period_label": "최근 {{count}}일",
+    "achievements": {
+      "today": "오늘",
+      "yesterday": "어제",
+      "days_ago": "{{n}}일 전",
+      "months_ago": "{{n}}달 전",
+      "locked": "잠김 · {{rarity}}",
+      "empty": "아직 업적이 없습니다 — 공부를 시작해 첫 업적을 해제하세요!",
+      "rarity": {
+        "common": "일반",
+        "rare": "희귀",
+        "epic": "영웅",
+        "legendary": "전설"
+      },
+      "category": {
+        "time": "시간",
+        "streak": "연속",
+        "community": "커뮤니티",
+        "special": "특별"
+      },
+      "items": {
+        "total_10h": {
+          "name": "점화",
+          "desc": "방에서 함께 10시간"
+        },
+        "total_50h": {
+          "name": "몰입 구간",
+          "desc": "함께 50시간 학습"
+        },
+        "total_100h": {
+          "name": "마라토너",
+          "desc": "합계 100시간"
+        },
+        "total_500h": {
+          "name": "하프 그랜드",
+          "desc": "500시간 — 드문 위업"
+        },
+        "total_1000h": {
+          "name": "살아있는 전설",
+          "desc": "1000시간의 헌신"
+        },
+        "streak_3d": {
+          "name": "트리플 스레트",
+          "desc": "3일 연속 활동"
+        },
+        "streak_7d": {
+          "name": "완벽한 한 주",
+          "desc": "한 주 동안 결석 없음"
+        },
+        "streak_30d": {
+          "name": "완벽한 한 달",
+          "desc": "한 달 내내 불타오름"
+        },
+        "members_5": {
+          "name": "코어",
+          "desc": "멤버 5명 달성"
+        },
+        "members_10": {
+          "name": "스쿼드",
+          "desc": "방에 10명"
+        },
+        "members_25": {
+          "name": "길드",
+          "desc": "25명 — 큰 방"
+        },
+        "sync_5": {
+          "name": "싱크",
+          "desc": "동시에 5명이 학습 중"
+        },
+        "sync_10": {
+          "name": "집중 스웜",
+          "desc": "동시에 10명 집중"
         }
       }
     }

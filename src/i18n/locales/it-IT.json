@@ -1124,7 +1124,7 @@
     "level_novice": "Novizio",
     "level_dedicated": "Dedicato",
     "level_starter": "Iniziante",
-    "level_regular": "Regolare",
+    "level_regular": "Costante",
     "level_progress_to": "mancano {{time}} a {{next}}",
     "level_max": "livello massimo",
     "level_veteran": "Veterano",
@@ -1335,6 +1335,85 @@
             "title": "Pausa intenzionale",
             "desc": "Una vera pausa nella giornata"
           }
+        }
+      },
+      "total_today": "{{n}}min oggi"
+    },
+    "heatmap_less": "Meno",
+    "heatmap_more": "Più",
+    "heatmap_desc_v2": "Quanto la stanza ha studiato ogni giorno. Quadrato più scuro = più minuti.",
+    "heatmap_period_label": "ultimi {{count}} giorni",
+    "achievements": {
+      "today": "oggi",
+      "yesterday": "ieri",
+      "days_ago": "{{n}}g fa",
+      "months_ago": "{{n}}me fa",
+      "locked": "Bloccato · {{rarity}}",
+      "empty": "Ancora nessun traguardo — iniziate a studiare per sbloccare i primi!",
+      "rarity": {
+        "common": "Comune",
+        "rare": "Rara",
+        "epic": "Epica",
+        "legendary": "Leggendaria"
+      },
+      "category": {
+        "time": "Tempo",
+        "streak": "Serie",
+        "community": "Comunità",
+        "special": "Speciali"
+      },
+      "items": {
+        "total_10h": {
+          "name": "Accensione",
+          "desc": "10 ore insieme nella stanza"
+        },
+        "total_50h": {
+          "name": "Nel Ritmo",
+          "desc": "50 ore di studio collettivo"
+        },
+        "total_100h": {
+          "name": "Maratoneti",
+          "desc": "100 ore sommate"
+        },
+        "total_500h": {
+          "name": "Mezzo Migliaio",
+          "desc": "500 ore — impresa rara"
+        },
+        "total_1000h": {
+          "name": "Leggenda Vivente",
+          "desc": "1000 ore di dedizione"
+        },
+        "streak_3d": {
+          "name": "Trio Perfetto",
+          "desc": "3 giorni consecutivi attivi"
+        },
+        "streak_7d": {
+          "name": "Settimana Piena",
+          "desc": "Una settimana senza fallire"
+        },
+        "streak_30d": {
+          "name": "Mese Perfetto",
+          "desc": "Un mese intero in fiamme"
+        },
+        "members_5": {
+          "name": "Il Nucleo",
+          "desc": "Raggiunti 5 membri"
+        },
+        "members_10": {
+          "name": "La Squadra",
+          "desc": "10 persone nella stanza"
+        },
+        "members_25": {
+          "name": "La Gilda",
+          "desc": "25 studenti — grande stanza"
+        },
+        "sync_5": {
+          "name": "In Sintonia",
+          "desc": "5 persone studiano insieme"
+        },
+        "sync_10": {
+          "name": "Sciame Focalizzato",
+          "desc": "10 persone concentrate insieme"
         }
       }
     }
