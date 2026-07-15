@@ -1,88 +1,96 @@
-## Problemas identificados
+## Objetivo
+Deixar os nomes dos níveis mais aspiracionais (sem "Regular" morno) e traduzir 100% dos textos que hoje aparecem em inglês/português cru — conquistas da sala, "min hoje", legenda "Menos/Mais" do heatmap, descrição e período do heatmap — em todos os 12 idiomas, de forma profissional.
 
-Confirmei no banco de dados da sala `afe650d0-...` (Oração):
+---
 
-### 1. Ordenação dos cards fica "aleatória" com muitos membros zerados
-No `RoomChallengesMatrix` a ordenação padrão é **"Hoje"** e faz:
-```ts
-if (b.doneToday !== a.doneToday) return b.doneToday - a.doneToday;
-return b.totalSecondsToday - a.totalSecondsToday;
+## 1. Renomear níveis (curva mais desejável)
+
+Trocar apenas 2 nomes na escala (mantém 7 níveis, thresholds e cores em `src/lib/roomMemberLevel.ts`):
+
+| Ordem | Horas | Chave i18n | Antes | Proposta |
+|---|---|---|---|---|
+| 1 | 0h | `level_novice` | Novato | Novato *(mantém)* |
+| 2 | 0.5h | `level_starter` | Iniciante | Iniciante *(mantém)* |
+| 3 | 3h | `level_regular` | **Regular** | **Persistente** (Consistent / Constant / Régulier / Beständig / Costante / 継続者 / 꾸준함 / 坚持者 / Настойчивый / مُثابر / Konsisten) |
+| 4 | 10h | `level_dedicated` | Dedicado | Dedicado *(mantém)* |
+| 5 | 30h | `level_veteran` | Veterano | Veterano *(mantém)* |
+| 6 | 80h | `level_master` | Mestre | **Mestre** *(mantém — já é forte)* |
+| 7 | 200h | `level_legend` | Lenda | Lenda *(mantém)* |
+
+Motivo: "Regular / Regular / 普通" soa como "mediano". "Persistente" comunica virtude → gera desejo de alcançar. Só renomeamos o valor das chaves existentes → zero mudança de código.
+
+Traduções profissionais do nível 3 nos 12 idiomas:
+`pt-BR: Persistente · en-US: Consistent · es-ES: Constante · fr-FR: Régulier · de-DE: Beständig · it-IT: Costante · ja-JP: 継続者 · ko-KR: 꾸준함 · zh-CN: 坚持者 · ru-RU: Настойчивый · ar-SA: مُثابِر · id-ID: Konsisten`
+
+---
+
+## 2. Renomear conquistas fracas + i18n completo (12 idiomas)
+
+Hoje `src/components/rooms/RoomAchievements.tsx` tem os nomes e descrições **hard-coded em PT/EN** dentro do arquivo. Vamos:
+
+**2a. Melhorar 3 nomes que soam apagados** (mantendo tom épico/aspiracional):
+
+| id | Antes (PT / EN) | Depois (PT / EN) |
+|---|---|---|
+| `total_10h` | Aquecendo / Warming Up | **Ignição / Ignition** |
+| `members_5` | Pequena Tribo / Small Tribe | **Núcleo / The Core** |
+| `members_10` | Time Formado / Squad Up | **Esquadrão / The Squad** |
+| `members_25` | Comunidade / Community | **Guilda / The Guild** |
+| `sync_5` | Sincronia / In Sync | **Em Sintonia / In Sync** *(só PT ajustado)* |
+
+Demais nomes já estão bons: Em Ritmo, Maratonistas, Meio Milhar, Lenda Viva, Trio Certeiro, Semana Cheia, Mês Perfeito, Enxame Focado.
+
+**2b. Mover TODOS os nomes e descrições para as 12 locales.**
+Criar em cada `src/i18n/locales/*.json` o bloco:
+
 ```
-Como a maior parte dos membros hoje está com `doneToday=0` e `totalSecondsToday=0`, **todos empatam** e o React mantém a ordem de inserção do `memberIndex` (que segue a ordem retornada pelo Supabase). Resultado: **Bielzinho aparece acima do Deyvid** mesmo o Deyvid tendo tempo real na semana. Não há nenhum critério de desempate por tempo semanal ou total.
-
-### 2. Quase todo mundo aparece como "Novato"
-Os títulos usam a função:
-```ts
-if (hours >= 500) legend
-if (hours >= 200) master
-if (hours >= 50)  veteran
-if (hours >= 10)  dedicated
-else              novice
+rooms.achievements.<id>.name
+rooms.achievements.<id>.desc
 ```
-Consultando `room_members` desta sala, o **top 1 tem só 15,7h** e a maioria está entre 1h e 8h. Ou seja, membros com 30+ dias na sala e várias horas reais continuam "Novato" porque a barreira de 10h é muito alta para o tempo local da sala. A escala foi desenhada para tempo global, não para tempo por sala.
 
-## Plano de correção
+Substituir os objetos `NAMES` e `DESCS` inline por `t("rooms.achievements." + def.id + ".name")` / `.desc`. Remover `pickLang` e a lógica `isPt` para nomes/descrições (mantém `isPt` só para o fallback "hoje/ontem" — que também vamos i18n abaixo).
 
-Ambas as mudanças são só de front-end (nada de migration, nada de RPC nova). Alteram só a lógica de ordenação e a escala de títulos.
+**2c. i18n dos textos auxiliares do card de conquistas** (hoje ainda em PT/EN literal):
+- `rooms.achievements.today` = "hoje"
+- `rooms.achievements.yesterday` = "ontem"
+- `rooms.achievements.days_ago` = "há {{n}}d" / `{{n}}d ago` / etc.
+- `rooms.achievements.months_ago` = "há {{n}}m" / `{{n}}mo ago`
+- `rooms.achievements.locked` = "Bloqueada · {{rarity}}"
+- `rooms.achievements.empty` = "Nenhuma conquista ainda — comecem a estudar para desbloquear as primeiras!"
+- `rooms.achievements.rarity.common|rare|epic|legendary`
+- `rooms.achievements.category.time|streak|community|special`
 
-### Mudança A · Ordenação inteligente (arquivo `src/components/rooms/RoomChallengesMatrix.tsx`)
+`RARITY_STYLES` e `CATEGORY_LABELS_PT/EN` continuam para cores, mas os labels vêm do i18n.
 
-1. **Adicionar `allTimeTotals` como prop** vinda do card (já existe lá em `memberExtras.total_seconds`). Vou usar `extra.total_seconds` que já chega por membro.
-2. **Novo critério de ordenação encadeado (ambos os modos)**, aplicado após os critérios primários existentes:
-   - Modo `today`: `doneToday` desc → `totalSecondsToday` desc → **`weekSeconds` desc** → **`allTimeInRoom` desc** → `display_name` asc.
-   - Modo `week`: `weekSeconds` desc → `doneToday` desc → `totalSecondsToday` desc → **`allTimeInRoom` desc** → `display_name` asc.
-3. **Trocar o default para `week`** quando houver dados de semana. Faz muito mais sentido "quem está mandando bem esta semana" ficar no topo, e casa com o que o usuário espera (Deyvid > Biel).
-4. Passar `allTimeTotals` para dentro do `rows` incluindo `allTimeSeconds` (lido de `memberExtras.get(user_id)?.total_seconds ?? 0`).
+---
 
-Resultado: dois membros com "0 hoje" nunca mais ficam em ordem aleatória — quem tem mais tempo na semana/na sala aparece primeiro.
+## 3. Traduzir strings soltas restantes (12 idiomas)
 
-### Mudança B · Escala de títulos calibrada para tempo por sala
+| Local | Chave | Estado atual |
+|---|---|---|
+| `RoomChallengesMatrix.tsx:670` | `rooms.challenges.total_today` = `"{{n}}min hoje"` | Só existe como defaultValue → adicionar às 12 locales |
+| `RoomHeatmap.tsx` | `rooms.heatmap_less` = "Menos" / `rooms.heatmap_more` = "Mais" | Adicionar às 12 locales |
+| `RoomHeatmap.tsx` | `rooms.heatmap_desc_v2` | Adicionar às 12 locales |
+| `RoomHeatmap.tsx` | `rooms.heatmap_period_label` (`"últimos {{count}} dias"`) | Adicionar às 12 locales |
 
-Reescrever `getMemberTitle(totalSeconds)` em **três lugares** que usam a mesma escala:
-- `src/components/rooms/RoomChallengesMatrix.tsx` (linha 48-55)
-- `src/components/rooms/RoomMemberGrid.tsx` (linha 48-55)
-- `src/components/rooms/MemberProfileModal.tsx` (linha 229-235)
-- `src/components/friends/FriendProfileModal.tsx` (linha 118-124) — este continua usando total global do usuário, então **NÃO** entra na mudança (mantém escala atual).
+Traduções serão feitas de forma profissional (não literal) — por ex. em coreano `min hoje` → `오늘 {{n}}분`, chinês → `今日 {{n}}分钟`, japonês → `本日 {{n}}分`, árabe → `{{n}} د اليوم` (RTL correto).
 
-Nova escala (baseada em `total_seconds` **desta sala**):
+---
 
-| Horas na sala | Título              | i18n key                | Cor          |
-| ------------- | ------------------- | ----------------------- | ------------ |
-| `>= 200`      | Lenda               | `level_legend`          | yellow-500   |
-| `>= 80`       | Mestre              | `level_master`          | purple-500   |
-| `>= 30`       | Veterano            | `level_veteran`         | blue-500     |
-| `>= 10`       | Dedicado            | `level_dedicated`       | green-500    |
-| `>= 3`        | Regular *(novo)*    | `level_regular` *(nova key)* | cyan-500 |
-| `>= 0.5`      | Iniciante *(novo)*  | `level_starter` *(nova key)* | orange-400 |
-| `< 0.5`       | Novato              | `level_novice`          | muted        |
+## 4. Execução (ordem e escopo)
 
-Com isso, quem já acumulou 30+ min na sala sai de "Novato" para "Iniciante"; quem tem 3h+ vira "Regular"; e as faixas superiores continuam existindo mas ficam mais alcançáveis (10h já é "Dedicado" hoje, mantido).
-
-### Mudança C · i18n para os dois novos títulos
-
-Adicionar as chaves `rooms.level_starter` ("Iniciante") e `rooms.level_regular` ("Regular") em todos os 13 arquivos de locale (`src/i18n/locales/*.json`), imediatamente ao lado das outras `level_*`. Traduções:
-
-- pt-BR: Iniciante / Regular
-- en-US: Starter / Regular
-- es-ES: Principiante / Regular
-- fr-FR: Débutant / Régulier
-- de-DE: Anfänger / Regelmäßig
-- it-IT: Iniziante / Regolare
-- ja-JP: 初級 / 常連
-- ko-KR: 입문자 / 정기
-- zh-CN: 入门 / 常规
-- ru-RU: Начинающий / Постоянный
-- ar-SA: مبتدئ / منتظم
-- id-ID: Pemula / Reguler
+1. Editar `src/lib/roomMemberLevel.ts` — apenas trocar o label i18n do nível 3 nas 12 locales (chave `rooms.level_regular` → texto "Persistente/Consistent/…"). *A chave permanece a mesma para não quebrar nada.*
+2. Refatorar `src/components/rooms/RoomAchievements.tsx`:
+   - Remover `NAMES`, `DESCS`, `pickLang`, `CATEGORY_LABELS_PT/EN` (usar `t`).
+   - Ler tudo via `t("rooms.achievements.…")`.
+   - Aplicar os 4 novos nomes (Ignição, Núcleo, Esquadrão, Guilda, Em Sintonia).
+3. Escrever um script Python único que injeta em cada `src/i18n/locales/*.json` (12 arquivos, em paralelo) os novos blocos: `rooms.achievements.*`, `rooms.heatmap_less/more/desc_v2/period_label`, `rooms.challenges.total_today`, e o novo texto do `level_regular`. Traduções listadas explicitamente no script (uma tabela por idioma), revisadas manualmente antes de rodar.
+4. Verificação: build + abrir a sala em pt-BR, ko-KR e ar-SA para conferir que "Menos/Mais", "min hoje", nomes das conquistas e o nível "Persistente/꾸준함/مُثابِر" aparecem traduzidos.
 
 ## Fora de escopo
-- Não altero nenhuma tabela nem RPC.
-- Não altero `FriendProfileModal` (usa tempo global, não local).
-- Não mexo em cores/design geral dos cards — só na ordenação e no texto/threshold do título.
-- Não altero o ranking lateral direito (RoomRankingSidebar), que já usa `get_room_ranking_by_period`.
+- Alterar thresholds/horas dos níveis ou raridades das conquistas.
+- Ranking lateral, filtros do heatmap.
+- Ícones e cores (mantidos).
 
-## Arquivos alterados
-- `src/components/rooms/RoomChallengesMatrix.tsx` — nova função de tier, novo tie-break, default sort = `week`.
-- `src/components/rooms/RoomMemberGrid.tsx` — mesma nova função de tier.
-- `src/components/rooms/MemberProfileModal.tsx` — mesma nova função de tier.
-- `src/i18n/locales/*.json` (13 arquivos) — duas novas chaves `rooms.level_starter` e `rooms.level_regular`.
+## Confirmação
+Se "Persistente" (nível 3) e os 4 nomes de conquistas propostos (Ignição, Núcleo, Esquadrão, Guilda) fizerem sentido, sigo com essa lista. Se quiser trocar algum, me diga qual antes de eu implementar.
