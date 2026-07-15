@@ -32,10 +32,8 @@ function formatValue(id: string, current: number, target: number): string {
 const PRESENCE_WINDOW_MS = 2 * 60 * 60 * 1000 + 5 * 60 * 1000;
 
 export function RoomAchievements({ roomId, members }: Props) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user } = useAuth();
-  const lang = i18n.language || "en";
-  const isPt = lang.startsWith("pt");
   const prevUnlockedRef = useRef<Set<string>>(new Set());
 
   // Room streak
