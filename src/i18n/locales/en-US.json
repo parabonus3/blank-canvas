@@ -1856,7 +1856,7 @@
     "level_novice": "Novice",
     "level_dedicated": "Dedicated",
     "level_starter": "Starter",
-    "level_regular": "Regular",
+    "level_regular": "Consistent",
     "level_progress_to": "{{time}} to {{next}}",
     "level_max": "max level",
     "level_veteran": "Veteran",
@@ -2069,6 +2069,85 @@
             "title": "Intentional pause",
             "desc": "A real pause in your day"
           }
+        }
+      },
+      "total_today": "{{n}}min today"
+    },
+    "heatmap_less": "Less",
+    "heatmap_more": "More",
+    "heatmap_desc_v2": "How much the room studied each day. Darker square = more minutes.",
+    "heatmap_period_label": "last {{count}} days",
+    "achievements": {
+      "today": "today",
+      "yesterday": "yesterday",
+      "days_ago": "{{n}}d ago",
+      "months_ago": "{{n}}mo ago",
+      "locked": "Locked · {{rarity}}",
+      "empty": "No achievements yet — start studying to unlock the first ones!",
+      "rarity": {
+        "common": "Common",
+        "rare": "Rare",
+        "epic": "Epic",
+        "legendary": "Legendary"
+      },
+      "category": {
+        "time": "Time",
+        "streak": "Streak",
+        "community": "Community",
+        "special": "Special"
+      },
+      "items": {
+        "total_10h": {
+          "name": "Ignition",
+          "desc": "10 hours together in the room"
+        },
+        "total_50h": {
+          "name": "In the Zone",
+          "desc": "50 hours of collective study"
+        },
+        "total_100h": {
+          "name": "Marathoners",
+          "desc": "100 hours combined"
+        },
+        "total_500h": {
+          "name": "Half Grand",
+          "desc": "500 hours — a rare feat"
+        },
+        "total_1000h": {
+          "name": "Living Legend",
+          "desc": "1000 hours of dedication"
+        },
+        "streak_3d": {
+          "name": "Triple Threat",
+          "desc": "3 days in a row"
+        },
+        "streak_7d": {
+          "name": "Full Week",
+          "desc": "A week without missing"
+        },
+        "streak_30d": {
+          "name": "Perfect Month",
+          "desc": "A whole month on fire"
+        },
+        "members_5": {
+          "name": "The Core",
+          "desc": "Reached 5 members"
+        },
+        "members_10": {
+          "name": "The Squad",
+          "desc": "10 people in the room"
+        },
+        "members_25": {
+          "name": "The Guild",
+          "desc": "25 students — a big room"
+        },
+        "sync_5": {
+          "name": "In Sync",
+          "desc": "5 people studying at the same time"
+        },
+        "sync_10": {
+          "name": "Focus Swarm",
+          "desc": "10 people in focus at once"
         }
       }
     }

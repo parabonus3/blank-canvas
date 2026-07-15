@@ -1124,7 +1124,7 @@
     "level_novice": "新手",
     "level_dedicated": "专注者",
     "level_starter": "入门",
-    "level_regular": "常规",
+    "level_regular": "坚持者",
     "level_progress_to": "距 {{next}} 还差 {{time}}",
     "level_max": "已达最高等级",
     "level_veteran": "老兵",
@@ -1335,6 +1335,85 @@
             "title": "有意停顿",
             "desc": "一天中真正的休息"
           }
+        }
+      },
+      "total_today": "今日 {{n}}分钟"
+    },
+    "heatmap_less": "较少",
+    "heatmap_more": "较多",
+    "heatmap_desc_v2": "每天房间学习了多久。方块颜色越深 = 分钟越多。",
+    "heatmap_period_label": "最近 {{count}} 天",
+    "achievements": {
+      "today": "今天",
+      "yesterday": "昨天",
+      "days_ago": "{{n}}天前",
+      "months_ago": "{{n}}个月前",
+      "locked": "未解锁 · {{rarity}}",
+      "empty": "暂无成就 — 开始学习解锁第一个吧!",
+      "rarity": {
+        "common": "普通",
+        "rare": "稀有",
+        "epic": "史诗",
+        "legendary": "传奇"
+      },
+      "category": {
+        "time": "时间",
+        "streak": "连续",
+        "community": "社群",
+        "special": "特殊"
+      },
+      "items": {
+        "total_10h": {
+          "name": "点火",
+          "desc": "房间共同学习 10 小时"
+        },
+        "total_50h": {
+          "name": "进入状态",
+          "desc": "集体学习 50 小时"
+        },
+        "total_100h": {
+          "name": "马拉松者",
+          "desc": "累计 100 小时"
+        },
+        "total_500h": {
+          "name": "半千小时",
+          "desc": "500 小时 — 罕见成就"
+        },
+        "total_1000h": {
+          "name": "活的传奇",
+          "desc": "1000 小时的坚持"
+        },
+        "streak_3d": {
+          "name": "三连击",
+          "desc": "连续 3 天活跃"
+        },
+        "streak_7d": {
+          "name": "完整一周",
+          "desc": "整整一周不间断"
+        },
+        "streak_30d": {
+          "name": "完美一月",
+          "desc": "燃烧的一整月"
+        },
+        "members_5": {
+          "name": "核心",
+          "desc": "达到 5 名成员"
+        },
+        "members_10": {
+          "name": "小队",
+          "desc": "房间里 10 人"
+        },
+        "members_25": {
+          "name": "公会",
+          "desc": "25 名学员 — 大房间"
+        },
+        "sync_5": {
+          "name": "同频",
+          "desc": "5 人同时学习"
+        },
+        "sync_10": {
+          "name": "专注群集",
+          "desc": "10 人同时专注"
         }
       }
     }

@@ -1336,6 +1336,85 @@
             "desc": "Une vraie pause dans la journée"
           }
         }
+      },
+      "total_today": "{{n}}min aujourd'hui"
+    },
+    "heatmap_less": "Moins",
+    "heatmap_more": "Plus",
+    "heatmap_desc_v2": "Combien la salle a étudié chaque jour. Carré plus foncé = plus de minutes.",
+    "heatmap_period_label": "{{count}} derniers jours",
+    "achievements": {
+      "today": "aujourd'hui",
+      "yesterday": "hier",
+      "days_ago": "il y a {{n}}j",
+      "months_ago": "il y a {{n}}mo",
+      "locked": "Verrouillé · {{rarity}}",
+      "empty": "Aucun succès pour l'instant — commencez à étudier pour débloquer les premiers !",
+      "rarity": {
+        "common": "Commun",
+        "rare": "Rare",
+        "epic": "Épique",
+        "legendary": "Légendaire"
+      },
+      "category": {
+        "time": "Temps",
+        "streak": "Série",
+        "community": "Communauté",
+        "special": "Spéciaux"
+      },
+      "items": {
+        "total_10h": {
+          "name": "Ignition",
+          "desc": "10 heures ensemble dans la salle"
+        },
+        "total_50h": {
+          "name": "Dans le Rythme",
+          "desc": "50 heures d'étude collective"
+        },
+        "total_100h": {
+          "name": "Marathoniens",
+          "desc": "100 heures cumulées"
+        },
+        "total_500h": {
+          "name": "Demi-Millier",
+          "desc": "500 heures — exploit rare"
+        },
+        "total_1000h": {
+          "name": "Légende Vivante",
+          "desc": "1000 heures de dévouement"
+        },
+        "streak_3d": {
+          "name": "Trio Gagnant",
+          "desc": "3 jours d'affilée actifs"
+        },
+        "streak_7d": {
+          "name": "Semaine Complète",
+          "desc": "Une semaine sans faillir"
+        },
+        "streak_30d": {
+          "name": "Mois Parfait",
+          "desc": "Un mois entier en feu"
+        },
+        "members_5": {
+          "name": "Le Noyau",
+          "desc": "5 membres atteints"
+        },
+        "members_10": {
+          "name": "L'Escouade",
+          "desc": "10 personnes dans la salle"
+        },
+        "members_25": {
+          "name": "La Guilde",
+          "desc": "25 étudiants — grande salle"
+        },
+        "sync_5": {
+          "name": "En Symbiose",
+          "desc": "5 personnes étudient en même temps"
+        },
+        "sync_10": {
+          "name": "Essaim Focalisé",
+          "desc": "10 personnes concentrées en même temps"
+        }
       }
     }
   },

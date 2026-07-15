@@ -1124,7 +1124,7 @@
     "level_novice": "Anfänger",
     "level_dedicated": "Engagiert",
     "level_starter": "Anfänger",
-    "level_regular": "Regelmäßig",
+    "level_regular": "Beständig",
     "level_progress_to": "noch {{time}} bis {{next}}",
     "level_max": "Höchststufe",
     "level_veteran": "Veteran",
@@ -1335,6 +1335,85 @@
             "title": "Bewusste Pause",
             "desc": "Eine echte Pause im Tag"
           }
+        }
+      },
+      "total_today": "{{n}}min heute"
+    },
+    "heatmap_less": "Weniger",
+    "heatmap_more": "Mehr",
+    "heatmap_desc_v2": "Wie viel der Raum an jedem Tag gelernt hat. Dunkleres Quadrat = mehr Minuten.",
+    "heatmap_period_label": "letzte {{count}} Tage",
+    "achievements": {
+      "today": "heute",
+      "yesterday": "gestern",
+      "days_ago": "vor {{n}}T",
+      "months_ago": "vor {{n}}Mo",
+      "locked": "Gesperrt · {{rarity}}",
+      "empty": "Noch keine Erfolge — beginnt zu lernen, um die ersten freizuschalten!",
+      "rarity": {
+        "common": "Gewöhnlich",
+        "rare": "Selten",
+        "epic": "Episch",
+        "legendary": "Legendär"
+      },
+      "category": {
+        "time": "Zeit",
+        "streak": "Serie",
+        "community": "Gemeinschaft",
+        "special": "Speziell"
+      },
+      "items": {
+        "total_10h": {
+          "name": "Zündung",
+          "desc": "10 Stunden zusammen im Raum"
+        },
+        "total_50h": {
+          "name": "Im Flow",
+          "desc": "50 Stunden gemeinsames Lernen"
+        },
+        "total_100h": {
+          "name": "Marathonläufer",
+          "desc": "100 Stunden zusammen"
+        },
+        "total_500h": {
+          "name": "Halbes Tausend",
+          "desc": "500 Stunden — seltene Leistung"
+        },
+        "total_1000h": {
+          "name": "Lebende Legende",
+          "desc": "1000 Stunden Hingabe"
+        },
+        "streak_3d": {
+          "name": "Dreier-Serie",
+          "desc": "3 Tage in Folge aktiv"
+        },
+        "streak_7d": {
+          "name": "Volle Woche",
+          "desc": "Eine Woche ohne Aussetzer"
+        },
+        "streak_30d": {
+          "name": "Perfekter Monat",
+          "desc": "Ein ganzer Monat in Flammen"
+        },
+        "members_5": {
+          "name": "Der Kern",
+          "desc": "5 Mitglieder erreicht"
+        },
+        "members_10": {
+          "name": "Die Truppe",
+          "desc": "10 Leute im Raum"
+        },
+        "members_25": {
+          "name": "Die Gilde",
+          "desc": "25 Lernende — großer Raum"
+        },
+        "sync_5": {
+          "name": "Im Einklang",
+          "desc": "5 Leute lernen gleichzeitig"
+        },
+        "sync_10": {
+          "name": "Fokus-Schwarm",
+          "desc": "10 Leute gleichzeitig im Fokus"
         }
       }
     }

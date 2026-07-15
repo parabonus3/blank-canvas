@@ -1124,7 +1124,7 @@
     "level_novice": "Pemula",
     "level_dedicated": "Berdedikasi",
     "level_starter": "Pemula",
-    "level_regular": "Reguler",
+    "level_regular": "Konsisten",
     "level_progress_to": "{{time}} lagi ke {{next}}",
     "level_max": "level maks",
     "level_veteran": "Veteran",
@@ -1335,6 +1335,85 @@
             "title": "Jeda sengaja",
             "desc": "Jeda yang nyata dalam hari"
           }
+        }
+      },
+      "total_today": "{{n}}mnt hari ini"
+    },
+    "heatmap_less": "Sedikit",
+    "heatmap_more": "Banyak",
+    "heatmap_desc_v2": "Berapa lama ruangan belajar setiap hari. Kotak lebih gelap = lebih banyak menit.",
+    "heatmap_period_label": "{{count}} hari terakhir",
+    "achievements": {
+      "today": "hari ini",
+      "yesterday": "kemarin",
+      "days_ago": "{{n}}h lalu",
+      "months_ago": "{{n}}bln lalu",
+      "locked": "Terkunci · {{rarity}}",
+      "empty": "Belum ada pencapaian — mulai belajar untuk membuka yang pertama!",
+      "rarity": {
+        "common": "Umum",
+        "rare": "Langka",
+        "epic": "Epik",
+        "legendary": "Legendaris"
+      },
+      "category": {
+        "time": "Waktu",
+        "streak": "Beruntun",
+        "community": "Komunitas",
+        "special": "Spesial"
+      },
+      "items": {
+        "total_10h": {
+          "name": "Pengapian",
+          "desc": "10 jam bersama di ruangan"
+        },
+        "total_50h": {
+          "name": "Dalam Ritme",
+          "desc": "50 jam belajar bersama"
+        },
+        "total_100h": {
+          "name": "Pelari Maraton",
+          "desc": "100 jam terkumpul"
+        },
+        "total_500h": {
+          "name": "Setengah Ribu",
+          "desc": "500 jam — pencapaian langka"
+        },
+        "total_1000h": {
+          "name": "Legenda Hidup",
+          "desc": "1000 jam dedikasi"
+        },
+        "streak_3d": {
+          "name": "Trio Beruntun",
+          "desc": "3 hari aktif berturut-turut"
+        },
+        "streak_7d": {
+          "name": "Seminggu Penuh",
+          "desc": "Seminggu tanpa absen"
+        },
+        "streak_30d": {
+          "name": "Bulan Sempurna",
+          "desc": "Sebulan penuh menyala"
+        },
+        "members_5": {
+          "name": "Inti",
+          "desc": "Mencapai 5 anggota"
+        },
+        "members_10": {
+          "name": "Skuad",
+          "desc": "10 orang di ruangan"
+        },
+        "members_25": {
+          "name": "Guild",
+          "desc": "25 pelajar — ruangan besar"
+        },
+        "sync_5": {
+          "name": "Selaras",
+          "desc": "5 orang belajar bersamaan"
+        },
+        "sync_10": {
+          "name": "Kawanan Fokus",
+          "desc": "10 orang fokus bersamaan"
         }
       }
     }

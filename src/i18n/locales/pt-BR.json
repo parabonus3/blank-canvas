@@ -1911,7 +1911,7 @@
     "level_novice": "Novato",
     "level_dedicated": "Dedicado",
     "level_starter": "Iniciante",
-    "level_regular": "Regular",
+    "level_regular": "Persistente",
     "level_progress_to": "faltam {{time}} para {{next}}",
     "level_max": "nível máximo",
     "level_veteran": "Veterano",
@@ -2124,6 +2124,85 @@
             "title": "Pausa intencional",
             "desc": "Uma pausa real do dia"
           }
+        }
+      },
+      "total_today": "{{n}}min hoje"
+    },
+    "heatmap_less": "Menos",
+    "heatmap_more": "Mais",
+    "heatmap_desc_v2": "Quanto tempo a sala estudou em cada dia. Quadrado mais escuro = mais minutos.",
+    "heatmap_period_label": "últimos {{count}} dias",
+    "achievements": {
+      "today": "hoje",
+      "yesterday": "ontem",
+      "days_ago": "há {{n}}d",
+      "months_ago": "há {{n}}m",
+      "locked": "Bloqueada · {{rarity}}",
+      "empty": "Nenhuma conquista ainda — comecem a estudar para desbloquear as primeiras!",
+      "rarity": {
+        "common": "Comum",
+        "rare": "Rara",
+        "epic": "Épica",
+        "legendary": "Lendária"
+      },
+      "category": {
+        "time": "Tempo",
+        "streak": "Sequência",
+        "community": "Comunidade",
+        "special": "Especiais"
+      },
+      "items": {
+        "total_10h": {
+          "name": "Ignição",
+          "desc": "10 horas juntas na sala"
+        },
+        "total_50h": {
+          "name": "Em Ritmo",
+          "desc": "50 horas de estudo coletivo"
+        },
+        "total_100h": {
+          "name": "Maratonistas",
+          "desc": "100 horas somadas"
+        },
+        "total_500h": {
+          "name": "Meio Milhar",
+          "desc": "500 horas — feito raro"
+        },
+        "total_1000h": {
+          "name": "Lenda Viva",
+          "desc": "1000 horas de dedicação"
+        },
+        "streak_3d": {
+          "name": "Trio Certeiro",
+          "desc": "3 dias seguidos ativos"
+        },
+        "streak_7d": {
+          "name": "Semana Cheia",
+          "desc": "Uma semana sem falhar"
+        },
+        "streak_30d": {
+          "name": "Mês Perfeito",
+          "desc": "Um mês inteiro em chamas"
+        },
+        "members_5": {
+          "name": "Núcleo",
+          "desc": "Chegou a 5 membros"
+        },
+        "members_10": {
+          "name": "Esquadrão",
+          "desc": "10 pessoas na sala"
+        },
+        "members_25": {
+          "name": "Guilda",
+          "desc": "25 estudantes — grande sala"
+        },
+        "sync_5": {
+          "name": "Em Sintonia",
+          "desc": "5 pessoas estudando ao mesmo tempo"
+        },
+        "sync_10": {
+          "name": "Enxame Focado",
+          "desc": "10 pessoas em foco simultâneo"
         }
       }
     }

@@ -1124,7 +1124,7 @@
     "level_novice": "初心者",
     "level_dedicated": "熱心",
     "level_starter": "初級",
-    "level_regular": "常連",
+    "level_regular": "継続者",
     "level_progress_to": "{{next}}まであと{{time}}",
     "level_max": "最高レベル",
     "level_veteran": "ベテラン",
@@ -1335,6 +1335,85 @@
             "title": "意図的な休憩",
             "desc": "1日の中の本当の休息"
           }
+        }
+      },
+      "total_today": "本日 {{n}}分"
+    },
+    "heatmap_less": "少ない",
+    "heatmap_more": "多い",
+    "heatmap_desc_v2": "ルームが毎日どれだけ勉強したか。濃い四角ほど分数が多いです。",
+    "heatmap_period_label": "直近{{count}}日",
+    "achievements": {
+      "today": "今日",
+      "yesterday": "昨日",
+      "days_ago": "{{n}}日前",
+      "months_ago": "{{n}}ヶ月前",
+      "locked": "ロック中 · {{rarity}}",
+      "empty": "まだ実績がありません — 学習を始めて最初の実績を解除しましょう!",
+      "rarity": {
+        "common": "コモン",
+        "rare": "レア",
+        "epic": "エピック",
+        "legendary": "レジェンダリー"
+      },
+      "category": {
+        "time": "時間",
+        "streak": "連続",
+        "community": "コミュニティ",
+        "special": "特別"
+      },
+      "items": {
+        "total_10h": {
+          "name": "点火",
+          "desc": "ルームで合計10時間"
+        },
+        "total_50h": {
+          "name": "ゾーンに突入",
+          "desc": "合計50時間の共同学習"
+        },
+        "total_100h": {
+          "name": "マラソナー",
+          "desc": "合計100時間"
+        },
+        "total_500h": {
+          "name": "ハーフグランド",
+          "desc": "500時間 — 稀な偉業"
+        },
+        "total_1000h": {
+          "name": "リビングレジェンド",
+          "desc": "1000時間の献身"
+        },
+        "streak_3d": {
+          "name": "トリプルスレット",
+          "desc": "3日連続でアクティブ"
+        },
+        "streak_7d": {
+          "name": "フルウィーク",
+          "desc": "欠かさず1週間"
+        },
+        "streak_30d": {
+          "name": "パーフェクトマンス",
+          "desc": "燃え尽きた丸一ヶ月"
+        },
+        "members_5": {
+          "name": "コア",
+          "desc": "5人に到達"
+        },
+        "members_10": {
+          "name": "スクワッド",
+          "desc": "10人がルームに"
+        },
+        "members_25": {
+          "name": "ギルド",
+          "desc": "25人の学習者 — 大所帯"
+        },
+        "sync_5": {
+          "name": "シンクロ",
+          "desc": "5人が同時に勉強中"
+        },
+        "sync_10": {
+          "name": "集中スウォーム",
+          "desc": "10人が同時にフォーカス"
         }
       }
     }
