@@ -305,7 +305,7 @@ function MedalCard({
           </span>
         </div>
         <p className="text-[10px] leading-tight text-muted-foreground line-clamp-2">
-          {done ? desc : (isPt ? `Bloqueada · ${rarityLabel}` : `Locked · ${rarityLabel}`)}
+          {done ? desc : t("rooms.achievements.locked", { rarity: rarityLabel })}
         </p>
         {done ? (
           timeAgo && (
