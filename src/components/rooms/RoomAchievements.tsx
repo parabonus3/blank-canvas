@@ -166,7 +166,7 @@ export function RoomAchievements({ roomId, members }: Props) {
         {categoryOrder.map((cat) => {
           const defs = byCategory.get(cat);
           if (!defs || defs.length === 0) return null;
-          const catLabel = isPt ? CATEGORY_LABELS_PT[cat] : CATEGORY_LABELS_EN[cat];
+          const catLabel = t(`rooms.achievements.category.${cat}`);
           const catUnlocked = defs.filter((d) => unlockedTypes.has(d.id)).length;
           return (
             <div key={cat} className="space-y-2">
@@ -188,10 +188,10 @@ export function RoomAchievements({ roomId, members }: Props) {
                       def={def}
                       done={done}
                       ctx={ctx}
-                      name={pickLang(NAMES, def.id, lang)}
-                      desc={pickLang(DESCS, def.id, lang)}
+                      name={t(`rooms.achievements.items.${def.id}.name`)}
+                      desc={t(`rooms.achievements.items.${def.id}.desc`)}
                       unlockedAt={unlockedAtMap.get(def.id)}
-                      isPt={isPt}
+                      t={t}
                     />
                   );
                 })}
@@ -204,9 +204,7 @@ export function RoomAchievements({ roomId, members }: Props) {
       {/* Empty‑state motivator */}
       {unlockedCount === 0 && (
         <p className="text-[11px] text-center text-muted-foreground italic">
-          {isPt
-            ? "Nenhuma conquista ainda — comecem a estudar para desbloquear as primeiras!"
-            : "No achievements yet — start studying to unlock the first ones!"}
+          {t("rooms.achievements.empty")}
         </p>
       )}
     </div>
@@ -220,7 +218,7 @@ function MedalCard({
   name,
   desc,
   unlockedAt,
-  isPt,
+  t,
 }: {
   def: RoomAchievementDef;
   done: boolean;
@@ -228,24 +226,24 @@ function MedalCard({
   name: string;
   desc: string;
   unlockedAt?: string;
-  isPt: boolean;
+  t: TFunction;
 }) {
   const IconComp = def.icon;
   const style = RARITY_STYLES[def.rarity];
   const p = def.progress(ctx);
   const pct = progressPct(def, ctx);
-  const rarityLabel = isPt ? style.labelPt : style.label;
+  const rarityLabel = t(`rooms.achievements.rarity.${def.rarity}`);
 
   const timeAgo = useMemo(() => {
     if (!unlockedAt) return null;
     const diff = Date.now() - new Date(unlockedAt).getTime();
     const days = Math.floor(diff / (24 * 3600 * 1000));
-    if (days <= 0) return isPt ? "hoje" : "today";
-    if (days === 1) return isPt ? "ontem" : "yesterday";
-    if (days < 30) return isPt ? `há ${days}d` : `${days}d ago`;
+    if (days <= 0) return t("rooms.achievements.today");
+    if (days === 1) return t("rooms.achievements.yesterday");
+    if (days < 30) return t("rooms.achievements.days_ago", { n: days });
     const months = Math.floor(days / 30);
-    return isPt ? `há ${months}m` : `${months}mo ago`;
-  }, [unlockedAt, isPt]);
+    return t("rooms.achievements.months_ago", { n: months });
+  }, [unlockedAt, t]);
 
   return (
     <div
