@@ -10,59 +10,17 @@ import type { RoomMember } from "@/hooks/useRoomMembers";
 import {
   ROOM_ACHIEVEMENTS,
   RARITY_STYLES,
-  CATEGORY_LABELS_PT,
-  CATEGORY_LABELS_EN,
   isUnlocked,
   progressPct,
   type AchievementContext,
   type AchievementCategory,
   type RoomAchievementDef,
 } from "@/lib/roomAchievementDefs";
+import type { TFunction } from "i18next";
 
 interface Props {
   roomId: string;
   members: RoomMember[];
-}
-
-
-
-// Localized names/descriptions (no i18n key explosion — inline PT/EN)
-const NAMES: Record<string, { pt: string; en: string }> = {
-  total_10h:   { pt: "Aquecendo",     en: "Warming Up" },
-  total_50h:   { pt: "Em Ritmo",      en: "In the Zone" },
-  total_100h:  { pt: "Maratonistas",  en: "Marathoners" },
-  total_500h:  { pt: "Meio Milhar",   en: "Half Grand" },
-  total_1000h: { pt: "Lenda Viva",    en: "Living Legend" },
-  streak_3d:   { pt: "Trio Certeiro", en: "Triple Threat" },
-  streak_7d:   { pt: "Semana Cheia",  en: "Full Week" },
-  streak_30d:  { pt: "Mês Perfeito",  en: "Perfect Month" },
-  members_5:   { pt: "Pequena Tribo", en: "Small Tribe" },
-  members_10:  { pt: "Time Formado",  en: "Squad Up" },
-  members_25:  { pt: "Comunidade",    en: "Community" },
-  sync_5:      { pt: "Sincronia",     en: "In Sync" },
-  sync_10:     { pt: "Enxame Focado", en: "Focus Swarm" },
-};
-
-const DESCS: Record<string, { pt: string; en: string }> = {
-  total_10h:   { pt: "10 horas juntas na sala",     en: "10 hours together in the room" },
-  total_50h:   { pt: "50 horas de estudo coletivo", en: "50 hours of collective study" },
-  total_100h:  { pt: "100 horas somadas",           en: "100 hours combined" },
-  total_500h:  { pt: "500 horas — feito raro",      en: "500 hours — rare feat" },
-  total_1000h: { pt: "1000 horas de dedicação",     en: "1000 hours of dedication" },
-  streak_3d:   { pt: "3 dias seguidos ativos",      en: "3 days in a row" },
-  streak_7d:   { pt: "Uma semana sem falhar",       en: "A week without missing" },
-  streak_30d:  { pt: "Um mês inteiro em chamas",    en: "A whole month on fire" },
-  members_5:   { pt: "Chegou a 5 membros",          en: "Reached 5 members" },
-  members_10:  { pt: "10 pessoas na sala",          en: "10 people in the room" },
-  members_25:  { pt: "25 estudantes — grande sala", en: "25 students — a big room" },
-  sync_5:      { pt: "5 pessoas estudando ao mesmo tempo", en: "5 people studying at the same time" },
-  sync_10:     { pt: "10 pessoas em foco simultâneo",       en: "10 people in focus at once" },
-};
-
-function pickLang<T extends { pt: string; en: string }>(map: Record<string, T>, id: string, lang: string): string {
-  const entry = map[id];
-  if (!entry) return id;
-  return lang.startsWith("pt") ? entry.pt : entry.en;
 }
 
 function formatValue(id: string, current: number, target: number): string {
