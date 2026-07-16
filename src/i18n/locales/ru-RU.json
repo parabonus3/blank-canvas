@@ -174,7 +174,9 @@
     "pause_warning_body": "Пауза замораживает таймер. Не забудьте нажать Продолжить перед Остановкой — очень длинные паузы (несколько часов) могут привести к рассинхронизации времени между устройствами. Рекомендуем короткие паузы.",
     "pause_warning_dont_show": "Больше не показывать",
     "pause_warning_ok": "Понятно",
-    "pause_data_loss_recovered": "Время автоматически восстановлено с сервера."
+    "pause_data_loss_recovered": "Время автоматически восстановлено с сервера.",
+    "pause": "Пауза",
+    "resume": "Продолжить"
   },
   "pomodoro": {
     "focus": "Фокус",
@@ -870,7 +872,20 @@
     "actions": "Действия",
     "total_users": "Всего пользователей",
     "active_subs": "Активных подписок",
-    "no_users_found": "Пользователи не найдены"
+    "no_users_found": "Пользователи не найдены",
+    "streak_freezes": {
+      "title": "Заморозки серии",
+      "balance": "Остаток",
+      "total_purchased": "Всего куплено",
+      "total_used": "Всего использовано",
+      "history": "История",
+      "grant": "Выдать",
+      "grant_button": "Выдать",
+      "amount": "Количество",
+      "reason": "Причина",
+      "source_admin": "Админ",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "Защита использована!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}} мин сегодня"
+      "total_today": "{{n}} мин сегодня",
+      "pick_hint_single": "Выберите челлендж",
+      "pick_hint_multi": "Выберите челлендж · доступно {{n}}",
+      "required_badge": "ОБЯЗАТЕЛЬНО",
+      "legend_todo": "к выполнению",
+      "legend_progress": "в процессе",
+      "legend_done_short": "готово",
+      "done_short": "готово",
+      "remaining_min_short": "осталось {{n}} мин",
+      "selected_badge": "ВЫБРАНО",
+      "sort_label": "Сортировка",
+      "sort_today": "Сегодня",
+      "sort_week": "Неделя",
+      "search_member": "Найти участника...",
+      "legend": "Легенда",
+      "legend_in_progress": "в процессе",
+      "legend_at_risk": "под угрозой",
+      "legend_not_started": "не начато",
+      "no_results": "Участники не найдены",
+      "ended_badge": "Завершён",
+      "pos_week_short": "#{{n}} нед",
+      "see_less": "Свернуть",
+      "see_more": "Показать ещё",
+      "filter_all": "Все",
+      "filter_done_today": "Выполнили сегодня",
+      "filter_missing": "Не выполнили",
+      "filter_not_started": "Не начали"
     },
     "heatmap_less": "Меньше",
     "heatmap_more": "Больше",
@@ -1416,7 +1457,21 @@
           "desc": "10 человек в фокусе одновременно"
         }
       }
-    }
+    },
+    "room_timer_title": "Таймер комнаты",
+    "room_timer_desc": "Используйте таймер вместе с комнатой — время идёт в рейтинг и челленджи",
+    "room_timer_sounds": "Фоновые звуки",
+    "room_timer_paused": "На паузе",
+    "room_timer_counting_here": "Идёт отсчёт в этой комнате",
+    "room_timer_counts_challenge": "Запустив здесь, вы засчитываете время в рейтинг, серию этой комнаты и в челлендж: {{challenges}}.",
+    "room_timer_stop": "Остановить",
+    "room_timer_elsewhere_title": "У вас уже запущен таймер",
+    "room_timer_go_to_other_room": "Перейти в другую комнату",
+    "room_timer_go_to_dashboard": "На главную",
+    "room_timer_start": "Запустить в этой комнате",
+    "room_timer_pick_sound": "Выбрать звук",
+    "week_leader": "Лидер недели",
+    "in_this_room": "в этой комнате"
   },
   "explore": {
     "title": "Исследовать Комнаты",
@@ -2272,5 +2327,21 @@
       "unreachable": "Сервер уведомлений недоступен. Повторите попытку чуть позже.",
       "not_configured": "Push-уведомления ещё не настроены в этой среде."
     }
+  },
+  "chat": {
+    "bold": "Жирный",
+    "italic": "Курсив",
+    "strike": "Зачёркнутый",
+    "code": "Код",
+    "quote": "Цитата",
+    "list": "Список",
+    "link": "Ссылка",
+    "link_url": "URL ссылки",
+    "link_text": "Текст ссылки",
+    "edit": "Редактировать",
+    "preview": "Предпросмотр",
+    "preview_empty": "Нет содержимого для предпросмотра",
+    "send": "Отправить",
+    "new_messages": "новых сообщений"
   }
 }

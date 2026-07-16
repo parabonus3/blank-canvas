@@ -174,7 +174,9 @@
     "pause_warning_body": "일시정지하면 타이머가 멈춥니다. 정지 전에 재개를 눌러주세요. 매우 긴 일시정지(수 시간)는 기기 간 시간 동기화가 어긋날 수 있습니다. 짧은 휴식을 권장합니다.",
     "pause_warning_dont_show": "다시 표시하지 않음",
     "pause_warning_ok": "확인",
-    "pause_data_loss_recovered": "서버에서 시간을 자동으로 복구했습니다."
+    "pause_data_loss_recovered": "서버에서 시간을 자동으로 복구했습니다.",
+    "pause": "일시정지",
+    "resume": "재개"
   },
   "pomodoro": {
     "focus": "집중",
@@ -870,7 +872,20 @@
     "actions": "작업",
     "total_users": "전체 사용자",
     "active_subs": "활성 구독",
-    "no_users_found": "사용자를 찾을 수 없습니다"
+    "no_users_found": "사용자를 찾을 수 없습니다",
+    "streak_freezes": {
+      "title": "스트릭 프리즈",
+      "balance": "잔여",
+      "total_purchased": "총 구매",
+      "total_used": "총 사용",
+      "history": "기록",
+      "grant": "지급",
+      "grant_button": "지급",
+      "amount": "수량",
+      "reason": "사유",
+      "source_admin": "관리자",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "방어 사용됨!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "오늘 {{n}}분"
+      "total_today": "오늘 {{n}}분",
+      "pick_hint_single": "챌린지를 선택하세요",
+      "pick_hint_multi": "챌린지를 선택하세요 · {{n}}개 사용 가능",
+      "required_badge": "필수",
+      "legend_todo": "할 일",
+      "legend_progress": "진행 중",
+      "legend_done_short": "완료",
+      "done_short": "완료",
+      "remaining_min_short": "{{n}}분 남음",
+      "selected_badge": "선택됨",
+      "sort_label": "정렬",
+      "sort_today": "오늘",
+      "sort_week": "주간",
+      "search_member": "멤버 검색...",
+      "legend": "범례",
+      "legend_in_progress": "진행 중",
+      "legend_at_risk": "위험",
+      "legend_not_started": "시작 안 함",
+      "no_results": "멤버를 찾을 수 없습니다",
+      "ended_badge": "종료됨",
+      "pos_week_short": "#{{n}} 주",
+      "see_less": "간략히",
+      "see_more": "더 보기",
+      "filter_all": "전체",
+      "filter_done_today": "오늘 달성",
+      "filter_missing": "미달성",
+      "filter_not_started": "시작 안 함"
     },
     "heatmap_less": "적음",
     "heatmap_more": "많음",
@@ -1416,7 +1457,21 @@
           "desc": "동시에 10명 집중"
         }
       }
-    }
+    },
+    "room_timer_title": "룸 타이머",
+    "room_timer_desc": "룸과 함께 타이머를 사용하세요 — 순위와 챌린지에 반영됩니다",
+    "room_timer_sounds": "환경 사운드",
+    "room_timer_paused": "일시정지됨",
+    "room_timer_counting_here": "이 룸에서 측정 중",
+    "room_timer_counts_challenge": "여기서 시작하면 시간이 순위, 이 룸의 스트릭, 챌린지에 반영됩니다: {{challenges}}.",
+    "room_timer_stop": "중지",
+    "room_timer_elsewhere_title": "이미 실행 중인 타이머가 있습니다",
+    "room_timer_go_to_other_room": "다른 룸으로 이동",
+    "room_timer_go_to_dashboard": "대시보드로",
+    "room_timer_start": "이 룸에서 시작",
+    "room_timer_pick_sound": "사운드 선택",
+    "week_leader": "이번 주 리더",
+    "in_this_room": "이 룸에서"
   },
   "explore": {
     "title": "방 탐색",
@@ -2272,5 +2327,21 @@
       "unreachable": "알림 서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.",
       "not_configured": "이 환경에서는 푸시 알림이 아직 구성되지 않았습니다."
     }
+  },
+  "chat": {
+    "bold": "굵게",
+    "italic": "기울임",
+    "strike": "취소선",
+    "code": "코드",
+    "quote": "인용",
+    "list": "목록",
+    "link": "링크",
+    "link_url": "링크 URL",
+    "link_text": "링크 텍스트",
+    "edit": "편집",
+    "preview": "미리보기",
+    "preview_empty": "미리 볼 내용이 없습니다",
+    "send": "보내기",
+    "new_messages": "개의 새 메시지"
   }
 }

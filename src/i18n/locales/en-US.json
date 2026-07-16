@@ -176,7 +176,9 @@
     "pause_warning_body": "Pausing freezes the timer. Remember to tap Resume before Stop — very long pauses (several hours) can desync the time across devices. We recommend short pauses.",
     "pause_warning_dont_show": "Don't show again",
     "pause_warning_ok": "Got it",
-    "pause_data_loss_recovered": "Time automatically recovered from the server."
+    "pause_data_loss_recovered": "Time automatically recovered from the server.",
+    "pause": "Pause",
+    "resume": "Resume"
   },
   "pomodoro": {
     "focus": "Focus",
@@ -1628,7 +1630,20 @@
     "actions": "Actions",
     "total_users": "Total Users",
     "active_subs": "Active Subscriptions",
-    "no_users_found": "No users found"
+    "no_users_found": "No users found",
+    "streak_freezes": {
+      "title": "Streak freezes",
+      "balance": "Balance",
+      "total_purchased": "Total purchased",
+      "total_used": "Total used",
+      "history": "History",
+      "grant": "Grant",
+      "grant_button": "Grant",
+      "amount": "Amount",
+      "reason": "Reason",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "tags": {
     "title": "Tags",
@@ -2071,7 +2086,33 @@
           }
         }
       },
-      "total_today": "{{n}}min today"
+      "total_today": "{{n}}min today",
+      "pick_hint_single": "Pick a challenge",
+      "pick_hint_multi": "Pick a challenge · {{n}} available",
+      "required_badge": "REQUIRED",
+      "legend_todo": "to do",
+      "legend_progress": "in progress",
+      "legend_done_short": "done",
+      "done_short": "done",
+      "remaining_min_short": "{{n}} min left",
+      "selected_badge": "SELECTED",
+      "sort_label": "Sort",
+      "sort_today": "Today",
+      "sort_week": "Week",
+      "search_member": "Search member...",
+      "legend": "Legend",
+      "legend_in_progress": "in progress",
+      "legend_at_risk": "at risk",
+      "legend_not_started": "not started",
+      "no_results": "No members found",
+      "ended_badge": "Ended",
+      "pos_week_short": "#{{n}} wk",
+      "see_less": "See less",
+      "see_more": "See more",
+      "filter_all": "All",
+      "filter_done_today": "Hit today",
+      "filter_missing": "Yet to hit",
+      "filter_not_started": "Not started"
     },
     "heatmap_less": "Less",
     "heatmap_more": "More",
@@ -2150,7 +2191,21 @@
           "desc": "10 people in focus at once"
         }
       }
-    }
+    },
+    "room_timer_title": "Room timer",
+    "room_timer_desc": "Use the timer alongside the room — it counts toward ranking and challenges",
+    "room_timer_sounds": "Ambient sounds",
+    "room_timer_paused": "Paused",
+    "room_timer_counting_here": "Counting in this room",
+    "room_timer_counts_challenge": "Starting here, your time counts toward the ranking, this room's streak, and the challenge: {{challenges}}.",
+    "room_timer_stop": "Stop",
+    "room_timer_elsewhere_title": "You already have a timer running",
+    "room_timer_go_to_other_room": "Go to the other room",
+    "room_timer_go_to_dashboard": "Go to dashboard",
+    "room_timer_start": "Start in this room",
+    "room_timer_pick_sound": "Pick a sound",
+    "week_leader": "Leader of the week",
+    "in_this_room": "in this room"
   },
   "explore": {
     "title": "Explore Rooms",
@@ -2381,5 +2436,21 @@
       "unreachable": "Notification server is unavailable. Please try again shortly.",
       "not_configured": "Push notifications are not yet configured in this environment."
     }
+  },
+  "chat": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "strike": "Strikethrough",
+    "code": "Code",
+    "quote": "Quote",
+    "list": "List",
+    "link": "Link",
+    "link_url": "Link URL",
+    "link_text": "Link text",
+    "edit": "Edit",
+    "preview": "Preview",
+    "preview_empty": "Nothing to preview",
+    "send": "Send",
+    "new_messages": "new messages"
   }
 }

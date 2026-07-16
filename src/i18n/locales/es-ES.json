@@ -174,7 +174,9 @@
     "pause_warning_body": "Pausar congela el cronómetro. Recuerda pulsar Reanudar antes de Detener — pausas muy largas (varias horas) pueden desincronizar el tiempo entre dispositivos. Recomendamos pausas cortas.",
     "pause_warning_dont_show": "No mostrar de nuevo",
     "pause_warning_ok": "Entendido",
-    "pause_data_loss_recovered": "Tiempo recuperado automáticamente del servidor."
+    "pause_data_loss_recovered": "Tiempo recuperado automáticamente del servidor.",
+    "pause": "Pausar",
+    "resume": "Reanudar"
   },
   "pomodoro": {
     "focus": "Enfoque",
@@ -870,7 +872,20 @@
     "actions": "Acciones",
     "total_users": "Total de Usuarios",
     "active_subs": "Suscripciones Activas",
-    "no_users_found": "Ningún usuario encontrado"
+    "no_users_found": "Ningún usuario encontrado",
+    "streak_freezes": {
+      "title": "Congelamientos de racha",
+      "balance": "Saldo",
+      "total_purchased": "Total comprado",
+      "total_used": "Total usado",
+      "history": "Historial",
+      "grant": "Conceder",
+      "grant_button": "Conceder",
+      "amount": "Cantidad",
+      "reason": "Motivo",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "¡Defensa usada!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}}min hoy"
+      "total_today": "{{n}}min hoy",
+      "pick_hint_single": "Elige el desafío",
+      "pick_hint_multi": "Elige el desafío · {{n}} disponibles",
+      "required_badge": "OBLIGATORIO",
+      "legend_todo": "por hacer",
+      "legend_progress": "en curso",
+      "legend_done_short": "hecho",
+      "done_short": "hecho",
+      "remaining_min_short": "faltan {{n}} min",
+      "selected_badge": "SELECCIONADO",
+      "sort_label": "Ordenar",
+      "sort_today": "Hoy",
+      "sort_week": "Semana",
+      "search_member": "Buscar miembro...",
+      "legend": "Leyenda",
+      "legend_in_progress": "en curso",
+      "legend_at_risk": "en riesgo",
+      "legend_not_started": "sin empezar",
+      "no_results": "No se encontraron miembros",
+      "ended_badge": "Finalizado",
+      "pos_week_short": "#{{n}} sem",
+      "see_less": "Ver menos",
+      "see_more": "Ver más",
+      "filter_all": "Todos",
+      "filter_done_today": "Cumplieron hoy",
+      "filter_missing": "Faltan por cumplir",
+      "filter_not_started": "Sin empezar"
     },
     "heatmap_less": "Menos",
     "heatmap_more": "Más",
@@ -1416,7 +1457,21 @@
           "desc": "10 personas concentradas a la vez"
         }
       }
-    }
+    },
+    "room_timer_title": "Cronómetro de la sala",
+    "room_timer_desc": "Usa el cronómetro junto con la sala — cuenta para el ranking y los desafíos",
+    "room_timer_sounds": "Sonidos ambientales",
+    "room_timer_paused": "En pausa",
+    "room_timer_counting_here": "Contando en esta sala",
+    "room_timer_counts_challenge": "Al iniciar aquí, tu tiempo cuenta para el ranking, la racha de esta sala y el desafío: {{challenges}}.",
+    "room_timer_stop": "Detener",
+    "room_timer_elsewhere_title": "Ya tienes un cronómetro en marcha",
+    "room_timer_go_to_other_room": "Ir a la otra sala",
+    "room_timer_go_to_dashboard": "Ir al panel",
+    "room_timer_start": "Iniciar en esta sala",
+    "room_timer_pick_sound": "Elegir sonido",
+    "week_leader": "Líder de la semana",
+    "in_this_room": "en esta sala"
   },
   "explore": {
     "title": "Explorar Salas",
@@ -2293,5 +2348,21 @@
       "unreachable": "Servidor de notificaciones no disponible. Inténtalo de nuevo en breve.",
       "not_configured": "Las notificaciones push aún no están configuradas en este entorno."
     }
+  },
+  "chat": {
+    "bold": "Negrita",
+    "italic": "Cursiva",
+    "strike": "Tachado",
+    "code": "Código",
+    "quote": "Cita",
+    "list": "Lista",
+    "link": "Enlace",
+    "link_url": "URL del enlace",
+    "link_text": "Texto del enlace",
+    "edit": "Editar",
+    "preview": "Vista previa",
+    "preview_empty": "Nada que previsualizar",
+    "send": "Enviar",
+    "new_messages": "mensajes nuevos"
   }
 }

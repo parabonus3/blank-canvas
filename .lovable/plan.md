@@ -1,96 +1,51 @@
 ## Objetivo
-Deixar os nomes dos níveis mais aspiracionais (sem "Regular" morno) e traduzir 100% dos textos que hoje aparecem em inglês/português cru — conquistas da sala, "min hoje", legenda "Menos/Mais" do heatmap, descrição e período do heatmap — em todos os 12 idiomas, de forma profissional.
 
----
+Garantir que toda a UI da sala (e áreas relacionadas) esteja traduzida profissionalmente em todos os 12 idiomas suportados. Hoje, várias `t("chave", "default PT")` caem no default porque a chave não existe no arquivo do idioma — por isso o japonês mostra "Timer da Sala", "Iniciar nesta sala", "Líder da semana", "a fazer / em andamento / feito", etc.
 
-## 1. Renomear níveis (curva mais desejável)
+## Escopo — o que será corrigido
 
-Trocar apenas 2 nomes na escala (mantém 7 níveis, thresholds e cores em `src/lib/roomMemberLevel.ts`):
+### A. Strings hardcoded (sem `t()`) que precisam ser convertidas
 
-| Ordem | Horas | Chave i18n | Antes | Proposta |
-|---|---|---|---|---|
-| 1 | 0h | `level_novice` | Novato | Novato *(mantém)* |
-| 2 | 0.5h | `level_starter` | Iniciante | Iniciante *(mantém)* |
-| 3 | 3h | `level_regular` | **Regular** | **Persistente** (Consistent / Constant / Régulier / Beständig / Costante / 継続者 / 꾸준함 / 坚持者 / Настойчивый / مُثابر / Konsisten) |
-| 4 | 10h | `level_dedicated` | Dedicado | Dedicado *(mantém)* |
-| 5 | 30h | `level_veteran` | Veterano | Veterano *(mantém)* |
-| 6 | 80h | `level_master` | Mestre | **Mestre** *(mantém — já é forte)* |
-| 7 | 200h | `level_legend` | Lenda | Lenda *(mantém)* |
+**`src/components/rooms/RoomChallengesMatrix.tsx`** — função `filterLabel()` retorna PT fixo:
+- `"Todos"` → `t("rooms.challenges.filter_all")`
+- `"Bateram hoje"` → `t("rooms.challenges.filter_done_today")`
+- `"Faltam bater"` → `t("rooms.challenges.filter_missing")`
+- `"Não começaram"` → `t("rooms.challenges.filter_not_started")`
 
-Motivo: "Regular / Regular / 普通" soa como "mediano". "Persistente" comunica virtude → gera desejo de alcançar. Só renomeamos o valor das chaves existentes → zero mudança de código.
+### B. Chaves faltantes nos 12 locales (mesmo tendo `t()` no código, o valor não existe → cai no default PT)
 
-Traduções profissionais do nível 3 nos 12 idiomas:
-`pt-BR: Persistente · en-US: Consistent · es-ES: Constante · fr-FR: Régulier · de-DE: Beständig · it-IT: Costante · ja-JP: 継続者 · ko-KR: 꾸준함 · zh-CN: 坚持者 · ru-RU: Настойчивый · ar-SA: مُثابِر · id-ID: Konsisten`
+Grupos a preencher em **pt-BR, en-US, es-ES, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN, ru-RU, ar-SA, id-ID**:
 
----
+1. **Timer da Sala** (`RoomTimerCard`): `rooms.room_timer_title`, `room_timer_desc`, `room_timer_sounds`, `room_timer_paused`, `room_timer_counting_here`, `room_timer_counts_challenge`, `room_timer_stop`, `room_timer_elsewhere_title`, `room_timer_go_to_other_room`, `room_timer_go_to_dashboard`, `room_timer_start`, `room_timer_pick_sound`
+2. **Ranking** (`RoomRankingSidebar`): `rooms.week_leader`, `rooms.in_this_room`
+3. **Picker de desafio** (`RoomChallengePicker`): `rooms.challenges.pick_hint_single`, `pick_hint_multi`, `required_badge`, `legend_todo`, `legend_progress`, `legend_done_short`, `done_short`, `remaining_min_short`, `selected_badge`
+4. **Matriz de desafios** (`RoomChallengesMatrix`): `rooms.challenges.sort_label`, `sort_today`, `sort_week`, `search_member`, `legend`, `legend_done`, `legend_in_progress`, `legend_at_risk`, `legend_not_started`, `no_results`, `ended_badge`, `pos_week_short`, `total_today`, `see_less`, `see_more`, `filter_all`, `filter_done_today`, `filter_missing`, `filter_not_started`
+5. **Chat** (`RoomChatComposer`, `RoomChat`): `chat.bold`, `italic`, `strike`, `code`, `quote`, `list`, `link`, `link_url`, `link_text`, `edit`, `preview`, `preview_empty`, `send`, `new_messages`
+6. **Timer geral**: `timer.pause`, `timer.resume` (faltando em vários locales)
+7. **Admin freezes** (aparece na tela admin): bloco `admin.streak_freezes.*` (11 chaves) — completar
 
-## 2. Renomear conquistas fracas + i18n completo (12 idiomas)
+### C. Método de tradução
 
-Hoje `src/components/rooms/RoomAchievements.tsx` tem os nomes e descrições **hard-coded em PT/EN** dentro do arquivo. Vamos:
+- Traduções feitas com terminologia natural e idiomática de cada idioma, não literal.
+- Consistência com termos já existentes no locale (ex.: "sala"/"room"/"部屋"/"방").
+- Chinês simplificado, japonês, coreano, árabe recebem termos culturalmente adequados (ex.: 週間ランキング, 오늘의 리더, قائد الأسبوع).
+- Placeholders `{{n}}` preservados.
+- Direção RTL do árabe já é tratada globalmente; só o texto muda.
 
-**2a. Melhorar 3 nomes que soam apagados** (mantendo tom épico/aspiracional):
+## Execução
 
-| id | Antes (PT / EN) | Depois (PT / EN) |
-|---|---|---|
-| `total_10h` | Aquecendo / Warming Up | **Ignição / Ignition** |
-| `members_5` | Pequena Tribo / Small Tribe | **Núcleo / The Core** |
-| `members_10` | Time Formado / Squad Up | **Esquadrão / The Squad** |
-| `members_25` | Comunidade / Community | **Guilda / The Guild** |
-| `sync_5` | Sincronia / In Sync | **Em Sintonia / In Sync** *(só PT ajustado)* |
-
-Demais nomes já estão bons: Em Ritmo, Maratonistas, Meio Milhar, Lenda Viva, Trio Certeiro, Semana Cheia, Mês Perfeito, Enxame Focado.
-
-**2b. Mover TODOS os nomes e descrições para as 12 locales.**
-Criar em cada `src/i18n/locales/*.json` o bloco:
-
-```
-rooms.achievements.<id>.name
-rooms.achievements.<id>.desc
-```
-
-Substituir os objetos `NAMES` e `DESCS` inline por `t("rooms.achievements." + def.id + ".name")` / `.desc`. Remover `pickLang` e a lógica `isPt` para nomes/descrições (mantém `isPt` só para o fallback "hoje/ontem" — que também vamos i18n abaixo).
-
-**2c. i18n dos textos auxiliares do card de conquistas** (hoje ainda em PT/EN literal):
-- `rooms.achievements.today` = "hoje"
-- `rooms.achievements.yesterday` = "ontem"
-- `rooms.achievements.days_ago` = "há {{n}}d" / `{{n}}d ago` / etc.
-- `rooms.achievements.months_ago` = "há {{n}}m" / `{{n}}mo ago`
-- `rooms.achievements.locked` = "Bloqueada · {{rarity}}"
-- `rooms.achievements.empty` = "Nenhuma conquista ainda — comecem a estudar para desbloquear as primeiras!"
-- `rooms.achievements.rarity.common|rare|epic|legendary`
-- `rooms.achievements.category.time|streak|community|special`
-
-`RARITY_STYLES` e `CATEGORY_LABELS_PT/EN` continuam para cores, mas os labels vêm do i18n.
-
----
-
-## 3. Traduzir strings soltas restantes (12 idiomas)
-
-| Local | Chave | Estado atual |
-|---|---|---|
-| `RoomChallengesMatrix.tsx:670` | `rooms.challenges.total_today` = `"{{n}}min hoje"` | Só existe como defaultValue → adicionar às 12 locales |
-| `RoomHeatmap.tsx` | `rooms.heatmap_less` = "Menos" / `rooms.heatmap_more` = "Mais" | Adicionar às 12 locales |
-| `RoomHeatmap.tsx` | `rooms.heatmap_desc_v2` | Adicionar às 12 locales |
-| `RoomHeatmap.tsx` | `rooms.heatmap_period_label` (`"últimos {{count}} dias"`) | Adicionar às 12 locales |
-
-Traduções serão feitas de forma profissional (não literal) — por ex. em coreano `min hoje` → `오늘 {{n}}분`, chinês → `今日 {{n}}分钟`, japonês → `本日 {{n}}分`, árabe → `{{n}} د اليوم` (RTL correto).
-
----
-
-## 4. Execução (ordem e escopo)
-
-1. Editar `src/lib/roomMemberLevel.ts` — apenas trocar o label i18n do nível 3 nas 12 locales (chave `rooms.level_regular` → texto "Persistente/Consistent/…"). *A chave permanece a mesma para não quebrar nada.*
-2. Refatorar `src/components/rooms/RoomAchievements.tsx`:
-   - Remover `NAMES`, `DESCS`, `pickLang`, `CATEGORY_LABELS_PT/EN` (usar `t`).
-   - Ler tudo via `t("rooms.achievements.…")`.
-   - Aplicar os 4 novos nomes (Ignição, Núcleo, Esquadrão, Guilda, Em Sintonia).
-3. Escrever um script Python único que injeta em cada `src/i18n/locales/*.json` (12 arquivos, em paralelo) os novos blocos: `rooms.achievements.*`, `rooms.heatmap_less/more/desc_v2/period_label`, `rooms.challenges.total_today`, e o novo texto do `level_regular`. Traduções listadas explicitamente no script (uma tabela por idioma), revisadas manualmente antes de rodar.
-4. Verificação: build + abrir a sala em pt-BR, ko-KR e ar-SA para conferir que "Menos/Mais", "min hoje", nomes das conquistas e o nível "Persistente/꾸준함/مُثابِر" aparecem traduzidos.
+1. Editar `RoomChallengesMatrix.tsx` para trocar os 4 returns hardcoded em `filterLabel()` por `t(...)`.
+2. Script Python único que carrega os 12 JSONs, faz `deep merge` com o dicionário de novas chaves (uma tabela por idioma) e regrava mantendo ordem e indentação de 2 espaços.
+3. Verificação: re-rodar o diff de chaves ausentes por idioma — deve resultar em 0 faltas para as chaves listadas.
+4. Spot-check em ja-JP e ko-KR abrindo `/rooms/:id` no preview.
 
 ## Fora de escopo
-- Alterar thresholds/horas dos níveis ou raridades das conquistas.
-- Ranking lateral, filtros do heatmap.
-- Ícones e cores (mantidos).
 
-## Confirmação
-Se "Persistente" (nível 3) e os 4 nomes de conquistas propostos (Ignição, Núcleo, Esquadrão, Guilda) fizerem sentido, sigo com essa lista. Se quiser trocar algum, me diga qual antes de eu implementar.
+- Reordenar/renomear níveis, badges de rank, ícones ou cores.
+- Alterar layouts, componentes, filtros, ou lógica.
+- Novas features. Somente tradução + a pequena refatoração do `filterLabel`.
+
+## Arquivos alterados
+
+- `src/components/rooms/RoomChallengesMatrix.tsx` (1 função)
+- `src/i18n/locales/*.json` (12 arquivos)

@@ -174,7 +174,9 @@
     "pause_warning_body": "La pause fige le chronomètre. Pensez à appuyer sur Reprendre avant Arrêter — des pauses très longues (plusieurs heures) peuvent désynchroniser le temps entre les appareils. Nous recommandons des pauses courtes.",
     "pause_warning_dont_show": "Ne plus afficher",
     "pause_warning_ok": "Compris",
-    "pause_data_loss_recovered": "Temps récupéré automatiquement depuis le serveur."
+    "pause_data_loss_recovered": "Temps récupéré automatiquement depuis le serveur.",
+    "pause": "Pause",
+    "resume": "Reprendre"
   },
   "pomodoro": {
     "focus": "Concentration",
@@ -870,7 +872,20 @@
     "actions": "Actions",
     "total_users": "Utilisateurs totaux",
     "active_subs": "Abonnements actifs",
-    "no_users_found": "Aucun utilisateur trouvé"
+    "no_users_found": "Aucun utilisateur trouvé",
+    "streak_freezes": {
+      "title": "Gels de série",
+      "balance": "Solde",
+      "total_purchased": "Total acheté",
+      "total_used": "Total utilisé",
+      "history": "Historique",
+      "grant": "Accorder",
+      "grant_button": "Accorder",
+      "amount": "Quantité",
+      "reason": "Raison",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "Défense utilisée !",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}}min aujourd'hui"
+      "total_today": "{{n}}min aujourd'hui",
+      "pick_hint_single": "Choisissez le défi",
+      "pick_hint_multi": "Choisissez le défi · {{n}} disponibles",
+      "required_badge": "OBLIGATOIRE",
+      "legend_todo": "à faire",
+      "legend_progress": "en cours",
+      "legend_done_short": "fait",
+      "done_short": "fait",
+      "remaining_min_short": "reste {{n}} min",
+      "selected_badge": "SÉLECTIONNÉ",
+      "sort_label": "Trier",
+      "sort_today": "Aujourd'hui",
+      "sort_week": "Semaine",
+      "search_member": "Rechercher un membre...",
+      "legend": "Légende",
+      "legend_in_progress": "en cours",
+      "legend_at_risk": "à risque",
+      "legend_not_started": "non commencé",
+      "no_results": "Aucun membre trouvé",
+      "ended_badge": "Terminé",
+      "pos_week_short": "#{{n}} sem",
+      "see_less": "Voir moins",
+      "see_more": "Voir plus",
+      "filter_all": "Tous",
+      "filter_done_today": "Réussi aujourd'hui",
+      "filter_missing": "Reste à faire",
+      "filter_not_started": "Pas commencé"
     },
     "heatmap_less": "Moins",
     "heatmap_more": "Plus",
@@ -1416,7 +1457,21 @@
           "desc": "10 personnes concentrées en même temps"
         }
       }
-    }
+    },
+    "room_timer_title": "Minuteur de la salle",
+    "room_timer_desc": "Utilisez le minuteur avec la salle — il compte pour le classement et les défis",
+    "room_timer_sounds": "Sons d'ambiance",
+    "room_timer_paused": "En pause",
+    "room_timer_counting_here": "En cours dans cette salle",
+    "room_timer_counts_challenge": "En démarrant ici, votre temps compte pour le classement, la série de cette salle et le défi : {{challenges}}.",
+    "room_timer_stop": "Arrêter",
+    "room_timer_elsewhere_title": "Un minuteur est déjà en cours",
+    "room_timer_go_to_other_room": "Aller à l'autre salle",
+    "room_timer_go_to_dashboard": "Aller au tableau de bord",
+    "room_timer_start": "Démarrer dans cette salle",
+    "room_timer_pick_sound": "Choisir un son",
+    "week_leader": "Leader de la semaine",
+    "in_this_room": "dans cette salle"
   },
   "explore": {
     "title": "Explorer les Salles",
@@ -2286,5 +2341,21 @@
       "unreachable": "Serveur de notifications indisponible. Réessayez sous peu.",
       "not_configured": "Les notifications push ne sont pas encore configurées dans cet environnement."
     }
+  },
+  "chat": {
+    "bold": "Gras",
+    "italic": "Italique",
+    "strike": "Barré",
+    "code": "Code",
+    "quote": "Citation",
+    "list": "Liste",
+    "link": "Lien",
+    "link_url": "URL du lien",
+    "link_text": "Texte du lien",
+    "edit": "Modifier",
+    "preview": "Aperçu",
+    "preview_empty": "Rien à prévisualiser",
+    "send": "Envoyer",
+    "new_messages": "nouveaux messages"
   }
 }

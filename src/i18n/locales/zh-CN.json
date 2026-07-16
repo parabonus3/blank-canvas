@@ -174,7 +174,9 @@
     "pause_warning_body": "暂停会冻结计时器。停止前请记得点击继续 — 非常长的暂停(数小时)可能导致设备间时间不同步。建议短暂休息。",
     "pause_warning_dont_show": "不再显示",
     "pause_warning_ok": "知道了",
-    "pause_data_loss_recovered": "已自动从服务器恢复时间。"
+    "pause_data_loss_recovered": "已自动从服务器恢复时间。",
+    "pause": "暂停",
+    "resume": "继续"
   },
   "pomodoro": {
     "focus": "专注",
@@ -870,7 +872,20 @@
     "actions": "操作",
     "total_users": "总用户数",
     "active_subs": "活跃订阅",
-    "no_users_found": "未找到用户"
+    "no_users_found": "未找到用户",
+    "streak_freezes": {
+      "title": "连击冻结",
+      "balance": "余量",
+      "total_purchased": "累计购买",
+      "total_used": "累计使用",
+      "history": "记录",
+      "grant": "发放",
+      "grant_button": "发放",
+      "amount": "数量",
+      "reason": "原因",
+      "source_admin": "管理员",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "防护已使用！",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "今日 {{n}}分钟"
+      "total_today": "今日 {{n}}分钟",
+      "pick_hint_single": "选择挑战",
+      "pick_hint_multi": "选择挑战 · 共 {{n}} 项",
+      "required_badge": "必选",
+      "legend_todo": "待完成",
+      "legend_progress": "进行中",
+      "legend_done_short": "完成",
+      "done_short": "完成",
+      "remaining_min_short": "剩 {{n}} 分钟",
+      "selected_badge": "已选择",
+      "sort_label": "排序",
+      "sort_today": "今日",
+      "sort_week": "本周",
+      "search_member": "搜索成员...",
+      "legend": "图例",
+      "legend_in_progress": "进行中",
+      "legend_at_risk": "有风险",
+      "legend_not_started": "未开始",
+      "no_results": "未找到成员",
+      "ended_badge": "已结束",
+      "pos_week_short": "#{{n}} 周",
+      "see_less": "收起",
+      "see_more": "展开",
+      "filter_all": "全部",
+      "filter_done_today": "今日已完成",
+      "filter_missing": "还未完成",
+      "filter_not_started": "尚未开始"
     },
     "heatmap_less": "较少",
     "heatmap_more": "较多",
@@ -1416,7 +1457,21 @@
           "desc": "10 人同时专注"
         }
       }
-    }
+    },
+    "room_timer_title": "房间计时器",
+    "room_timer_desc": "在房间内使用计时器 — 时间将计入排行榜和挑战",
+    "room_timer_sounds": "环境音",
+    "room_timer_paused": "已暂停",
+    "room_timer_counting_here": "正在此房间计时",
+    "room_timer_counts_challenge": "从这里开始后,你的时间将计入排行榜、本房间的连击以及挑战: {{challenges}}。",
+    "room_timer_stop": "停止",
+    "room_timer_elsewhere_title": "你已经有一个计时器在运行",
+    "room_timer_go_to_other_room": "前往另一个房间",
+    "room_timer_go_to_dashboard": "前往仪表盘",
+    "room_timer_start": "在此房间开始",
+    "room_timer_pick_sound": "选择声音",
+    "week_leader": "本周领跑者",
+    "in_this_room": "本房间"
   },
   "explore": {
     "title": "探索房间",
@@ -2286,5 +2341,21 @@
       "unreachable": "通知服务器不可用，请稍后重试。",
       "not_configured": "此环境尚未配置推送通知。"
     }
+  },
+  "chat": {
+    "bold": "加粗",
+    "italic": "斜体",
+    "strike": "删除线",
+    "code": "代码",
+    "quote": "引用",
+    "list": "列表",
+    "link": "链接",
+    "link_url": "链接地址",
+    "link_text": "链接文字",
+    "edit": "编辑",
+    "preview": "预览",
+    "preview_empty": "暂无可预览内容",
+    "send": "发送",
+    "new_messages": "条新消息"
   }
 }
