@@ -174,7 +174,9 @@
     "pause_warning_body": "一時停止するとタイマーが固定されます。停止する前に再開を押すことを忘れないでください。長時間(数時間)の一時停止は、デバイス間で時間がずれる可能性があります。短い休憩をおすすめします。",
     "pause_warning_dont_show": "今後表示しない",
     "pause_warning_ok": "了解",
-    "pause_data_loss_recovered": "サーバーから時間を自動的に復元しました。"
+    "pause_data_loss_recovered": "サーバーから時間を自動的に復元しました。",
+    "pause": "一時停止",
+    "resume": "再開"
   },
   "pomodoro": {
     "focus": "集中",
@@ -870,7 +872,20 @@
     "actions": "操作",
     "total_users": "総ユーザー数",
     "active_subs": "有効なサブスクリプション",
-    "no_users_found": "ユーザーが見つかりません"
+    "no_users_found": "ユーザーが見つかりません",
+    "streak_freezes": {
+      "title": "ストリーク・フリーズ",
+      "balance": "残数",
+      "total_purchased": "購入合計",
+      "total_used": "使用合計",
+      "history": "履歴",
+      "grant": "付与",
+      "grant_button": "付与する",
+      "amount": "数量",
+      "reason": "理由",
+      "source_admin": "管理者",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "防御を使用しました！",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "本日 {{n}}分"
+      "total_today": "本日 {{n}}分",
+      "pick_hint_single": "チャレンジを選択",
+      "pick_hint_multi": "チャレンジを選択 · {{n}}件",
+      "required_badge": "必須",
+      "legend_todo": "未着手",
+      "legend_progress": "進行中",
+      "legend_done_short": "達成",
+      "done_short": "達成",
+      "remaining_min_short": "残り{{n}}分",
+      "selected_badge": "選択中",
+      "sort_label": "並び替え",
+      "sort_today": "今日",
+      "sort_week": "今週",
+      "search_member": "メンバーを検索...",
+      "legend": "凡例",
+      "legend_in_progress": "進行中",
+      "legend_at_risk": "遅れ気味",
+      "legend_not_started": "未着手",
+      "no_results": "メンバーが見つかりません",
+      "ended_badge": "終了",
+      "pos_week_short": "#{{n}} 週",
+      "see_less": "折りたたむ",
+      "see_more": "もっと見る",
+      "filter_all": "すべて",
+      "filter_done_today": "今日達成",
+      "filter_missing": "未達成",
+      "filter_not_started": "未着手"
     },
     "heatmap_less": "少ない",
     "heatmap_more": "多い",
@@ -1416,7 +1457,21 @@
           "desc": "10人が同時にフォーカス"
         }
       }
-    }
+    },
+    "room_timer_title": "ルームのタイマー",
+    "room_timer_desc": "ルームと一緒にタイマーを使うと、ランキングとチャレンジに加算されます",
+    "room_timer_sounds": "環境音",
+    "room_timer_paused": "一時停止中",
+    "room_timer_counting_here": "このルームで計測中",
+    "room_timer_counts_challenge": "ここから開始すると、時間はランキング、このルームのストリーク、およびチャレンジに加算されます: {{challenges}}。",
+    "room_timer_stop": "停止",
+    "room_timer_elsewhere_title": "すでにタイマーが動いています",
+    "room_timer_go_to_other_room": "別のルームへ移動",
+    "room_timer_go_to_dashboard": "ダッシュボードへ",
+    "room_timer_start": "このルームで開始",
+    "room_timer_pick_sound": "サウンドを選択",
+    "week_leader": "週間リーダー",
+    "in_this_room": "このルームで"
   },
   "explore": {
     "title": "ルームを探索",
@@ -2286,5 +2341,21 @@
       "unreachable": "通知サーバーに接続できません。しばらくしてから再度お試しください。",
       "not_configured": "この環境ではプッシュ通知がまだ設定されていません。"
     }
+  },
+  "chat": {
+    "bold": "太字",
+    "italic": "斜体",
+    "strike": "取り消し線",
+    "code": "コード",
+    "quote": "引用",
+    "list": "リスト",
+    "link": "リンク",
+    "link_url": "リンクURL",
+    "link_text": "リンクテキスト",
+    "edit": "編集",
+    "preview": "プレビュー",
+    "preview_empty": "プレビューできるものがありません",
+    "send": "送信",
+    "new_messages": "件の新着メッセージ"
   }
 }

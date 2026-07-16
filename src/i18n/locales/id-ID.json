@@ -174,7 +174,9 @@
     "pause_warning_body": "Jeda membekukan timer. Ingat untuk menekan Lanjutkan sebelum Berhenti — jeda yang sangat lama (beberapa jam) dapat menyebabkan waktu tidak sinkron antar perangkat. Kami menyarankan jeda singkat.",
     "pause_warning_dont_show": "Jangan tampilkan lagi",
     "pause_warning_ok": "Mengerti",
-    "pause_data_loss_recovered": "Waktu otomatis dipulihkan dari server."
+    "pause_data_loss_recovered": "Waktu otomatis dipulihkan dari server.",
+    "pause": "Jeda",
+    "resume": "Lanjutkan"
   },
   "pomodoro": {
     "focus": "Fokus",
@@ -870,7 +872,20 @@
     "actions": "Tindakan",
     "total_users": "Total Pengguna",
     "active_subs": "Langganan Aktif",
-    "no_users_found": "Tidak ada pengguna ditemukan"
+    "no_users_found": "Tidak ada pengguna ditemukan",
+    "streak_freezes": {
+      "title": "Pembekuan streak",
+      "balance": "Saldo",
+      "total_purchased": "Total dibeli",
+      "total_used": "Total dipakai",
+      "history": "Riwayat",
+      "grant": "Berikan",
+      "grant_button": "Berikan",
+      "amount": "Jumlah",
+      "reason": "Alasan",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "Pertahanan digunakan!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}}mnt hari ini"
+      "total_today": "{{n}}mnt hari ini",
+      "pick_hint_single": "Pilih tantangan",
+      "pick_hint_multi": "Pilih tantangan · {{n}} tersedia",
+      "required_badge": "WAJIB",
+      "legend_todo": "belum",
+      "legend_progress": "berjalan",
+      "legend_done_short": "selesai",
+      "done_short": "selesai",
+      "remaining_min_short": "sisa {{n}} mnt",
+      "selected_badge": "TERPILIH",
+      "sort_label": "Urutkan",
+      "sort_today": "Hari ini",
+      "sort_week": "Minggu",
+      "search_member": "Cari anggota...",
+      "legend": "Legenda",
+      "legend_in_progress": "berjalan",
+      "legend_at_risk": "berisiko",
+      "legend_not_started": "belum mulai",
+      "no_results": "Tidak ada anggota ditemukan",
+      "ended_badge": "Berakhir",
+      "pos_week_short": "#{{n}} mgg",
+      "see_less": "Lebih sedikit",
+      "see_more": "Selengkapnya",
+      "filter_all": "Semua",
+      "filter_done_today": "Sudah hari ini",
+      "filter_missing": "Belum",
+      "filter_not_started": "Belum mulai"
     },
     "heatmap_less": "Sedikit",
     "heatmap_more": "Banyak",
@@ -1416,7 +1457,21 @@
           "desc": "10 orang fokus bersamaan"
         }
       }
-    }
+    },
+    "room_timer_title": "Timer ruangan",
+    "room_timer_desc": "Gunakan timer bersama ruangan — waktu masuk ke peringkat dan tantangan",
+    "room_timer_sounds": "Suara ambien",
+    "room_timer_paused": "Dijeda",
+    "room_timer_counting_here": "Sedang menghitung di ruangan ini",
+    "room_timer_counts_challenge": "Dengan memulai di sini, waktumu masuk ke peringkat, streak ruangan ini, dan tantangan: {{challenges}}.",
+    "room_timer_stop": "Hentikan",
+    "room_timer_elsewhere_title": "Kamu sudah punya timer yang berjalan",
+    "room_timer_go_to_other_room": "Ke ruangan lain",
+    "room_timer_go_to_dashboard": "Ke dasbor",
+    "room_timer_start": "Mulai di ruangan ini",
+    "room_timer_pick_sound": "Pilih suara",
+    "week_leader": "Pemimpin minggu ini",
+    "in_this_room": "di ruangan ini"
   },
   "explore": {
     "title": "Jelajahi Ruangan",
@@ -2286,5 +2341,21 @@
       "unreachable": "Server notifikasi tidak tersedia. Coba lagi sebentar lagi.",
       "not_configured": "Notifikasi push belum dikonfigurasi di lingkungan ini."
     }
+  },
+  "chat": {
+    "bold": "Tebal",
+    "italic": "Miring",
+    "strike": "Coret",
+    "code": "Kode",
+    "quote": "Kutipan",
+    "list": "Daftar",
+    "link": "Tautan",
+    "link_url": "URL tautan",
+    "link_text": "Teks tautan",
+    "edit": "Sunting",
+    "preview": "Pratinjau",
+    "preview_empty": "Tidak ada yang bisa dipratinjau",
+    "send": "Kirim",
+    "new_messages": "pesan baru"
   }
 }

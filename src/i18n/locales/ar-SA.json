@@ -174,7 +174,9 @@
     "pause_warning_body": "الإيقاف المؤقت يجمد المؤقت. تذكر الضغط على متابعة قبل إيقاف — الإيقافات الطويلة جدًا (عدة ساعات) قد تتسبب في عدم تزامن الوقت بين الأجهزة. ننصح بفترات إيقاف قصيرة.",
     "pause_warning_dont_show": "عدم العرض مرة أخرى",
     "pause_warning_ok": "فهمت",
-    "pause_data_loss_recovered": "تم استرداد الوقت تلقائيًا من الخادم."
+    "pause_data_loss_recovered": "تم استرداد الوقت تلقائيًا من الخادم.",
+    "pause": "إيقاف مؤقّت",
+    "resume": "استئناف"
   },
   "pomodoro": {
     "focus": "تركيز",
@@ -870,7 +872,20 @@
     "actions": "الإجراءات",
     "total_users": "إجمالي المستخدمين",
     "active_subs": "الاشتراكات النشطة",
-    "no_users_found": "لم يتم العثور على مستخدمين"
+    "no_users_found": "لم يتم العثور على مستخدمين",
+    "streak_freezes": {
+      "title": "تجميدات السلسلة",
+      "balance": "الرصيد",
+      "total_purchased": "إجمالي المشتراة",
+      "total_used": "إجمالي المستخدَمة",
+      "history": "السجل",
+      "grant": "منح",
+      "grant_button": "منح",
+      "amount": "الكمية",
+      "reason": "السبب",
+      "source_admin": "المسؤول",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "تم استخدام الدرع!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}} د اليوم"
+      "total_today": "{{n}} د اليوم",
+      "pick_hint_single": "اختر التحدي",
+      "pick_hint_multi": "اختر التحدي · {{n}} متاح",
+      "required_badge": "إلزامي",
+      "legend_todo": "قيد الانتظار",
+      "legend_progress": "قيد التنفيذ",
+      "legend_done_short": "منجز",
+      "done_short": "منجز",
+      "remaining_min_short": "متبقّي {{n}} دقيقة",
+      "selected_badge": "محدَّد",
+      "sort_label": "ترتيب",
+      "sort_today": "اليوم",
+      "sort_week": "الأسبوع",
+      "search_member": "ابحث عن عضو...",
+      "legend": "دليل الألوان",
+      "legend_in_progress": "قيد التنفيذ",
+      "legend_at_risk": "في خطر",
+      "legend_not_started": "لم يبدأ",
+      "no_results": "لا يوجد أعضاء",
+      "ended_badge": "منتهٍ",
+      "pos_week_short": "#{{n}} أسبوع",
+      "see_less": "عرض أقل",
+      "see_more": "عرض المزيد",
+      "filter_all": "الكل",
+      "filter_done_today": "أنجزوا اليوم",
+      "filter_missing": "متبقٍّ عليهم",
+      "filter_not_started": "لم يبدؤوا"
     },
     "heatmap_less": "أقل",
     "heatmap_more": "أكثر",
@@ -1416,7 +1457,21 @@
           "desc": "10 أشخاص في تركيز متزامن"
         }
       }
-    }
+    },
+    "room_timer_title": "مؤقّت الغرفة",
+    "room_timer_desc": "استخدم المؤقّت مع الغرفة — يُحتسب في التصنيف والتحديات",
+    "room_timer_sounds": "أصوات محيطة",
+    "room_timer_paused": "متوقّف مؤقّتًا",
+    "room_timer_counting_here": "جارٍ العدّ في هذه الغرفة",
+    "room_timer_counts_challenge": "عند البدء هنا، يُحتسب وقتك في التصنيف وسلسلة هذه الغرفة والتحدي: {{challenges}}.",
+    "room_timer_stop": "إيقاف",
+    "room_timer_elsewhere_title": "لديك مؤقّت يعمل بالفعل",
+    "room_timer_go_to_other_room": "الذهاب إلى الغرفة الأخرى",
+    "room_timer_go_to_dashboard": "الذهاب إلى لوحة التحكم",
+    "room_timer_start": "ابدأ في هذه الغرفة",
+    "room_timer_pick_sound": "اختر صوتًا",
+    "week_leader": "قائد الأسبوع",
+    "in_this_room": "في هذه الغرفة"
   },
   "explore": {
     "title": "استكشاف الغرف",
@@ -2272,5 +2327,21 @@
       "unreachable": "خادم الإشعارات غير متاح. يرجى المحاولة مرة أخرى بعد قليل.",
       "not_configured": "لم يتم إعداد إشعارات الدفع بعد في هذه البيئة."
     }
+  },
+  "chat": {
+    "bold": "غامق",
+    "italic": "مائل",
+    "strike": "يتوسّطه خط",
+    "code": "كود",
+    "quote": "اقتباس",
+    "list": "قائمة",
+    "link": "رابط",
+    "link_url": "عنوان الرابط",
+    "link_text": "نص الرابط",
+    "edit": "تعديل",
+    "preview": "معاينة",
+    "preview_empty": "لا يوجد ما يمكن معاينته",
+    "send": "إرسال",
+    "new_messages": "رسائل جديدة"
   }
 }

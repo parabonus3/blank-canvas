@@ -174,7 +174,9 @@
     "pause_warning_body": "La pausa congela il cronometro. Ricorda di toccare Riprendi prima di Ferma — pause molto lunghe (diverse ore) possono desincronizzare il tempo tra dispositivi. Consigliamo pause brevi.",
     "pause_warning_dont_show": "Non mostrare più",
     "pause_warning_ok": "Ho capito",
-    "pause_data_loss_recovered": "Tempo recuperato automaticamente dal server."
+    "pause_data_loss_recovered": "Tempo recuperato automaticamente dal server.",
+    "pause": "Pausa",
+    "resume": "Riprendi"
   },
   "pomodoro": {
     "focus": "Focus",
@@ -870,7 +872,20 @@
     "actions": "Azioni",
     "total_users": "Utenti Totali",
     "active_subs": "Abbonamenti Attivi",
-    "no_users_found": "Nessun utente trovato"
+    "no_users_found": "Nessun utente trovato",
+    "streak_freezes": {
+      "title": "Congelamenti serie",
+      "balance": "Saldo",
+      "total_purchased": "Totale acquistati",
+      "total_used": "Totale usati",
+      "history": "Cronologia",
+      "grant": "Assegna",
+      "grant_button": "Assegna",
+      "amount": "Quantità",
+      "reason": "Motivo",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "Difesa usata!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}}min oggi"
+      "total_today": "{{n}}min oggi",
+      "pick_hint_single": "Scegli la sfida",
+      "pick_hint_multi": "Scegli la sfida · {{n}} disponibili",
+      "required_badge": "OBBLIGATORIO",
+      "legend_todo": "da fare",
+      "legend_progress": "in corso",
+      "legend_done_short": "fatto",
+      "done_short": "fatto",
+      "remaining_min_short": "restano {{n}} min",
+      "selected_badge": "SELEZIONATO",
+      "sort_label": "Ordina",
+      "sort_today": "Oggi",
+      "sort_week": "Settimana",
+      "search_member": "Cerca membro...",
+      "legend": "Legenda",
+      "legend_in_progress": "in corso",
+      "legend_at_risk": "a rischio",
+      "legend_not_started": "non iniziato",
+      "no_results": "Nessun membro trovato",
+      "ended_badge": "Terminato",
+      "pos_week_short": "#{{n}} sett",
+      "see_less": "Mostra meno",
+      "see_more": "Mostra altro",
+      "filter_all": "Tutti",
+      "filter_done_today": "Fatto oggi",
+      "filter_missing": "Da fare",
+      "filter_not_started": "Non iniziato"
     },
     "heatmap_less": "Meno",
     "heatmap_more": "Più",
@@ -1416,7 +1457,21 @@
           "desc": "10 persone concentrate insieme"
         }
       }
-    }
+    },
+    "room_timer_title": "Timer della stanza",
+    "room_timer_desc": "Usa il timer insieme alla stanza — conta per la classifica e le sfide",
+    "room_timer_sounds": "Suoni d'ambiente",
+    "room_timer_paused": "In pausa",
+    "room_timer_counting_here": "In corso in questa stanza",
+    "room_timer_counts_challenge": "Avviando qui, il tuo tempo conta per la classifica, la serie di questa stanza e la sfida: {{challenges}}.",
+    "room_timer_stop": "Ferma",
+    "room_timer_elsewhere_title": "Hai già un timer in corso",
+    "room_timer_go_to_other_room": "Vai all'altra stanza",
+    "room_timer_go_to_dashboard": "Vai alla dashboard",
+    "room_timer_start": "Avvia in questa stanza",
+    "room_timer_pick_sound": "Scegli suono",
+    "week_leader": "Leader della settimana",
+    "in_this_room": "in questa stanza"
   },
   "explore": {
     "title": "Esplora Stanze",
@@ -2272,5 +2327,21 @@
       "unreachable": "Server di notifiche non disponibile. Riprova tra poco.",
       "not_configured": "Le notifiche push non sono ancora configurate in questo ambiente."
     }
+  },
+  "chat": {
+    "bold": "Grassetto",
+    "italic": "Corsivo",
+    "strike": "Barrato",
+    "code": "Codice",
+    "quote": "Citazione",
+    "list": "Elenco",
+    "link": "Link",
+    "link_url": "URL del link",
+    "link_text": "Testo del link",
+    "edit": "Modifica",
+    "preview": "Anteprima",
+    "preview_empty": "Niente da vedere in anteprima",
+    "send": "Invia",
+    "new_messages": "nuovi messaggi"
   }
 }

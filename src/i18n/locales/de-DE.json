@@ -174,7 +174,9 @@
     "pause_warning_body": "Eine Pause friert den Timer ein. Drücke auf Fortsetzen, bevor du Stoppen wählst — sehr lange Pausen (mehrere Stunden) können die Zeit zwischen Geräten desynchronisieren. Wir empfehlen kurze Pausen.",
     "pause_warning_dont_show": "Nicht mehr anzeigen",
     "pause_warning_ok": "Verstanden",
-    "pause_data_loss_recovered": "Zeit automatisch vom Server wiederhergestellt."
+    "pause_data_loss_recovered": "Zeit automatisch vom Server wiederhergestellt.",
+    "pause": "Pause",
+    "resume": "Fortsetzen"
   },
   "pomodoro": {
     "focus": "Fokus",
@@ -870,7 +872,20 @@
     "actions": "Aktionen",
     "total_users": "Gesamtbenutzer",
     "active_subs": "Aktive Abos",
-    "no_users_found": "Keine Benutzer gefunden"
+    "no_users_found": "Keine Benutzer gefunden",
+    "streak_freezes": {
+      "title": "Serien-Freezes",
+      "balance": "Guthaben",
+      "total_purchased": "Gekauft insgesamt",
+      "total_used": "Verwendet insgesamt",
+      "history": "Verlauf",
+      "grant": "Vergeben",
+      "grant_button": "Vergeben",
+      "amount": "Menge",
+      "reason": "Grund",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "streak": {
     "freeze_used_title": "Schutz verwendet!",
@@ -1337,7 +1352,33 @@
           }
         }
       },
-      "total_today": "{{n}}min heute"
+      "total_today": "{{n}}min heute",
+      "pick_hint_single": "Herausforderung wählen",
+      "pick_hint_multi": "Herausforderung wählen · {{n}} verfügbar",
+      "required_badge": "PFLICHT",
+      "legend_todo": "offen",
+      "legend_progress": "läuft",
+      "legend_done_short": "erledigt",
+      "done_short": "erledigt",
+      "remaining_min_short": "noch {{n}} Min",
+      "selected_badge": "AUSGEWÄHLT",
+      "sort_label": "Sortieren",
+      "sort_today": "Heute",
+      "sort_week": "Woche",
+      "search_member": "Mitglied suchen...",
+      "legend": "Legende",
+      "legend_in_progress": "läuft",
+      "legend_at_risk": "gefährdet",
+      "legend_not_started": "nicht begonnen",
+      "no_results": "Keine Mitglieder gefunden",
+      "ended_badge": "Beendet",
+      "pos_week_short": "#{{n}} Wo",
+      "see_less": "Weniger anzeigen",
+      "see_more": "Mehr anzeigen",
+      "filter_all": "Alle",
+      "filter_done_today": "Heute geschafft",
+      "filter_missing": "Noch offen",
+      "filter_not_started": "Nicht begonnen"
     },
     "heatmap_less": "Weniger",
     "heatmap_more": "Mehr",
@@ -1416,7 +1457,21 @@
           "desc": "10 Leute gleichzeitig im Fokus"
         }
       }
-    }
+    },
+    "room_timer_title": "Raum-Timer",
+    "room_timer_desc": "Nutze den Timer im Raum — er zählt für Ranking und Herausforderungen",
+    "room_timer_sounds": "Umgebungsgeräusche",
+    "room_timer_paused": "Pausiert",
+    "room_timer_counting_here": "Läuft in diesem Raum",
+    "room_timer_counts_challenge": "Wenn du hier startest, zählt deine Zeit für das Ranking, die Serie dieses Raums und die Herausforderung: {{challenges}}.",
+    "room_timer_stop": "Stoppen",
+    "room_timer_elsewhere_title": "Ein Timer läuft bereits",
+    "room_timer_go_to_other_room": "Zum anderen Raum",
+    "room_timer_go_to_dashboard": "Zum Dashboard",
+    "room_timer_start": "In diesem Raum starten",
+    "room_timer_pick_sound": "Sound wählen",
+    "week_leader": "Anführer der Woche",
+    "in_this_room": "in diesem Raum"
   },
   "explore": {
     "title": "Räume Entdecken",
@@ -2286,5 +2341,21 @@
       "unreachable": "Benachrichtigungsserver nicht erreichbar. Bitte versuche es gleich erneut.",
       "not_configured": "Push-Benachrichtigungen sind in dieser Umgebung noch nicht konfiguriert."
     }
+  },
+  "chat": {
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "strike": "Durchgestrichen",
+    "code": "Code",
+    "quote": "Zitat",
+    "list": "Liste",
+    "link": "Link",
+    "link_url": "Link-URL",
+    "link_text": "Link-Text",
+    "edit": "Bearbeiten",
+    "preview": "Vorschau",
+    "preview_empty": "Nichts zur Vorschau",
+    "send": "Senden",
+    "new_messages": "neue Nachrichten"
   }
 }

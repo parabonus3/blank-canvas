@@ -178,7 +178,9 @@
     "pause_warning_body": "Pausar congela o cronômetro. Lembre-se de clicar em Continuar antes de Parar — pausas muito longas (várias horas) podem dessincronizar o tempo entre dispositivos. Recomendamos pausas curtas.",
     "pause_warning_dont_show": "Não mostrar novamente",
     "pause_warning_ok": "Entendi",
-    "pause_data_loss_recovered": "Tempo recuperado automaticamente a partir do servidor."
+    "pause_data_loss_recovered": "Tempo recuperado automaticamente a partir do servidor.",
+    "pause": "Pausar",
+    "resume": "Retomar"
   },
   "pomodoro": {
     "focus": "Foco",
@@ -1683,7 +1685,20 @@
     "grant_admin": "Tornar admin master",
     "revoke_admin": "Remover admin master",
     "grant_support": "Conceder acesso ao suporte",
-    "revoke_support": "Remover acesso ao suporte"
+    "revoke_support": "Remover acesso ao suporte",
+    "streak_freezes": {
+      "title": "Congelamentos de streak",
+      "balance": "Saldo",
+      "total_purchased": "Total comprado",
+      "total_used": "Total usado",
+      "history": "Histórico",
+      "grant": "Conceder",
+      "grant_button": "Conceder",
+      "amount": "Quantidade",
+      "reason": "Motivo",
+      "source_admin": "Admin",
+      "source_stripe": "Stripe"
+    }
   },
   "tags": {
     "title": "Etiquetas",
@@ -2126,7 +2141,33 @@
           }
         }
       },
-      "total_today": "{{n}}min hoje"
+      "total_today": "{{n}}min hoje",
+      "pick_hint_single": "Escolha o desafio",
+      "pick_hint_multi": "Escolha o desafio · {{n}} disponíveis",
+      "required_badge": "OBRIGATÓRIO",
+      "legend_todo": "a fazer",
+      "legend_progress": "em andamento",
+      "legend_done_short": "feito",
+      "done_short": "feito",
+      "remaining_min_short": "faltam {{n}}min",
+      "selected_badge": "SELECIONADO",
+      "sort_label": "Ordenar",
+      "sort_today": "Hoje",
+      "sort_week": "Semana",
+      "search_member": "Buscar membro...",
+      "legend": "Legenda",
+      "legend_in_progress": "em andamento",
+      "legend_at_risk": "em risco",
+      "legend_not_started": "não começou",
+      "no_results": "Nenhum membro encontrado",
+      "ended_badge": "Encerrado",
+      "pos_week_short": "#{{n}} sem",
+      "see_less": "Ver menos",
+      "see_more": "Ver mais",
+      "filter_all": "Todos",
+      "filter_done_today": "Bateram hoje",
+      "filter_missing": "Faltam bater",
+      "filter_not_started": "Não começaram"
     },
     "heatmap_less": "Menos",
     "heatmap_more": "Mais",
@@ -2205,7 +2246,21 @@
           "desc": "10 pessoas em foco simultâneo"
         }
       }
-    }
+    },
+    "room_timer_title": "Timer da sala",
+    "room_timer_desc": "Use o timer junto com a sala e conte para o ranking e desafios",
+    "room_timer_sounds": "Sons ambientes",
+    "room_timer_paused": "Pausado",
+    "room_timer_counting_here": "Contando nesta sala",
+    "room_timer_counts_challenge": "Ao iniciar aqui, seu tempo conta para o ranking, o streak desta sala e para o desafio: {{challenges}}.",
+    "room_timer_stop": "Encerrar",
+    "room_timer_elsewhere_title": "Você já está com um timer rodando",
+    "room_timer_go_to_other_room": "Ir para a outra sala",
+    "room_timer_go_to_dashboard": "Ir para o painel",
+    "room_timer_start": "Iniciar nesta sala",
+    "room_timer_pick_sound": "Escolher som",
+    "week_leader": "Líder da semana",
+    "in_this_room": "nesta sala"
   },
   "explore": {
     "title": "Explorar Salas",
@@ -2436,5 +2491,21 @@
       "unreachable": "Servidor de notificações indisponível. Tente novamente em instantes.",
       "not_configured": "As notificações push ainda não foram configuradas neste ambiente."
     }
+  },
+  "chat": {
+    "bold": "Negrito",
+    "italic": "Itálico",
+    "strike": "Tachado",
+    "code": "Código",
+    "quote": "Citação",
+    "list": "Lista",
+    "link": "Link",
+    "link_url": "URL do link",
+    "link_text": "Texto do link",
+    "edit": "Editar",
+    "preview": "Prévia",
+    "preview_empty": "Nada para pré-visualizar",
+    "send": "Enviar",
+    "new_messages": "novas mensagens"
   }
 }
