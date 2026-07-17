@@ -656,7 +656,7 @@ function MemberCard({
                     : "bg-muted text-muted-foreground",
                 )}
               >
-                #{weekRank} {t("rooms.challenges.pos_week_short", "sem")}
+                {t("rooms.challenges.pos_week_short", { n: weekRank, defaultValue: "#{{n}} sem" })}
               </Badge>
             )}
           </div>
