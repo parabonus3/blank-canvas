@@ -1378,7 +1378,9 @@
       "filter_all": "Semua",
       "filter_done_today": "Sudah hari ini",
       "filter_missing": "Belum",
-      "filter_not_started": "Belum mulai"
+      "filter_not_started": "Belum mulai",
+      "room_day": "Hari ruangan",
+      "rollover_in": "berganti dalam"
     },
     "heatmap_less": "Sedikit",
     "heatmap_more": "Banyak",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "Mulai di ruangan ini",
     "room_timer_pick_sound": "Pilih suara",
     "week_leader": "Pemimpin minggu ini",
-    "in_this_room": "di ruangan ini"
+    "in_this_room": "di ruangan ini",
+    "room_timer_helper_with_challenge": "Memulai di sini, waktumu dihitung untuk peringkat, streak ruangan ini, dan untuk tantangan: {{names}}.",
+    "room_timer_helper_room_only": "Memulai di sini, waktumu dihitung untuk peringkat dan streak ruangan ini."
   },
   "explore": {
     "title": "Jelajahi Ruangan",

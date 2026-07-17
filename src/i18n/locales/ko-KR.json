@@ -1372,13 +1372,15 @@
       "legend_not_started": "시작 안 함",
       "no_results": "멤버를 찾을 수 없습니다",
       "ended_badge": "종료됨",
-      "pos_week_short": "#{{n}} 주",
+      "pos_week_short": "주 #{{n}}",
       "see_less": "간략히",
       "see_more": "더 보기",
       "filter_all": "전체",
       "filter_done_today": "오늘 달성",
       "filter_missing": "미달성",
-      "filter_not_started": "시작 안 함"
+      "filter_not_started": "시작 안 함",
+      "room_day": "룸 날짜",
+      "rollover_in": "초기화까지"
     },
     "heatmap_less": "적음",
     "heatmap_more": "많음",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "이 룸에서 시작",
     "room_timer_pick_sound": "사운드 선택",
     "week_leader": "이번 주 리더",
-    "in_this_room": "이 룸에서"
+    "in_this_room": "이 룸에서",
+    "room_timer_helper_with_challenge": "여기서 시작하면 시간이 랭킹, 이 방의 연속 기록, 그리고 챌린지 「{{names}}」에 반영됩니다.",
+    "room_timer_helper_room_only": "여기서 시작하면 시간이 랭킹과 이 방의 연속 기록에 반영됩니다."
   },
   "explore": {
     "title": "방 탐색",

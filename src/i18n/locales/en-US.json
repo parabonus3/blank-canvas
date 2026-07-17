@@ -2112,7 +2112,9 @@
       "filter_all": "All",
       "filter_done_today": "Hit today",
       "filter_missing": "Yet to hit",
-      "filter_not_started": "Not started"
+      "filter_not_started": "Not started",
+      "room_day": "Room day",
+      "rollover_in": "resets in"
     },
     "heatmap_less": "Less",
     "heatmap_more": "More",
@@ -2205,7 +2207,9 @@
     "room_timer_start": "Start in this room",
     "room_timer_pick_sound": "Pick a sound",
     "week_leader": "Leader of the week",
-    "in_this_room": "in this room"
+    "in_this_room": "in this room",
+    "room_timer_helper_with_challenge": "Starting here, your time counts for the ranking, this room's streak and for the challenge: {{names}}.",
+    "room_timer_helper_room_only": "Starting here, your time counts for the ranking and this room's streak."
   },
   "explore": {
     "title": "Explore Rooms",

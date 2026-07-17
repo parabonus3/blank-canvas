@@ -1372,13 +1372,15 @@
       "legend_not_started": "لم يبدأ",
       "no_results": "لا يوجد أعضاء",
       "ended_badge": "منتهٍ",
-      "pos_week_short": "#{{n}} أسبوع",
+      "pos_week_short": "أسبوع #{{n}}",
       "see_less": "عرض أقل",
       "see_more": "عرض المزيد",
       "filter_all": "الكل",
       "filter_done_today": "أنجزوا اليوم",
       "filter_missing": "متبقٍّ عليهم",
-      "filter_not_started": "لم يبدؤوا"
+      "filter_not_started": "لم يبدؤوا",
+      "room_day": "يوم الغرفة",
+      "rollover_in": "يتجدد خلال"
     },
     "heatmap_less": "أقل",
     "heatmap_more": "أكثر",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "ابدأ في هذه الغرفة",
     "room_timer_pick_sound": "اختر صوتًا",
     "week_leader": "قائد الأسبوع",
-    "in_this_room": "في هذه الغرفة"
+    "in_this_room": "في هذه الغرفة",
+    "room_timer_helper_with_challenge": "عند البدء هنا، يُحتسب وقتك في الترتيب وسلسلة هذه الغرفة وفي التحدي: {{names}}.",
+    "room_timer_helper_room_only": "عند البدء هنا، يُحتسب وقتك في الترتيب وسلسلة هذه الغرفة."
   },
   "explore": {
     "title": "استكشاف الغرف",
