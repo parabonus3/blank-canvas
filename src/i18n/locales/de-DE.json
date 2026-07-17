@@ -1378,7 +1378,9 @@
       "filter_all": "Alle",
       "filter_done_today": "Heute geschafft",
       "filter_missing": "Noch offen",
-      "filter_not_started": "Nicht begonnen"
+      "filter_not_started": "Nicht begonnen",
+      "room_day": "Raum-Tag",
+      "rollover_in": "wechselt in"
     },
     "heatmap_less": "Weniger",
     "heatmap_more": "Mehr",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "In diesem Raum starten",
     "room_timer_pick_sound": "Sound wählen",
     "week_leader": "Anführer der Woche",
-    "in_this_room": "in diesem Raum"
+    "in_this_room": "in diesem Raum",
+    "room_timer_helper_with_challenge": "Wenn du hier startest, zählt deine Zeit für das Ranking, die Serie dieses Raums und für die Challenge: {{names}}.",
+    "room_timer_helper_room_only": "Wenn du hier startest, zählt deine Zeit für das Ranking und die Serie dieses Raums."
   },
   "explore": {
     "title": "Räume Entdecken",

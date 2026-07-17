@@ -1378,7 +1378,9 @@
       "filter_all": "Все",
       "filter_done_today": "Выполнили сегодня",
       "filter_missing": "Не выполнили",
-      "filter_not_started": "Не начали"
+      "filter_not_started": "Не начали",
+      "room_day": "День комнаты",
+      "rollover_in": "сброс через"
     },
     "heatmap_less": "Меньше",
     "heatmap_more": "Больше",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "Запустить в этой комнате",
     "room_timer_pick_sound": "Выбрать звук",
     "week_leader": "Лидер недели",
-    "in_this_room": "в этой комнате"
+    "in_this_room": "в этой комнате",
+    "room_timer_helper_with_challenge": "Начав здесь, ваше время учитывается в рейтинге, серии этой комнаты и в задании: {{names}}.",
+    "room_timer_helper_room_only": "Начав здесь, ваше время учитывается в рейтинге и серии этой комнаты."
   },
   "explore": {
     "title": "Исследовать Комнаты",

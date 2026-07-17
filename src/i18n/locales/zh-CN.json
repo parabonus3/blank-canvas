@@ -1372,13 +1372,15 @@
       "legend_not_started": "未开始",
       "no_results": "未找到成员",
       "ended_badge": "已结束",
-      "pos_week_short": "#{{n}} 周",
+      "pos_week_short": "第{{n}}周",
       "see_less": "收起",
       "see_more": "展开",
       "filter_all": "全部",
       "filter_done_today": "今日已完成",
       "filter_missing": "还未完成",
-      "filter_not_started": "尚未开始"
+      "filter_not_started": "尚未开始",
+      "room_day": "房间日期",
+      "rollover_in": "重置于"
     },
     "heatmap_less": "较少",
     "heatmap_more": "较多",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "在此房间开始",
     "room_timer_pick_sound": "选择声音",
     "week_leader": "本周领跑者",
-    "in_this_room": "本房间"
+    "in_this_room": "本房间",
+    "room_timer_helper_with_challenge": "从这里开始,你的时间将计入排行榜、本房间连续记录以及挑战:{{names}}。",
+    "room_timer_helper_room_only": "从这里开始,你的时间将计入排行榜和本房间连续记录。"
   },
   "explore": {
     "title": "探索房间",

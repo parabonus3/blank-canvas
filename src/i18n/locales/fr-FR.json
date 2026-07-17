@@ -1378,7 +1378,9 @@
       "filter_all": "Tous",
       "filter_done_today": "Réussi aujourd'hui",
       "filter_missing": "Reste à faire",
-      "filter_not_started": "Pas commencé"
+      "filter_not_started": "Pas commencé",
+      "room_day": "Jour de la salle",
+      "rollover_in": "change dans"
     },
     "heatmap_less": "Moins",
     "heatmap_more": "Plus",
@@ -1471,7 +1473,9 @@
     "room_timer_start": "Démarrer dans cette salle",
     "room_timer_pick_sound": "Choisir un son",
     "week_leader": "Leader de la semaine",
-    "in_this_room": "dans cette salle"
+    "in_this_room": "dans cette salle",
+    "room_timer_helper_with_challenge": "En démarrant ici, ton temps compte pour le classement, la série de cette salle et pour le défi : {{names}}.",
+    "room_timer_helper_room_only": "En démarrant ici, ton temps compte pour le classement et la série de cette salle."
   },
   "explore": {
     "title": "Explorer les Salles",
