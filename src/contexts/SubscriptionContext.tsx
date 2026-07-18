@@ -35,21 +35,34 @@ interface SubscriptionContextType extends SubscriptionState {
 
 export const FREE_GOALS_LIMIT = 3;
 export const FREE_CATEGORIES_LIMIT = 3;
+export const FREE_PROJECTS_LIMIT = 3;
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
+
+const computeTrialDaysLeft = (endsAt: string | null): number => {
+  if (!endsAt) return 0;
+  const diff = new Date(endsAt).getTime() - Date.now();
+  if (diff <= 0) return 0;
+  return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+};
+
+const INITIAL_STATE: SubscriptionState = {
+  tier: "free",
+  billingInterval: null,
+  subscribed: false,
+  subscriptionEnd: null,
+  loading: true,
+  pendingChange: null,
+  isExpired: false,
+  isTrial: false,
+  trialEndsAt: null,
+  trialDaysLeft: 0,
+};
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const { session, user } = useAuth();
   const inFlightCheckRef = useRef<Promise<void> | null>(null);
-  const [state, setState] = useState<SubscriptionState>({
-    tier: "free",
-    billingInterval: null,
-    subscribed: false,
-    subscriptionEnd: null,
-    loading: true,
-    pendingChange: null,
-    isExpired: false,
-  });
+  const [state, setState] = useState<SubscriptionState>(INITIAL_STATE);
 
   const isTransientSubscriptionError = (error: unknown) => {
     const message = error instanceof Error ? error.message : JSON.stringify(error);
