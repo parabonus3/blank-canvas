@@ -55,6 +55,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <AppSidebar />
           <div className="flex-1 flex flex-col min-h-screen min-w-0">
             <ExpiredPlanBanner />
+            <TrialBanner />
             <PendingPlanChangeBanner />
             <InstallBanner />
             <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
