@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ChevronsUpDown, ChevronRight, FolderOpen, FolderClosed } from 'lucide-react';
+import { Check, ChevronsUpDown, ChevronRight, FolderOpen, FolderClosed, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -12,6 +12,8 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import type { Project } from '@/hooks/useProjects';
+import { useFreeLocks } from '@/hooks/useFreeLocks';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProjectPickerProps {
   value: string;
