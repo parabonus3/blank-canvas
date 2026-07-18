@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { PendingPlanChangeBanner } from "@/components/PendingPlanChangeBanner";
 import { ExpiredPlanBanner } from "@/components/ExpiredPlanBanner";
+import { TrialBanner } from "@/components/TrialBanner";
 import { InstallBanner } from "@/components/pwa/InstallBanner";
 import { Sun, Moon } from "lucide-react";
 
