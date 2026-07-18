@@ -243,7 +243,8 @@ export default function Projects() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
               {categories?.length === 0 && !categoriesLoading && (
                 <div className="col-span-full text-center py-8">
                   <p className="text-muted-foreground mb-4">{t('projects.no_categories')}</p>
