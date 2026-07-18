@@ -77,7 +77,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   const checkSubscription = useCallback(async () => {
     if (!session?.access_token || !user) {
-      setState({ tier: "free", billingInterval: null, subscribed: false, subscriptionEnd: null, loading: false, pendingChange: null, isExpired: false });
+      setState({ ...INITIAL_STATE, loading: false });
       return;
     }
 
@@ -103,6 +103,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           }
 
           const hasStripeSub = data?.subscribed ?? false;
+          const trialEndsAt: string | null = data?.trial_ends_at ?? null;
+          const trialActive: boolean = !hasStripeSub && !!data?.trial_active;
+          const trialDaysLeft = trialActive ? computeTrialDaysLeft(trialEndsAt) : 0;
 
           if (hasStripeSub) {
             const tier = getTierByProductId(data?.product_id);
@@ -128,6 +131,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
               loading: false,
               pendingChange,
               isExpired: false,
+              isTrial: false,
+              trialEndsAt,
+              trialDaysLeft: 0,
             });
             return;
           }
@@ -137,13 +143,16 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           const isExpired = wasSubscribed && new Date(subEnd) < new Date();
 
           setState({
-            tier: "free",
+            tier: trialActive ? "premium" : "free",
             billingInterval: null,
             subscribed: false,
             subscriptionEnd: subEnd,
             loading: false,
             pendingChange: null,
             isExpired,
+            isTrial: trialActive,
+            trialEndsAt,
+            trialDaysLeft,
           });
           return;
         } catch (err) {
