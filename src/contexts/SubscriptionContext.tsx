@@ -19,6 +19,9 @@ interface SubscriptionState {
   loading: boolean;
   pendingChange: PendingPlanChange | null;
   isExpired: boolean;
+  isTrial: boolean;
+  trialEndsAt: string | null;
+  trialDaysLeft: number;
 }
 
 interface SubscriptionContextType extends SubscriptionState {
@@ -32,21 +35,34 @@ interface SubscriptionContextType extends SubscriptionState {
 
 export const FREE_GOALS_LIMIT = 3;
 export const FREE_CATEGORIES_LIMIT = 3;
+export const FREE_PROJECTS_LIMIT = 3;
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
+
+const computeTrialDaysLeft = (endsAt: string | null): number => {
+  if (!endsAt) return 0;
+  const diff = new Date(endsAt).getTime() - Date.now();
+  if (diff <= 0) return 0;
+  return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+};
+
+const INITIAL_STATE: SubscriptionState = {
+  tier: "free",
+  billingInterval: null,
+  subscribed: false,
+  subscriptionEnd: null,
+  loading: true,
+  pendingChange: null,
+  isExpired: false,
+  isTrial: false,
+  trialEndsAt: null,
+  trialDaysLeft: 0,
+};
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const { session, user } = useAuth();
   const inFlightCheckRef = useRef<Promise<void> | null>(null);
-  const [state, setState] = useState<SubscriptionState>({
-    tier: "free",
-    billingInterval: null,
-    subscribed: false,
-    subscriptionEnd: null,
-    loading: true,
-    pendingChange: null,
-    isExpired: false,
-  });
+  const [state, setState] = useState<SubscriptionState>(INITIAL_STATE);
 
   const isTransientSubscriptionError = (error: unknown) => {
     const message = error instanceof Error ? error.message : JSON.stringify(error);
@@ -61,7 +77,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   const checkSubscription = useCallback(async () => {
     if (!session?.access_token || !user) {
-      setState({ tier: "free", billingInterval: null, subscribed: false, subscriptionEnd: null, loading: false, pendingChange: null, isExpired: false });
+      setState({ ...INITIAL_STATE, loading: false });
       return;
     }
 
@@ -87,6 +103,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           }
 
           const hasStripeSub = data?.subscribed ?? false;
+          const trialEndsAt: string | null = data?.trial_ends_at ?? null;
+          const trialActive: boolean = !hasStripeSub && !!data?.trial_active;
+          const trialDaysLeft = trialActive ? computeTrialDaysLeft(trialEndsAt) : 0;
 
           if (hasStripeSub) {
             const tier = getTierByProductId(data?.product_id);
@@ -112,6 +131,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
               loading: false,
               pendingChange,
               isExpired: false,
+              isTrial: false,
+              trialEndsAt,
+              trialDaysLeft: 0,
             });
             return;
           }
@@ -121,13 +143,16 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           const isExpired = wasSubscribed && new Date(subEnd) < new Date();
 
           setState({
-            tier: "free",
+            tier: trialActive ? "premium" : "free",
             billingInterval: null,
             subscribed: false,
             subscriptionEnd: subEnd,
             loading: false,
             pendingChange: null,
             isExpired,
+            isTrial: trialActive,
+            trialEndsAt,
+            trialDaysLeft,
           });
           return;
         } catch (err) {
@@ -192,6 +217,9 @@ const FALLBACK_SUBSCRIPTION: SubscriptionContextType = {
   loading: false,
   pendingChange: null,
   isExpired: false,
+  isTrial: false,
+  trialEndsAt: null,
+  trialDaysLeft: 0,
   refreshSubscription: async () => {},
   hasFeature: () => false,
   getMaxRooms: () => ROOM_LIMITS.free,

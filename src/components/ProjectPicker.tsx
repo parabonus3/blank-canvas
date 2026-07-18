@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ChevronsUpDown, ChevronRight, FolderOpen, FolderClosed } from 'lucide-react';
+import { Check, ChevronsUpDown, ChevronRight, FolderOpen, FolderClosed, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -12,6 +12,8 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import type { Project } from '@/hooks/useProjects';
+import { useFreeLocks } from '@/hooks/useFreeLocks';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProjectPickerProps {
   value: string;
@@ -61,8 +63,10 @@ export function ProjectPicker({
   className,
 }: ProjectPickerProps) {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const { isLocked } = useFreeLocks(projects, 'project');
 
   const selected = projects.find((p) => p.id === value);
   const groups = groupByCategory(projects);
@@ -140,29 +144,44 @@ export function ProjectPicker({
                     </span>
                   </button>
                   {isExpanded &&
-                    group.projects.map((project) => (
-                      <CommandItem
-                        key={project.id}
-                        value={`${project.name} ${group.categoryName}`}
-                        onSelect={() => {
-                          onValueChange(project.id);
-                          setOpen(false);
-                        }}
-                        className="pl-8"
-                      >
-                        <span
-                          className="w-3 h-3 rounded-full shrink-0 mr-2"
-                          style={{
-                            backgroundColor:
-                              project.color || project.category?.color || '#6366f1',
+                    group.projects.map((project) => {
+                      const locked = isLocked(project.id);
+                      return (
+                        <CommandItem
+                          key={project.id}
+                          value={`${project.name} ${group.categoryName}`}
+                          disabled={locked}
+                          onSelect={() => {
+                            if (locked) {
+                              toast({
+                                title: t('pricing.locked_item_title', { defaultValue: 'Item bloqueado' }),
+                                description: t('pricing.locked_project_desc', {
+                                  defaultValue: 'Este projeto está bloqueado no plano gratuito. Assine Pro para desbloquear.',
+                                }),
+                              });
+                              return;
+                            }
+                            onValueChange(project.id);
+                            setOpen(false);
                           }}
-                        />
-                        <span className="truncate">{project.name}</span>
-                        {value === project.id && (
-                          <Check className="ml-auto h-4 w-4 shrink-0" />
-                        )}
-                      </CommandItem>
-                    ))}
+                          className={cn('pl-8', locked && 'opacity-60')}
+                        >
+                          <span
+                            className="w-3 h-3 rounded-full shrink-0 mr-2"
+                            style={{
+                              backgroundColor:
+                                project.color || project.category?.color || '#6366f1',
+                            }}
+                          />
+                          <span className="truncate">{project.name}</span>
+                          {locked ? (
+                            <Lock className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                          ) : value === project.id ? (
+                            <Check className="ml-auto h-4 w-4 shrink-0" />
+                          ) : null}
+                        </CommandItem>
+                      );
+                    })}
                 </div>
               );
             })}

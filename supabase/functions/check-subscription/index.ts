@@ -83,14 +83,30 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { email: user.email });
 
+    // Load trial_ends_at from profile
+    const { data: profileRow } = await supabaseClient
+      .from("profiles")
+      .select("trial_ends_at")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const trialEndsAt: string | null = profileRow?.trial_ends_at ?? null;
+    const trialActive = !!trialEndsAt && new Date(trialEndsAt).getTime() > Date.now();
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
     if (customers.data.length === 0) {
-      logStep("No customer found");
-      // Update plan_tier to free
-      await supabaseClient.from("profiles").update({ plan_tier: "free" }).eq("user_id", user.id);
-      return new Response(JSON.stringify({ subscribed: false }), {
+      logStep("No customer found", { trialActive });
+      // If trial still active, keep plan_tier as premium; otherwise free
+      await supabaseClient
+        .from("profiles")
+        .update({ plan_tier: trialActive ? "premium" : "free" })
+        .eq("user_id", user.id);
+      return new Response(JSON.stringify({
+        subscribed: false,
+        trial_active: trialActive,
+        trial_ends_at: trialEndsAt,
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -160,9 +176,11 @@ serve(async (req) => {
         }
       }
     } else {
-      logStep("No active subscription found");
-      // Update plan_tier to free
-      await supabaseClient.from("profiles").update({ plan_tier: "free" }).eq("user_id", user.id);
+      logStep("No active subscription found", { trialActive });
+      await supabaseClient
+        .from("profiles")
+        .update({ plan_tier: trialActive ? "premium" : "free" })
+        .eq("user_id", user.id);
     }
 
     return new Response(JSON.stringify({
@@ -171,6 +189,8 @@ serve(async (req) => {
       price_id: priceId,
       subscription_end: subscriptionEnd,
       pending_plan_change: pendingPlanChange,
+      trial_active: !hasActiveSub && trialActive,
+      trial_ends_at: trialEndsAt,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

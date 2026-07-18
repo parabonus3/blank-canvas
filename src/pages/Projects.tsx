@@ -12,6 +12,7 @@ import { Plus, Trash2, AlertCircle, Pencil, Lock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useFreeLocks } from "@/hooks/useFreeLocks";
 import { Link } from "react-router-dom";
 
 export default function Projects() {
@@ -43,6 +44,8 @@ export default function Projects() {
   const { tier } = useSubscription();
   const hasCategories = categories && categories.length > 0;
   const projectLimitReached = tier === "free" && (projects?.length ?? 0) >= 3;
+  const { isLocked: isProjectLocked, hasLocks: hasProjectLocks } = useFreeLocks(projects, "project");
+  const { isLocked: isCategoryLocked, hasLocks: hasCategoryLocks } = useFreeLocks(categories, "category");
 
   const handleCreateProject = () => {
     if (projectName.trim()) {
@@ -202,8 +205,15 @@ export default function Projects() {
             </div>
 
             <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-3">
-              {categories?.map(category => (
-                <Card key={category.id} className="text-center relative group">
+              {categories?.map(category => {
+                const locked = isCategoryLocked(category.id);
+                return (
+                <Card key={category.id} className={`text-center relative group ${locked ? 'opacity-60' : ''}`}>
+                  {locked && (
+                    <div className="absolute top-2 right-2 bg-muted rounded-full p-1" title={t('pricing.locked_item_title', { defaultValue: 'Bloqueado' })}>
+                      <Lock className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                  )}
                   <CardContent className="pt-6 pb-4">
                     <span 
                       className="w-8 h-8 rounded-full inline-block mb-3 border-2 border-background shadow-sm" 
@@ -233,7 +243,8 @@ export default function Projects() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
               {categories?.length === 0 && !categoriesLoading && (
                 <div className="col-span-full text-center py-8">
                   <p className="text-muted-foreground mb-4">{t('projects.no_categories')}</p>
@@ -340,8 +351,15 @@ export default function Projects() {
             </div>
 
             <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-3">
-              {projects?.map(project => (
-                <Card key={project.id} className="text-center relative group">
+              {projects?.map(project => {
+                const locked = isProjectLocked(project.id);
+                return (
+                <Card key={project.id} className={`text-center relative group ${locked ? 'opacity-60' : ''}`}>
+                  {locked && (
+                    <div className="absolute top-2 right-2 bg-muted rounded-full p-1" title={t('pricing.locked_item_title', { defaultValue: 'Bloqueado' })}>
+                      <Lock className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                  )}
                   <CardContent className="pt-6 pb-4">
                     <span 
                       className="w-8 h-8 rounded-full inline-block mb-3 border-2 border-background shadow-sm" 
@@ -351,6 +369,11 @@ export default function Projects() {
                     <p className="text-xs text-muted-foreground mt-1">
                       {project.category?.name || t('projects.no_category')}
                     </p>
+                    {locked && (
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        {t('pricing.locked_hint', { defaultValue: 'Assine Pro para desbloquear' })}
+                      </p>
+                    )}
                     <div className="flex items-center justify-center gap-1 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button 
                         variant="ghost" 
@@ -371,7 +394,8 @@ export default function Projects() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
               {projects?.length === 0 && !projectsLoading && (
                 <p className="text-muted-foreground col-span-full text-center py-8">
                   {t('projects.no_projects')}
