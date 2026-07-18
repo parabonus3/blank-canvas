@@ -19,6 +19,9 @@ interface SubscriptionState {
   loading: boolean;
   pendingChange: PendingPlanChange | null;
   isExpired: boolean;
+  isTrial: boolean;
+  trialEndsAt: string | null;
+  trialDaysLeft: number;
 }
 
 interface SubscriptionContextType extends SubscriptionState {
