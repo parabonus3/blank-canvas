@@ -12,6 +12,7 @@ import { Plus, Trash2, AlertCircle, Pencil, Lock } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useFreeLocks } from "@/hooks/useFreeLocks";
 import { Link } from "react-router-dom";
 
 export default function Projects() {
