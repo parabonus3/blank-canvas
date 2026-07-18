@@ -176,9 +176,11 @@ serve(async (req) => {
         }
       }
     } else {
-      logStep("No active subscription found");
-      // Update plan_tier to free
-      await supabaseClient.from("profiles").update({ plan_tier: "free" }).eq("user_id", user.id);
+      logStep("No active subscription found", { trialActive });
+      await supabaseClient
+        .from("profiles")
+        .update({ plan_tier: trialActive ? "premium" : "free" })
+        .eq("user_id", user.id);
     }
 
     return new Response(JSON.stringify({
@@ -187,6 +189,8 @@ serve(async (req) => {
       price_id: priceId,
       subscription_end: subscriptionEnd,
       pending_plan_change: pendingPlanChange,
+      trial_active: !hasActiveSub && trialActive,
+      trial_ends_at: trialEndsAt,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
