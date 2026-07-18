@@ -205,8 +205,15 @@ export default function Projects() {
             </div>
 
             <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-3">
-              {categories?.map(category => (
-                <Card key={category.id} className="text-center relative group">
+              {categories?.map(category => {
+                const locked = isCategoryLocked(category.id);
+                return (
+                <Card key={category.id} className={`text-center relative group ${locked ? 'opacity-60' : ''}`}>
+                  {locked && (
+                    <div className="absolute top-2 right-2 bg-muted rounded-full p-1" title={t('pricing.locked_item_title', { defaultValue: 'Bloqueado' })}>
+                      <Lock className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                  )}
                   <CardContent className="pt-6 pb-4">
                     <span 
                       className="w-8 h-8 rounded-full inline-block mb-3 border-2 border-background shadow-sm" 
