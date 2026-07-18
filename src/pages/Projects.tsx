@@ -44,6 +44,8 @@ export default function Projects() {
   const { tier } = useSubscription();
   const hasCategories = categories && categories.length > 0;
   const projectLimitReached = tier === "free" && (projects?.length ?? 0) >= 3;
+  const { isLocked: isProjectLocked, hasLocks: hasProjectLocks } = useFreeLocks(projects, "project");
+  const { isLocked: isCategoryLocked, hasLocks: hasCategoryLocks } = useFreeLocks(categories, "category");
 
   const handleCreateProject = () => {
     if (projectName.trim()) {
