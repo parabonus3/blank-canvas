@@ -63,8 +63,10 @@ export function ProjectPicker({
   className,
 }: ProjectPickerProps) {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const { isLocked } = useFreeLocks(projects, 'project');
 
   const selected = projects.find((p) => p.id === value);
   const groups = groupByCategory(projects);
