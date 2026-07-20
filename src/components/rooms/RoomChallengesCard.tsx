@@ -1,5 +1,11 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+function shortTz(tz: string): string {
+  if (!tz) return "";
+  const parts = tz.split("/");
+  return (parts[parts.length - 1] || tz).replace(/_/g, " ");
+}
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Trophy, Clock, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
