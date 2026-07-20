@@ -1475,7 +1475,10 @@
     "week_leader": "Leader della settimana",
     "in_this_room": "in questa stanza",
     "room_timer_helper_with_challenge": "Iniziando qui, il tuo tempo conta per la classifica, la streak di questa stanza e per la sfida: {{names}}.",
-    "room_timer_helper_room_only": "Iniziando qui, il tuo tempo conta per la classifica e la streak di questa stanza."
+    "room_timer_helper_room_only": "Iniziando qui, il tuo tempo conta per la classifica e la streak di questa stanza.",
+    "room_timer_chip_challenge": "Sfida",
+    "room_day_tz": "Giorno della stanza ({{tz}})",
+    "room_day_tz_hint": "Tutti i membri condividono questo giorno (fuso del proprietario)"
   },
   "explore": {
     "title": "Esplora Stanze",

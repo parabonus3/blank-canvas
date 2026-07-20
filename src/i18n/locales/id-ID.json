@@ -1475,7 +1475,10 @@
     "week_leader": "Pemimpin minggu ini",
     "in_this_room": "di ruangan ini",
     "room_timer_helper_with_challenge": "Memulai di sini, waktumu dihitung untuk peringkat, streak ruangan ini, dan untuk tantangan: {{names}}.",
-    "room_timer_helper_room_only": "Memulai di sini, waktumu dihitung untuk peringkat dan streak ruangan ini."
+    "room_timer_helper_room_only": "Memulai di sini, waktumu dihitung untuk peringkat dan streak ruangan ini.",
+    "room_timer_chip_challenge": "Tantangan",
+    "room_day_tz": "Hari ruangan ({{tz}})",
+    "room_day_tz_hint": "Semua anggota berbagi hari ini (zona waktu pemilik)"
   },
   "explore": {
     "title": "Jelajahi Ruangan",
