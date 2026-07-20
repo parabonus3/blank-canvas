@@ -31,7 +31,7 @@ interface Props {
 }
 
 export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { data: challenges = [], isLoading } = useRoomChallenges(roomId);
   const { data: todayWindow } = useRoomTodayWindow(roomId);
