@@ -1,7 +1,13 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+function shortTz(tz: string): string {
+  if (!tz) return "";
+  const parts = tz.split("/");
+  return (parts[parts.length - 1] || tz).replace(/_/g, " ");
+}
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Trophy, Clock, Globe } from "lucide-react";
+import { Plus, Trophy, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -25,7 +31,7 @@ interface Props {
 }
 
 export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { data: challenges = [], isLoading } = useRoomChallenges(roomId);
   const { data: todayWindow } = useRoomTodayWindow(roomId);
@@ -120,20 +126,26 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
       </div>
 
       {todayWindow && (
-        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground bg-muted/40 rounded-md px-2 py-1.5 border border-border/60">
+        <div
+          className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground bg-muted/40 rounded-md px-2 py-1.5 border border-border/60"
+          title={t("rooms.room_day_tz_hint", { defaultValue: "Todos os membros compartilham este dia (fuso do dono da sala)" })}
+        >
           <Clock className="h-3 w-3 text-primary" />
           <span className="font-medium text-foreground">
-            {t("rooms.challenges.room_day", { defaultValue: "Dia da sala" })}: {new Date(todayWindow.today_local).toLocaleDateString(undefined, { day: "2-digit", month: "short" })}
+            {t("rooms.room_day_tz", { tz: shortTz(todayWindow.timezone), defaultValue: "Dia da sala ({{tz}})" })}
+            : {new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", timeZone: todayWindow.timezone }).format(new Date())}
           </span>
-          <span className="opacity-60">·</span>
-          <Globe className="h-3 w-3" />
-          <span>{todayWindow.timezone}</span>
-          <span className="opacity-60">·</span>
-          <span>
-            {t("rooms.challenges.rollover_in", { defaultValue: "vira em" })} {rolloverHours}h{String(rolloverMins).padStart(2, "0")}
-          </span>
+          {todayWindow.seconds_until_rollover < 21600 && (
+            <>
+              <span className="opacity-60">·</span>
+              <span>
+                {t("rooms.challenges.rollover_in", { defaultValue: "vira em" })} {rolloverHours}h{String(rolloverMins).padStart(2, "0")}
+              </span>
+            </>
+          )}
         </div>
       )}
+
 
       {active.length === 0 ? (
         <p className="text-xs text-muted-foreground py-2">{t("rooms.challenges.empty_owner")}</p>

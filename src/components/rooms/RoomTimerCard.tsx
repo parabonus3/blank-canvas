@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Play, Pause, Square, Timer as TimerIcon, Music2, Volume2, VolumeX, Trophy, AlertTriangle, ArrowRight, Info, Maximize2 } from "lucide-react";
+import { Play, Pause, Square, Timer as TimerIcon, Music2, Volume2, VolumeX, Trophy, AlertTriangle, ArrowRight, Maximize2 } from "lucide-react";
 import { useTimerContext } from "@/contexts/TimerContext";
 import { FullscreenTimer } from "@/components/FullscreenTimer";
 import { Button } from "@/components/ui/button";
@@ -167,9 +167,14 @@ export function RoomTimerCard({ roomId }: Props) {
               </span>
             )}
             {hasChallenge && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/30 px-2 py-0.5 text-[11px] font-medium">
-                <Trophy className="h-3 w-3" />
-                {t("rooms.room_timer_counts_challenge", "+ desafio")}: {challengeNames}
+              <span
+                className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/30 px-2 py-0.5 text-[11px] font-medium max-w-full"
+                title={challengeNames}
+              >
+                <Trophy className="h-3 w-3 shrink-0" />
+                <span>{t("rooms.room_timer_chip_challenge", "Desafio")}</span>
+                <span className="opacity-60">·</span>
+                <span className="truncate">{challengeNames}</span>
               </span>
             )}
           </div>
@@ -268,22 +273,15 @@ export function RoomTimerCard({ roomId }: Props) {
             {t("rooms.room_timer_start", "Iniciar nesta sala")}
           </Button>
 
-          {/* Helper text — what counts */}
-          <div className="flex items-start gap-1.5 rounded-md bg-muted/40 border border-border/60 px-2.5 py-2 text-[11px] text-muted-foreground leading-relaxed">
-            <Info className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
-            <span>
-              {hasChallenge
-                ? t(
-                    "rooms.room_timer_helper_with_challenge",
-                    "Ao iniciar aqui, seu tempo conta para o ranking, o streak desta sala e para o desafio: {{names}}.",
-                    { names: challengeNames },
-                  )
-                : t(
-                    "rooms.room_timer_helper_room_only",
-                    "Ao iniciar aqui, seu tempo conta para o ranking e o streak desta sala.",
-                  )}
-            </span>
-          </div>
+          {hasChallenge && (
+            <div className="flex items-center gap-1.5 rounded-full bg-primary/10 text-primary border border-primary/30 px-2.5 py-1 text-[11px] font-medium max-w-full">
+              <Trophy className="h-3 w-3 shrink-0" />
+              <span>{t("rooms.room_timer_chip_challenge", "Desafio")}</span>
+              <span className="opacity-60">·</span>
+              <span className="truncate" title={challengeNames}>{challengeNames}</span>
+            </div>
+          )}
+
 
           {projects.length === 0 && (
             <p className="text-[11px] text-muted-foreground text-center">

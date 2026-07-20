@@ -1475,7 +1475,10 @@
     "week_leader": "Anführer der Woche",
     "in_this_room": "in diesem Raum",
     "room_timer_helper_with_challenge": "Wenn du hier startest, zählt deine Zeit für das Ranking, die Serie dieses Raums und für die Challenge: {{names}}.",
-    "room_timer_helper_room_only": "Wenn du hier startest, zählt deine Zeit für das Ranking und die Serie dieses Raums."
+    "room_timer_helper_room_only": "Wenn du hier startest, zählt deine Zeit für das Ranking und die Serie dieses Raums.",
+    "room_timer_chip_challenge": "Challenge",
+    "room_day_tz": "Raumtag ({{tz}})",
+    "room_day_tz_hint": "Alle Mitglieder teilen diesen Tag (Zeitzone des Besitzers)"
   },
   "explore": {
     "title": "Räume Entdecken",

@@ -1475,7 +1475,10 @@
     "week_leader": "Leader de la semaine",
     "in_this_room": "dans cette salle",
     "room_timer_helper_with_challenge": "En démarrant ici, ton temps compte pour le classement, la série de cette salle et pour le défi : {{names}}.",
-    "room_timer_helper_room_only": "En démarrant ici, ton temps compte pour le classement et la série de cette salle."
+    "room_timer_helper_room_only": "En démarrant ici, ton temps compte pour le classement et la série de cette salle.",
+    "room_timer_chip_challenge": "Défi",
+    "room_day_tz": "Jour de la salle ({{tz}})",
+    "room_day_tz_hint": "Tous les membres partagent ce jour (fuseau du propriétaire)"
   },
   "explore": {
     "title": "Explorer les Salles",

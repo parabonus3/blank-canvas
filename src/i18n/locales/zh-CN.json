@@ -1475,7 +1475,10 @@
     "week_leader": "本周领跑者",
     "in_this_room": "本房间",
     "room_timer_helper_with_challenge": "从这里开始,你的时间将计入排行榜、本房间连续记录以及挑战:{{names}}。",
-    "room_timer_helper_room_only": "从这里开始,你的时间将计入排行榜和本房间连续记录。"
+    "room_timer_helper_room_only": "从这里开始,你的时间将计入排行榜和本房间连续记录。",
+    "room_timer_chip_challenge": "挑战",
+    "room_day_tz": "房间日 ({{tz}})",
+    "room_day_tz_hint": "所有成员共享此日期(房主的时区)"
   },
   "explore": {
     "title": "探索房间",

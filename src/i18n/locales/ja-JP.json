@@ -1475,7 +1475,10 @@
     "week_leader": "週間リーダー",
     "in_this_room": "このルームで",
     "room_timer_helper_with_challenge": "ここから開始すると、あなたの時間はランキング、このルームの連続記録、そしてチャレンジ「{{names}}」に加算されます。",
-    "room_timer_helper_room_only": "ここから開始すると、あなたの時間はランキングとこのルームの連続記録に加算されます。"
+    "room_timer_helper_room_only": "ここから開始すると、あなたの時間はランキングとこのルームの連続記録に加算されます。",
+    "room_timer_chip_challenge": "チャレンジ",
+    "room_day_tz": "ルームの日 ({{tz}})",
+    "room_day_tz_hint": "全メンバーで共有される日（オーナーのタイムゾーン）"
   },
   "explore": {
     "title": "ルームを探索",

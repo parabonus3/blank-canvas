@@ -1475,7 +1475,10 @@
     "week_leader": "قائد الأسبوع",
     "in_this_room": "في هذه الغرفة",
     "room_timer_helper_with_challenge": "عند البدء هنا، يُحتسب وقتك في الترتيب وسلسلة هذه الغرفة وفي التحدي: {{names}}.",
-    "room_timer_helper_room_only": "عند البدء هنا، يُحتسب وقتك في الترتيب وسلسلة هذه الغرفة."
+    "room_timer_helper_room_only": "عند البدء هنا، يُحتسب وقتك في الترتيب وسلسلة هذه الغرفة.",
+    "room_timer_chip_challenge": "تحدٍّ",
+    "room_day_tz": "يوم الغرفة ({{tz}})",
+    "room_day_tz_hint": "يشارك جميع الأعضاء هذا اليوم (المنطقة الزمنية للمالك)"
   },
   "explore": {
     "title": "استكشاف الغرف",

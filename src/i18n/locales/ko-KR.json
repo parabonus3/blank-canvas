@@ -1475,7 +1475,10 @@
     "week_leader": "이번 주 리더",
     "in_this_room": "이 룸에서",
     "room_timer_helper_with_challenge": "여기서 시작하면 시간이 랭킹, 이 방의 연속 기록, 그리고 챌린지 「{{names}}」에 반영됩니다.",
-    "room_timer_helper_room_only": "여기서 시작하면 시간이 랭킹과 이 방의 연속 기록에 반영됩니다."
+    "room_timer_helper_room_only": "여기서 시작하면 시간이 랭킹과 이 방의 연속 기록에 반영됩니다.",
+    "room_timer_chip_challenge": "챌린지",
+    "room_day_tz": "룸 날짜 ({{tz}})",
+    "room_day_tz_hint": "모든 멤버가 공유하는 날짜 (방장의 시간대)"
   },
   "explore": {
     "title": "방 탐색",

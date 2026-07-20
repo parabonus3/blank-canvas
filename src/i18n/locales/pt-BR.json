@@ -2264,7 +2264,10 @@
     "week_leader": "Líder da semana",
     "in_this_room": "nesta sala",
     "room_timer_helper_with_challenge": "Ao iniciar aqui, seu tempo conta para o ranking, o streak desta sala e para o desafio: {{names}}.",
-    "room_timer_helper_room_only": "Ao iniciar aqui, seu tempo conta para o ranking e o streak desta sala."
+    "room_timer_helper_room_only": "Ao iniciar aqui, seu tempo conta para o ranking e o streak desta sala.",
+    "room_timer_chip_challenge": "Desafio",
+    "room_day_tz": "Dia da sala ({{tz}})",
+    "room_day_tz_hint": "Todos os membros compartilham este dia (fuso do dono da sala)"
   },
   "explore": {
     "title": "Explorar Salas",

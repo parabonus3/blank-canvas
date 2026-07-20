@@ -2209,7 +2209,10 @@
     "week_leader": "Leader of the week",
     "in_this_room": "in this room",
     "room_timer_helper_with_challenge": "Starting here, your time counts for the ranking, this room's streak and for the challenge: {{names}}.",
-    "room_timer_helper_room_only": "Starting here, your time counts for the ranking and this room's streak."
+    "room_timer_helper_room_only": "Starting here, your time counts for the ranking and this room's streak.",
+    "room_timer_chip_challenge": "Challenge",
+    "room_day_tz": "Room day ({{tz}})",
+    "room_day_tz_hint": "All members share this day (owner's timezone)"
   },
   "explore": {
     "title": "Explore Rooms",
