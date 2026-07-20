@@ -167,9 +167,14 @@ export function RoomTimerCard({ roomId }: Props) {
               </span>
             )}
             {hasChallenge && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/30 px-2 py-0.5 text-[11px] font-medium">
-                <Trophy className="h-3 w-3" />
-                {t("rooms.room_timer_counts_challenge", "+ desafio")}: {challengeNames}
+              <span
+                className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/30 px-2 py-0.5 text-[11px] font-medium max-w-full"
+                title={challengeNames}
+              >
+                <Trophy className="h-3 w-3 shrink-0" />
+                <span>{t("rooms.room_timer_chip_challenge", "Desafio")}</span>
+                <span className="opacity-60">·</span>
+                <span className="truncate">{challengeNames}</span>
               </span>
             )}
           </div>
