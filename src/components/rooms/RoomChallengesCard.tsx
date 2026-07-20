@@ -7,7 +7,7 @@ function shortTz(tz: string): string {
   return (parts[parts.length - 1] || tz).replace(/_/g, " ");
 }
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Trophy, Clock, Globe } from "lucide-react";
+import { Plus, Trophy, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import {
