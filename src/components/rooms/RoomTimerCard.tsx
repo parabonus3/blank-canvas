@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Play, Pause, Square, Timer as TimerIcon, Music2, Volume2, VolumeX, Trophy, AlertTriangle, ArrowRight, Info, Maximize2 } from "lucide-react";
+import { Play, Pause, Square, Timer as TimerIcon, Music2, Volume2, VolumeX, Trophy, AlertTriangle, ArrowRight, Maximize2 } from "lucide-react";
 import { useTimerContext } from "@/contexts/TimerContext";
 import { FullscreenTimer } from "@/components/FullscreenTimer";
 import { Button } from "@/components/ui/button";
