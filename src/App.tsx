@@ -36,6 +36,8 @@ import Explore from "./pages/Explore";
 import MindMaps from "./pages/MindMaps";
 import MindMapEditor from "./pages/MindMapEditor";
 import Friends from "./pages/Friends";
+import Tasks from "./pages/Tasks";
+import BoardDetail from "./pages/BoardDetail";
 import SacIndex from "./pages/sac/SacIndex";
 import NewTicket from "./pages/sac/NewTicket";
 import MyTickets from "./pages/sac/MyTickets";
@@ -110,6 +112,8 @@ const App = () => (
                   <Route path="/mindmaps" element={<ProtectedRoute><MindMaps /></ProtectedRoute>} />
                   <Route path="/mindmaps/:id" element={<ProtectedRoute><MindMapEditor /></ProtectedRoute>} />
                   <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+                  <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+                  <Route path="/tasks/board/:id" element={<ProtectedRoute><BoardDetail /></ProtectedRoute>} />
                   <Route path="/sac" element={<SacIndex />} />
                   <Route path="/sac/new" element={<NewTicket />} />
                   <Route path="/sac/tickets" element={<ProtectedRoute><MyTickets /></ProtectedRoute>} />
