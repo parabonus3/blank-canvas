@@ -18,6 +18,7 @@ import {
   Brain,
   UserPlus,
   Headset,
+  KanbanSquare,
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useIsSupportAgent } from "@/hooks/useSupportAgents";
@@ -71,6 +72,7 @@ export function AppSidebar() {
     { title: t('sidebar.goals'), url: "/goals", icon: Target },
     { title: t('sidebar.history'), url: "/history", icon: History },
     { title: t('sidebar.notes'), url: "/notes", icon: StickyNote },
+    { title: t('sidebar.tasks', 'Tarefas'), url: "/tasks", icon: KanbanSquare },
     { title: t('sidebar.mindmaps'), url: "/mindmaps", icon: Brain },
     { title: t('sidebar.rooms'), url: "/rooms", icon: Users },
     { title: t('sidebar.explore'), url: "/explore", icon: Globe },
