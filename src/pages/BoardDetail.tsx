@@ -46,11 +46,14 @@ interface ColumnContainerProps {
   onStartTimer: (task: Task) => void;
   onDelete: () => void;
   onRename: (title: string) => void;
+  onChangeColor: (color: string) => void;
   hasActiveTimer: boolean;
   isMobile: boolean;
+  taskMembersMap: Map<string, any[]>;
+  activeWorkers: { byTask: Map<string, string[]>; profiles: Map<string, any> };
 }
 
-function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplete, onStartTimer, onDelete, onRename, hasActiveTimer, isMobile }: ColumnContainerProps) {
+function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplete, onStartTimer, onDelete, onRename, onChangeColor, hasActiveTimer, isMobile, taskMembersMap, activeWorkers }: ColumnContainerProps) {
   const { t } = useTranslation();
   const { setNodeRef, isOver } = useSortable({ id: `col:${column.id}`, data: { type: "column", columnId: column.id } });
   const [editing, setEditing] = useState(false);
