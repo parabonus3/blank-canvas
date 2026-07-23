@@ -95,6 +95,21 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           )}
         </div>
 
+        {/* Members + active workers */}
+        {(members.length > 0 || activeUserIds.length > 0) && (
+          <div className="flex items-center gap-2">
+            {members.length > 0 && <MemberAvatars members={members} size="xs" max={3} activeUserIds={activeUserIds} />}
+            {activeUserIds.length > 0 && (
+              <span className="inline-flex items-center gap-1 text-[10px] text-orange-600 dark:text-orange-400 font-medium">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
+                {activeUserIds.length === 1 && activeProfiles?.get(activeUserIds[0])?.display_name
+                  ? t("kanban.working_now_with_name", "{{name}} focando", { name: activeProfiles.get(activeUserIds[0])!.display_name })
+                  : t("kanban.working_now", "Focando agora")}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Actions row */}
         {onStartTimer && task.project_id && !task.is_completed && (
           <div className="pointer-events-auto flex justify-end -mb-1" onClick={e => e.stopPropagation()}>
