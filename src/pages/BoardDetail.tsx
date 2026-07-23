@@ -113,8 +113,11 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0"><MoreVertical className="h-4 w-4" /></Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-52">
               <DropdownMenuItem onClick={() => setEditing(true)}><Edit2 className="h-4 w-4 me-2" />{t("common.edit")}</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5 text-[10px] font-medium uppercase text-muted-foreground flex items-center gap-1"><Palette className="h-3 w-3" />{t("kanban.column_color", "Cor")}</div>
+              {colorMenu}
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive" onClick={onDelete}><Trash2 className="h-4 w-4 me-2" />{t("common.delete")}</DropdownMenuItem>
             </DropdownMenuContent>
@@ -133,8 +136,12 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-6 w-6"><MoreVertical className="h-3.5 w-3.5" /></Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuItem onClick={() => setEditing(true)}><Edit2 className="h-4 w-4 me-2" />{t("common.edit")}</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <div className="px-2 py-1.5 text-[10px] font-medium uppercase text-muted-foreground flex items-center gap-1"><Palette className="h-3 w-3" />{t("kanban.column_color", "Cor")}</div>
+            {colorMenu}
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive" onClick={onDelete}><Trash2 className="h-4 w-4 me-2" />{t("common.delete")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
