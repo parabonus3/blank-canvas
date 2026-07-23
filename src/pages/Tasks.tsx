@@ -33,9 +33,16 @@ const BOARD_COLORS = [
   "#6366f1", "#0ea5e9", "#d946ef", "#78716c",
 ];
 
+function BoardCardMembers({ boardId }: { boardId: string }) {
+  const { data: members = [] } = useBoardMembers(boardId);
+  if (members.length <= 1) return null;
+  return <MemberAvatars members={members} size="xs" max={4} />;
+}
+
 export default function Tasks() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [showArchived, setShowArchived] = useState(false);
   const { data: boards, isLoading } = useBoards(showArchived);
   const { data: projects } = useProjects();
