@@ -6,8 +6,9 @@ import { useTaskChecklists } from "@/hooks/useTaskChecklists";
 import { useTaskLabels } from "@/hooks/useTaskLabels";
 import { PriorityBadge } from "./PriorityBadge";
 import { DueDateBadge } from "./DueDateBadge";
+import { MemberAvatars } from "./MemberAvatars";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckSquare, MessageSquare, Clock, Play } from "lucide-react";
+import { CheckSquare, Clock, Play, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -24,9 +25,12 @@ interface Props {
   onStartTimer?: (task: Task) => void;
   hasActiveTimer?: boolean;
   isDragging?: boolean;
+  members?: Array<{ user_id: string; display_name: string | null; avatar_url: string | null }>;
+  activeUserIds?: string[];
+  activeProfiles?: Map<string, { display_name: string | null; avatar_url: string | null }>;
 }
 
-function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging }: Props) {
+function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging, members = [], activeUserIds = [], activeProfiles }: Props) {
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: sortableDragging } = useSortable({ id: task.id });
   const style = { transform: CSS.Translate.toString(transform), transition };
@@ -90,6 +94,21 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
             </span>
           )}
         </div>
+
+        {/* Members + active workers */}
+        {(members.length > 0 || activeUserIds.length > 0) && (
+          <div className="flex items-center gap-2">
+            {members.length > 0 && <MemberAvatars members={members} size="xs" max={3} activeUserIds={activeUserIds} />}
+            {activeUserIds.length > 0 && (
+              <span className="inline-flex items-center gap-1 text-[10px] text-orange-600 dark:text-orange-400 font-medium">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse" />
+                {activeUserIds.length === 1 && activeProfiles?.get(activeUserIds[0])?.display_name
+                  ? t("kanban.working_now_with_name", "{{name}} focando", { name: activeProfiles.get(activeUserIds[0])!.display_name })
+                  : t("kanban.working_now", "Focando agora")}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Actions row */}
         {onStartTimer && task.project_id && !task.is_completed && (

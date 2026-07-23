@@ -14,15 +14,21 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronLeft, Plus, MoreVertical, Trash2, KanbanSquare, CalendarDays, BarChart3, Edit2, Check, X } from "lucide-react";
+import { ChevronLeft, Plus, MoreVertical, Trash2, KanbanSquare, CalendarDays, BarChart3, Edit2, Check, X, Users, Palette } from "lucide-react";
 import { TaskCard } from "@/components/kanban/TaskCard";
 import { TaskFormDialog } from "@/components/kanban/TaskFormDialog";
 import { TaskDetailDrawer } from "@/components/kanban/TaskDetailDrawer";
 import { KanbanCalendar } from "@/components/kanban/KanbanCalendar";
 import { KanbanReports } from "@/components/kanban/KanbanReports";
+import { BoardInviteDialog } from "@/components/kanban/BoardInviteDialog";
+import { MemberAvatars } from "@/components/kanban/MemberAvatars";
+import { useBoardMembers, useBoardTaskMembers, useActiveTaskWorkers } from "@/hooks/useBoardCollab";
+import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+
+const COLUMN_COLORS = ["#94a3b8", "#f59e0b", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#ef4444", "#06b6d4", "#14b8a6", "#a855f7"];
 
 import {
   DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, closestCenter,
@@ -40,11 +46,14 @@ interface ColumnContainerProps {
   onStartTimer: (task: Task) => void;
   onDelete: () => void;
   onRename: (title: string) => void;
+  onChangeColor: (color: string) => void;
   hasActiveTimer: boolean;
   isMobile: boolean;
+  taskMembersMap: Map<string, any[]>;
+  activeWorkers: { byTask: Map<string, string[]>; profiles: Map<string, any> };
 }
 
-function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplete, onStartTimer, onDelete, onRename, hasActiveTimer, isMobile }: ColumnContainerProps) {
+function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplete, onStartTimer, onDelete, onRename, onChangeColor, hasActiveTimer, isMobile, taskMembersMap, activeWorkers }: ColumnContainerProps) {
   const { t } = useTranslation();
   const { setNodeRef, isOver } = useSortable({ id: `col:${column.id}`, data: { type: "column", columnId: column.id } });
   const [editing, setEditing] = useState(false);
@@ -68,11 +77,25 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
     </div>
   );
 
+  const colorMenu = (
+    <div className="flex flex-wrap gap-1 p-2">
+      {COLUMN_COLORS.map(c => (
+        <button key={c} onClick={() => onChangeColor(c)}
+          className={cn("h-5 w-5 rounded-full border-2 transition-transform hover:scale-110", column.color === c ? "border-foreground" : "border-transparent")}
+          style={{ background: c }} />
+      ))}
+    </div>
+  );
+
   const content = (
     <div ref={setNodeRef} className={cn("space-y-2 min-h-[80px] rounded-lg transition-colors", isOver && "bg-primary/5 outline-2 outline-dashed outline-primary/30")}>
       <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
         {tasks.map(task => (
-          <TaskCard key={task.id} task={task} onClick={onOpenTask} onToggleComplete={onToggleComplete} onStartTimer={onStartTimer} hasActiveTimer={hasActiveTimer} />
+          <TaskCard key={task.id} task={task} onClick={onOpenTask} onToggleComplete={onToggleComplete} onStartTimer={onStartTimer}
+            hasActiveTimer={hasActiveTimer}
+            members={taskMembersMap.get(task.id) || []}
+            activeUserIds={activeWorkers.byTask.get(task.id) || []}
+            activeProfiles={activeWorkers.profiles} />
         ))}
       </SortableContext>
       <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={() => onAddTask(column.id)}>
@@ -90,8 +113,11 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0"><MoreVertical className="h-4 w-4" /></Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-52">
               <DropdownMenuItem onClick={() => setEditing(true)}><Edit2 className="h-4 w-4 me-2" />{t("common.edit")}</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5 text-[10px] font-medium uppercase text-muted-foreground flex items-center gap-1"><Palette className="h-3 w-3" />{t("kanban.column_color", "Cor")}</div>
+              {colorMenu}
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive" onClick={onDelete}><Trash2 className="h-4 w-4 me-2" />{t("common.delete")}</DropdownMenuItem>
             </DropdownMenuContent>
@@ -110,8 +136,12 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-6 w-6"><MoreVertical className="h-3.5 w-3.5" /></Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuItem onClick={() => setEditing(true)}><Edit2 className="h-4 w-4 me-2" />{t("common.edit")}</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <div className="px-2 py-1.5 text-[10px] font-medium uppercase text-muted-foreground flex items-center gap-1"><Palette className="h-3 w-3" />{t("kanban.column_color", "Cor")}</div>
+            {colorMenu}
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive" onClick={onDelete}><Trash2 className="h-4 w-4 me-2" />{t("common.delete")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -140,6 +170,8 @@ export default function BoardDetail() {
   const reorderTask = useReorderTask();
   const { data: activeEntry } = useActiveTimeEntry();
   const startTimer = useStartTimer();
+  const { data: taskMembersMap = new Map() } = useBoardTaskMembers(id);
+  const activeWorkers = useActiveTaskWorkers(id);
 
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [taskDialogColumnId, setTaskDialogColumnId] = useState<string | null>(null);
@@ -251,7 +283,7 @@ export default function BoardDetail() {
                         onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                         onDelete={() => deleteColumn.mutate(col.id)}
                         onRename={(title) => updateColumn.mutate({ id: col.id, title })}
-                        hasActiveTimer={!!activeEntry} isMobile />
+                        hasActiveTimer={!!activeEntry} isMobile onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} />
                     ))}
                   </Accordion>
                   <div className="mt-3">
@@ -275,7 +307,7 @@ export default function BoardDetail() {
                       onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                       onDelete={() => deleteColumn.mutate(col.id)}
                       onRename={(title) => updateColumn.mutate({ id: col.id, title })}
-                      hasActiveTimer={!!activeEntry} isMobile={false} />
+                      hasActiveTimer={!!activeEntry} isMobile={false} onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} />
                   ))}
                   <div className="w-72 shrink-0">
                     {addingColumn ? (
