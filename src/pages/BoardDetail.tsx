@@ -283,7 +283,7 @@ export default function BoardDetail() {
                         onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                         onDelete={() => deleteColumn.mutate(col.id)}
                         onRename={(title) => updateColumn.mutate({ id: col.id, title })}
-                        hasActiveTimer={!!activeEntry} isMobile />
+                        hasActiveTimer={!!activeEntry} isMobile onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} />
                     ))}
                   </Accordion>
                   <div className="mt-3">
@@ -307,7 +307,7 @@ export default function BoardDetail() {
                       onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                       onDelete={() => deleteColumn.mutate(col.id)}
                       onRename={(title) => updateColumn.mutate({ id: col.id, title })}
-                      hasActiveTimer={!!activeEntry} isMobile={false} />
+                      hasActiveTimer={!!activeEntry} isMobile={false} onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} />
                   ))}
                   <div className="w-72 shrink-0">
                     {addingColumn ? (
