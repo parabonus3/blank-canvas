@@ -182,6 +182,12 @@ export default function Tasks() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <BoardCardMembers boardId={b.id} />
+                    {b.user_id !== user?.id && (
+                      <span className="text-[10px] text-muted-foreground bg-muted rounded px-1.5 py-0.5">{t("kanban.shared", "Compartilhado")}</span>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}
