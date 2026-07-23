@@ -23,7 +23,8 @@ export function useBoards(includeArchived = false) {
     queryKey: ["boards", user?.id, includeArchived],
     queryFn: async () => {
       if (!user) return [];
-      let q = supabase.from("boards").select("*").eq("user_id", user.id);
+      // Rely on RLS: returns boards where user is owner OR board_member
+      let q = supabase.from("boards").select("*");
       if (!includeArchived) q = q.eq("is_archived", false);
       const { data, error } = await q.order("is_favorite", { ascending: false }).order("position");
       if (error) throw error;
