@@ -18,11 +18,20 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, KanbanSquare, Star, Trash2, Archive, ArchiveRestore, MoreVertical } from "lucide-react";
+import { Plus, KanbanSquare, Star, Trash2, Archive, ArchiveRestore, MoreVertical, Users } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { BoardInvitationsBanner } from "@/components/kanban/BoardInvitationsBanner";
+import { useBoardMembers } from "@/hooks/useBoardCollab";
+import { MemberAvatars } from "@/components/kanban/MemberAvatars";
+import { useAuth } from "@/contexts/AuthContext";
 
-const BOARD_COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f97316", "#22c55e", "#06b6d4", "#eab308", "#ef4444"];
+const BOARD_COLORS = [
+  "#3b82f6", "#8b5cf6", "#ec4899", "#f97316",
+  "#22c55e", "#06b6d4", "#eab308", "#ef4444",
+  "#14b8a6", "#a855f7", "#f43f5e", "#84cc16",
+  "#6366f1", "#0ea5e9", "#d946ef", "#78716c",
+];
 
 export default function Tasks() {
   const { t } = useTranslation();
