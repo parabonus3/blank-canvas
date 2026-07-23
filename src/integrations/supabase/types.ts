@@ -193,6 +193,79 @@ export type Database = {
           },
         ]
       }
+      board_invitations: {
+        Row: {
+          board_id: string
+          created_at: string
+          id: string
+          invitee_id: string
+          inviter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          board_id: string
+          created_at?: string
+          id?: string
+          invitee_id: string
+          inviter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          board_id?: string
+          created_at?: string
+          id?: string
+          invitee_id?: string
+          inviter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "board_invitations_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      board_members: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          board_id: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          board_id: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          board_id?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "board_members_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       boards: {
         Row: {
           color: string | null
@@ -1785,6 +1858,38 @@ export type Database = {
           },
         ]
       }
+      task_members: {
+        Row: {
+          assigned_at: string
+          assigned_by: string | null
+          id: string
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by?: string | null
+          id?: string
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string | null
+          id?: string
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_members_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_time_logs: {
         Row: {
           created_at: string
@@ -2167,6 +2272,10 @@ export type Database = {
       }
     }
     Functions: {
+      accept_board_invitation: {
+        Args: { _invitation_id: string }
+        Returns: string
+      }
       admin_set_plan_tier_by_email: {
         Args: { _email: string; _tier: string }
         Returns: number
@@ -2178,6 +2287,10 @@ export type Database = {
       auto_pause_stale_entries: { Args: never; Returns: number }
       background_allowed_for_tier: {
         Args: { _bg: string; _tier: string }
+        Returns: boolean
+      }
+      can_access_task: {
+        Args: { _task_id: string; _user_id: string }
         Returns: boolean
       }
       check_and_grant_freeze_missions: {
@@ -2526,6 +2639,18 @@ export type Database = {
         Returns: boolean
       }
       heartbeat_time_entry: { Args: { _entry_id: string }; Returns: boolean }
+      invite_to_board_by_code: {
+        Args: { _board_id: string; _friend_code: string }
+        Returns: string
+      }
+      is_board_member: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_board_owner: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_room_member: {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
