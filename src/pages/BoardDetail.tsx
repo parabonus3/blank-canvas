@@ -77,11 +77,25 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
     </div>
   );
 
+  const colorMenu = (
+    <div className="flex flex-wrap gap-1 p-2">
+      {COLUMN_COLORS.map(c => (
+        <button key={c} onClick={() => onChangeColor(c)}
+          className={cn("h-5 w-5 rounded-full border-2 transition-transform hover:scale-110", column.color === c ? "border-foreground" : "border-transparent")}
+          style={{ background: c }} />
+      ))}
+    </div>
+  );
+
   const content = (
     <div ref={setNodeRef} className={cn("space-y-2 min-h-[80px] rounded-lg transition-colors", isOver && "bg-primary/5 outline-2 outline-dashed outline-primary/30")}>
       <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
         {tasks.map(task => (
-          <TaskCard key={task.id} task={task} onClick={onOpenTask} onToggleComplete={onToggleComplete} onStartTimer={onStartTimer} hasActiveTimer={hasActiveTimer} />
+          <TaskCard key={task.id} task={task} onClick={onOpenTask} onToggleComplete={onToggleComplete} onStartTimer={onStartTimer}
+            hasActiveTimer={hasActiveTimer}
+            members={taskMembersMap.get(task.id) || []}
+            activeUserIds={activeWorkers.byTask.get(task.id) || []}
+            activeProfiles={activeWorkers.profiles} />
         ))}
       </SortableContext>
       <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={() => onAddTask(column.id)}>
