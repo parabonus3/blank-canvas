@@ -170,6 +170,9 @@ export default function BoardDetail() {
   const reorderTask = useReorderTask();
   const { data: activeEntry } = useActiveTimeEntry();
   const startTimer = useStartTimer();
+  const taskIds = useMemo(() => (tasks || []).map(t => t.id), [tasks]);
+  const { data: taskMembersMap = new Map() } = useBoardTaskMembers(taskIds);
+  const activeWorkers = useActiveTaskWorkers(id);
 
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [taskDialogColumnId, setTaskDialogColumnId] = useState<string | null>(null);
