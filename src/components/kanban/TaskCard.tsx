@@ -6,8 +6,9 @@ import { useTaskChecklists } from "@/hooks/useTaskChecklists";
 import { useTaskLabels } from "@/hooks/useTaskLabels";
 import { PriorityBadge } from "./PriorityBadge";
 import { DueDateBadge } from "./DueDateBadge";
+import { MemberAvatars } from "./MemberAvatars";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckSquare, MessageSquare, Clock, Play } from "lucide-react";
+import { CheckSquare, Clock, Play, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -24,9 +25,12 @@ interface Props {
   onStartTimer?: (task: Task) => void;
   hasActiveTimer?: boolean;
   isDragging?: boolean;
+  members?: Array<{ user_id: string; display_name: string | null; avatar_url: string | null }>;
+  activeUserIds?: string[];
+  activeProfiles?: Map<string, { display_name: string | null; avatar_url: string | null }>;
 }
 
-function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging }: Props) {
+function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging, members = [], activeUserIds = [], activeProfiles }: Props) {
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: sortableDragging } = useSortable({ id: task.id });
   const style = { transform: CSS.Translate.toString(transform), transition };
