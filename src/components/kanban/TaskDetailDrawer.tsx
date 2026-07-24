@@ -36,14 +36,16 @@ interface Props {
   onClose: () => void;
   onStartTimer: (task: Task) => void;
   hasActiveTimer: boolean;
+  boardId?: string;
 }
 
-export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer }: Props) {
+export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
   const { t } = useTranslation();
   const { data: projects } = useProjects();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
   const { data: checklists } = useTaskChecklists(task?.id);
+  const { data: taskMembers = [] } = useTaskMembers(task?.id);
   const createCheck = useCreateChecklistItem();
   const toggleCheck = useToggleChecklistItem();
   const deleteCheck = useDeleteChecklistItem();
@@ -90,9 +92,12 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer }
 
           <div className="flex items-center gap-2 flex-wrap">
             <PriorityBadge priority={task.priority} />
+            {taskMembers.length > 0 && (
+              <MemberAvatars members={taskMembers} size="xs" max={4} />
+            )}
             {task.project_id && !task.is_completed && (
               <Button size="sm" onClick={() => onStartTimer(task)} disabled={hasActiveTimer} className="ms-auto">
-                <Play className="h-3.5 w-3.5 me-1" />{t("kanban.start_focus", "Focar")}
+                <Play className="h-3.5 w-3.5 me-1" />{t("kanban.start_focus")}
               </Button>
             )}
           </div>
@@ -223,6 +228,15 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer }
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
+          </TabsContent>
+
+          {/* MEMBERS */}
+          <TabsContent value="members" className="p-4">
+            {boardId ? (
+              <TaskMemberAssigner taskId={task.id} boardId={boardId} />
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_members")}</p>
+            )}
           </TabsContent>
 
           {/* COMMENTS */}
