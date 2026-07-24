@@ -179,6 +179,10 @@ export default function BoardDetail() {
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [addingColumn, setAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
+  const [membersOpen, setMembersOpen] = useState(false);
+  const { user } = useAuth();
+  const { data: boardMembers = [] } = useBoardMembers(id);
+  const isOwner = !!user && !!board && board.user_id === user.id;
 
   const tasksByColumn = useMemo(() => {
     const map = new Map<string | null, Task[]>();
