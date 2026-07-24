@@ -27,10 +27,10 @@ export function useTaskMemberTimeTotals(taskId: string | undefined) {
       if (!taskId) return map;
       const { data } = await supabase
         .from("time_entries")
-        .select("user_id, duration_seconds")
+        .select("user_id, duration")
         .eq("task_id", taskId);
       (data || []).forEach((e: any) => {
-        map.set(e.user_id, (map.get(e.user_id) || 0) + (e.duration_seconds || 0));
+        map.set(e.user_id, (map.get(e.user_id) || 0) + (e.duration || 0));
       });
       return map;
     },
