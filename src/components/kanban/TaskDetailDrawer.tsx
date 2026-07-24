@@ -15,8 +15,11 @@ import { useTaskComments, useAddComment, useDeleteComment } from "@/hooks/useTas
 import { useTaskLabels, useAddLabel, useRemoveLabel } from "@/hooks/useTaskLabels";
 import { useTaskTimeLogs, useAddTimeLog } from "@/hooks/useTaskTimeLogs";
 import { useProjects } from "@/hooks/useProjects";
-import { Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon } from "lucide-react";
+import { Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon, Users } from "lucide-react";
 import { PriorityBadge } from "./PriorityBadge";
+import { TaskMemberAssigner } from "./TaskMemberAssigner";
+import { MemberAvatars } from "./MemberAvatars";
+import { useTaskMembers } from "@/hooks/useBoardCollab";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -96,15 +99,18 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer }
         </div>
 
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b h-11 px-2 bg-transparent">
-            <TabsTrigger value="details">{t("kanban.tab_details", "Detalhes")}</TabsTrigger>
+          <TabsList className="w-full justify-start rounded-none border-b h-11 px-2 bg-transparent overflow-x-auto scrollbar-none">
+            <TabsTrigger value="details">{t("kanban.tab_details")}</TabsTrigger>
             <TabsTrigger value="checklist">
-              <CheckSquare className="h-3.5 w-3.5 me-1" />{checkTotal > 0 ? `${checkDone}/${checkTotal}` : t("kanban.tab_checklist", "Checklist")}
+              <CheckSquare className="h-3.5 w-3.5 me-1" />{checkTotal > 0 ? `${checkDone}/${checkTotal}` : t("kanban.tab_checklist")}
+            </TabsTrigger>
+            <TabsTrigger value="members">
+              <Users className="h-3.5 w-3.5 me-1" />{t("kanban.tab_members")}
             </TabsTrigger>
             <TabsTrigger value="comments">
               <MessageSquare className="h-3.5 w-3.5 me-1" />{comments?.length || ""}
             </TabsTrigger>
-            <TabsTrigger value="time"><Clock className="h-3.5 w-3.5 me-1" />{t("kanban.tab_time", "Tempo")}</TabsTrigger>
+            <TabsTrigger value="time"><Clock className="h-3.5 w-3.5 me-1" />{t("kanban.tab_time")}</TabsTrigger>
           </TabsList>
 
           {/* DETAILS */}
