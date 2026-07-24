@@ -266,7 +266,25 @@ export default function BoardDetail() {
         <div className="flex items-center gap-2 flex-wrap">
           <Button variant="ghost" size="icon" onClick={() => navigate("/tasks")}><ChevronLeft className="h-5 w-5" /></Button>
           <div className="h-8 w-1 rounded-full" style={{ background: board.color || "hsl(var(--primary))" }} />
-          <h1 className="text-lg sm:text-xl font-bold tracking-tight truncate flex-1">{board.title}</h1>
+          <h1 className="text-lg sm:text-xl font-bold tracking-tight truncate flex-1 min-w-0">{board.title}</h1>
+          {!isOwner && (
+            <span className="text-[10px] text-muted-foreground bg-muted rounded px-1.5 py-0.5 shrink-0">
+              {t("kanban.shared")}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => setMembersOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted transition-colors px-2 py-1 shrink-0"
+            aria-label={t("kanban.manage_members") as string}
+          >
+            {boardMembers.length > 0 ? (
+              <MemberAvatars members={boardMembers} size="xs" max={3} />
+            ) : (
+              <Users className="h-3.5 w-3.5" />
+            )}
+            <span className="text-xs font-medium">{boardMembers.length}</span>
+          </button>
         </div>
 
         <Tabs defaultValue="board" className="w-full">
@@ -351,7 +369,9 @@ export default function BoardDetail() {
         <TaskFormDialog open={taskDialogOpen} onOpenChange={setTaskDialogOpen}
           boardId={id!} columnId={taskDialogColumnId} defaultProjectId={board.project_id} />
 
-        <TaskDetailDrawer task={openTask} onClose={() => setOpenTask(null)} onStartTimer={handleStartTimer} hasActiveTimer={!!activeEntry} />
+        <TaskDetailDrawer task={openTask} onClose={() => setOpenTask(null)} onStartTimer={handleStartTimer} hasActiveTimer={!!activeEntry} boardId={id} />
+
+        <BoardInviteDialog open={membersOpen} onOpenChange={setMembersOpen} boardId={id!} isOwner={isOwner} />
       </div>
     </MainLayout>
   );
