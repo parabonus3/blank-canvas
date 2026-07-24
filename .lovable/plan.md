@@ -1,143 +1,142 @@
-# Plano de evolução do Kanban Timezoni
+# Plano: Kanban colaborativo, mobile-first e multilíngue
 
-## Contexto atual
-O módulo Kanban já existe com tabelas `boards`, `board_columns`, `tasks`, `task_labels`, `task_checklists`, `task_comments`, `task_time_logs` e `task_attachments`. O `time_entries` já tem `task_id`, então conseguimos rastrear quem está focando em cada tarefa em tempo real. O que falta é: compartilhamento/convite, atribuição de membros às tarefas, cores nas colunas, mais opções visuais para quadros e traduções completas.
+## Diagnóstico confirmado (estado atual)
 
-## Objetivos desta fase
-1. Permitir convidar pessoas para um quadro (por amigo ou friend-code) e atribuir membros às tarefas.
-2. Mostrar foto/nome de quem está ativo na tarefa (time_entries sem `end_time`).
-3. Adicionar seletor de cor na criação/edição de colunas e expandir paleta de cores dos quadros.
-4. Permitir editar/visualizar descrição de quadros e colunas.
-5. Manter tudo responsivo para mobile, que é 90% dos usuários.
-6. Traduzir todas as novas strings para os 12 idiomas suportados.
+- A colaboração já tem schema (`board_members`, `board_invitations`, `task_members`) e RPCs (`invite_to_board_by_code`, `accept_board_invitation`).
+- O hook `useBoardCollab.ts` já traz: membros do quadro, convites pendentes, atribuição de tarefas e trabalhadores ativos via `time_entries`.
+- Os cards já exibem avatares de membros e indicador laranja de quem está focando agora.
+- **Problema crítico**: todas as chaves `kanban.*` estão usando fallback hardcoded em português. O objeto `kanban` não existe em nenhum dos 12 arquivos JSON de tradução.
+- **Problema de UX**: a tela do quadro (`BoardDetail`) não tem botão/ícone explícito de "Membros" no header; a atribuição de pessoas só aparece indiretamente no card; o drawer de tarefa não tem uma aba "Membros" para convidar/ver quem faz o quê.
+- **Problema mobile**: o header do quadro está muito denso; o accordion de colunas precisa de mais contexto visual; ações de colaboração são difíceis de acessar em telas pequenas.
 
----
+## Objetivos do plano
 
-## 1. Banco de dados — colaboração
+1. Deixar óbvio, logo ao abrir um quadro, que ele é colaborativo e quem está participando.
+2. Permitir atribuir pessoas a cada tarefa de forma direta e visual.
+3. Mostrar, em tempo real, quem está focando em cada tarefa e quanto tempo cada pessoa já dedicou.
+4. Traduzir 100% das novas (e existentes) strings do Kanban para os 12 idiomas do Timezoni.
+5. Reorganizar o layout mobile para que tudo flua sem scroll horizontal e sem confusão visual.
 
-### Criar tabelas novas
-- `board_invitations` (id, board_id, inviter_id, invitee_id, status, created_at, updated_at)
-- `board_members` (id, board_id, user_id, role, added_at)
-- `task_members` (id, task_id, user_id, assigned_by, assigned_at)
+## Entregas do plano
 
-### Alterar tabelas existentes
-- `tasks`: adicionar `owner_id` (uuid) para distinguir criador da tarefa de membros atribuídos.
-- `boards`: manter `user_id` como criador, mas permitir acesso a `board_members`.
-- `board_columns`: manter `user_id` como criador da coluna.
+### 1. Header do quadro colaborativo e responsivo
+- Adicionar botão de "Membros" com ícone `Users` no header do `BoardDetail`.
+- Exibir avatares dos membros do quadro (limitado a 3/4) diretamente no header, com indicador de "online/focando".
+- Em mobile: reduzir título, usar ícones compactos e garantir que o header não quebre em múltiplas linhas de forma feia.
+- Adicionar badge de "Compartilhado" quando o quadro não for do usuário logado.
 
-### RLS
-- `board_invitations`: convites só podem ser lidos/criados/aceitos pelos participantes.
-- `board_members`: quem pertence ao board pode ver; quem criou o board pode gerenciar.
-- `tasks`: quem criou o board, é membro do board ou é `owner_id` da tarefa pode ver/editar.
-- `task_members`: quem tem acesso ao board pode ver; quem criou a tarefa ou é owner pode atribuir/remover.
-- `time_entries` com `task_id`: membros do board podem ver entradas ativas (sem `end_time`) das tarefas do board para mostrar quem está focando agora.
+### 2. Aba "Membros" no drawer de tarefa
+- Criar nova aba `members` no `TaskDetailDrawer`.
+- Listar membros do quadro com avatar, nome e papel.
+- Permitir atribuir/remover pessoas da tarefa com checkboxes ou botões de toggle.
+- Mostrar, ao lado de cada membro atribuído, o tempo total que essa pessoa já dedicou a essa tarefa (agregado de `time_entries` + `task_time_logs`).
+- Mostrar quem está focando agora na tarefa (indicador laranja pulsante).
 
-### Funções/Triggers
-- Função `is_board_member(_board_id, _user_id)` para simplificar políticas.
-- Trigger para manter `updated_at` nas novas tabelas.
+### 3. Melhoria visual do card de tarefa
+- Manter avatares dos atribuídos.
+- Adicionar tooltip/title com nomes ao passar/long press.
+- Destacar o card de uma tarefa em que o usuário logado está focando agora (borda laranja sutil).
+- Garantir que, em mobile, o card não fique com informações demais empilhadas de forma confusa.
 
----
+### 4. Dialog de gerenciamento de membros do quadro
+- Evoluir o `BoardInviteDialog` para ser mais claro:
+  - Mostrar o código de amigo do usuário logado (caso ele queira copiar e compartilhar).
+  - Campo de convite por código com validação visual (ex: "Usuário não encontrado", "Já é membro").
+  - Lista de membros com papel traduzido (Dono, Editor, Membro).
+  - Permitir remover membros (somente dono).
+- Em mobile: usar Sheet em vez de Dialog para melhor aproveitamento de tela.
 
-## 2. Backend — hooks e lógica
+### 5. Traduções completas do Kanban
+- Criar objeto `kanban` completo em todos os 12 locales (`pt-BR`, `en-US`, `es-ES`, `fr-FR`, `de-DE`, `it-IT`, `ja-JP`, `ko-KR`, `zh-CN`, `ru-RU`, `ar-SA`, `id-ID`).
+- Cobrir todas as chaves já usadas no código: `title`, `subtitle`, `page_title`, `new_board`, `board_title`, `board_description`, `board_color`, `linked_project`, `add_column`, `new_column_ph`, `column_color`, `add_task`, `tab_board`, `tab_calendar`, `tab_reports`, `tab_details`, `tab_checklist`, `tab_comments`, `tab_time`, `tab_members`, `priority.*`, `start_focus`, `working_now`, `working_now_with_name`, `members`, `assign_members`, `invite`, `invite_by_code`, `pending_invites`, `invited_by`, `accept`, `reject`, `shared`, `no_project`, `delete_task`, etc.
+- Remover strings hardcoded em português (fallbacks) para garantir que o texto apareça no idioma correto.
 
-### Novos hooks
-- `useBoardMembers(boardId)`: lista membros do quadro com perfil (avatar, nome).
-- `useBoardInvitations(boardId)`: enviar, aceitar, recusar e listar convites pendentes.
-- `useTaskMembers(taskId)`: adicionar/remover/ver atribuídos da tarefa.
-- `useActiveTaskWorkers(taskIds)`: retorna, para cada tarefa, usuários com `time_entries` sem `end_time`.
+### 6. Mobile-first no layout do quadro
+- Reorganizar o accordion de colunas para mobile:
+  - Cada coluna precisa de cabeçalho bem separado com cor, título e contador.
+  - Cards devem ter área de toque adequada (mínimo 44px) para drag e abrir.
+- Header do quadro em mobile: título em uma linha, botões de ação em outra, ou usar um layout flexível que se adapte.
+- Sheet em vez de Dialog para convite de membros e detalhes em telas pequenas.
+- Garantir que nenhum container do Kanban force scroll horizontal em mobile.
 
-### Ajustes nos hooks existentes
-- `useTasks(boardId)`: passar a buscar tarefas de todos os membros do board, não só do usuário logado.
-- `useBoards`: mostrar quadros que o usuário criou ou que foi convidado.
-- `useCreateTask`: permitir atribuir membros no momento da criação.
-- `useUpdateTask`: permitir alterar `owner_id` (delegar) e adicionar/remover atribuídos.
+### 7. Dados de tempo por pessoa em cada tarefa
+- Criar/agrupar consulta que some `total_tracked_seconds` por `user_id` para uma tarefa (via `time_entries` e `task_time_logs`).
+- Exibir esse tempo na aba "Membros" do drawer e, opcionalmente, em um tooltip no card.
 
----
+## Implementação técnica
 
-## 3. Interface — convites e membros
+### Hooks
+- Adicionar `useTaskMemberTimeTotals(taskId)` em `useBoardCollab.ts` para retornar `Map<user_id, totalSeconds>`.
+- Adicionar `useMyFriendCode()` (ou similar) para mostrar o código do usuário logado no dialog de convite.
+- Garantir que `useBoardTaskMembers` e `useActiveTaskWorkers` atualizem corretamente após atribuição/desatribuição.
 
-### `src/pages/Tasks.tsx` (listagem de quadros)
-- Expandir `BOARD_COLORS` para pelo menos 16 cores (incluindo tons pastel e vibrantes).
-- Adicionar botão de editar quadro em cada card (título, descrição, cor, projeto vinculado).
-- Exibir descrição do quadro quando houver.
-- Mostrar avatares dos membros do quadro em cada card (até 4 avatares, depois "+N").
-- Adicionar botão "Convidar" por friend-code ou busca por nome/código.
-- Listar convites pendentes recebidos com aceitar/recusar.
+### Componentes
+- `BoardDetail.tsx`: refatorar header, adicionar botão de membros e badge de compartilhado.
+- `TaskDetailDrawer.tsx`: adicionar aba `members` com `MemberAssigner`.
+- `TaskCard.tsx`: ajustar espaçamento mobile, adicionar destaque de "focando agora" para o usuário logado.
+- `BoardInviteDialog.tsx`: melhorar mensagens, validações e exibir código do usuário. Adicionar prop `isMobile` para alternar Dialog/Sheet.
+- Criar `TaskMemberAssigner.tsx` para a aba de membros do drawer.
+- Atualizar `MemberAvatars.tsx` se necessário para suportar tooltip/nomes em mobile.
 
-### `src/pages/BoardDetail.tsx` (quadro)
-- Seletor de cor na criação de nova coluna e na edição de coluna existente.
-- Usar a cor da coluna no header e no anel lateral.
-- Diálogo para convidar pessoas para o quadro.
-- Painel lateral "Membros" mostrando quem está no board e quem está focando agora em qual tarefa.
-- No mobile: as colunas continuam como acordeão vertical; header do board fica compacto.
+### Traduções
+- Adicionar objeto `kanban` completo em todos os 12 arquivos JSON.
+- Usar script de sincronização para garantir que cada chave exista em todos os idiomas com tradução adequada.
 
-### `src/components/kanban/TaskCard.tsx`
-- Mostrar avatares dos atribuídos (até 3, depois "+N").
-- Indicador pulsante laranja quando alguém está focando na tarefa agora.
-- Tooltip/label com nome de quem está focando.
+### Banco (se necessário)
+- Verificar se `profiles.friend_code` está populado para todos os usuários. Se não, garantir que o trigger `set_friend_code()` seja executado no cadastro.
+- Não é necessária nova migration de schema, pois as tabelas já existem. Se houver necessidade de ajustar RLS ou índices, serão feitas migrações pontuais.
 
-### `src/components/kanban/TaskDetailDrawer.tsx`
-- Nova aba "Membros" ou seção no topo do drawer:
-  - Listar atribuídos com avatar e nome.
-  - Botão para adicionar/remover atribuídos (somente criador da tarefa ou owner do board).
-  - Mostrar "focando agora" com tempo corrido quando houver time_entry ativa.
-- Aba "Tempo": histórico de time logs e entradas ativas.
-- Aba "Comentários": manter, mas permitir menção a membros (@nome).
+## Critérios de aceite
 
-### `src/components/kanban/TaskFormDialog.tsx`
-- Campo para atribuir membros do board já na criação.
-- Checkbox para marcar como concluída (já existe via status).
+- [ ] Header do quadro mostra claramente os membros e botão de gerenciar convites.
+- [ ] Drawer de tarefa tem aba "Membros" funcional em desktop e mobile.
+- [ ] É possível atribuir/remover pessoas de uma tarefa com um clique/toque.
+- [ ] O tempo dedicado por cada pessoa em cada tarefa é visível.
+- [ ] Quem está focando na tarefa aparece com indicador pulsante.
+- [ ] Todas as strings do Kanban estão traduzidas nos 12 idiomas (sem fallback em português).
+- [ ] Não há scroll horizontal em mobile na tela do quadro.
+- [ ] Ações de colaboração funcionam em telas pequenas (Sheet, toques de 44px+).
 
----
+## Riscos e mitigações
 
-## 4. Mobile-first e UX
+- **Risco**: Overcrowding de avatares em cards pequenos. **Mitigação**: limitar a 2 avatares em mobile e usar `+N` para o restante.
+- **Risco**: Traduções geradas automaticamente ficarem literais. **Mitigação**: revisar termos específicos de produtividade (Kanban, Pomodoro, etc.) em cada idioma.
+- **Risco**: Performance ao carregar muitos membros/trabalhadores. **Mitigação**: manter subscriptions Realtime e invalidações por `boardId`.
 
-- Nenhum scroll horizontal na tela do quadro. Colunas como acordeão vertical já implementado; manter e refinar.
-- Botões de ação com altura mínima 44px.
-- Avatares em tamanho pequeno (24px) para não poluir cards.
-- Sheet/drawer nativo do shadcn para convites e atribuições no mobile.
-- Feedback sonner/toast para convites aceitos, membros adicionados e tarefas delegadas.
+## Dependências
 
----
+- Não depende de backend novo: schema de colaboração já existe.
+- Depende de ajustes nos hooks `useBoardCollab.ts` e nos componentes de UI.
+- Depende de traduções em massa nos 12 arquivos JSON.
 
-## 5. Traduções
+## Técnico resumido
 
-Criar/expandir o objeto `kanban` em todos os 12 locales:
-- `pt-BR`, `en-US`, `es-ES`, `fr-FR`, `de-DE`, `it-IT`, `ja-JP`, `ko-KR`, `zh-CN`, `ru-RU`, `ar-SA`, `id-ID`.
+```text
+BoardDetail.tsx
+  └─ Header colaborativo (avatares + botão Membros + badge Compartilhado)
+  └─ Passa taskMembersMap e activeWorkers para ColumnContainer
 
-Novas chaves necessárias:
-- `kanban.title`, `kanban.subtitle`, `kanban.page_title`
-- `kanban.new_board`, `kanban.edit_board`, `kanban.board_title`, `kanban.board_description`, `kanban.board_color`, `kanban.linked_project`, `kanban.no_project`
-- `kanban.new_column`, `kanban.edit_column`, `kanban.column_title`, `kanban.column_color`, `kanban.wip_limit`
-- `kanban.new_task`, `kanban.edit_task`, `kanban.task_title`, `kanban.task_description`, `kanban.due_date`, `kanban.priority`, `kanban.estimated_time`
-- `kanban.members`, `kanban.invite`, `kanban.invite_by_code`, `kanban.pending_invites`, `kanban.accept`, `kanban.reject`, `kanban.remove_member`
-- `kanban.assign_members`, `kanban.assigned`, `kanban.working_now`, `kanban.working_now_with_name`
-- `kanban.empty_boards`, `kanban.empty_columns`, `kanban.empty_tasks`, `kanban.start_focus`
-- `kanban.delete_board_title`, `kanban.delete_board_desc`, `kanban.delete_column_title`, `kanban.delete_column_desc`, `kanban.delete_task_title`, `kanban.delete_task_desc`
-- `kanban.favorite`, `kanban.unfavorite`, `kanban.archive`, `kanban.unarchive`
-- `kanban.reports`, `kanban.calendar`, `kanban.back_to_boards`
+TaskDetailDrawer.tsx
+  └─ Nova aba "members" com TaskMemberAssigner
+  └─ Exibe tempo por pessoa e indicador "focando agora"
 
-Usar o script Python de sincronização de traduções para manter consistência entre idiomas.
+TaskCard.tsx
+  └─ Destaque de tarefa ativa do usuário
+  └─ Avatares compactos para mobile
 
----
+BoardInviteDialog.tsx
+  └─ Mostra friend_code do usuário
+  └─ Validações claras
+  └─ Sheet no mobile
 
-## 6. Fluxo de testes e validação
+useBoardCollab.ts
+  └─ useTaskMemberTimeTotals(taskId)
+  └─ useMyFriendCode()
 
-1. Verificar tipos com `tsgo` (TypeScript-only check).
-2. Testar visualmente no preview mobile (viewport 375x812) e desktop (1280x800).
-3. Verificar migrations e RLS com o script de teste local se disponível.
-4. Validar traduções: garantir que nenhuma nova string fique sem fallback no `t()`.
+i18n/locales/*.json
+  └─ Objeto "kanban" completo em 12 idiomas
+```
 
----
+## Nota sobre o estado atual das traduções
 
-## Entregáveis
-- Migration SQL para `board_members`, `board_invitations`, `task_members` e alterações de RLS.
-- Hooks colaborativos (`useBoardMembers`, `useBoardInvitations`, `useTaskMembers`, `useActiveTaskWorkers`).
-- UI atualizada: `Tasks.tsx`, `BoardDetail.tsx`, `TaskCard.tsx`, `TaskDetailDrawer.tsx`, `TaskFormDialog.tsx`.
-- Traduções sincronizadas em 12 idiomas.
-- Testes de tipos e preview mobile.
-
----
-
-## Próximos passos
-Após aprovação, implemento na ordem: banco → hooks → UI → traduções → validação.
+Hoje as telas do Kanban mostram textos em português mesmo quando o usuário escolheu outro idioma, porque as chaves `kanban.*` não existem nos arquivos de locale. O plano corrige isso criando o objeto completo em todos os idiomas e removendo fallbacks hardcoded.
