@@ -4,6 +4,40 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 
+/** Friend code of the current user, used to share with others so they can invite you. */
+export function useMyFriendCode() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["my_friend_code", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("profiles").select("friend_code").eq("user_id", user.id).maybeSingle();
+      return (data?.friend_code as string) || null;
+    },
+    enabled: !!user,
+  });
+}
+
+/** Sum of time_entries duration_seconds per user for a specific task. */
+export function useTaskMemberTimeTotals(taskId: string | undefined) {
+  return useQuery({
+    queryKey: ["task_member_time_totals", taskId],
+    queryFn: async () => {
+      const map = new Map<string, number>();
+      if (!taskId) return map;
+      const { data } = await supabase
+        .from("time_entries")
+        .select("user_id, duration_seconds")
+        .eq("task_id", taskId);
+      (data || []).forEach((e: any) => {
+        map.set(e.user_id, (map.get(e.user_id) || 0) + (e.duration_seconds || 0));
+      });
+      return map;
+    },
+    enabled: !!taskId,
+  });
+}
+
 export interface BoardMember {
   id: string;
   board_id: string;
