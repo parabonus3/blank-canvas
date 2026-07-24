@@ -171,7 +171,7 @@ export default function BoardDetail() {
   const { data: activeEntry } = useActiveTimeEntry();
   const startTimer = useStartTimer();
   const { data: taskMembersMap = new Map() } = useBoardTaskMembers(id);
-  const activeWorkers = useActiveTaskWorkers(id);
+  const { data: activeWorkers = { byTask: new Map<string, string[]>(), profiles: new Map<string, any>() } } = useActiveTaskWorkers(id);
 
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [taskDialogColumnId, setTaskDialogColumnId] = useState<string | null>(null);
