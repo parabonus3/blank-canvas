@@ -213,8 +213,8 @@ export function useMyBoardInvitations() {
   useEffect(() => {
     if (!user) return;
     const ch = supabase
-      .channel(`board-invitations-${user.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "board_invitations", filter: `invitee_id=eq.${user.id}` }, () => {
+      .channel(`board-invitations-${user.id}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "board_invitations", filter: `invitee_id=eq.${user.id}` }, () => {
         qc.invalidateQueries({ queryKey: ["my_board_invitations", user.id] });
         qc.invalidateQueries({ queryKey: ["boards"] });
       })
