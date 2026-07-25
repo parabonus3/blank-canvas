@@ -132,8 +132,8 @@ export function useBoardMembers(boardId: string | undefined) {
   useEffect(() => {
     if (!boardId) return;
     const ch = supabase
-      .channel(`board-members-${boardId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "board_members", filter: `board_id=eq.${boardId}` }, () => {
+      .channel(`board-members-${boardId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "board_members", filter: `board_id=eq.${boardId}` }, () => {
         qc.invalidateQueries({ queryKey: ["board_members", boardId] });
       })
       .subscribe();
