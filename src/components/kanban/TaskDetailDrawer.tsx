@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +14,10 @@ import { useTaskComments, useAddComment, useDeleteComment } from "@/hooks/useTas
 import { useTaskLabels, useAddLabel, useRemoveLabel } from "@/hooks/useTaskLabels";
 import { useTaskTimeLogs, useAddTimeLog } from "@/hooks/useTaskTimeLogs";
 import { useProjects } from "@/hooks/useProjects";
-import { Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon, Users } from "lucide-react";
+import {
+  Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
+  Users, FileText, ChevronLeft,
+} from "lucide-react";
 import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
@@ -30,6 +32,11 @@ function fmtHM(sec: number) {
   if (h > 0) return `${h}h${m > 0 ? ` ${m}m` : ""}`;
   return `${m}m`;
 }
+function fmtShort(sec: number) {
+  if (!sec) return "0m";
+  const h = Math.floor(sec / 3600); const m = Math.floor((sec % 3600) / 60);
+  return h > 0 ? `${h}h` : `${m}m`;
+}
 
 interface Props {
   task: Task | null;
@@ -38,6 +45,8 @@ interface Props {
   hasActiveTimer: boolean;
   boardId?: string;
 }
+
+type SectionId = "details" | "checklist" | "members" | "comments" | "time";
 
 export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
   const { t } = useTranslation();
@@ -65,9 +74,10 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const [newLabelName, setNewLabelName] = useState("");
   const [newLabelColor, setNewLabelColor] = useState(LABEL_COLORS[0]);
   const [logMinutes, setLogMinutes] = useState("");
+  const [section, setSection] = useState<SectionId | null>(null);
 
   useEffect(() => {
-    if (task) { setTitle(task.title); setDescription(task.description || ""); }
+    if (task) { setTitle(task.title); setDescription(task.description || ""); setSection(null); }
   }, [task?.id]);
 
   if (!task) return null;
@@ -78,48 +88,70 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const checkDone = (checklists || []).filter(c => c.is_completed).length;
   const checkTotal = checklists?.length || 0;
   const progress = checkTotal > 0 ? Math.round((checkDone / checkTotal) * 100) : 0;
+  const commentCount = comments?.length || 0;
+  const totalSec = task.total_tracked_seconds || 0;
 
-  return (
-    <Sheet open={!!task} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto p-0">
-        <div className="p-4 border-b">
-          <SheetHeader className="mb-3">
-            <SheetTitle asChild>
-              <Input value={title} onChange={e => setTitle(e.target.value)} onBlur={saveTitle}
-                className="text-lg font-semibold h-auto border-0 shadow-none focus-visible:ring-0 px-0" />
-            </SheetTitle>
-          </SheetHeader>
+  const tiles: Array<{
+    id: SectionId;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    badge?: string;
+  }> = [
+    { id: "details", label: t("kanban.tab_details", "Detalhes"), icon: FileText },
+    { id: "checklist", label: t("kanban.tab_checklist", "Checklist"), icon: CheckSquare, badge: checkTotal > 0 ? `${checkDone}/${checkTotal}` : undefined },
+    { id: "members", label: t("kanban.tab_members", "Membros"), icon: Users, badge: taskMembers.length > 0 ? String(taskMembers.length) : undefined },
+    { id: "comments", label: t("kanban.tab_comments", "Comentários"), icon: MessageSquare, badge: commentCount > 0 ? String(commentCount) : undefined },
+    { id: "time", label: t("kanban.tab_time", "Tempo"), icon: Clock, badge: totalSec > 0 ? fmtShort(totalSec) : undefined },
+  ];
 
-          <div className="flex items-center gap-2 flex-wrap">
-            <PriorityBadge priority={task.priority} />
-            {taskMembers.length > 0 && (
-              <MemberAvatars members={taskMembers} size="xs" max={4} />
+  const renderTiles = () => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+      {tiles.map(({ id, label, icon: Icon, badge }) => {
+        const active = section === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setSection(id)}
+            className={cn(
+              "relative flex flex-col items-center justify-center gap-2 rounded-xl border p-4 text-center transition-all",
+              "hover:border-primary/50 hover:shadow-sm active:scale-[0.98]",
+              active
+                ? "border-primary bg-primary text-primary-foreground shadow"
+                : "border-border bg-card"
             )}
-            {task.project_id && !task.is_completed && (
-              <Button size="sm" onClick={() => onStartTimer(task)} disabled={hasActiveTimer} className="ms-auto">
-                <Play className="h-3.5 w-3.5 me-1" />{t("kanban.start_focus")}
-              </Button>
+          >
+            {badge && (
+              <span className={cn(
+                "absolute top-1.5 right-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none",
+                active ? "bg-primary-foreground text-primary" : "bg-primary/10 text-primary"
+              )}>
+                {badge}
+              </span>
             )}
-          </div>
-        </div>
+            <Icon className="h-6 w-6" />
+            <span className="text-xs font-medium leading-tight">{label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b h-11 px-2 bg-transparent overflow-x-auto scrollbar-none">
-            <TabsTrigger value="details">{t("kanban.tab_details")}</TabsTrigger>
-            <TabsTrigger value="checklist">
-              <CheckSquare className="h-3.5 w-3.5 me-1" />{checkTotal > 0 ? `${checkDone}/${checkTotal}` : t("kanban.tab_checklist")}
-            </TabsTrigger>
-            <TabsTrigger value="members">
-              <Users className="h-3.5 w-3.5 me-1" />{t("kanban.tab_members")}
-            </TabsTrigger>
-            <TabsTrigger value="comments">
-              <MessageSquare className="h-3.5 w-3.5 me-1" />{comments?.length || ""}
-            </TabsTrigger>
-            <TabsTrigger value="time"><Clock className="h-3.5 w-3.5 me-1" />{t("kanban.tab_time")}</TabsTrigger>
-          </TabsList>
+  const renderSection = () => {
+    if (!section) return null;
+    return (
+      <div className="mt-4 space-y-3">
+        <button
+          type="button"
+          onClick={() => setSection(null)}
+          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ChevronLeft className="h-3.5 w-3.5" />
+          {t("kanban.back_to_shortcuts", "Voltar aos atalhos")}
+        </button>
 
-          {/* DETAILS */}
-          <TabsContent value="details" className="p-4 space-y-4">
+        {section === "details" && (
+          <div className="space-y-4">
             <div className="space-y-2">
               <Label>{t("kanban.task_description", "Descrição")}</Label>
               <Textarea rows={4} value={description} onChange={e => setDescription(e.target.value)} onBlur={saveDescription} />
@@ -155,7 +187,6 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
               </Select>
             </div>
 
-            {/* Labels */}
             <div className="space-y-2">
               <Label className="flex items-center gap-1"><TagIcon className="h-3.5 w-3.5" />{t("kanban.labels", "Etiquetas")}</Label>
               <div className="flex flex-wrap gap-1.5">
@@ -194,10 +225,11 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
                 <Trash2 className="h-4 w-4 me-2" />{t("kanban.delete_task", "Excluir tarefa")}
               </Button>
             </div>
-          </TabsContent>
+          </div>
+        )}
 
-          {/* CHECKLIST */}
-          <TabsContent value="checklist" className="p-4 space-y-3">
+        {section === "checklist" && (
+          <div className="space-y-3">
             {checkTotal > 0 && (
               <div>
                 <div className="flex justify-between text-xs text-muted-foreground mb-1">
@@ -228,19 +260,19 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-          </TabsContent>
+          </div>
+        )}
 
-          {/* MEMBERS */}
-          <TabsContent value="members" className="p-4">
-            {boardId ? (
-              <TaskMemberAssigner taskId={task.id} boardId={boardId} />
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_members")}</p>
-            )}
-          </TabsContent>
+        {section === "members" && (
+          boardId ? (
+            <TaskMemberAssigner taskId={task.id} boardId={boardId} />
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_members")}</p>
+          )
+        )}
 
-          {/* COMMENTS */}
-          <TabsContent value="comments" className="p-4 space-y-3">
+        {section === "comments" && (
+          <div className="space-y-3">
             <div className="space-y-2">
               {(comments || []).map(c => (
                 <div key={c.id} className="rounded-lg border bg-muted/30 p-3 group relative">
@@ -263,20 +295,20 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-          </TabsContent>
+          </div>
+        )}
 
-          {/* TIME */}
-          <TabsContent value="time" className="p-4 space-y-3">
+        {section === "time" && (
+          <div className="space-y-3">
             <div className="rounded-lg border bg-primary/5 p-3">
               <div className="text-xs text-muted-foreground">{t("kanban.total_tracked", "Total registrado")}</div>
-              <div className="text-2xl font-bold text-primary">{fmtHM(task.total_tracked_seconds || 0)}</div>
+              <div className="text-2xl font-bold text-primary">{fmtHM(totalSec)}</div>
               {task.estimated_minutes && (
                 <div className="text-xs text-muted-foreground mt-1">
                   {t("kanban.of_estimated", "de {{est}} estimado", { est: fmtHM(task.estimated_minutes * 60) })}
                 </div>
               )}
             </div>
-
             <div className="space-y-2">
               <Label>{t("kanban.log_time", "Registrar tempo manual (min)")}</Label>
               <div className="flex gap-2">
@@ -287,7 +319,6 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
                 }}>{t("common.add", "Adicionar")}</Button>
               </div>
             </div>
-
             <div className="space-y-1.5 pt-2 border-t">
               <div className="text-xs text-muted-foreground">{t("kanban.history", "Histórico")}</div>
               {(timeLogs || []).map(l => (
@@ -298,8 +329,40 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
               ))}
               {!timeLogs?.length && <p className="text-xs text-muted-foreground text-center py-3">{t("kanban.no_logs", "Nenhum registro ainda")}</p>}
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <Sheet open={!!task} onOpenChange={o => !o && onClose()}>
+      <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto p-0">
+        <div className="p-4 border-b sticky top-0 bg-background z-10">
+          <SheetHeader className="mb-3">
+            <SheetTitle asChild>
+              <Input value={title} onChange={e => setTitle(e.target.value)} onBlur={saveTitle}
+                className="text-lg font-semibold h-auto border-0 shadow-none focus-visible:ring-0 px-0" />
+            </SheetTitle>
+          </SheetHeader>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <PriorityBadge priority={task.priority} />
+            {taskMembers.length > 0 && (
+              <MemberAvatars members={taskMembers} size="xs" max={4} />
+            )}
+            {task.project_id && !task.is_completed && (
+              <Button size="sm" onClick={() => onStartTimer(task)} disabled={hasActiveTimer} className="ms-auto">
+                <Play className="h-3.5 w-3.5 me-1" />{t("kanban.start_focus")}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="p-4">
+          {renderTiles()}
+          {renderSection()}
+        </div>
       </SheetContent>
     </Sheet>
   );
