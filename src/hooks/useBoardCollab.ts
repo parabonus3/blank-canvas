@@ -397,8 +397,8 @@ export function useActiveTaskWorkers(boardId: string | undefined) {
   useEffect(() => {
     if (!boardId) return;
     const ch = supabase
-      .channel(`active-workers-${boardId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "time_entries" }, () => {
+      .channel(`active-workers-${boardId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "time_entries" }, () => {
         qc.invalidateQueries({ queryKey: ["active_task_workers", boardId] });
       })
       .subscribe();
