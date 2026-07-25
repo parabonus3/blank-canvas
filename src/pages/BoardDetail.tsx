@@ -272,20 +272,38 @@ export default function BoardDetail() {
               {t("kanban.shared")}
             </span>
           )}
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setMembersOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card hover:bg-muted transition-colors px-2 py-1 shrink-0"
-            aria-label={t("kanban.manage_members") as string}
+            className="shrink-0 gap-1.5 border-primary/40 text-primary hover:bg-primary/10 hover:text-primary"
           >
-            {boardMembers.length > 0 ? (
+            {boardMembers.length > 1 ? (
               <MemberAvatars members={boardMembers} size="xs" max={3} />
             ) : (
-              <Users className="h-3.5 w-3.5" />
+              <Users className="h-4 w-4" />
             )}
-            <span className="text-xs font-medium">{boardMembers.length}</span>
-          </button>
+            <span className="text-xs font-semibold">
+              {boardMembers.length > 1
+                ? t("kanban.members_count", "{{n}} membros", { n: boardMembers.length })
+                : t("kanban.invite_cta", "Convidar")}
+            </span>
+          </Button>
         </div>
+
+        {/* Empty team hint */}
+        {isOwner && boardMembers.length <= 1 && (
+          <div className="flex items-center gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 px-3 py-2.5">
+            <Users className="h-4 w-4 text-primary shrink-0" />
+            <p className="text-xs sm:text-sm text-foreground/90 flex-1 min-w-0">
+              {t("kanban.empty_team_hint", "Trabalhe em equipe: convide alguém para colaborar neste quadro.")}
+            </p>
+            <Button size="sm" variant="default" className="shrink-0" onClick={() => setMembersOpen(true)}>
+              {t("kanban.invite_cta", "Convidar")}
+            </Button>
+          </div>
+        )}
+
 
         <Tabs defaultValue="board" className="w-full">
           <TabsList className="grid w-full grid-cols-3 max-w-md">

@@ -53,8 +53,14 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader className="mb-4">
-          <SheetTitle>{t("kanban.manage_members")}</SheetTitle>
+          <SheetTitle>
+            {t("kanban.manage_members")}
+            {members.length > 0 && (
+              <span className="ms-2 text-sm font-normal text-muted-foreground">({members.length})</span>
+            )}
+          </SheetTitle>
         </SheetHeader>
+
 
         <div className="space-y-5">
           {/* Your friend code */}
