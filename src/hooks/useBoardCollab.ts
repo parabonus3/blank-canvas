@@ -132,8 +132,8 @@ export function useBoardMembers(boardId: string | undefined) {
   useEffect(() => {
     if (!boardId) return;
     const ch = supabase
-      .channel(`board-members-${boardId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "board_members", filter: `board_id=eq.${boardId}` }, () => {
+      .channel(`board-members-${boardId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "board_members", filter: `board_id=eq.${boardId}` }, () => {
         qc.invalidateQueries({ queryKey: ["board_members", boardId] });
       })
       .subscribe();
@@ -213,8 +213,8 @@ export function useMyBoardInvitations() {
   useEffect(() => {
     if (!user) return;
     const ch = supabase
-      .channel(`board-invitations-${user.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "board_invitations", filter: `invitee_id=eq.${user.id}` }, () => {
+      .channel(`board-invitations-${user.id}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "board_invitations", filter: `invitee_id=eq.${user.id}` }, () => {
         qc.invalidateQueries({ queryKey: ["my_board_invitations", user.id] });
         qc.invalidateQueries({ queryKey: ["boards"] });
       })
@@ -285,8 +285,8 @@ export function useTaskMembers(taskId: string | undefined) {
   useEffect(() => {
     if (!taskId) return;
     const ch = supabase
-      .channel(`task-members-${taskId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "task_members", filter: `task_id=eq.${taskId}` }, () => {
+      .channel(`task-members-${taskId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "task_members", filter: `task_id=eq.${taskId}` }, () => {
         qc.invalidateQueries({ queryKey: ["task_members", taskId] });
       })
       .subscribe();
@@ -397,8 +397,8 @@ export function useActiveTaskWorkers(boardId: string | undefined) {
   useEffect(() => {
     if (!boardId) return;
     const ch = supabase
-      .channel(`active-workers-${boardId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "time_entries" }, () => {
+      .channel(`active-workers-${boardId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "time_entries" }, () => {
         qc.invalidateQueries({ queryKey: ["active_task_workers", boardId] });
       })
       .subscribe();
