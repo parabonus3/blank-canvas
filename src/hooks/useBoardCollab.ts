@@ -285,8 +285,8 @@ export function useTaskMembers(taskId: string | undefined) {
   useEffect(() => {
     if (!taskId) return;
     const ch = supabase
-      .channel(`task-members-${taskId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "task_members", filter: `task_id=eq.${taskId}` }, () => {
+      .channel(`task-members-${taskId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "task_members", filter: `task_id=eq.${taskId}` }, () => {
         qc.invalidateQueries({ queryKey: ["task_members", taskId] });
       })
       .subscribe();
