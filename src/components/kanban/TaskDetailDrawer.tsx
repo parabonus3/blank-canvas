@@ -285,18 +285,35 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
         {section === "comments" && (
           <div className="space-y-3">
             <div className="space-y-2">
-              {(comments || []).map(c => (
-                <div key={c.id} className="rounded-lg border bg-muted/30 p-3 group relative">
-                  <p className="text-sm whitespace-pre-wrap">{c.content}</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-[10px] text-muted-foreground">{format(new Date(c.created_at), "dd/MM HH:mm")}</span>
-                    <Button size="icon" variant="ghost" className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                      onClick={() => deleteComment.mutate({ id: c.id, task_id: task.id })}>
-                      <Trash2 className="h-3 w-3 text-destructive" />
-                    </Button>
+              {(comments || []).map(c => {
+                const isMine = c.user_id === user?.id;
+                const initials = (c.display_name || "?").trim().slice(0, 2).toUpperCase();
+                return (
+                  <div key={c.id} className="flex gap-2 group">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      {c.avatar_url && <AvatarImage src={c.avatar_url} />}
+                      <AvatarFallback className="bg-primary/20 text-primary text-xs">{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0 rounded-lg border bg-muted/30 p-2.5">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-xs font-semibold truncate">
+                          {isMine ? t("kanban.comment_you", "Você") : (c.display_name || "—")}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: dateLocale })}
+                        </span>
+                        {isMine && (
+                          <Button size="icon" variant="ghost" className="h-6 w-6 ms-auto opacity-0 group-hover:opacity-100"
+                            onClick={() => deleteComment.mutate({ id: c.id, task_id: task.id })}>
+                            <Trash2 className="h-3 w-3 text-destructive" />
+                          </Button>
+                        )}
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap break-words">{c.content}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {!comments?.length && <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_comments", "Nenhum comentário ainda")}</p>}
             </div>
             <div className="flex gap-2">
