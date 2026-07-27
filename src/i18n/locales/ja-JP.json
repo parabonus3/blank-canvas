@@ -2460,6 +2460,15 @@
     "report_time": "時間",
     "report_by_column": "列別",
     "report_by_priority": "優先度別",
-    "manage_members": "メンバー管理"
+    "manage_members": "メンバー管理",
+    "invite_friends": "友達を招待",
+    "no_friends_yet": "まだ友達がいません。先に友達タブで友達を追加してください。",
+    "friend_status_member": "既にメンバー",
+    "friend_status_invited": "招待保留中",
+    "friend_status_not_invited": "未招待",
+    "cancel_invite": "キャンセル",
+    "invite_by_code_advanced": "友達コードで招待",
+    "comment_you": "あなた",
+    "back_to_shortcuts": "ショートカットに戻る"
   }
 }

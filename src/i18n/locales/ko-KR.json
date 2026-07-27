@@ -2446,6 +2446,15 @@
     "report_time": "시간",
     "report_by_column": "열별",
     "report_by_priority": "우선순위별",
-    "manage_members": "멤버 관리"
+    "manage_members": "멤버 관리",
+    "invite_friends": "친구 초대",
+    "no_friends_yet": "아직 친구가 없습니다. 먼저 친구 탭에서 친구를 추가하세요.",
+    "friend_status_member": "이미 멤버",
+    "friend_status_invited": "초대 대기 중",
+    "friend_status_not_invited": "초대되지 않음",
+    "cancel_invite": "취소",
+    "invite_by_code_advanced": "친구 코드로 초대",
+    "comment_you": "당신",
+    "back_to_shortcuts": "바로가기로 돌아가기"
   }
 }

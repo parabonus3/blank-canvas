@@ -2460,6 +2460,15 @@
     "report_time": "时间",
     "report_by_column": "按列",
     "report_by_priority": "按优先级",
-    "manage_members": "管理成员"
+    "manage_members": "管理成员",
+    "invite_friends": "邀请朋友",
+    "no_friends_yet": "你还没有朋友。请先在朋友标签页添加朋友。",
+    "friend_status_member": "已是成员",
+    "friend_status_invited": "邀请待处理",
+    "friend_status_not_invited": "未邀请",
+    "cancel_invite": "取消",
+    "invite_by_code_advanced": "通过好友代码邀请",
+    "comment_you": "你",
+    "back_to_shortcuts": "返回快捷方式"
   }
 }

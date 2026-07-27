@@ -2446,6 +2446,15 @@
     "report_time": "Время",
     "report_by_column": "По колонкам",
     "report_by_priority": "По приоритету",
-    "manage_members": "Управление участниками"
+    "manage_members": "Управление участниками",
+    "invite_friends": "Пригласить друзей",
+    "no_friends_yet": "У вас пока нет друзей. Сначала добавьте друзей во вкладке Друзья.",
+    "friend_status_member": "Уже участник",
+    "friend_status_invited": "Приглашение отправлено",
+    "friend_status_not_invited": "Не приглашён",
+    "cancel_invite": "Отменить",
+    "invite_by_code_advanced": "Пригласить по коду друга",
+    "comment_you": "Вы",
+    "back_to_shortcuts": "Назад к ярлыкам"
   }
 }
