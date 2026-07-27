@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react";
 
 export interface TaskComment {
   id: string;
@@ -9,19 +10,54 @@ export interface TaskComment {
   content: string;
   created_at: string;
   updated_at: string;
+  display_name: string | null;
+  avatar_url: string | null;
 }
 
 export function useTaskComments(taskId: string | undefined) {
-  return useQuery({
+  const qc = useQueryClient();
+
+  const query = useQuery({
     queryKey: ["task_comments", taskId],
     queryFn: async () => {
-      if (!taskId) return [];
-      const { data, error } = await supabase.from("task_comments").select("*").eq("task_id", taskId).order("created_at");
+      if (!taskId) return [] as TaskComment[];
+      const { data, error } = await supabase
+        .from("task_comments")
+        .select("*")
+        .eq("task_id", taskId)
+        .order("created_at");
       if (error) throw error;
-      return (data || []) as TaskComment[];
+      const rows = (data || []) as any[];
+      if (!rows.length) return [] as TaskComment[];
+      const uids = Array.from(new Set(rows.map(r => r.user_id)));
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, display_name, avatar_url")
+        .in("user_id", uids);
+      const pmap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+      return rows.map(r => ({
+        ...r,
+        display_name: pmap.get(r.user_id)?.display_name || null,
+        avatar_url: pmap.get(r.user_id)?.avatar_url || null,
+      })) as TaskComment[];
     },
     enabled: !!taskId,
   });
+
+  useEffect(() => {
+    if (!taskId) return;
+    const ch = supabase
+      .channel(`task-comments-${taskId}-${Math.random().toString(36).slice(2)}`)
+      .on(
+        "postgres_changes" as any,
+        { event: "*", schema: "public", table: "task_comments", filter: `task_id=eq.${taskId}` },
+        () => qc.invalidateQueries({ queryKey: ["task_comments", taskId] })
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [taskId, qc]);
+
+  return query;
 }
 
 export function useAddComment() {
@@ -30,7 +66,11 @@ export function useAddComment() {
   return useMutation({
     mutationFn: async ({ task_id, content }: { task_id: string; content: string }) => {
       if (!user) throw new Error("Not authenticated");
-      const { data, error } = await supabase.from("task_comments").insert({ task_id, user_id: user.id, content }).select().single();
+      const { data, error } = await supabase
+        .from("task_comments")
+        .insert({ task_id, user_id: user.id, content })
+        .select()
+        .single();
       if (error) throw error;
       return data;
     },

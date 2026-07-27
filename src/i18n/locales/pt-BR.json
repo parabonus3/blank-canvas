@@ -2610,6 +2610,15 @@
     "report_time": "Tempo",
     "report_by_column": "Por coluna",
     "report_by_priority": "Por prioridade",
-    "manage_members": "Gerenciar membros"
+    "manage_members": "Gerenciar membros",
+    "invite_friends": "Convidar amigos",
+    "no_friends_yet": "Você ainda não tem amigos. Adicione amigos na aba Amigos primeiro.",
+    "friend_status_member": "Já é membro",
+    "friend_status_invited": "Convite pendente",
+    "friend_status_not_invited": "Não convidado",
+    "cancel_invite": "Cancelar",
+    "invite_by_code_advanced": "Convidar por código de amigo",
+    "comment_you": "Você",
+    "back_to_shortcuts": "Voltar aos atalhos"
   }
 }

@@ -2460,6 +2460,15 @@
     "report_time": "Temps",
     "report_by_column": "Par colonne",
     "report_by_priority": "Par priorité",
-    "manage_members": "Gérer les membres"
+    "manage_members": "Gérer les membres",
+    "invite_friends": "Inviter des amis",
+    "no_friends_yet": "Vous n'avez pas encore d'amis. Ajoutez des amis dans l'onglet Amis d'abord.",
+    "friend_status_member": "Déjà membre",
+    "friend_status_invited": "Invitation en attente",
+    "friend_status_not_invited": "Non invité",
+    "cancel_invite": "Annuler",
+    "invite_by_code_advanced": "Inviter par code ami",
+    "comment_you": "Vous",
+    "back_to_shortcuts": "Retour aux raccourcis"
   }
 }

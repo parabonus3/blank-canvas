@@ -257,6 +257,88 @@ export function useRejectBoardInvitation() {
   });
 }
 
+/** Pending invitations sent by the current user for a specific board. */
+export function useBoardOutgoingInvitations(boardId: string | undefined) {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ["board_outgoing_invitations", boardId, user?.id],
+    queryFn: async () => {
+      if (!boardId || !user) return [] as { id: string; invitee_id: string; status: string }[];
+      const { data, error } = await (supabase as any)
+        .from("board_invitations")
+        .select("id, invitee_id, status")
+        .eq("board_id", boardId)
+        .eq("inviter_id", user.id)
+        .eq("status", "pending");
+      if (error) throw error;
+      return (data || []) as { id: string; invitee_id: string; status: string }[];
+    },
+    enabled: !!boardId && !!user,
+  });
+
+  useEffect(() => {
+    if (!boardId) return;
+    const ch = supabase
+      .channel(`board-out-invites-${boardId}-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes" as any, { event: "*", schema: "public", table: "board_invitations", filter: `board_id=eq.${boardId}` }, () => {
+        qc.invalidateQueries({ queryKey: ["board_outgoing_invitations", boardId] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [boardId, qc]);
+
+  return query;
+}
+
+export function useCancelBoardInvitation() {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ invitationId }: { invitationId: string; boardId: string }) => {
+      const { error } = await (supabase as any)
+        .from("board_invitations")
+        .update({ status: "cancelled" })
+        .eq("id", invitationId);
+      if (error) throw error;
+    },
+    onSuccess: (_, v) => {
+      qc.invalidateQueries({ queryKey: ["board_outgoing_invitations", v.boardId] });
+    },
+    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+  });
+}
+
+/** Invite by user_id directly (looks up friend_code and calls RPC). */
+export function useInviteFriendToBoard() {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ boardId, userId }: { boardId: string; userId: string }) => {
+      const { data: profile, error: pErr } = await supabase
+        .from("profiles")
+        .select("friend_code")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (pErr) throw pErr;
+      if (!profile?.friend_code) throw new Error("Friend code not found");
+      const { data, error } = await (supabase as any).rpc("invite_to_board_by_code", {
+        _board_id: boardId,
+        _friend_code: profile.friend_code,
+      });
+      if (error) throw error;
+      return data as string;
+    },
+    onSuccess: (_, v) => {
+      qc.invalidateQueries({ queryKey: ["board_outgoing_invitations", v.boardId] });
+      qc.invalidateQueries({ queryKey: ["board_members", v.boardId] });
+      toast({ title: "✅ Convite enviado" });
+    },
+    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+  });
+}
+
 /** Members of a specific task, with profile info. */
 export function useTaskMembers(taskId: string | undefined) {
   const qc = useQueryClient();

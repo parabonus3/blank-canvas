@@ -1,56 +1,48 @@
+# Plano: Colaboração Kanban nível Trello (mobile-first)
 
-# Plano: Kanban de nível profissional
+## 1. Comentários com autor visível
+Hoje `TaskDetailDrawer` mostra apenas texto + timestamp — sem avatar/nome de quem comentou, e sem realtime. Quando várias pessoas comentam, ninguém sabe quem falou.
 
-Foco em 3 frentes: (1) clareza do convite/colaboração, (2) navegação da tarefa em **grid de ícones estilo "Financeiro"**, (3) lacunas que ainda faltam do plano original.
+- Buscar perfis dos autores em `useTaskComments` (join com `profiles` como já fazemos em `useBoardCollab`), retornando `display_name` + `avatar_url`.
+- Renderizar cada comentário com: avatar à esquerda, nome + horário na primeira linha, texto abaixo (padrão Trello/Slack).
+- Botão apagar só aparece para o autor do comentário.
+- Realtime: assinar `postgres_changes` em `task_comments` filtrado por `task_id`, invalidando a query (padrão dos outros hooks colaborativos).
+- Traduzir "Você" / "há X min" via `date-fns` locale já configurado.
 
-## 1. Convidar pessoas — tornar óbvio e convidativo
+## 2. Convidar amigos direto (sem código)
+Fluxo atual força o dono a copiar/colar friend code — muita fricção.
 
-Hoje o botão de membros no header do quadro é discreto (avatares pequenos + botão pequeno) e o convite se perde. Mudanças:
+- Em `BoardInviteDialog`, adicionar uma seção "Seus amigos" acima do campo de código:
+  - Lista os amigos aceitos (via `useFriendships`) com avatar + nome.
+  - Cada linha tem estado: **Membro** (já entrou, com check verde), **Convidado** (pendente, com botão "Cancelar"), ou **Convidar** (botão primário).
+  - Clicar em Convidar chama a mesma RPC `invite_to_board_by_code` usando o `friend_code` do amigo (buscado no hook) — reaproveitamos toda a infra existente, zero mudança de backend.
+- Manter o campo "Convidar por código" recolhido em um `<details>` para casos de não-amigos.
+- Adicionar hook auxiliar `useBoardInvitationsForBoard(boardId)` para o dono ver convites pendentes que ele enviou (necessário para o estado "Convidado" e para cancelar).
+- Cancelar convite = update `board_invitations.status = 'cancelled'` (o RLS de UPDATE do inviter já permite).
 
-- **Botão "Convidar" dedicado no header do quadro** (`BoardDetail.tsx`), com ícone `UserPlus`, rótulo visível no mobile (não só ícone), estilo `variant="outline"` com destaque em cor primária. Fica ao lado da pilha de avatares.
-- **Estado vazio explícito**: quando o quadro tem só o dono, exibir uma faixa fina abaixo do header — "Trabalhe em equipe: convide alguém para colaborar neste quadro" com CTA "Convidar" — que desaparece após o primeiro membro entrar.
-- **Banner de convites pendentes também dentro do BoardDetail** (não só na lista `/tasks`). Se você tem convite para este quadro específico, aparece uma faixa no topo.
-- **Sheet de convite (`BoardInviteDialog`)**: reforçar hierarquia — bloco "Seu código" em card destacado no topo com botão "Copiar" grande, bloco "Convidar por código" com input grande e botão largo, lista de membros embaixo com papel em pill colorido. Adicionar contagem "(N membros)" no título.
+## 3. Convite explícito no card da tarefa
+Na aba "Membros" da tarefa hoje só temos o `TaskMemberAssigner` (lista de membros do board). Vamos:
+- Mostrar avatares em grade (2 col mobile / 3-4 desktop) com nome abaixo, seguindo o mesmo padrão de tiles que aplicamos no drawer.
+- Membros já atribuídos ganham anel primário + check; clicar toggla atribuir/remover.
+- Se o board tem só o dono, mostrar CTA "Convidar amigos" que abre o `BoardInviteDialog`.
 
-## 2. Detalhes da tarefa — grid de ícones (padrão Financeiro)
+## 4. Diferenciais Trello ainda faltantes (mobile-first)
+Incluir nesta rodada:
+- **Editar quadro** (título, descrição, cor): dialog acionado pelo header — hoje só criamos, não editamos.
+- **Cores nas colunas**: o form atual salva `color` mas o seletor está cinza; adicionar palette de 8 cores semânticas com preview no chip da coluna.
+- **Atividade da tarefa**: seção "Atividade" (opcional para esta rodada) — pode ficar para próxima entrega se preferir manter o escopo curto.
+- **Anexos**: já temos tabela `task_attachments` + bucket. Fica para próxima rodada (avisar caso o usuário queira nesta).
 
-Substituir as `Tabs` horizontais atuais (que exigem scroll horizontal no mobile — visível no print) por um **grid de tiles com ícone em cima e nome em baixo**, igual ao exemplo de referência do "Financeiro".
+## 5. i18n
+Novas chaves em 12 idiomas via script:
+- `kanban.invite_friends`, `kanban.friends_on_board`, `kanban.friend_status_member`, `kanban.friend_status_invited`, `kanban.cancel_invite`, `kanban.no_friends_yet`, `kanban.invite_by_code_advanced`, `kanban.comment_by`, `kanban.edit_board`, `kanban.column_color`.
 
-Layout em `TaskDetailDrawer.tsx`:
+## Fora do escopo (posso encadear depois)
+Anexos com upload, seção "Atividade" com histórico de mudanças, due date reminders push, capa/cover em cards, votos/likes em comentários.
 
-```text
-[  Detalhes   ] [  Checklist ]      ← 2 col no mobile (<640px)
-[  Membros    ] [ Comentários]      ← 3 col em sm+ (Detalhes | Checklist | Membros | Comentários | Tempo | Anexos)
-[  Tempo      ] [   Anexos   ]
-```
+## Detalhes técnicos
+- Arquivos alterados: `src/hooks/useTaskComments.ts` (perfis + realtime), `src/components/kanban/TaskDetailDrawer.tsx` (comentário com autor + grid de membros), `src/components/kanban/BoardInviteDialog.tsx` (lista de amigos), `src/hooks/useBoardCollab.ts` (novo `useBoardOutgoingInvitations`, cancel action), `src/components/kanban/TaskMemberAssigner.tsx` (grid de tiles), `src/pages/BoardDetail.tsx` (dialog de editar quadro + palette), `src/hooks/useBoardColumns.ts` (garantir persistência de color), locales `*.json`.
+- Sem migrações; usamos `board_invitations.status='cancelled'` já suportado pelo RLS.
+- Realtime dos comentários segue o padrão de nome de canal único (`Math.random()`) já em uso.
 
-- Cada tile: `rounded-xl border bg-card`, ícone 20-24px no topo centralizado, rótulo abaixo, badge de contagem no canto superior direito (`0/1`, número de comentários, tempo total curto).
-- Tile ativo: `bg-primary text-primary-foreground` (mesmo destaque do "Resumo" na referência).
-- Após tocar num tile, o conteúdo da seção abre **abaixo do grid** (permanece no mesmo Sheet, sem navegação). Botão sutil "voltar aos atalhos" no topo da seção para colapsar de volta ao grid.
-- No desktop (sm+), o grid vira 3 colunas e o conteúdo aparece ao lado (grid `sm:grid-cols-[180px_1fr]`), preservando fluidez.
-- Manter os mesmos ids/tradução das abas (`kanban.tab_details`, `tab_checklist`, `tab_members`, `tab_comments`, `tab_time`) e adicionar `tab_attachments`.
-
-## 3. Lacunas ainda em aberto do plano Kanban
-
-Verificado no código atual:
-
-- **Anexos**: tabela `task_attachments` já existe no banco, mas não há UI. Adicionar aba "Anexos" no novo grid, com upload para storage (bucket `task-attachments` a criar) — apenas frontend + criação de bucket, sem mexer em lógica de negócio.
-- **Descrição/edição do quadro**: hoje só criamos quadros; falta editar título, descrição, cor e projeto vinculado depois. Adicionar item "Editar quadro" no `DropdownMenu` do card em `Tasks.tsx` e um dialog reutilizando o formulário de criação.
-- **Paleta de cores da coluna**: usuário reportou que sai cinza. Auditar `useCreateColumn`/`useUpdateColumn`: garantir que o color-picker aplique um valor default vívido (ex.: `#3b82f6`) e mostrar swatches no diálogo de criação — não só no de edição.
-- **Cores extras do quadro**: já temos 16 cores em `BOARD_COLORS`, mas o modal só mostra uma linha apertada. Reorganizar em grid 8×2 com preview do banner colorido em tempo real.
-- **Indicador "quem está focando"** já existe no `TaskCard`; adicionar contraparte discreta na **coluna** (badge "N focando" no header da coluna) para o dono do quadro ver atividade agregada.
-- **i18n**: adicionar chaves novas (`kanban.invite_cta`, `kanban.empty_team_hint`, `kanban.tab_attachments`, `kanban.edit_board`, `kanban.tile_*`) em todos os 12 locales.
-
-## Arquivos afetados
-
-- `src/components/kanban/TaskDetailDrawer.tsx` — substituir `Tabs` por grid de tiles + seção expandível.
-- `src/components/kanban/BoardInviteDialog.tsx` — hierarquia visual do Sheet.
-- `src/pages/BoardDetail.tsx` — botão "Convidar" destacado, faixa de estado vazio, banner de convites pendentes escopado.
-- `src/pages/Tasks.tsx` — item "Editar quadro" no menu + dialog de edição.
-- `src/components/kanban/TaskAttachments.tsx` (novo) — upload/listar anexos.
-- `supabase/migrations/*` — criar bucket `task-attachments` com políticas por `board_members`.
-- `src/i18n/locales/*.json` — 12 idiomas.
-
-## Fora de escopo (evitar quebrar o que funciona)
-
-- Não vou mexer no DnD do quadro, no `useTasks`, nas RPCs de colaboração nem no rastreamento de tempo — tudo isso continua igual. A mudança é 100% de UI/UX e uma tabela de anexos que já existe.
+Me confirma se quer que eu inclua "Editar quadro" + "Cores nas colunas" nesta mesma leva, ou prefere que eu fique só nos itens 1–3 (comentários + convite de amigos) primeiro?

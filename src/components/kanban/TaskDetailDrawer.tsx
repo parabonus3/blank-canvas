@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUpdateTask, useDeleteTask, type Task, type TaskPriority } from "@/hooks/useTasks";
 import { useTaskChecklists, useCreateChecklistItem, useToggleChecklistItem, useDeleteChecklistItem } from "@/hooks/useTaskChecklists";
 import { useTaskComments, useAddComment, useDeleteComment } from "@/hooks/useTaskComments";
 import { useTaskLabels, useAddLabel, useRemoveLabel } from "@/hooks/useTaskLabels";
 import { useTaskTimeLogs, useAddTimeLog } from "@/hooks/useTaskTimeLogs";
 import { useProjects } from "@/hooks/useProjects";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
   Users, FileText, ChevronLeft,
@@ -22,8 +24,15 @@ import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
 import { useTaskMembers } from "@/hooks/useBoardCollab";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import { ptBR, enUS, es, fr, de, it, ja, ko, zhCN, ru, ar, id as idLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+
+const DATE_LOCALES: Record<string, any> = {
+  "pt-BR": ptBR, "en-US": enUS, "es-ES": es, "fr-FR": fr, "de-DE": de,
+  "it-IT": it, "ja-JP": ja, "ko-KR": ko, "zh-CN": zhCN, "ru-RU": ru,
+  "ar-SA": ar, "id-ID": idLocale,
+};
 
 const LABEL_COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f97316", "#22c55e", "#06b6d4", "#eab308", "#ef4444"];
 
@@ -49,7 +58,9 @@ interface Props {
 type SectionId = "details" | "checklist" | "members" | "comments" | "time";
 
 export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const dateLocale = DATE_LOCALES[i18n.language] || enUS;
   const { data: projects } = useProjects();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
@@ -274,18 +285,35 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
         {section === "comments" && (
           <div className="space-y-3">
             <div className="space-y-2">
-              {(comments || []).map(c => (
-                <div key={c.id} className="rounded-lg border bg-muted/30 p-3 group relative">
-                  <p className="text-sm whitespace-pre-wrap">{c.content}</p>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-[10px] text-muted-foreground">{format(new Date(c.created_at), "dd/MM HH:mm")}</span>
-                    <Button size="icon" variant="ghost" className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                      onClick={() => deleteComment.mutate({ id: c.id, task_id: task.id })}>
-                      <Trash2 className="h-3 w-3 text-destructive" />
-                    </Button>
+              {(comments || []).map(c => {
+                const isMine = c.user_id === user?.id;
+                const initials = (c.display_name || "?").trim().slice(0, 2).toUpperCase();
+                return (
+                  <div key={c.id} className="flex gap-2 group">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      {c.avatar_url && <AvatarImage src={c.avatar_url} />}
+                      <AvatarFallback className="bg-primary/20 text-primary text-xs">{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0 rounded-lg border bg-muted/30 p-2.5">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-xs font-semibold truncate">
+                          {isMine ? t("kanban.comment_you", "Você") : (c.display_name || "—")}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: dateLocale })}
+                        </span>
+                        {isMine && (
+                          <Button size="icon" variant="ghost" className="h-6 w-6 ms-auto opacity-0 group-hover:opacity-100"
+                            onClick={() => deleteComment.mutate({ id: c.id, task_id: task.id })}>
+                            <Trash2 className="h-3 w-3 text-destructive" />
+                          </Button>
+                        )}
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap break-words">{c.content}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {!comments?.length && <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_comments", "Nenhum comentário ainda")}</p>}
             </div>
             <div className="flex gap-2">
