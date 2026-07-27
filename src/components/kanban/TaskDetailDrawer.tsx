@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUpdateTask, useDeleteTask, type Task, type TaskPriority } from "@/hooks/useTasks";
 import { useTaskChecklists, useCreateChecklistItem, useToggleChecklistItem, useDeleteChecklistItem } from "@/hooks/useTaskChecklists";
 import { useTaskComments, useAddComment, useDeleteComment } from "@/hooks/useTaskComments";
 import { useTaskLabels, useAddLabel, useRemoveLabel } from "@/hooks/useTaskLabels";
 import { useTaskTimeLogs, useAddTimeLog } from "@/hooks/useTaskTimeLogs";
 import { useProjects } from "@/hooks/useProjects";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
   Users, FileText, ChevronLeft,
@@ -22,8 +24,15 @@ import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
 import { useTaskMembers } from "@/hooks/useBoardCollab";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import { ptBR, enUS, es, fr, de, it, ja, ko, zhCN, ru, ar, id as idLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+
+const DATE_LOCALES: Record<string, any> = {
+  "pt-BR": ptBR, "en-US": enUS, "es-ES": es, "fr-FR": fr, "de-DE": de,
+  "it-IT": it, "ja-JP": ja, "ko-KR": ko, "zh-CN": zhCN, "ru-RU": ru,
+  "ar-SA": ar, "id-ID": idLocale,
+};
 
 const LABEL_COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f97316", "#22c55e", "#06b6d4", "#eab308", "#ef4444"];
 
