@@ -58,7 +58,9 @@ interface Props {
 type SectionId = "details" | "checklist" | "members" | "comments" | "time";
 
 export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const dateLocale = DATE_LOCALES[i18n.language] || enUS;
   const { data: projects } = useProjects();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
