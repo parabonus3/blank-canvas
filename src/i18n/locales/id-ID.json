@@ -2469,6 +2469,10 @@
     "cancel_invite": "Batal",
     "invite_by_code_advanced": "Undang dengan kode teman",
     "comment_you": "Anda",
-    "back_to_shortcuts": "Kembali ke pintasan"
+    "back_to_shortcuts": "Kembali ke pintasan",
+    "role_editor": "Editor",
+    "role_viewer": "Pengamat",
+    "checklist_done_by": "Diselesaikan oleh {{name}}",
+    "checklist_created_by": "Dibuat oleh {{name}}"
   }
 }

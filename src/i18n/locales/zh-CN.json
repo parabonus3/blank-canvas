@@ -2469,6 +2469,10 @@
     "cancel_invite": "取消",
     "invite_by_code_advanced": "通过好友代码邀请",
     "comment_you": "你",
-    "back_to_shortcuts": "返回快捷方式"
+    "back_to_shortcuts": "返回快捷方式",
+    "role_editor": "编辑者",
+    "role_viewer": "查看者",
+    "checklist_done_by": "由 {{name}} 完成",
+    "checklist_created_by": "由 {{name}} 创建"
   }
 }

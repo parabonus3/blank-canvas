@@ -2455,6 +2455,10 @@
     "cancel_invite": "Отменить",
     "invite_by_code_advanced": "Пригласить по коду друга",
     "comment_you": "Вы",
-    "back_to_shortcuts": "Назад к ярлыкам"
+    "back_to_shortcuts": "Назад к ярлыкам",
+    "role_editor": "Редактор",
+    "role_viewer": "Наблюдатель",
+    "checklist_done_by": "Выполнил {{name}}",
+    "checklist_created_by": "Создал {{name}}"
   }
 }

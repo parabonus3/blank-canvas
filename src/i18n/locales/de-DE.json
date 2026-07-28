@@ -2469,6 +2469,10 @@
     "cancel_invite": "Abbrechen",
     "invite_by_code_advanced": "Per Freundescode einladen",
     "comment_you": "Du",
-    "back_to_shortcuts": "Zurück zu Verknüpfungen"
+    "back_to_shortcuts": "Zurück zu Verknüpfungen",
+    "role_editor": "Bearbeiter",
+    "role_viewer": "Betrachter",
+    "checklist_done_by": "Erledigt von {{name}}",
+    "checklist_created_by": "Erstellt von {{name}}"
   }
 }

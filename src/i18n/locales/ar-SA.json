@@ -2455,6 +2455,10 @@
     "cancel_invite": "إلغاء",
     "invite_by_code_advanced": "دعوة برمز صديق",
     "comment_you": "أنت",
-    "back_to_shortcuts": "العودة إلى الاختصارات"
+    "back_to_shortcuts": "العودة إلى الاختصارات",
+    "role_editor": "محرر",
+    "role_viewer": "مشاهد",
+    "checklist_done_by": "أكمله {{name}}",
+    "checklist_created_by": "أنشأه {{name}}"
   }
 }

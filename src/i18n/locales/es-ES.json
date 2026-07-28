@@ -2476,6 +2476,10 @@
     "cancel_invite": "Cancelar",
     "invite_by_code_advanced": "Invitar por código de amigo",
     "comment_you": "Tú",
-    "back_to_shortcuts": "Volver a los atajos"
+    "back_to_shortcuts": "Volver a los atajos",
+    "role_editor": "Editor",
+    "role_viewer": "Espectador",
+    "checklist_done_by": "Completado por {{name}}",
+    "checklist_created_by": "Creado por {{name}}"
   }
 }
