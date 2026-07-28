@@ -1749,6 +1749,8 @@ export type Database = {
       }
       task_checklists: {
         Row: {
+          completed_at: string | null
+          completed_by: string | null
           created_at: string
           id: string
           is_completed: boolean
@@ -1759,6 +1761,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          completed_at?: string | null
+          completed_by?: string | null
           created_at?: string
           id?: string
           is_completed?: boolean
@@ -1769,6 +1773,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          completed_at?: string | null
+          completed_by?: string | null
           created_at?: string
           id?: string
           is_completed?: boolean
@@ -2290,6 +2296,14 @@ export type Database = {
         Returns: boolean
       }
       can_access_task: {
+        Args: { _task_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_edit_board: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_edit_task: {
         Args: { _task_id: string; _user_id: string }
         Returns: boolean
       }
