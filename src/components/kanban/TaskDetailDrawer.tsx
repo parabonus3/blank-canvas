@@ -24,6 +24,8 @@ import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
 import { useTaskMembers } from "@/hooks/useBoardCollab";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR, enUS, es, fr, de, it, ja, ko, zhCN, ru, ar, id as idLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -253,14 +255,13 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
             )}
             <div className="space-y-1.5">
               {(checklists || []).map(item => (
-                <div key={item.id} className="flex items-center gap-2 group">
-                  <Checkbox checked={item.is_completed} onCheckedChange={() => toggleCheck.mutate({ id: item.id, is_completed: !item.is_completed })} />
-                  <span className={cn("flex-1 text-sm", item.is_completed && "line-through text-muted-foreground")}>{item.title}</span>
-                  <Button size="icon" variant="ghost" className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                    onClick={() => deleteCheck.mutate({ id: item.id, task_id: task.id })}>
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
-                </div>
+                <ChecklistRow
+                  key={item.id}
+                  item={item}
+                  onToggle={() => toggleCheck.mutate({ id: item.id, is_completed: !item.is_completed })}
+                  onDelete={() => deleteCheck.mutate({ id: item.id, task_id: task.id })}
+                  dateLocale={dateLocale}
+                />
               ))}
             </div>
             <div className="flex gap-2">

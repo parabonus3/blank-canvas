@@ -65,6 +65,7 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
   const inviteFriend = useInviteFriendToBoard();
   const cancelInvite = useCancelBoardInvitation();
   const removeMember = useRemoveBoardMember();
+  const updateRole = useUpdateBoardMemberRole();
 
   const friendIds = accepted.map(f => getFriendUserId(f)).filter(Boolean);
   const { data: friendProfiles } = useProfilesByIds(friendIds);
@@ -233,6 +234,7 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
             <div className="space-y-1.5 max-h-[50vh] overflow-y-auto">
               {members.map((m) => {
                 const initials = (m.display_name || "?").trim().slice(0, 2).toUpperCase();
+                const isOwnerRow = m.role === "owner";
                 return (
                   <div key={m.id} className="flex items-center gap-2 p-2 rounded-md border bg-card/50">
                     <Avatar className="h-9 w-9">
@@ -242,22 +244,36 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium truncate flex items-center gap-1.5">
                         {m.display_name || "—"}
-                        {m.role === "owner" && <Crown className="h-3 w-3 text-yellow-500" />}
+                        {isOwnerRow && <Crown className="h-3 w-3 text-yellow-500" />}
                       </div>
                       <div className="text-[10px] text-muted-foreground uppercase tracking-wide">
                         {t(`kanban.member_role_${m.role}`, m.role)}
                       </div>
                     </div>
-                    {isOwner && m.role !== "owner" && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => removeMember.mutate({ memberId: m.id, boardId })}
-                        aria-label={t("kanban.remove_member") as string}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                    {isOwner && !isOwnerRow && (
+                      <>
+                        <Select
+                          value={m.role === "viewer" ? "viewer" : "editor"}
+                          onValueChange={(v) => updateRole.mutate({ memberId: m.id, role: v as "editor" | "viewer", boardId })}
+                        >
+                          <SelectTrigger className="h-8 w-[110px] text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="editor">{t("kanban.role_editor", "Editor")}</SelectItem>
+                            <SelectItem value="viewer">{t("kanban.role_viewer", "Visualizador")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => removeMember.mutate({ memberId: m.id, boardId })}
+                          aria-label={t("kanban.remove_member") as string}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </>
                     )}
                   </div>
                 );
