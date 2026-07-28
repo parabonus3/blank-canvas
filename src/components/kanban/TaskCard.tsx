@@ -76,6 +76,19 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           </h4>
         </div>
 
+        {/* Checklist progress bar */}
+        {checkTotal > 0 && (
+          <div className="h-1 bg-muted rounded-full overflow-hidden">
+            <div
+              className={cn(
+                "h-full transition-all",
+                checkDone === checkTotal ? "bg-green-500" : "bg-primary"
+              )}
+              style={{ width: `${Math.round((checkDone / checkTotal) * 100)}%` }}
+            />
+          </div>
+        )}
+
         {/* Meta */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {task.priority !== "medium" && <PriorityBadge priority={task.priority} size="xs" />}
@@ -83,7 +96,9 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           {checkTotal > 0 && (
             <span className={cn(
               "inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border",
-              checkDone === checkTotal ? "text-green-500 border-green-500/30 bg-green-500/10" : "text-muted-foreground border-border bg-muted"
+              checkDone === checkTotal
+                ? "text-white border-green-500/50 bg-green-500"
+                : "text-muted-foreground border-border bg-muted"
             )}>
               <CheckSquare className="h-2.5 w-2.5" />{checkDone}/{checkTotal}
             </span>
