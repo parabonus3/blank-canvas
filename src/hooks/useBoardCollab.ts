@@ -4,6 +4,44 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 
+export type BoardRole = "owner" | "editor" | "viewer";
+
+/** Current user's role on a board. Returns null while loading or if not a member. */
+export function useBoardRole(boardId: string | undefined): BoardRole | null {
+  const { user } = useAuth();
+  const { data } = useQuery({
+    queryKey: ["board_role", boardId, user?.id],
+    queryFn: async (): Promise<BoardRole | null> => {
+      if (!boardId || !user) return null;
+      const { data: board } = await supabase.from("boards").select("user_id").eq("id", boardId).maybeSingle();
+      if (board?.user_id === user.id) return "owner";
+      const { data: mem } = await (supabase as any)
+        .from("board_members").select("role").eq("board_id", boardId).eq("user_id", user.id).maybeSingle();
+      const r = (mem?.role as BoardRole | undefined) ?? null;
+      if (r === "owner" || r === "editor" || r === "viewer") return r;
+      return r ? "editor" : null;
+    },
+    enabled: !!boardId && !!user,
+  });
+  return (data as BoardRole | null | undefined) ?? null;
+}
+
+export function useUpdateBoardMemberRole() {
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async ({ memberId, role }: { memberId: string; role: "editor" | "viewer"; boardId: string }) => {
+      const { error } = await (supabase as any).from("board_members").update({ role }).eq("id", memberId);
+      if (error) throw error;
+    },
+    onSuccess: (_, v) => {
+      qc.invalidateQueries({ queryKey: ["board_members", v.boardId] });
+      qc.invalidateQueries({ queryKey: ["board_role", v.boardId] });
+    },
+    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+  });
+}
+
 /** Friend code of the current user, used to share with others so they can invite you. */
 export function useMyFriendCode() {
   const { user } = useAuth();
@@ -69,13 +107,21 @@ export interface TaskMember {
 }
 
 async function fetchProfileMap(userIds: string[]) {
-  if (!userIds.length) return new Map<string, { display_name: string | null; avatar_url: string | null }>();
+  const map = new Map<string, { display_name: string | null; avatar_url: string | null }>();
+  if (!userIds.length) return map;
+  // Try direct profiles query first (works for self + tables the caller owns).
   const { data } = await supabase
     .from("profiles")
     .select("user_id, display_name, avatar_url")
     .in("user_id", userIds);
-  const map = new Map();
   (data || []).forEach((p: any) => map.set(p.user_id, { display_name: p.display_name, avatar_url: p.avatar_url }));
+  // Fall back to the public RPC for user_ids not returned (RLS strips other users' rows).
+  const missing = userIds.filter(id => !map.has(id));
+  await Promise.all(missing.map(async (uid) => {
+    const { data: rows } = await (supabase as any).rpc("get_member_public_stats", { _user_id: uid });
+    const row = Array.isArray(rows) ? rows[0] : null;
+    if (row) map.set(uid, { display_name: row.display_name ?? null, avatar_url: row.avatar_url ?? null });
+  }));
   return map;
 }
 

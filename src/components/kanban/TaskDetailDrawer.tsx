@@ -24,6 +24,8 @@ import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
 import { useTaskMembers } from "@/hooks/useBoardCollab";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR, enUS, es, fr, de, it, ja, ko, zhCN, ru, ar, id as idLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -253,14 +255,13 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
             )}
             <div className="space-y-1.5">
               {(checklists || []).map(item => (
-                <div key={item.id} className="flex items-center gap-2 group">
-                  <Checkbox checked={item.is_completed} onCheckedChange={() => toggleCheck.mutate({ id: item.id, is_completed: !item.is_completed })} />
-                  <span className={cn("flex-1 text-sm", item.is_completed && "line-through text-muted-foreground")}>{item.title}</span>
-                  <Button size="icon" variant="ghost" className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                    onClick={() => deleteCheck.mutate({ id: item.id, task_id: task.id })}>
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
-                </div>
+                <ChecklistRow
+                  key={item.id}
+                  item={item}
+                  onToggle={() => toggleCheck.mutate({ id: item.id, is_completed: !item.is_completed })}
+                  onDelete={() => deleteCheck.mutate({ id: item.id, task_id: task.id })}
+                  dateLocale={dateLocale}
+                />
               ))}
             </div>
             <div className="flex gap-2">
@@ -393,5 +394,79 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
         </div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+/** Row for a single checklist item — shows author + completion attribution. */
+function ChecklistRow({
+  item, onToggle, onDelete, dateLocale,
+}: {
+  item: { id: string; title: string; is_completed: boolean; user_id: string; completed_by: string | null; completed_at: string | null; created_at: string };
+  onToggle: () => void;
+  onDelete: () => void;
+  dateLocale: any;
+}) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const uids = Array.from(new Set([item.user_id, item.completed_by].filter(Boolean) as string[]));
+  const { data: profileMap } = useQuery({
+    queryKey: ["checklist_profiles", uids.sort().join(",")],
+    queryFn: async () => {
+      const map = new Map<string, { display_name: string | null; avatar_url: string | null }>();
+      await Promise.all(uids.map(async (uid) => {
+        const { data } = await (supabase as any).rpc("get_member_public_stats", { _user_id: uid });
+        const row = Array.isArray(data) ? data[0] : null;
+        if (row) map.set(uid, { display_name: row.display_name ?? null, avatar_url: row.avatar_url ?? null });
+      }));
+      return map;
+    },
+    enabled: uids.length > 0,
+    staleTime: 60_000,
+  });
+
+  const nameFor = (uid: string | null | undefined) => {
+    if (!uid) return null;
+    if (uid === user?.id) return t("kanban.comment_you", "Você");
+    return profileMap?.get(uid)?.display_name || "—";
+  };
+  const avatarFor = (uid: string | null | undefined) => (uid ? profileMap?.get(uid)?.avatar_url ?? null : null);
+
+  const doneBy = item.is_completed ? nameFor(item.completed_by) : null;
+  const createdBy = !item.is_completed ? nameFor(item.user_id) : null;
+  const doneAvatar = item.is_completed ? avatarFor(item.completed_by) : null;
+
+  return (
+    <div className="group rounded-md hover:bg-muted/40 transition-colors px-1.5 py-1">
+      <div className="flex items-center gap-2">
+        <Checkbox checked={item.is_completed} onCheckedChange={onToggle} />
+        <span className={cn("flex-1 text-sm", item.is_completed && "line-through text-muted-foreground")}>{item.title}</span>
+        <Button size="icon" variant="ghost" className="h-6 w-6 opacity-0 group-hover:opacity-100"
+          onClick={onDelete} aria-label={t("common.delete", "Excluir") as string}>
+          <Trash2 className="h-3 w-3 text-destructive" />
+        </Button>
+      </div>
+      {(doneBy || createdBy) && (
+        <div className="ms-6 mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          {doneBy ? (
+            <>
+              <Avatar className="h-4 w-4">
+                {doneAvatar && <AvatarImage src={doneAvatar} />}
+                <AvatarFallback className="bg-primary/20 text-primary text-[8px]">
+                  {(doneBy || "?").trim().slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="truncate">
+                {t("kanban.checklist_done_by", "Concluído por {{name}}", { name: doneBy })}
+                {item.completed_at ? ` · ${formatDistanceToNow(new Date(item.completed_at), { addSuffix: true, locale: dateLocale })}` : ""}
+              </span>
+            </>
+          ) : (
+            <span className="truncate opacity-70">
+              {t("kanban.checklist_created_by", "Criado por {{name}}", { name: createdBy })}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
   );
 }

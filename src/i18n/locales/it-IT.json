@@ -2455,6 +2455,10 @@
     "cancel_invite": "Annulla",
     "invite_by_code_advanced": "Invita tramite codice amico",
     "comment_you": "Tu",
-    "back_to_shortcuts": "Torna ai collegamenti"
+    "back_to_shortcuts": "Torna ai collegamenti",
+    "role_editor": "Editor",
+    "role_viewer": "Osservatore",
+    "checklist_done_by": "Completato da {{name}}",
+    "checklist_created_by": "Creato da {{name}}"
   }
 }

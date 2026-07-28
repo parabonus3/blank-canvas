@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trash2, Crown, UserPlus, Copy, Check, ChevronDown, Users, X, Clock } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trash2, Crown, UserPlus, Copy, Check, ChevronDown, Users, Clock } from "lucide-react";
 import {
   useBoardMembers,
   useInviteToBoard,
@@ -14,6 +15,7 @@ import {
   useBoardOutgoingInvitations,
   useCancelBoardInvitation,
   useInviteFriendToBoard,
+  useUpdateBoardMemberRole,
 } from "@/hooks/useBoardCollab";
 import { useFriendships } from "@/hooks/useFriendships";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,20 +30,23 @@ interface Props {
   isOwner: boolean;
 }
 
+/** Resolve display_name/avatar_url for a list of user_ids via the safe public RPC. */
 function useProfilesByIds(userIds: string[]) {
   return useQuery({
-    queryKey: ["profiles_by_ids", userIds.sort().join(",")],
+    queryKey: ["profiles_by_ids_rpc", userIds.sort().join(",")],
     queryFn: async () => {
-      if (!userIds.length) return new Map<string, { display_name: string | null; avatar_url: string | null }>();
-      const { data } = await supabase
-        .from("profiles")
-        .select("user_id, display_name, avatar_url")
-        .in("user_id", userIds);
       const map = new Map<string, { display_name: string | null; avatar_url: string | null }>();
-      (data || []).forEach((p: any) => map.set(p.user_id, { display_name: p.display_name, avatar_url: p.avatar_url }));
+      if (!userIds.length) return map;
+      await Promise.all(userIds.map(async (uid) => {
+        const { data } = await (supabase as any).rpc("get_member_public_stats", { _user_id: uid });
+        const row = Array.isArray(data) ? data[0] : null;
+        if (row) map.set(uid, { display_name: row.display_name ?? null, avatar_url: row.avatar_url ?? null });
+        else map.set(uid, { display_name: null, avatar_url: null });
+      }));
       return map;
     },
     enabled: userIds.length > 0,
+    staleTime: 60_000,
   });
 }
 
@@ -60,6 +65,7 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
   const inviteFriend = useInviteFriendToBoard();
   const cancelInvite = useCancelBoardInvitation();
   const removeMember = useRemoveBoardMember();
+  const updateRole = useUpdateBoardMemberRole();
 
   const friendIds = accepted.map(f => getFriendUserId(f)).filter(Boolean);
   const { data: friendProfiles } = useProfilesByIds(friendIds);
@@ -228,6 +234,7 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
             <div className="space-y-1.5 max-h-[50vh] overflow-y-auto">
               {members.map((m) => {
                 const initials = (m.display_name || "?").trim().slice(0, 2).toUpperCase();
+                const isOwnerRow = m.role === "owner";
                 return (
                   <div key={m.id} className="flex items-center gap-2 p-2 rounded-md border bg-card/50">
                     <Avatar className="h-9 w-9">
@@ -237,22 +244,36 @@ export function BoardInviteDialog({ open, onOpenChange, boardId, isOwner }: Prop
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-medium truncate flex items-center gap-1.5">
                         {m.display_name || "—"}
-                        {m.role === "owner" && <Crown className="h-3 w-3 text-yellow-500" />}
+                        {isOwnerRow && <Crown className="h-3 w-3 text-yellow-500" />}
                       </div>
                       <div className="text-[10px] text-muted-foreground uppercase tracking-wide">
                         {t(`kanban.member_role_${m.role}`, m.role)}
                       </div>
                     </div>
-                    {isOwner && m.role !== "owner" && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => removeMember.mutate({ memberId: m.id, boardId })}
-                        aria-label={t("kanban.remove_member") as string}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                    {isOwner && !isOwnerRow && (
+                      <>
+                        <Select
+                          value={m.role === "viewer" ? "viewer" : "editor"}
+                          onValueChange={(v) => updateRole.mutate({ memberId: m.id, role: v as "editor" | "viewer", boardId })}
+                        >
+                          <SelectTrigger className="h-8 w-[110px] text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="editor">{t("kanban.role_editor", "Editor")}</SelectItem>
+                            <SelectItem value="viewer">{t("kanban.role_viewer", "Visualizador")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => removeMember.mutate({ memberId: m.id, boardId })}
+                          aria-label={t("kanban.remove_member") as string}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </>
                     )}
                   </div>
                 );

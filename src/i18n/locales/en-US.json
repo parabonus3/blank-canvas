@@ -2564,6 +2564,10 @@
     "cancel_invite": "Cancel",
     "invite_by_code_advanced": "Invite by friend code",
     "comment_you": "You",
-    "back_to_shortcuts": "Back to shortcuts"
+    "back_to_shortcuts": "Back to shortcuts",
+    "role_editor": "Editor",
+    "role_viewer": "Viewer",
+    "checklist_done_by": "Completed by {{name}}",
+    "checklist_created_by": "Created by {{name}}"
   }
 }

@@ -11,6 +11,8 @@ export interface TaskChecklistItem {
   position: number;
   created_at: string;
   updated_at: string;
+  completed_by: string | null;
+  completed_at: string | null;
 }
 
 export function useTaskChecklists(taskId: string | undefined) {

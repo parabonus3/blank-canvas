@@ -2619,6 +2619,10 @@
     "cancel_invite": "Cancelar",
     "invite_by_code_advanced": "Convidar por código de amigo",
     "comment_you": "Você",
-    "back_to_shortcuts": "Voltar aos atalhos"
+    "back_to_shortcuts": "Voltar aos atalhos",
+    "role_editor": "Editor",
+    "role_viewer": "Visualizador",
+    "checklist_done_by": "Concluído por {{name}}",
+    "checklist_created_by": "Criado por {{name}}"
   }
 }

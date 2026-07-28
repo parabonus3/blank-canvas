@@ -2455,6 +2455,10 @@
     "cancel_invite": "취소",
     "invite_by_code_advanced": "친구 코드로 초대",
     "comment_you": "당신",
-    "back_to_shortcuts": "바로가기로 돌아가기"
+    "back_to_shortcuts": "바로가기로 돌아가기",
+    "role_editor": "편집자",
+    "role_viewer": "뷰어",
+    "checklist_done_by": "{{name}}님이 완료",
+    "checklist_created_by": "{{name}}님이 생성"
   }
 }

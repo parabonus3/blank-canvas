@@ -2469,6 +2469,10 @@
     "cancel_invite": "キャンセル",
     "invite_by_code_advanced": "友達コードで招待",
     "comment_you": "あなた",
-    "back_to_shortcuts": "ショートカットに戻る"
+    "back_to_shortcuts": "ショートカットに戻る",
+    "role_editor": "編集者",
+    "role_viewer": "閲覧者",
+    "checklist_done_by": "{{name}}が完了",
+    "checklist_created_by": "{{name}}が作成"
   }
 }
