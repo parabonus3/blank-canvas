@@ -1,48 +1,56 @@
-# Plano: Colaboração Kanban nível Trello (mobile-first)
+# Plano: Colaboração Kanban — corrigir convites, autoria e permissões
 
-## 1. Comentários com autor visível
-Hoje `TaskDetailDrawer` mostra apenas texto + timestamp — sem avatar/nome de quem comentou, e sem realtime. Quando várias pessoas comentam, ninguém sabe quem falou.
+## 1. Corrigir "Convidar amigos" mostrando "—" sem foto (bug)
+Hoje `BoardInviteDialog` faz `select` direto em `profiles` para os amigos. Pelo RLS atual de `profiles`, esse `select` não retorna `display_name`/`avatar_url` de terceiros — por isso todas as linhas aparecem como "—" e avatar vazio (visto no print).
 
-- Buscar perfis dos autores em `useTaskComments` (join com `profiles` como já fazemos em `useBoardCollab`), retornando `display_name` + `avatar_url`.
-- Renderizar cada comentário com: avatar à esquerda, nome + horário na primeira linha, texto abaixo (padrão Trello/Slack).
-- Botão apagar só aparece para o autor do comentário.
-- Realtime: assinar `postgres_changes` em `task_comments` filtrado por `task_id`, invalidando a query (padrão dos outros hooks colaborativos).
-- Traduzir "Você" / "há X min" via `date-fns` locale já configurado.
+- Substituir `useProfilesByIds` no `BoardInviteDialog` por chamadas à RPC segura `get_member_public_stats(_user_id)` (mesma que `useFriendProfiles` e `MemberProfileModal` já usam com sucesso). Faz `Promise.all` para os `friendIds` e devolve `Map<user_id, { display_name, avatar_url }>`.
+- Manter fallback de iniciais quando `display_name` for null (agora deve preencher normalmente).
+- Sem mudanças de backend; a RPC já retorna exatamente o que precisamos.
 
-## 2. Convidar amigos direto (sem código)
-Fluxo atual força o dono a copiar/colar friend code — muita fricção.
+## 2. Mostrar autoria no checklist da tarefa
+Hoje `TaskChecklistItem` mostra apenas o texto e o checkbox; ninguém sabe quem criou nem quem marcou como concluído.
 
-- Em `BoardInviteDialog`, adicionar uma seção "Seus amigos" acima do campo de código:
-  - Lista os amigos aceitos (via `useFriendships`) com avatar + nome.
-  - Cada linha tem estado: **Membro** (já entrou, com check verde), **Convidado** (pendente, com botão "Cancelar"), ou **Convidar** (botão primário).
-  - Clicar em Convidar chama a mesma RPC `invite_to_board_by_code` usando o `friend_code` do amigo (buscado no hook) — reaproveitamos toda a infra existente, zero mudança de backend.
-- Manter o campo "Convidar por código" recolhido em um `<details>` para casos de não-amigos.
-- Adicionar hook auxiliar `useBoardInvitationsForBoard(boardId)` para o dono ver convites pendentes que ele enviou (necessário para o estado "Convidado" e para cancelar).
-- Cancelar convite = update `board_invitations.status = 'cancelled'` (o RLS de UPDATE do inviter já permite).
+Backend (migration):
+- Adicionar coluna `completed_by uuid` e `completed_at timestamptz` em `task_checklists` (nullable).
+- Trigger `BEFORE UPDATE` que preenche `completed_by = auth.uid()` e `completed_at = now()` quando `is_completed` vira `true`; limpa ambos quando volta a `false`.
+- Manter as políticas existentes; sem novos GRANTs (colunas ficam sob a mesma tabela).
 
-## 3. Convite explícito no card da tarefa
-Na aba "Membros" da tarefa hoje só temos o `TaskMemberAssigner` (lista de membros do board). Vamos:
-- Mostrar avatares em grade (2 col mobile / 3-4 desktop) com nome abaixo, seguindo o mesmo padrão de tiles que aplicamos no drawer.
-- Membros já atribuídos ganham anel primário + check; clicar toggla atribuir/remover.
-- Se o board tem só o dono, mostrar CTA "Convidar amigos" que abre o `BoardInviteDialog`.
+Frontend:
+- Estender `TaskChecklistItem` type com `completed_by` / `completed_at` e a coluna `user_id` (autor da criação, já existe).
+- Em `ChecklistItem.tsx` (dentro do drawer da tarefa), renderizar abaixo do texto quando concluído: avatar pequeno + "feito por Nome · há X min" (usa `get_member_public_stats` cacheado por user_id, mesmo padrão do resto do drawer).
+- Autor da criação aparece discreto ao lado direito quando não concluído ("criado por Nome").
+- Traduções: `kanban.checklist_done_by`, `kanban.checklist_created_by` em 12 idiomas.
 
-## 4. Diferenciais Trello ainda faltantes (mobile-first)
-Incluir nesta rodada:
-- **Editar quadro** (título, descrição, cor): dialog acionado pelo header — hoje só criamos, não editamos.
-- **Cores nas colunas**: o form atual salva `color` mas o seletor está cinza; adicionar palette de 8 cores semânticas com preview no chip da coluna.
-- **Atividade da tarefa**: seção "Atividade" (opcional para esta rodada) — pode ficar para próxima entrega se preferir manter o escopo curto.
-- **Anexos**: já temos tabela `task_attachments` + bucket. Fica para próxima rodada (avisar caso o usuário queira nesta).
+## 3. Checklist mais visível no card do quadro
+O card já mostra o badge `n/total`. Melhorias sem poluir:
+- Se algum item está concluído, mostrar mini barra de progresso (1px) abaixo do título ocupando a largura do card.
+- Ao passar do 100%, badge fica verde sólido (já é verde translúcido hoje).
 
-## 5. i18n
-Novas chaves em 12 idiomas via script:
-- `kanban.invite_friends`, `kanban.friends_on_board`, `kanban.friend_status_member`, `kanban.friend_status_invited`, `kanban.cancel_invite`, `kanban.no_friends_yet`, `kanban.invite_by_code_advanced`, `kanban.comment_by`, `kanban.edit_board`, `kanban.column_color`.
+## 4. Papéis por membro (Editor / Visualizador)
+Hoje `board_members.role` existe (`owner`/`member`), mas o dono não consegue mudar entre "pode editar" e "só vê". Vamos formalizar:
 
-## Fora do escopo (posso encadear depois)
-Anexos com upload, seção "Atividade" com histórico de mudanças, due date reminders push, capa/cover em cards, votos/likes em comentários.
+Backend:
+- Migration: adicionar/normalizar valores permitidos em `board_members.role` para `owner | editor | viewer` (default `editor`). Manter linhas antigas: `UPDATE board_members SET role='editor' WHERE role='member'`.
+- Atualizar as RLS/functions de `boards`, `board_columns`, `tasks`, `task_checklists`, `task_comments`, `task_members`, `task_labels` para exigir `role IN ('owner','editor')` em INSERT/UPDATE/DELETE; SELECT continua permitindo `viewer`.
+- Função helper `can_edit_board(_board_id uuid)` `SECURITY DEFINER` já pode existir — se sim, adaptar; caso contrário, criar e reutilizar em todas as policies afetadas.
+
+Frontend:
+- Em `BoardInviteDialog`, cada linha da seção "Membros" ganha um `Select` com "Editor" / "Visualizador" (apenas dono vê e edita). Também permite trocar o papel de um convite pendente (armazenado em `board_invitations.role` se existir; caso contrário, aplica no aceite).
+- Novo hook `useUpdateBoardMemberRole({ memberId, role })`.
+- Ocultar/atenuar ações de edição para `viewer` (botões de nova coluna, nova tarefa, editar tarefa, mover, etc.) — reutilizar um `useBoardRole(boardId)` que devolve `'owner' | 'editor' | 'viewer'`.
+- Badge de papel no card do membro no header (`Editor` / `Visualizador`).
+- Traduções: `kanban.role_editor`, `kanban.role_viewer`, `kanban.change_role`, `kanban.viewer_locked_hint` em 12 idiomas.
+
+## 5. Fora do escopo (para próxima rodada)
+Anexos com upload, seção "Atividade" com histórico, capas em cards, votos em comentários, edição de quadro (título/cor/descrição), palette real nas colunas — me avise se quer emendar já com o item 4.
 
 ## Detalhes técnicos
-- Arquivos alterados: `src/hooks/useTaskComments.ts` (perfis + realtime), `src/components/kanban/TaskDetailDrawer.tsx` (comentário com autor + grid de membros), `src/components/kanban/BoardInviteDialog.tsx` (lista de amigos), `src/hooks/useBoardCollab.ts` (novo `useBoardOutgoingInvitations`, cancel action), `src/components/kanban/TaskMemberAssigner.tsx` (grid de tiles), `src/pages/BoardDetail.tsx` (dialog de editar quadro + palette), `src/hooks/useBoardColumns.ts` (garantir persistência de color), locales `*.json`.
-- Sem migrações; usamos `board_invitations.status='cancelled'` já suportado pelo RLS.
-- Realtime dos comentários segue o padrão de nome de canal único (`Math.random()`) já em uso.
-
-Me confirma se quer que eu inclua "Editar quadro" + "Cores nas colunas" nesta mesma leva, ou prefere que eu fique só nos itens 1–3 (comentários + convite de amigos) primeiro?
+Arquivos alterados:
+- `src/components/kanban/BoardInviteDialog.tsx` (RPC de perfis + seletor de papel)
+- `src/hooks/useBoardCollab.ts` (novo `useUpdateBoardMemberRole`, `useBoardRole`)
+- `src/hooks/useTaskChecklists.ts` (novos campos)
+- `src/components/checklist/ChecklistItem.tsx` (autoria)
+- `src/components/kanban/TaskCard.tsx` (barra de progresso do checklist)
+- `src/pages/BoardDetail.tsx` + `TaskDetailDrawer.tsx` + `TaskFormDialog.tsx` (respeitar `viewer`)
+- Locales `src/i18n/locales/*.json` (novas chaves nas 12 línguas)
+- Migrations: colunas de autoria em `task_checklists` + trigger; normalização de `board_members.role` + policies.
