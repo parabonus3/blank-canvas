@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trash2, Crown, UserPlus, Copy, Check, ChevronDown, Users, X, Clock } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trash2, Crown, UserPlus, Copy, Check, ChevronDown, Users, Clock } from "lucide-react";
 import {
   useBoardMembers,
   useInviteToBoard,
@@ -14,6 +15,7 @@ import {
   useBoardOutgoingInvitations,
   useCancelBoardInvitation,
   useInviteFriendToBoard,
+  useUpdateBoardMemberRole,
 } from "@/hooks/useBoardCollab";
 import { useFriendships } from "@/hooks/useFriendships";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,20 +30,23 @@ interface Props {
   isOwner: boolean;
 }
 
+/** Resolve display_name/avatar_url for a list of user_ids via the safe public RPC. */
 function useProfilesByIds(userIds: string[]) {
   return useQuery({
-    queryKey: ["profiles_by_ids", userIds.sort().join(",")],
+    queryKey: ["profiles_by_ids_rpc", userIds.sort().join(",")],
     queryFn: async () => {
-      if (!userIds.length) return new Map<string, { display_name: string | null; avatar_url: string | null }>();
-      const { data } = await supabase
-        .from("profiles")
-        .select("user_id, display_name, avatar_url")
-        .in("user_id", userIds);
       const map = new Map<string, { display_name: string | null; avatar_url: string | null }>();
-      (data || []).forEach((p: any) => map.set(p.user_id, { display_name: p.display_name, avatar_url: p.avatar_url }));
+      if (!userIds.length) return map;
+      await Promise.all(userIds.map(async (uid) => {
+        const { data } = await (supabase as any).rpc("get_member_public_stats", { _user_id: uid });
+        const row = Array.isArray(data) ? data[0] : null;
+        if (row) map.set(uid, { display_name: row.display_name ?? null, avatar_url: row.avatar_url ?? null });
+        else map.set(uid, { display_name: null, avatar_url: null });
+      }));
       return map;
     },
     enabled: userIds.length > 0,
+    staleTime: 60_000,
   });
 }
 
