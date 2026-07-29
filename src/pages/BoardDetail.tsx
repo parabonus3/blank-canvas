@@ -403,6 +403,8 @@ export default function BoardDetail() {
         <TaskDetailDrawer task={openTask} onClose={() => setOpenTask(null)} onStartTimer={handleStartTimer} hasActiveTimer={!!activeEntry} boardId={id} />
 
         <BoardInviteDialog open={membersOpen} onOpenChange={setMembersOpen} boardId={id!} isOwner={isOwner} />
+
+        {isOwner && <EditBoardDialog open={editBoardOpen} onOpenChange={setEditBoardOpen} board={board} />}
       </div>
     </MainLayout>
   );
