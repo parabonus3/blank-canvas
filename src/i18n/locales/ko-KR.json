@@ -2459,6 +2459,9 @@
     "role_editor": "편집자",
     "role_viewer": "뷰어",
     "checklist_done_by": "{{name}}님이 완료",
-    "checklist_created_by": "{{name}}님이 생성"
+    "checklist_created_by": "{{name}}님이 생성",
+    "edit_board": "보드 편집",
+    "board_desc_ph": "이 보드는 무엇에 관한 건가요?",
+    "board_updated": "보드가 업데이트되었습니다"
   }
 }

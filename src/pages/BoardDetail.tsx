@@ -14,21 +14,21 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronLeft, Plus, MoreVertical, Trash2, KanbanSquare, CalendarDays, BarChart3, Edit2, Check, X, Users, Palette } from "lucide-react";
+import { ChevronLeft, Plus, MoreVertical, Trash2, KanbanSquare, CalendarDays, BarChart3, Edit2, Check, X, Users, Palette, Pencil } from "lucide-react";
 import { TaskCard } from "@/components/kanban/TaskCard";
 import { TaskFormDialog } from "@/components/kanban/TaskFormDialog";
 import { TaskDetailDrawer } from "@/components/kanban/TaskDetailDrawer";
 import { KanbanCalendar } from "@/components/kanban/KanbanCalendar";
 import { KanbanReports } from "@/components/kanban/KanbanReports";
 import { BoardInviteDialog } from "@/components/kanban/BoardInviteDialog";
+import { EditBoardDialog } from "@/components/kanban/EditBoardDialog";
+import { ColorPalettePicker } from "@/components/kanban/ColorPalettePicker";
 import { MemberAvatars } from "@/components/kanban/MemberAvatars";
 import { useBoardMembers, useBoardTaskMembers, useActiveTaskWorkers } from "@/hooks/useBoardCollab";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-
-const COLUMN_COLORS = ["#94a3b8", "#f59e0b", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#ef4444", "#06b6d4", "#14b8a6", "#a855f7"];
 
 import {
   DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, closestCenter,
@@ -78,12 +78,8 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
   );
 
   const colorMenu = (
-    <div className="flex flex-wrap gap-1 p-2">
-      {COLUMN_COLORS.map(c => (
-        <button key={c} onClick={() => onChangeColor(c)}
-          className={cn("h-5 w-5 rounded-full border-2 transition-transform hover:scale-110", column.color === c ? "border-foreground" : "border-transparent")}
-          style={{ background: c }} />
-      ))}
+    <div className="p-2">
+      <ColorPalettePicker value={column.color} onChange={(c) => onChangeColor(c || "")} size="sm" />
     </div>
   );
 
@@ -129,7 +125,10 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
   }
 
   return (
-    <div className="w-72 shrink-0 flex flex-col rounded-lg bg-muted/30 border p-3 gap-2 max-h-[calc(100vh-220px)]">
+    <div
+      className="w-72 shrink-0 flex flex-col rounded-lg bg-muted/30 border p-3 gap-2 max-h-[calc(100vh-220px)] border-t-[3px]"
+      style={{ borderTopColor: column.color || undefined }}
+    >
       <div className="flex items-center justify-between gap-2">
         {header}
         <DropdownMenu>
@@ -180,6 +179,7 @@ export default function BoardDetail() {
   const [addingColumn, setAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
   const [membersOpen, setMembersOpen] = useState(false);
+  const [editBoardOpen, setEditBoardOpen] = useState(false);
   const { user } = useAuth();
   const { data: boardMembers = [] } = useBoardMembers(id);
   const isOwner = !!user && !!board && board.user_id === user.id;
@@ -272,6 +272,11 @@ export default function BoardDetail() {
               {t("kanban.shared")}
             </span>
           )}
+          {isOwner && (
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setEditBoardOpen(true)} title={t("kanban.edit_board", "Editar quadro") as string}>
+              <Pencil className="h-4 w-4" />
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -290,6 +295,14 @@ export default function BoardDetail() {
             </span>
           </Button>
         </div>
+
+        {/* Description */}
+        {board.description && (
+          <p className="text-sm text-muted-foreground whitespace-pre-wrap px-2 border-l-2 border-primary/40 ms-1">
+            {board.description}
+          </p>
+        )}
+
 
         {/* Empty team hint */}
         {isOwner && boardMembers.length <= 1 && (
@@ -390,6 +403,8 @@ export default function BoardDetail() {
         <TaskDetailDrawer task={openTask} onClose={() => setOpenTask(null)} onStartTimer={handleStartTimer} hasActiveTimer={!!activeEntry} boardId={id} />
 
         <BoardInviteDialog open={membersOpen} onOpenChange={setMembersOpen} boardId={id!} isOwner={isOwner} />
+
+        {isOwner && <EditBoardDialog open={editBoardOpen} onOpenChange={setEditBoardOpen} board={board} />}
       </div>
     </MainLayout>
   );

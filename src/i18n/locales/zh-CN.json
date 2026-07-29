@@ -2473,6 +2473,9 @@
     "role_editor": "编辑者",
     "role_viewer": "查看者",
     "checklist_done_by": "由 {{name}} 完成",
-    "checklist_created_by": "由 {{name}} 创建"
+    "checklist_created_by": "由 {{name}} 创建",
+    "edit_board": "编辑看板",
+    "board_desc_ph": "这个看板是关于什么的?",
+    "board_updated": "看板已更新"
   }
 }

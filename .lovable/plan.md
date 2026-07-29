@@ -1,56 +1,78 @@
-# Plano: Colaboração Kanban — corrigir convites, autoria e permissões
+## Plano: Kanban nível Trello — funcionalidades finais
 
-## 1. Corrigir "Convidar amigos" mostrando "—" sem foto (bug)
-Hoje `BoardInviteDialog` faz `select` direto em `profiles` para os amigos. Pelo RLS atual de `profiles`, esse `select` não retorna `display_name`/`avatar_url` de terceiros — por isso todas as linhas aparecem como "—" e avatar vazio (visto no print).
+Encadeamos os 6 pontos que faltam. Tudo mobile-first, respeitando papéis (`owner`/`editor` podem editar, `viewer` só lê) e traduzido nos 12 idiomas.
 
-- Substituir `useProfilesByIds` no `BoardInviteDialog` por chamadas à RPC segura `get_member_public_stats(_user_id)` (mesma que `useFriendProfiles` e `MemberProfileModal` já usam com sucesso). Faz `Promise.all` para os `friendIds` e devolve `Map<user_id, { display_name, avatar_url }>`.
-- Manter fallback de iniciais quando `display_name` for null (agora deve preencher normalmente).
-- Sem mudanças de backend; a RPC já retorna exatamente o que precisamos.
+### 1. Editar quadro (título, descrição, cor)
+- Novo `EditBoardDialog.tsx` (Sheet no mobile) acionado por botão de lápis no header de `BoardDetail.tsx`, ao lado do título.
+- Campos: título (input), descrição (textarea curta) e paleta com 12 cores predefinidas (mesma paleta usada em outros lugares do app).
+- Reusar `useUpdateBoard` já existente em `useBoards.ts` (verificar; se faltar, adicionar mutation).
+- Descrição aparece abaixo do título do quadro num bloco discreto (colapsável no mobile).
+- Só dono edita; para editor/viewer o botão some.
 
-## 2. Mostrar autoria no checklist da tarefa
-Hoje `TaskChecklistItem` mostra apenas o texto e o checkbox; ninguém sabe quem criou nem quem marcou como concluído.
+### 2. Palette real nas cores das colunas
+- Em `BoardColumnDialog` (criar/editar coluna) substituir o input cinza por um grid 6×2 de swatches com as mesmas 12 cores da paleta do quadro + "Sem cor".
+- A cor selecionada vira a borda superior (barra de 3px) da coluna no board e o fundo translúcido do header da coluna — sem quebrar o layout atual, só adicionando `style={{ borderTopColor }}`.
+- Migration não precisa: a coluna `color` já existe em `board_columns`.
 
+### 3. Anexos em tarefas
 Backend (migration):
-- Adicionar coluna `completed_by uuid` e `completed_at timestamptz` em `task_checklists` (nullable).
-- Trigger `BEFORE UPDATE` que preenche `completed_by = auth.uid()` e `completed_at = now()` quando `is_completed` vira `true`; limpa ambos quando volta a `false`.
-- Manter as políticas existentes; sem novos GRANTs (colunas ficam sob a mesma tabela).
+- Bucket de Storage `task-attachments` (privado). RLS de leitura via prefixo `board_id/task_id/…` reutilizando `can_access_task`.
+- Tabela `task_attachments` já existe (vista no schema). Confirmar policies e adicionar as que faltarem para editor/owner via `can_edit_task`.
 
 Frontend:
-- Estender `TaskChecklistItem` type com `completed_by` / `completed_at` e a coluna `user_id` (autor da criação, já existe).
-- Em `ChecklistItem.tsx` (dentro do drawer da tarefa), renderizar abaixo do texto quando concluído: avatar pequeno + "feito por Nome · há X min" (usa `get_member_public_stats` cacheado por user_id, mesmo padrão do resto do drawer).
-- Autor da criação aparece discreto ao lado direito quando não concluído ("criado por Nome").
-- Traduções: `kanban.checklist_done_by`, `kanban.checklist_created_by` em 12 idiomas.
+- Nova aba "Anexos" no `TaskDetailDrawer` (já tem o grid de tiles — encaixa perfeitamente).
+- Upload por clique ou drag-and-drop; preview inline para imagem, ícone genérico para PDF/outros. Limite 10 MB por arquivo, aviso amigável se excedido.
+- Hook `useTaskAttachments.ts` (list/upload/delete) com signed URL para preview.
+- Viewer não vê botão de upload/delete; só baixa.
 
-## 3. Checklist mais visível no card do quadro
-O card já mostra o badge `n/total`. Melhorias sem poluir:
-- Se algum item está concluído, mostrar mini barra de progresso (1px) abaixo do título ocupando a largura do card.
-- Ao passar do 100%, badge fica verde sólido (já é verde translúcido hoje).
-
-## 4. Papéis por membro (Editor / Visualizador)
-Hoje `board_members.role` existe (`owner`/`member`), mas o dono não consegue mudar entre "pode editar" e "só vê". Vamos formalizar:
-
-Backend:
-- Migration: adicionar/normalizar valores permitidos em `board_members.role` para `owner | editor | viewer` (default `editor`). Manter linhas antigas: `UPDATE board_members SET role='editor' WHERE role='member'`.
-- Atualizar as RLS/functions de `boards`, `board_columns`, `tasks`, `task_checklists`, `task_comments`, `task_members`, `task_labels` para exigir `role IN ('owner','editor')` em INSERT/UPDATE/DELETE; SELECT continua permitindo `viewer`.
-- Função helper `can_edit_board(_board_id uuid)` `SECURITY DEFINER` já pode existir — se sim, adaptar; caso contrário, criar e reutilizar em todas as policies afetadas.
+### 4. Seção "Atividade" (histórico de mudanças)
+Backend (migration):
+- Tabela `task_activity` com colunas de domínio: `task_id`, `user_id`, `action_type` (`created` | `title_changed` | `status_changed` | `moved_column` | `member_added` | `member_removed` | `checklist_added` | `checklist_completed` | `comment_added` | `attachment_added` | `label_added` | `due_date_changed`) e `metadata jsonb` (antes/depois).
+- Triggers `AFTER INSERT/UPDATE/DELETE` em `tasks`, `task_checklists`, `task_members`, `task_comments`, `task_labels`, `task_attachments` que registram automaticamente na `task_activity`.
+- GRANTs corretos + RLS: SELECT para membros do quadro; INSERT só via trigger (revoga para roles).
 
 Frontend:
-- Em `BoardInviteDialog`, cada linha da seção "Membros" ganha um `Select` com "Editor" / "Visualizador" (apenas dono vê e edita). Também permite trocar o papel de um convite pendente (armazenado em `board_invitations.role` se existir; caso contrário, aplica no aceite).
-- Novo hook `useUpdateBoardMemberRole({ memberId, role })`.
-- Ocultar/atenuar ações de edição para `viewer` (botões de nova coluna, nova tarefa, editar tarefa, mover, etc.) — reutilizar um `useBoardRole(boardId)` que devolve `'owner' | 'editor' | 'viewer'`.
-- Badge de papel no card do membro no header (`Editor` / `Visualizador`).
-- Traduções: `kanban.role_editor`, `kanban.role_viewer`, `kanban.change_role`, `kanban.viewer_locked_hint` em 12 idiomas.
+- Nova aba "Atividade" no drawer, timeline vertical com avatar + frase i18n ("{{name}} concluiu «{{title}}»", "{{name}} moveu para «Em progresso»", etc.) + tempo relativo.
+- Hook `useTaskActivity.ts` com Realtime subscribe.
 
-## 5. Fora do escopo (para próxima rodada)
-Anexos com upload, seção "Atividade" com histórico, capas em cards, votos em comentários, edição de quadro (título/cor/descrição), palette real nas colunas — me avise se quer emendar já com o item 4.
+### 5. Capas em cards
+- Reaproveitar `task_attachments`: adicionar coluna `cover_attachment_id uuid` em `tasks` (nullable, FK para `task_attachments`).
+- Botão "Definir como capa" em cada anexo de imagem dentro do drawer.
+- No `TaskCard`, se `cover_attachment_id` estiver setado e o anexo for imagem, renderizar a imagem no topo do card (altura 96px mobile / 120px desktop) com `object-cover` e cantos arredondados combinando com o card. Se não tiver capa, layout continua igual.
 
-## Detalhes técnicos
+### 6. @menções em comentários
+- Editor de comentário em `TaskDetailDrawer` detecta `@` e abre popover com os membros do quadro (busca por nome, mobile-friendly com Sheet inferior em telas <640px).
+- Ao inserir, salva no texto como token `@[Nome](user_id)`; renderiza como pill clicável.
+- Trigger no banco: quando `task_comments` for inserido e o `content` casar `@\[.*?\]\((uuid)\)`, inserir em `notification_log` (kind `task_mention`) e chamar `dispatch_chat_mentions`-like (reaproveitar padrão existente).
+- Highlight visual dos comentários onde o usuário atual foi mencionado (borda esquerda accent).
+
+### Ordem de entrega (uma rodada por bloco para revisar entre passos)
+1. Editar quadro + palette de colunas (baixo risco, ganho visual imediato).
+2. Anexos + capas (encadeados, mesma tabela).
+3. Atividade da tarefa.
+4. @menções em comentários.
+
+### Detalhes técnicos
+Arquivos novos:
+- `src/components/kanban/EditBoardDialog.tsx`
+- `src/components/kanban/ColorPalettePicker.tsx` (reutilizado por quadro e coluna)
+- `src/hooks/useTaskAttachments.ts`
+- `src/hooks/useTaskActivity.ts`
+- `src/components/kanban/TaskAttachmentsTab.tsx`
+- `src/components/kanban/TaskActivityTab.tsx`
+- `src/components/kanban/MentionInput.tsx`
+
 Arquivos alterados:
-- `src/components/kanban/BoardInviteDialog.tsx` (RPC de perfis + seletor de papel)
-- `src/hooks/useBoardCollab.ts` (novo `useUpdateBoardMemberRole`, `useBoardRole`)
-- `src/hooks/useTaskChecklists.ts` (novos campos)
-- `src/components/checklist/ChecklistItem.tsx` (autoria)
-- `src/components/kanban/TaskCard.tsx` (barra de progresso do checklist)
-- `src/pages/BoardDetail.tsx` + `TaskDetailDrawer.tsx` + `TaskFormDialog.tsx` (respeitar `viewer`)
-- Locales `src/i18n/locales/*.json` (novas chaves nas 12 línguas)
-- Migrations: colunas de autoria em `task_checklists` + trigger; normalização de `board_members.role` + policies.
+- `src/pages/BoardDetail.tsx` (botão editar, descrição, top-bar da coluna com cor real)
+- `src/components/kanban/TaskCard.tsx` (capa)
+- `src/components/kanban/TaskDetailDrawer.tsx` (abas Anexos, Atividade, editor com menções)
+- `src/hooks/useBoards.ts` / `useBoardColumns.ts` (garantir mutations de update)
+- `src/i18n/locales/*.json` (chaves de atividade, anexos, editar quadro, menções)
+
+Migrations:
+- Bucket `task-attachments` + policies.
+- Ajustes de policies em `task_attachments` conforme `can_edit_task`.
+- Tabela `task_activity` + triggers em todas as tabelas relacionadas.
+- Coluna `tasks.cover_attachment_id`.
+
+Fora do escopo: due-date com calendário avançado (repetição custom), automações tipo "quando mover para X, marcar concluído", múltiplas visualizações (calendar/timeline). Aviso se quiser encaixar depois.

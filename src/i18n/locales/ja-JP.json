@@ -2473,6 +2473,9 @@
     "role_editor": "編集者",
     "role_viewer": "閲覧者",
     "checklist_done_by": "{{name}}が完了",
-    "checklist_created_by": "{{name}}が作成"
+    "checklist_created_by": "{{name}}が作成",
+    "edit_board": "ボードを編集",
+    "board_desc_ph": "このボードは何についてですか?",
+    "board_updated": "ボードを更新しました"
   }
 }

@@ -2568,6 +2568,9 @@
     "role_editor": "Editor",
     "role_viewer": "Viewer",
     "checklist_done_by": "Completed by {{name}}",
-    "checklist_created_by": "Created by {{name}}"
+    "checklist_created_by": "Created by {{name}}",
+    "edit_board": "Edit board",
+    "board_desc_ph": "What is this board about?",
+    "board_updated": "Board updated"
   }
 }

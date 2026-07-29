@@ -2480,6 +2480,9 @@
     "role_editor": "Editor",
     "role_viewer": "Espectador",
     "checklist_done_by": "Completado por {{name}}",
-    "checklist_created_by": "Creado por {{name}}"
+    "checklist_created_by": "Creado por {{name}}",
+    "edit_board": "Editar tablero",
+    "board_desc_ph": "¿De qué trata este tablero?",
+    "board_updated": "Tablero actualizado"
   }
 }

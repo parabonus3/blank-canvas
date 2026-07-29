@@ -2623,6 +2623,9 @@
     "role_editor": "Editor",
     "role_viewer": "Visualizador",
     "checklist_done_by": "Concluído por {{name}}",
-    "checklist_created_by": "Criado por {{name}}"
+    "checklist_created_by": "Criado por {{name}}",
+    "edit_board": "Editar quadro",
+    "board_desc_ph": "Do que se trata este quadro?",
+    "board_updated": "Quadro atualizado"
   }
 }
