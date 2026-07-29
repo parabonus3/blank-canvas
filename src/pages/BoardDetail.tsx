@@ -14,21 +14,21 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronLeft, Plus, MoreVertical, Trash2, KanbanSquare, CalendarDays, BarChart3, Edit2, Check, X, Users, Palette } from "lucide-react";
+import { ChevronLeft, Plus, MoreVertical, Trash2, KanbanSquare, CalendarDays, BarChart3, Edit2, Check, X, Users, Palette, Pencil } from "lucide-react";
 import { TaskCard } from "@/components/kanban/TaskCard";
 import { TaskFormDialog } from "@/components/kanban/TaskFormDialog";
 import { TaskDetailDrawer } from "@/components/kanban/TaskDetailDrawer";
 import { KanbanCalendar } from "@/components/kanban/KanbanCalendar";
 import { KanbanReports } from "@/components/kanban/KanbanReports";
 import { BoardInviteDialog } from "@/components/kanban/BoardInviteDialog";
+import { EditBoardDialog } from "@/components/kanban/EditBoardDialog";
+import { ColorPalettePicker } from "@/components/kanban/ColorPalettePicker";
 import { MemberAvatars } from "@/components/kanban/MemberAvatars";
 import { useBoardMembers, useBoardTaskMembers, useActiveTaskWorkers } from "@/hooks/useBoardCollab";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-
-const COLUMN_COLORS = ["#94a3b8", "#f59e0b", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#ef4444", "#06b6d4", "#14b8a6", "#a855f7"];
 
 import {
   DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, closestCenter,
