@@ -296,6 +296,14 @@ export default function BoardDetail() {
           </Button>
         </div>
 
+        {/* Description */}
+        {board.description && (
+          <p className="text-sm text-muted-foreground whitespace-pre-wrap px-2 border-l-2 border-primary/40 ms-1">
+            {board.description}
+          </p>
+        )}
+
+
         {/* Empty team hint */}
         {isOwner && boardMembers.length <= 1 && (
           <div className="flex items-center gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 px-3 py-2.5">
