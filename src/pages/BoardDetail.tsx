@@ -271,6 +271,7 @@ export default function BoardDetail() {
             <span className="text-[10px] text-muted-foreground bg-muted rounded px-1.5 py-0.5 shrink-0">
               {t("kanban.shared")}
             </span>
+          )}
           {isOwner && (
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => setEditBoardOpen(true)} title={t("kanban.edit_board", "Editar quadro") as string}>
               <Pencil className="h-4 w-4" />
