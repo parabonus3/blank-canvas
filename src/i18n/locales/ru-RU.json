@@ -2459,6 +2459,9 @@
     "role_editor": "Редактор",
     "role_viewer": "Наблюдатель",
     "checklist_done_by": "Выполнил {{name}}",
-    "checklist_created_by": "Создал {{name}}"
+    "checklist_created_by": "Создал {{name}}",
+    "edit_board": "Редактировать доску",
+    "board_desc_ph": "О чём эта доска?",
+    "board_updated": "Доска обновлена"
   }
 }

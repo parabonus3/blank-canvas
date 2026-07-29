@@ -2473,6 +2473,9 @@
     "role_editor": "Éditeur",
     "role_viewer": "Observateur",
     "checklist_done_by": "Terminé par {{name}}",
-    "checklist_created_by": "Créé par {{name}}"
+    "checklist_created_by": "Créé par {{name}}",
+    "edit_board": "Modifier le tableau",
+    "board_desc_ph": "De quoi parle ce tableau ?",
+    "board_updated": "Tableau mis à jour"
   }
 }

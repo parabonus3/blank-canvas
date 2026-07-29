@@ -2473,6 +2473,9 @@
     "role_editor": "Bearbeiter",
     "role_viewer": "Betrachter",
     "checklist_done_by": "Erledigt von {{name}}",
-    "checklist_created_by": "Erstellt von {{name}}"
+    "checklist_created_by": "Erstellt von {{name}}",
+    "edit_board": "Board bearbeiten",
+    "board_desc_ph": "Worum geht es in diesem Board?",
+    "board_updated": "Board aktualisiert"
   }
 }

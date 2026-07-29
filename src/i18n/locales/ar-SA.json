@@ -2459,6 +2459,9 @@
     "role_editor": "محرر",
     "role_viewer": "مشاهد",
     "checklist_done_by": "أكمله {{name}}",
-    "checklist_created_by": "أنشأه {{name}}"
+    "checklist_created_by": "أنشأه {{name}}",
+    "edit_board": "تعديل اللوحة",
+    "board_desc_ph": "عمّ تدور هذه اللوحة؟",
+    "board_updated": "تم تحديث اللوحة"
   }
 }

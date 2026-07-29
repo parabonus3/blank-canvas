@@ -2459,6 +2459,9 @@
     "role_editor": "Editor",
     "role_viewer": "Osservatore",
     "checklist_done_by": "Completato da {{name}}",
-    "checklist_created_by": "Creato da {{name}}"
+    "checklist_created_by": "Creato da {{name}}",
+    "edit_board": "Modifica bacheca",
+    "board_desc_ph": "Di cosa tratta questa bacheca?",
+    "board_updated": "Bacheca aggiornata"
   }
 }
