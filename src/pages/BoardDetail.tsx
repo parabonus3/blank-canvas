@@ -78,12 +78,8 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
   );
 
   const colorMenu = (
-    <div className="flex flex-wrap gap-1 p-2">
-      {COLUMN_COLORS.map(c => (
-        <button key={c} onClick={() => onChangeColor(c)}
-          className={cn("h-5 w-5 rounded-full border-2 transition-transform hover:scale-110", column.color === c ? "border-foreground" : "border-transparent")}
-          style={{ background: c }} />
-      ))}
+    <div className="p-2">
+      <ColorPalettePicker value={column.color} onChange={(c) => onChangeColor(c || "")} size="sm" />
     </div>
   );
 
