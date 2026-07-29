@@ -125,7 +125,10 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
   }
 
   return (
-    <div className="w-72 shrink-0 flex flex-col rounded-lg bg-muted/30 border p-3 gap-2 max-h-[calc(100vh-220px)]">
+    <div
+      className="w-72 shrink-0 flex flex-col rounded-lg bg-muted/30 border p-3 gap-2 max-h-[calc(100vh-220px)] border-t-[3px]"
+      style={{ borderTopColor: column.color || undefined }}
+    >
       <div className="flex items-center justify-between gap-2">
         {header}
         <DropdownMenu>
