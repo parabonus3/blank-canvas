@@ -25,8 +25,11 @@ export interface Task {
   is_completed: boolean;
   completed_at: string | null;
   position: number;
+  cover_color: string | null;
+  cover_url: string | null;
   created_at: string;
   updated_at: string;
+
 }
 
 export function useTasks(boardId: string | undefined) {
