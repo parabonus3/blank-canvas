@@ -60,7 +60,7 @@ interface Props {
   boardId?: string;
 }
 
-type SectionId = "details" | "checklist" | "members" | "comments" | "time";
+type SectionId = "details" | "checklist" | "members" | "comments" | "time" | "attachments";
 
 export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
   const { t, i18n } = useTranslation();
