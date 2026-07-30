@@ -4,13 +4,15 @@ import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "@/hooks/useTasks";
 import { useTaskChecklists } from "@/hooks/useTaskChecklists";
 import { useTaskLabels } from "@/hooks/useTaskLabels";
+import { useSignedAttachmentUrl } from "@/hooks/useTaskAttachments";
 import { PriorityBadge } from "./PriorityBadge";
 import { DueDateBadge } from "./DueDateBadge";
 import { MemberAvatars } from "./MemberAvatars";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckSquare, Clock, Play, Users } from "lucide-react";
+import { CheckSquare, Clock, Play, Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+
 
 function fmtHM(sec: number) {
   const h = Math.floor(sec / 3600); const m = Math.floor((sec % 3600) / 60);
