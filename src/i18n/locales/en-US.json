@@ -2542,7 +2542,7 @@
     "member_role_owner": "Owner",
     "member_role_editor": "Editor",
     "member_role_member": "Member",
-    "invite_sent": "Invite sent",
+    "invite_sent": "Invitation sent",
     "invite_accepted": "Invite accepted",
     "remove_member": "Remove member",
     "assign": "Assign",
@@ -2571,6 +2571,12 @@
     "checklist_created_by": "Created by {{name}}",
     "edit_board": "Edit board",
     "board_desc_ph": "What is this board about?",
-    "board_updated": "Board updated"
+    "board_updated": "Board updated",
+    "invite_err_user_not_found": "User not found",
+    "invite_err_already_member": "Already a member",
+    "invite_err_self": "You cannot invite yourself",
+    "invite_err_not_owner": "Only the board owner can invite",
+    "invite_err_auth": "Sign in to continue",
+    "invite_err_generic": "Could not send the invitation"
   }
 }

@@ -2462,6 +2462,12 @@
     "checklist_created_by": "أنشأه {{name}}",
     "edit_board": "تعديل اللوحة",
     "board_desc_ph": "عمّ تدور هذه اللوحة؟",
-    "board_updated": "تم تحديث اللوحة"
+    "board_updated": "تم تحديث اللوحة",
+    "invite_err_user_not_found": "المستخدم غير موجود",
+    "invite_err_already_member": "عضو بالفعل",
+    "invite_err_self": "لا يمكنك دعوة نفسك",
+    "invite_err_not_owner": "يمكن لمالك اللوحة فقط الدعوة",
+    "invite_err_auth": "سجّل الدخول للمتابعة",
+    "invite_err_generic": "تعذّر إرسال الدعوة"
   }
 }

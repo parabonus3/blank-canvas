@@ -2462,6 +2462,12 @@
     "checklist_created_by": "{{name}}님이 생성",
     "edit_board": "보드 편집",
     "board_desc_ph": "이 보드는 무엇에 관한 건가요?",
-    "board_updated": "보드가 업데이트되었습니다"
+    "board_updated": "보드가 업데이트되었습니다",
+    "invite_err_user_not_found": "사용자를 찾을 수 없습니다",
+    "invite_err_already_member": "이미 멤버입니다",
+    "invite_err_self": "자신을 초대할 수 없습니다",
+    "invite_err_not_owner": "보드 소유자만 초대할 수 있습니다",
+    "invite_err_auth": "계속하려면 로그인하세요",
+    "invite_err_generic": "초대를 보내지 못했습니다"
   }
 }

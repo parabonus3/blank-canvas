@@ -2476,6 +2476,12 @@
     "checklist_created_by": "Créé par {{name}}",
     "edit_board": "Modifier le tableau",
     "board_desc_ph": "De quoi parle ce tableau ?",
-    "board_updated": "Tableau mis à jour"
+    "board_updated": "Tableau mis à jour",
+    "invite_err_user_not_found": "Utilisateur introuvable",
+    "invite_err_already_member": "Déjà membre",
+    "invite_err_self": "Vous ne pouvez pas vous inviter",
+    "invite_err_not_owner": "Seul le propriétaire du tableau peut inviter",
+    "invite_err_auth": "Connectez-vous pour continuer",
+    "invite_err_generic": "Impossible d'envoyer l'invitation"
   }
 }

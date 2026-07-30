@@ -2483,6 +2483,12 @@
     "checklist_created_by": "Creado por {{name}}",
     "edit_board": "Editar tablero",
     "board_desc_ph": "¿De qué trata este tablero?",
-    "board_updated": "Tablero actualizado"
+    "board_updated": "Tablero actualizado",
+    "invite_err_user_not_found": "Usuario no encontrado",
+    "invite_err_already_member": "Ya es miembro",
+    "invite_err_self": "No puedes invitarte a ti mismo",
+    "invite_err_not_owner": "Solo el propietario del tablero puede invitar",
+    "invite_err_auth": "Inicia sesión para continuar",
+    "invite_err_generic": "No se pudo enviar la invitación"
   }
 }

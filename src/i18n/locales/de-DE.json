@@ -2476,6 +2476,12 @@
     "checklist_created_by": "Erstellt von {{name}}",
     "edit_board": "Board bearbeiten",
     "board_desc_ph": "Worum geht es in diesem Board?",
-    "board_updated": "Board aktualisiert"
+    "board_updated": "Board aktualisiert",
+    "invite_err_user_not_found": "Benutzer nicht gefunden",
+    "invite_err_already_member": "Bereits Mitglied",
+    "invite_err_self": "Du kannst dich nicht selbst einladen",
+    "invite_err_not_owner": "Nur der Board-Besitzer kann einladen",
+    "invite_err_auth": "Melde dich an, um fortzufahren",
+    "invite_err_generic": "Einladung konnte nicht gesendet werden"
   }
 }
