@@ -373,22 +373,16 @@ export function useCancelBoardInvitation() {
   });
 }
 
-/** Invite by user_id directly (looks up friend_code and calls RPC). */
+/** Invite a friend directly by user_id via secure RPC (no profiles read, RLS-safe). */
 export function useInviteFriendToBoard() {
   const qc = useQueryClient();
   const { toast } = useToast();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({ boardId, userId }: { boardId: string; userId: string }) => {
-      const { data: profile, error: pErr } = await supabase
-        .from("profiles")
-        .select("friend_code")
-        .eq("user_id", userId)
-        .maybeSingle();
-      if (pErr) throw pErr;
-      if (!profile?.friend_code) throw new Error("Friend code not found");
-      const { data, error } = await (supabase as any).rpc("invite_to_board_by_code", {
+      const { data, error } = await (supabase as any).rpc("invite_to_board_by_user", {
         _board_id: boardId,
-        _friend_code: profile.friend_code,
+        _user_id: userId,
       });
       if (error) throw error;
       return data as string;
@@ -396,10 +390,12 @@ export function useInviteFriendToBoard() {
     onSuccess: (_, v) => {
       qc.invalidateQueries({ queryKey: ["board_outgoing_invitations", v.boardId] });
       qc.invalidateQueries({ queryKey: ["board_members", v.boardId] });
-      toast({ title: "✅ Convite enviado" });
+      toast({ title: t("kanban.invite_sent") });
     },
-    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+    onError: (e: any) =>
+      toast({ title: t("common.error"), description: t(inviteErrorKey(e?.message)), variant: "destructive" }),
   });
+
 }
 
 /** Members of a specific task, with profile info. */
