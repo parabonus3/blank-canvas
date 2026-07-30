@@ -2657,6 +2657,10 @@ export type Database = {
         Args: { _board_id: string; _friend_code: string }
         Returns: string
       }
+      invite_to_board_by_user: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: string
+      }
       is_board_member: {
         Args: { _board_id: string; _user_id: string }
         Returns: boolean
