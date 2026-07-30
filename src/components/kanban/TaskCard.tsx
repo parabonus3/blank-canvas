@@ -50,11 +50,19 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group relative rounded-lg border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md",
+        "group relative rounded-lg border bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-md overflow-hidden",
         (isDragging || sortableDragging) && "opacity-40",
         task.is_completed && "opacity-60"
       )}
     >
+      {/* Cover */}
+      {coverUrl ? (
+        <img src={coverUrl} alt="" className="h-20 w-full object-cover" loading="lazy" />
+      ) : task.cover_color ? (
+        <div className="h-8 w-full" style={{ background: task.cover_color }} />
+      ) : null}
+
+      <div className="relative p-3">
       {/* Drag handle overlay covers card except interactive zones */}
       <div className="absolute inset-0 rounded-lg cursor-grab active:cursor-grabbing"
         {...attributes} {...listeners}
@@ -62,6 +70,7 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
       />
 
       <div className="relative pointer-events-none space-y-2">
+
         {/* Labels bar */}
         {!!labels?.length && (
           <div className="flex gap-1 flex-wrap">
