@@ -1939,6 +1939,8 @@ export type Database = {
           board_id: string
           column_id: string | null
           completed_at: string | null
+          cover_color: string | null
+          cover_url: string | null
           created_at: string
           description: string | null
           due_date: string | null
@@ -1960,6 +1962,8 @@ export type Database = {
           board_id: string
           column_id?: string | null
           completed_at?: string | null
+          cover_color?: string | null
+          cover_url?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
@@ -1981,6 +1985,8 @@ export type Database = {
           board_id?: string
           column_id?: string | null
           completed_at?: string | null
+          cover_color?: string | null
+          cover_url?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
