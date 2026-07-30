@@ -189,25 +189,40 @@ export function useBoardMembers(boardId: string | undefined) {
   return query;
 }
 
+/** Map raw postgres exception messages to translated user-facing text. */
+function inviteErrorKey(msg: string): string {
+  const m = (msg || "").toLowerCase();
+  if (m.includes("user not found")) return "kanban.invite_err_user_not_found";
+  if (m.includes("already a member")) return "kanban.invite_err_already_member";
+  if (m.includes("cannot invite yourself")) return "kanban.invite_err_self";
+  if (m.includes("only owner")) return "kanban.invite_err_not_owner";
+  if (m.includes("not authenticated")) return "kanban.invite_err_auth";
+  return "kanban.invite_err_generic";
+}
+
 export function useInviteToBoard() {
   const qc = useQueryClient();
   const { toast } = useToast();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({ boardId, friendCode }: { boardId: string; friendCode: string }) => {
       const { data, error } = await (supabase as any).rpc("invite_to_board_by_code", {
         _board_id: boardId,
-        _friend_code: friendCode.trim(),
+        _friend_code: friendCode.trim().toUpperCase(),
       });
       if (error) throw error;
       return data as string;
     },
     onSuccess: (_, v) => {
       qc.invalidateQueries({ queryKey: ["board_invitations", v.boardId] });
-      toast({ title: "✅ Convite enviado" });
+      qc.invalidateQueries({ queryKey: ["board_outgoing_invitations", v.boardId] });
+      toast({ title: t("kanban.invite_sent") });
     },
-    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+    onError: (e: any) =>
+      toast({ title: t("common.error"), description: t(inviteErrorKey(e?.message)), variant: "destructive" }),
   });
 }
+
 
 export function useRemoveBoardMember() {
   const qc = useQueryClient();
