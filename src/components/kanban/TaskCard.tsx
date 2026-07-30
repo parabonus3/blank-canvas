@@ -122,6 +122,11 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
               <Clock className="h-2.5 w-2.5" />{fmtHM(task.total_tracked_seconds)}
             </span>
           )}
+          {attachmentCount > 0 && (
+            <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border border-border bg-muted text-muted-foreground">
+              <Paperclip className="h-2.5 w-2.5" />{attachmentCount}
+            </span>
+          )}
         </div>
 
         {/* Members + active workers */}
@@ -152,7 +157,9 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           </div>
         )}
       </div>
+      </div>
     </div>
+
   );
 }
 
