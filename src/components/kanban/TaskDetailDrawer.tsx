@@ -18,12 +18,15 @@ import { useProjects } from "@/hooks/useProjects";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
-  Users, FileText, ChevronLeft,
+  Users, FileText, ChevronLeft, Paperclip,
 } from "lucide-react";
 import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
-import { useTaskMembers } from "@/hooks/useBoardCollab";
+import { TaskAttachmentsSection } from "./TaskAttachmentsSection";
+import { useTaskAttachments } from "@/hooks/useTaskAttachments";
+import { useTaskMembers, useBoardRole } from "@/hooks/useBoardCollab";
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format, formatDistanceToNow } from "date-fns";
