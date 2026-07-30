@@ -5,6 +5,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { useBoard, useUpdateBoard } from "@/hooks/useBoards";
 import { useBoardColumns, useCreateColumn, useUpdateColumn, useDeleteColumn, type BoardColumn } from "@/hooks/useBoardColumns";
+import { useBoardAttachmentCounts } from "@/hooks/useTaskAttachments";
 import { useTasks, useUpdateTask, useReorderTask, useCreateTask, type Task } from "@/hooks/useTasks";
 import { useActiveTimeEntry, useStartTimer } from "@/hooks/useTimeEntries";
 import { Button } from "@/components/ui/button";
@@ -173,6 +174,7 @@ export default function BoardDetail() {
   const { data: activeEntry } = useActiveTimeEntry();
   const startTimer = useStartTimer();
   const { data: taskMembersMap = new Map() } = useBoardTaskMembers(id);
+  const { data: attachmentCounts = new Map<string, number>() } = useBoardAttachmentCounts((tasks || []).map(t => t.id));
   const { data: activeWorkers = { byTask: new Map<string, string[]>(), profiles: new Map<string, any>() } } = useActiveTaskWorkers(id);
 
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
@@ -339,7 +341,7 @@ export default function BoardDetail() {
                         onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                         onDelete={() => deleteColumn.mutate(col.id)}
                         onRename={(title) => updateColumn.mutate({ id: col.id, title })}
-                        hasActiveTimer={!!activeEntry} isMobile onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} />
+                        hasActiveTimer={!!activeEntry} isMobile onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} attachmentCounts={attachmentCounts} />
                     ))}
                   </Accordion>
                   <div className="mt-3">
@@ -363,7 +365,7 @@ export default function BoardDetail() {
                       onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                       onDelete={() => deleteColumn.mutate(col.id)}
                       onRename={(title) => updateColumn.mutate({ id: col.id, title })}
-                      hasActiveTimer={!!activeEntry} isMobile={false} onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} />
+                      hasActiveTimer={!!activeEntry} isMobile={false} onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} attachmentCounts={attachmentCounts} />
                   ))}
                   <div className="w-72 shrink-0">
                     {addingColumn ? (
