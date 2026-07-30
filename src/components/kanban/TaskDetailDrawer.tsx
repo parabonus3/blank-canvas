@@ -290,6 +290,16 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
           )
         )}
 
+        {section === "attachments" && (
+          boardId ? (
+            <TaskAttachmentsSection task={task} boardId={boardId} canEdit={canEdit} />
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_attachments", "Nenhum anexo ainda")}</p>
+          )
+        )}
+
+
+
         {section === "comments" && (
           <div className="space-y-3">
             <div className="space-y-2">
