@@ -2482,6 +2482,14 @@
     "invite_err_self": "Anda tidak bisa mengundang diri sendiri",
     "invite_err_not_owner": "Hanya pemilik papan yang bisa mengundang",
     "invite_err_auth": "Masuk untuk melanjutkan",
-    "invite_err_generic": "Tidak dapat mengirim undangan"
+    "invite_err_generic": "Tidak dapat mengirim undangan",
+    "tab_attachments": "Lampiran",
+    "add_attachment": "Tambah lampiran",
+    "uploading": "Mengunggah...",
+    "no_attachments": "Belum ada lampiran",
+    "attachment_uploaded": "Lampiran diunggah",
+    "set_as_cover": "Jadikan sampul",
+    "cover": "Sampul kartu",
+    "remove_cover": "Hapus sampul"
   }
 }

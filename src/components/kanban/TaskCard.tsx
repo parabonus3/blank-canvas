@@ -4,13 +4,15 @@ import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "@/hooks/useTasks";
 import { useTaskChecklists } from "@/hooks/useTaskChecklists";
 import { useTaskLabels } from "@/hooks/useTaskLabels";
+import { useSignedAttachmentUrl } from "@/hooks/useTaskAttachments";
 import { PriorityBadge } from "./PriorityBadge";
 import { DueDateBadge } from "./DueDateBadge";
 import { MemberAvatars } from "./MemberAvatars";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckSquare, Clock, Play, Users } from "lucide-react";
+import { CheckSquare, Clock, Play, Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+
 
 function fmtHM(sec: number) {
   const h = Math.floor(sec / 3600); const m = Math.floor((sec % 3600) / 60);
@@ -28,14 +30,17 @@ interface Props {
   members?: Array<{ user_id: string; display_name: string | null; avatar_url: string | null }>;
   activeUserIds?: string[];
   activeProfiles?: Map<string, { display_name: string | null; avatar_url: string | null }>;
+  attachmentCount?: number;
 }
 
-function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging, members = [], activeUserIds = [], activeProfiles }: Props) {
+function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging, members = [], activeUserIds = [], activeProfiles, attachmentCount = 0 }: Props) {
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: sortableDragging } = useSortable({ id: task.id });
   const style = { transform: CSS.Translate.toString(transform), transition };
   const { data: checklists } = useTaskChecklists(task.id);
   const { data: labels } = useTaskLabels(task.id);
+  const { data: coverUrl } = useSignedAttachmentUrl(task.cover_url);
+
 
   const checkTotal = checklists?.length || 0;
   const checkDone = (checklists || []).filter(c => c.is_completed).length;
@@ -45,11 +50,19 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group relative rounded-lg border bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md",
+        "group relative rounded-lg border bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-md overflow-hidden",
         (isDragging || sortableDragging) && "opacity-40",
         task.is_completed && "opacity-60"
       )}
     >
+      {/* Cover */}
+      {coverUrl ? (
+        <img src={coverUrl} alt="" className="h-20 w-full object-cover" loading="lazy" />
+      ) : task.cover_color ? (
+        <div className="h-8 w-full" style={{ background: task.cover_color }} />
+      ) : null}
+
+      <div className="relative p-3">
       {/* Drag handle overlay covers card except interactive zones */}
       <div className="absolute inset-0 rounded-lg cursor-grab active:cursor-grabbing"
         {...attributes} {...listeners}
@@ -57,6 +70,7 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
       />
 
       <div className="relative pointer-events-none space-y-2">
+
         {/* Labels bar */}
         {!!labels?.length && (
           <div className="flex gap-1 flex-wrap">
@@ -108,6 +122,11 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
               <Clock className="h-2.5 w-2.5" />{fmtHM(task.total_tracked_seconds)}
             </span>
           )}
+          {attachmentCount > 0 && (
+            <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border border-border bg-muted text-muted-foreground">
+              <Paperclip className="h-2.5 w-2.5" />{attachmentCount}
+            </span>
+          )}
         </div>
 
         {/* Members + active workers */}
@@ -138,7 +157,9 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           </div>
         )}
       </div>
+      </div>
     </div>
+
   );
 }
 

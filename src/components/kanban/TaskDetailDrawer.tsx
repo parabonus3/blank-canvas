@@ -18,12 +18,15 @@ import { useProjects } from "@/hooks/useProjects";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
-  Users, FileText, ChevronLeft,
+  Users, FileText, ChevronLeft, Paperclip,
 } from "lucide-react";
 import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
 import { MemberAvatars } from "./MemberAvatars";
-import { useTaskMembers } from "@/hooks/useBoardCollab";
+import { TaskAttachmentsSection } from "./TaskAttachmentsSection";
+import { useTaskAttachments } from "@/hooks/useTaskAttachments";
+import { useTaskMembers, useBoardRole } from "@/hooks/useBoardCollab";
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format, formatDistanceToNow } from "date-fns";
@@ -57,7 +60,7 @@ interface Props {
   boardId?: string;
 }
 
-type SectionId = "details" | "checklist" | "members" | "comments" | "time";
+type SectionId = "details" | "checklist" | "members" | "comments" | "time" | "attachments";
 
 export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
   const { t, i18n } = useTranslation();
@@ -68,6 +71,9 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const deleteTask = useDeleteTask();
   const { data: checklists } = useTaskChecklists(task?.id);
   const { data: taskMembers = [] } = useTaskMembers(task?.id);
+  const { data: attachments = [] } = useTaskAttachments(task?.id);
+  const boardRole = useBoardRole(boardId);
+  const canEdit = boardRole !== "viewer";
   const createCheck = useCreateChecklistItem();
   const toggleCheck = useToggleChecklistItem();
   const deleteCheck = useDeleteChecklistItem();
@@ -115,6 +121,7 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
     { id: "members", label: t("kanban.tab_members", "Membros"), icon: Users, badge: taskMembers.length > 0 ? String(taskMembers.length) : undefined },
     { id: "comments", label: t("kanban.tab_comments", "Comentários"), icon: MessageSquare, badge: commentCount > 0 ? String(commentCount) : undefined },
     { id: "time", label: t("kanban.tab_time", "Tempo"), icon: Clock, badge: totalSec > 0 ? fmtShort(totalSec) : undefined },
+    { id: "attachments", label: t("kanban.tab_attachments", "Anexos"), icon: Paperclip, badge: attachments.length > 0 ? String(attachments.length) : undefined },
   ];
 
   const renderTiles = () => (
@@ -282,6 +289,16 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
             <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_members")}</p>
           )
         )}
+
+        {section === "attachments" && (
+          boardId ? (
+            <TaskAttachmentsSection task={task} boardId={boardId} canEdit={canEdit} />
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-6">{t("kanban.no_attachments", "Nenhum anexo ainda")}</p>
+          )
+        )}
+
+
 
         {section === "comments" && (
           <div className="space-y-3">

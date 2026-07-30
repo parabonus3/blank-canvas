@@ -2468,6 +2468,14 @@
     "invite_err_self": "لا يمكنك دعوة نفسك",
     "invite_err_not_owner": "يمكن لمالك اللوحة فقط الدعوة",
     "invite_err_auth": "سجّل الدخول للمتابعة",
-    "invite_err_generic": "تعذّر إرسال الدعوة"
+    "invite_err_generic": "تعذّر إرسال الدعوة",
+    "tab_attachments": "المرفقات",
+    "add_attachment": "إضافة مرفق",
+    "uploading": "جارٍ الرفع...",
+    "no_attachments": "لا توجد مرفقات بعد",
+    "attachment_uploaded": "تم رفع المرفق",
+    "set_as_cover": "تعيين كغلاف",
+    "cover": "غلاف البطاقة",
+    "remove_cover": "إزالة الغلاف"
   }
 }

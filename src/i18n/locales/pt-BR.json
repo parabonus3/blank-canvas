@@ -2632,6 +2632,14 @@
     "invite_err_self": "Você não pode convidar a si mesmo",
     "invite_err_not_owner": "Só o dono do quadro pode convidar",
     "invite_err_auth": "Entre na sua conta para continuar",
-    "invite_err_generic": "Não foi possível enviar o convite"
+    "invite_err_generic": "Não foi possível enviar o convite",
+    "tab_attachments": "Anexos",
+    "add_attachment": "Adicionar anexo",
+    "uploading": "Enviando...",
+    "no_attachments": "Nenhum anexo ainda",
+    "attachment_uploaded": "Anexo enviado",
+    "set_as_cover": "Definir como capa",
+    "cover": "Capa do card",
+    "remove_cover": "Remover capa"
   }
 }

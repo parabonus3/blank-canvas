@@ -2482,6 +2482,14 @@
     "invite_err_self": "Vous ne pouvez pas vous inviter",
     "invite_err_not_owner": "Seul le propriétaire du tableau peut inviter",
     "invite_err_auth": "Connectez-vous pour continuer",
-    "invite_err_generic": "Impossible d'envoyer l'invitation"
+    "invite_err_generic": "Impossible d'envoyer l'invitation",
+    "tab_attachments": "Pièces jointes",
+    "add_attachment": "Ajouter une pièce jointe",
+    "uploading": "Envoi...",
+    "no_attachments": "Aucune pièce jointe",
+    "attachment_uploaded": "Pièce jointe ajoutée",
+    "set_as_cover": "Définir comme couverture",
+    "cover": "Couverture de la carte",
+    "remove_cover": "Retirer la couverture"
   }
 }
