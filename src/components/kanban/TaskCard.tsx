@@ -30,14 +30,17 @@ interface Props {
   members?: Array<{ user_id: string; display_name: string | null; avatar_url: string | null }>;
   activeUserIds?: string[];
   activeProfiles?: Map<string, { display_name: string | null; avatar_url: string | null }>;
+  attachmentCount?: number;
 }
 
-function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging, members = [], activeUserIds = [], activeProfiles }: Props) {
+function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasActiveTimer, isDragging, members = [], activeUserIds = [], activeProfiles, attachmentCount = 0 }: Props) {
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: sortableDragging } = useSortable({ id: task.id });
   const style = { transform: CSS.Translate.toString(transform), transition };
   const { data: checklists } = useTaskChecklists(task.id);
   const { data: labels } = useTaskLabels(task.id);
+  const { data: coverUrl } = useSignedAttachmentUrl(task.cover_url);
+
 
   const checkTotal = checklists?.length || 0;
   const checkDone = (checklists || []).filter(c => c.is_completed).length;
