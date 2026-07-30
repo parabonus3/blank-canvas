@@ -2462,6 +2462,12 @@
     "checklist_created_by": "Создал {{name}}",
     "edit_board": "Редактировать доску",
     "board_desc_ph": "О чём эта доска?",
-    "board_updated": "Доска обновлена"
+    "board_updated": "Доска обновлена",
+    "invite_err_user_not_found": "Пользователь не найден",
+    "invite_err_already_member": "Уже участник",
+    "invite_err_self": "Нельзя пригласить самого себя",
+    "invite_err_not_owner": "Приглашать может только владелец доски",
+    "invite_err_auth": "Войдите, чтобы продолжить",
+    "invite_err_generic": "Не удалось отправить приглашение"
   }
 }

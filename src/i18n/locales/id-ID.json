@@ -2476,6 +2476,12 @@
     "checklist_created_by": "Dibuat oleh {{name}}",
     "edit_board": "Ubah papan",
     "board_desc_ph": "Papan ini tentang apa?",
-    "board_updated": "Papan diperbarui"
+    "board_updated": "Papan diperbarui",
+    "invite_err_user_not_found": "Pengguna tidak ditemukan",
+    "invite_err_already_member": "Sudah menjadi anggota",
+    "invite_err_self": "Anda tidak bisa mengundang diri sendiri",
+    "invite_err_not_owner": "Hanya pemilik papan yang bisa mengundang",
+    "invite_err_auth": "Masuk untuk melanjutkan",
+    "invite_err_generic": "Tidak dapat mengirim undangan"
   }
 }

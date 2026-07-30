@@ -2626,6 +2626,12 @@
     "checklist_created_by": "Criado por {{name}}",
     "edit_board": "Editar quadro",
     "board_desc_ph": "Do que se trata este quadro?",
-    "board_updated": "Quadro atualizado"
+    "board_updated": "Quadro atualizado",
+    "invite_err_user_not_found": "Usuário não encontrado",
+    "invite_err_already_member": "Já é membro",
+    "invite_err_self": "Você não pode convidar a si mesmo",
+    "invite_err_not_owner": "Só o dono do quadro pode convidar",
+    "invite_err_auth": "Entre na sua conta para continuar",
+    "invite_err_generic": "Não foi possível enviar o convite"
   }
 }

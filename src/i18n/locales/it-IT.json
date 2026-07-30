@@ -2462,6 +2462,12 @@
     "checklist_created_by": "Creato da {{name}}",
     "edit_board": "Modifica bacheca",
     "board_desc_ph": "Di cosa tratta questa bacheca?",
-    "board_updated": "Bacheca aggiornata"
+    "board_updated": "Bacheca aggiornata",
+    "invite_err_user_not_found": "Utente non trovato",
+    "invite_err_already_member": "È già un membro",
+    "invite_err_self": "Non puoi invitare te stesso",
+    "invite_err_not_owner": "Solo il proprietario della bacheca può invitare",
+    "invite_err_auth": "Accedi per continuare",
+    "invite_err_generic": "Impossibile inviare l'invito"
   }
 }

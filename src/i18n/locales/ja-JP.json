@@ -2476,6 +2476,12 @@
     "checklist_created_by": "{{name}}が作成",
     "edit_board": "ボードを編集",
     "board_desc_ph": "このボードは何についてですか?",
-    "board_updated": "ボードを更新しました"
+    "board_updated": "ボードを更新しました",
+    "invite_err_user_not_found": "ユーザーが見つかりません",
+    "invite_err_already_member": "すでにメンバーです",
+    "invite_err_self": "自分を招待することはできません",
+    "invite_err_not_owner": "ボードのオーナーのみ招待できます",
+    "invite_err_auth": "続行するにはログインしてください",
+    "invite_err_generic": "招待を送信できませんでした"
   }
 }

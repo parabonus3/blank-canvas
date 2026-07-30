@@ -2476,6 +2476,12 @@
     "checklist_created_by": "由 {{name}} 创建",
     "edit_board": "编辑看板",
     "board_desc_ph": "这个看板是关于什么的?",
-    "board_updated": "看板已更新"
+    "board_updated": "看板已更新",
+    "invite_err_user_not_found": "未找到用户",
+    "invite_err_already_member": "已是成员",
+    "invite_err_self": "不能邀请自己",
+    "invite_err_not_owner": "只有看板所有者可以邀请",
+    "invite_err_auth": "请登录后继续",
+    "invite_err_generic": "无法发送邀请"
   }
 }
