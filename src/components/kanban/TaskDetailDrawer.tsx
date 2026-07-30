@@ -118,6 +118,7 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
     { id: "members", label: t("kanban.tab_members", "Membros"), icon: Users, badge: taskMembers.length > 0 ? String(taskMembers.length) : undefined },
     { id: "comments", label: t("kanban.tab_comments", "Comentários"), icon: MessageSquare, badge: commentCount > 0 ? String(commentCount) : undefined },
     { id: "time", label: t("kanban.tab_time", "Tempo"), icon: Clock, badge: totalSec > 0 ? fmtShort(totalSec) : undefined },
+    { id: "attachments", label: t("kanban.tab_attachments", "Anexos"), icon: Paperclip, badge: attachments.length > 0 ? String(attachments.length) : undefined },
   ];
 
   const renderTiles = () => (
