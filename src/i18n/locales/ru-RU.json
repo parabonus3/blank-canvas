@@ -2468,6 +2468,14 @@
     "invite_err_self": "Нельзя пригласить самого себя",
     "invite_err_not_owner": "Приглашать может только владелец доски",
     "invite_err_auth": "Войдите, чтобы продолжить",
-    "invite_err_generic": "Не удалось отправить приглашение"
+    "invite_err_generic": "Не удалось отправить приглашение",
+    "tab_attachments": "Вложения",
+    "add_attachment": "Добавить вложение",
+    "uploading": "Загрузка...",
+    "no_attachments": "Вложений пока нет",
+    "attachment_uploaded": "Вложение загружено",
+    "set_as_cover": "Сделать обложкой",
+    "cover": "Обложка карточки",
+    "remove_cover": "Убрать обложку"
   }
 }

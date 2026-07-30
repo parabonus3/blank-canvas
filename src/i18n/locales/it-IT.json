@@ -2468,6 +2468,14 @@
     "invite_err_self": "Non puoi invitare te stesso",
     "invite_err_not_owner": "Solo il proprietario della bacheca può invitare",
     "invite_err_auth": "Accedi per continuare",
-    "invite_err_generic": "Impossibile inviare l'invito"
+    "invite_err_generic": "Impossibile inviare l'invito",
+    "tab_attachments": "Allegati",
+    "add_attachment": "Aggiungi allegato",
+    "uploading": "Caricamento...",
+    "no_attachments": "Nessun allegato",
+    "attachment_uploaded": "Allegato caricato",
+    "set_as_cover": "Imposta come copertina",
+    "cover": "Copertina della scheda",
+    "remove_cover": "Rimuovi copertina"
   }
 }

@@ -2577,6 +2577,14 @@
     "invite_err_self": "You cannot invite yourself",
     "invite_err_not_owner": "Only the board owner can invite",
     "invite_err_auth": "Sign in to continue",
-    "invite_err_generic": "Could not send the invitation"
+    "invite_err_generic": "Could not send the invitation",
+    "tab_attachments": "Attachments",
+    "add_attachment": "Add attachment",
+    "uploading": "Uploading...",
+    "no_attachments": "No attachments yet",
+    "attachment_uploaded": "Attachment uploaded",
+    "set_as_cover": "Set as cover",
+    "cover": "Card cover",
+    "remove_cover": "Remove cover"
   }
 }

@@ -2482,6 +2482,14 @@
     "invite_err_self": "不能邀请自己",
     "invite_err_not_owner": "只有看板所有者可以邀请",
     "invite_err_auth": "请登录后继续",
-    "invite_err_generic": "无法发送邀请"
+    "invite_err_generic": "无法发送邀请",
+    "tab_attachments": "附件",
+    "add_attachment": "添加附件",
+    "uploading": "上传中...",
+    "no_attachments": "暂无附件",
+    "attachment_uploaded": "附件已上传",
+    "set_as_cover": "设为封面",
+    "cover": "卡片封面",
+    "remove_cover": "移除封面"
   }
 }

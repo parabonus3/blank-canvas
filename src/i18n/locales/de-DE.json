@@ -2482,6 +2482,14 @@
     "invite_err_self": "Du kannst dich nicht selbst einladen",
     "invite_err_not_owner": "Nur der Board-Besitzer kann einladen",
     "invite_err_auth": "Melde dich an, um fortzufahren",
-    "invite_err_generic": "Einladung konnte nicht gesendet werden"
+    "invite_err_generic": "Einladung konnte nicht gesendet werden",
+    "tab_attachments": "Anhänge",
+    "add_attachment": "Anhang hinzufügen",
+    "uploading": "Wird hochgeladen...",
+    "no_attachments": "Noch keine Anhänge",
+    "attachment_uploaded": "Anhang hochgeladen",
+    "set_as_cover": "Als Titelbild festlegen",
+    "cover": "Kartenbild",
+    "remove_cover": "Titelbild entfernen"
   }
 }
