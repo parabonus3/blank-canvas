@@ -50,6 +50,7 @@ interface ColumnContainerProps {
   hasActiveTimer: boolean;
   isMobile: boolean;
   taskMembersMap: Map<string, any[]>;
+  attachmentCounts?: Map<string, number>;
   activeWorkers: { byTask: Map<string, string[]>; profiles: Map<string, any> };
 }
 
