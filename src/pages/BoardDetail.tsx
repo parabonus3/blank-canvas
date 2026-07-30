@@ -91,8 +91,10 @@ function ColumnContainer({ column, tasks, onAddTask, onOpenTask, onToggleComplet
           <TaskCard key={task.id} task={task} onClick={onOpenTask} onToggleComplete={onToggleComplete} onStartTimer={onStartTimer}
             hasActiveTimer={hasActiveTimer}
             members={taskMembersMap.get(task.id) || []}
+            attachmentCount={attachmentCounts?.get(task.id) || 0}
             activeUserIds={activeWorkers.byTask.get(task.id) || []}
             activeProfiles={activeWorkers.profiles} />
+
         ))}
       </SortableContext>
       <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={() => onAddTask(column.id)}>
