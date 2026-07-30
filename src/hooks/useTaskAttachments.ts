@@ -126,3 +126,17 @@ export function useDeleteAttachment() {
       toast({ title: t("common.error"), description: e?.message, variant: "destructive" }),
   });
 }
+
+/** Resolve a signed URL for a storage path in the task-attachments bucket. */
+export function useSignedAttachmentUrl(path: string | null | undefined) {
+  return useQuery({
+    queryKey: ["signed_attachment", path],
+    queryFn: async () => {
+      if (!path) return null;
+      const { data } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60);
+      return data?.signedUrl ?? null;
+    },
+    enabled: !!path,
+    staleTime: 45 * 60 * 1000,
+  });
+}
