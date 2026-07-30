@@ -71,6 +71,9 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const deleteTask = useDeleteTask();
   const { data: checklists } = useTaskChecklists(task?.id);
   const { data: taskMembers = [] } = useTaskMembers(task?.id);
+  const { data: attachments = [] } = useTaskAttachments(task?.id);
+  const boardRole = useBoardRole(boardId);
+  const canEdit = boardRole !== "viewer";
   const createCheck = useCreateChecklistItem();
   const toggleCheck = useToggleChecklistItem();
   const deleteCheck = useDeleteChecklistItem();
