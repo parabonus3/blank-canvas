@@ -62,8 +62,28 @@ function inQuietHours(now: Date, tz: string, startH: number, endH: number): bool
   }
 }
 
+// Event-driven kinds: fired by DB triggers, deduped by payload instead of by kind.
+const INSTANT_KINDS = new Set([
+  "friend_request",
+  "friend_accepted",
+  "board_invite",
+  "task_assigned",
+  "task_comment",
+  "chat_mentions",
+]);
+
+function hashPayload(kind: string, vars: Record<string, string | number>): string {
+  const raw = kind + "|" + Object.keys(vars).sort().map((k) => `${k}=${vars[k]}`).join("&");
+  let h = 5381;
+  for (let i = 0; i < raw.length; i++) h = ((h * 33) ^ raw.charCodeAt(i)) >>> 0;
+  return h.toString(16);
+}
+
 export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; skipped: string | null }> {
   const { userId, kind, vars = {}, url = "/", bypassPrefs = false } = args;
+  const isInstant = INSTANT_KINDS.has(kind as string);
+  const payloadHash = hashPayload(kind as string, vars);
+
 
   const { data: subs } = await admin
     .from("push_subscriptions")
