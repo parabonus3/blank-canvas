@@ -469,6 +469,371 @@ const T: Record<string, LangPack> = {
   },
 };
 
+// ---- Social / task notifications (instant + morning kickoff) ----
+// Vars: {{friend_name}}, {{board_title}}, {{task_title}}, {{task_count}}, {{content}}
+const S: Record<string, LangPack> = {
+  "pt-BR": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} quer ser seu amigo", body: "Aceite e acompanhem o foco um do outro." },
+      { title: "👋 Novo pedido de amizade", body: "{{friend_name}} quer focar junto com você." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} aceitou seu convite", body: "Agora vocês estão conectados. Bora focar!" },
+      { title: "✅ Nova amizade", body: "{{friend_name}} entrou na sua lista de amigos." },
+    ],
+    board_invite: [
+      { title: "📋 Convite para {{board_title}}", body: "{{friend_name}} quer você nesse quadro." },
+      { title: "🚀 {{friend_name}} te convidou", body: "Entre no quadro {{board_title}} e organize com o time." },
+    ],
+    task_assigned: [
+      { title: "🎯 Nova tarefa para você", body: "{{friend_name}} te colocou em “{{task_title}}”." },
+      { title: "📌 Você foi atribuído", body: "“{{task_title}}” está esperando por você." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} comentou", body: "Em “{{task_title}}”: {{content}}" },
+      { title: "🗨️ Novo comentário", body: "{{friend_name}} respondeu em “{{task_title}}”." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Bom dia! {{task_count}} tarefas te esperam", body: "Comece por “{{task_title}}” e ganhe o dia." },
+      { title: "🌅 Que tal começar agora?", body: "{{task_count}} tarefas em aberto. 25 minutos já mudam tudo." },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}” vence hoje", body: "Ainda dá tempo de finalizar." },
+      { title: "🔔 Prazo hoje", body: "{{task_count}} tarefas vencem hoje. Bora fechar?" },
+    ],
+  },
+  "en-US": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} wants to connect", body: "Accept and follow each other's focus." },
+      { title: "👋 New friend request", body: "{{friend_name}} wants to focus with you." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} accepted your request", body: "You're connected now. Let's focus!" },
+      { title: "✅ New friendship", body: "{{friend_name}} joined your friends list." },
+    ],
+    board_invite: [
+      { title: "📋 Invite to {{board_title}}", body: "{{friend_name}} wants you on this board." },
+      { title: "🚀 {{friend_name}} invited you", body: "Join {{board_title}} and organize with the team." },
+    ],
+    task_assigned: [
+      { title: "🎯 New task for you", body: "{{friend_name}} added you to “{{task_title}}”." },
+      { title: "📌 You've been assigned", body: "“{{task_title}}” is waiting for you." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} commented", body: "On “{{task_title}}”: {{content}}" },
+      { title: "🗨️ New comment", body: "{{friend_name}} replied on “{{task_title}}”." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Good morning! {{task_count}} tasks await", body: "Start with “{{task_title}}” and own the day." },
+      { title: "🌅 Ready to start?", body: "{{task_count}} open tasks. 25 focused minutes change everything." },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}” is due today", body: "There's still time to finish it." },
+      { title: "🔔 Due today", body: "{{task_count}} tasks are due today. Let's close them." },
+    ],
+  },
+  "es-ES": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} quiere conectar", body: "Acepta y sigan el enfoque del otro." },
+      { title: "👋 Nueva solicitud de amistad", body: "{{friend_name}} quiere enfocarse contigo." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} aceptó tu solicitud", body: "Ya están conectados. ¡A enfocarse!" },
+      { title: "✅ Nueva amistad", body: "{{friend_name}} está en tu lista de amigos." },
+    ],
+    board_invite: [
+      { title: "📋 Invitación a {{board_title}}", body: "{{friend_name}} te quiere en este tablero." },
+      { title: "🚀 {{friend_name}} te invitó", body: "Únete a {{board_title}} y organiza con el equipo." },
+    ],
+    task_assigned: [
+      { title: "🎯 Nueva tarea para ti", body: "{{friend_name}} te asignó “{{task_title}}”." },
+      { title: "📌 Te asignaron", body: "“{{task_title}}” te está esperando." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} comentó", body: "En “{{task_title}}”: {{content}}" },
+      { title: "🗨️ Nuevo comentario", body: "{{friend_name}} respondió en “{{task_title}}”." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ ¡Buenos días! {{task_count}} tareas te esperan", body: "Empieza por “{{task_title}}”." },
+      { title: "🌅 ¿Empezamos?", body: "{{task_count}} tareas abiertas. 25 minutos bastan." },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}” vence hoy", body: "Aún hay tiempo de terminar." },
+      { title: "🔔 Vence hoy", body: "{{task_count}} tareas vencen hoy. ¡A cerrarlas!" },
+    ],
+  },
+  "fr-FR": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} veut vous ajouter", body: "Acceptez et suivez vos progrès mutuels." },
+      { title: "👋 Nouvelle demande d'ami", body: "{{friend_name}} veut se concentrer avec vous." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} a accepté", body: "Vous êtes connectés. On se concentre !" },
+      { title: "✅ Nouvelle amitié", body: "{{friend_name}} rejoint vos amis." },
+    ],
+    board_invite: [
+      { title: "📋 Invitation à {{board_title}}", body: "{{friend_name}} vous veut sur ce tableau." },
+      { title: "🚀 {{friend_name}} vous a invité", body: "Rejoignez {{board_title}} et organisez avec l'équipe." },
+    ],
+    task_assigned: [
+      { title: "🎯 Nouvelle tâche pour vous", body: "{{friend_name}} vous a ajouté à « {{task_title}} »." },
+      { title: "📌 Tâche assignée", body: "« {{task_title}} » vous attend." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} a commenté", body: "Sur « {{task_title}} » : {{content}}" },
+      { title: "🗨️ Nouveau commentaire", body: "{{friend_name}} a répondu sur « {{task_title}} »." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Bonjour ! {{task_count}} tâches vous attendent", body: "Commencez par « {{task_title}} »." },
+      { title: "🌅 On démarre ?", body: "{{task_count}} tâches ouvertes. 25 minutes suffisent." },
+    ],
+    task_due_today: [
+      { title: "⏰ « {{task_title}} » est due aujourd'hui", body: "Il reste du temps pour la finir." },
+      { title: "🔔 Échéance aujourd'hui", body: "{{task_count}} tâches à boucler aujourd'hui." },
+    ],
+  },
+  "de-DE": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} möchte dich hinzufügen", body: "Annehmen und gemeinsam fokussieren." },
+      { title: "👋 Neue Freundschaftsanfrage", body: "{{friend_name}} will mit dir lernen." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} hat angenommen", body: "Ihr seid verbunden. Los geht's!" },
+      { title: "✅ Neue Freundschaft", body: "{{friend_name}} ist jetzt in deiner Liste." },
+    ],
+    board_invite: [
+      { title: "📋 Einladung zu {{board_title}}", body: "{{friend_name}} will dich in diesem Board." },
+      { title: "🚀 {{friend_name}} hat dich eingeladen", body: "Tritt {{board_title}} bei und organisiere mit dem Team." },
+    ],
+    task_assigned: [
+      { title: "🎯 Neue Aufgabe für dich", body: "{{friend_name}} hat dich zu „{{task_title}}“ hinzugefügt." },
+      { title: "📌 Aufgabe zugewiesen", body: "„{{task_title}}“ wartet auf dich." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} hat kommentiert", body: "Zu „{{task_title}}“: {{content}}" },
+      { title: "🗨️ Neuer Kommentar", body: "{{friend_name}} hat auf „{{task_title}}“ geantwortet." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Guten Morgen! {{task_count}} Aufgaben warten", body: "Starte mit „{{task_title}}“." },
+      { title: "🌅 Bereit zu starten?", body: "{{task_count}} offene Aufgaben. 25 Minuten reichen." },
+    ],
+    task_due_today: [
+      { title: "⏰ „{{task_title}}“ ist heute fällig", body: "Noch ist Zeit, sie abzuschließen." },
+      { title: "🔔 Heute fällig", body: "{{task_count}} Aufgaben sind heute fällig." },
+    ],
+  },
+  "it-IT": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} vuole connettersi", body: "Accetta e seguitevi a vicenda." },
+      { title: "👋 Nuova richiesta di amicizia", body: "{{friend_name}} vuole concentrarsi con te." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} ha accettato", body: "Ora siete connessi. Concentriamoci!" },
+      { title: "✅ Nuova amicizia", body: "{{friend_name}} è nella tua lista amici." },
+    ],
+    board_invite: [
+      { title: "📋 Invito a {{board_title}}", body: "{{friend_name}} ti vuole in questa bacheca." },
+      { title: "🚀 {{friend_name}} ti ha invitato", body: "Entra in {{board_title}} e organizza col team." },
+    ],
+    task_assigned: [
+      { title: "🎯 Nuova attività per te", body: "{{friend_name}} ti ha aggiunto a “{{task_title}}”." },
+      { title: "📌 Attività assegnata", body: "“{{task_title}}” ti aspetta." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} ha commentato", body: "Su “{{task_title}}”: {{content}}" },
+      { title: "🗨️ Nuovo commento", body: "{{friend_name}} ha risposto su “{{task_title}}”." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Buongiorno! {{task_count}} attività ti aspettano", body: "Inizia da “{{task_title}}”." },
+      { title: "🌅 Pronto a iniziare?", body: "{{task_count}} attività aperte. Bastano 25 minuti." },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}” scade oggi", body: "C'è ancora tempo per finirla." },
+      { title: "🔔 Scadenza oggi", body: "{{task_count}} attività scadono oggi." },
+    ],
+  },
+  "ja-JP": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} から友達申請", body: "承認してお互いの集中を追いかけよう。" },
+      { title: "👋 新しい友達申請", body: "{{friend_name}} が一緒に集中したいそうです。" },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} が承認しました", body: "つながりました。集中しよう！" },
+      { title: "✅ 新しい友達", body: "{{friend_name}} が友達リストに加わりました。" },
+    ],
+    board_invite: [
+      { title: "📋 {{board_title}} への招待", body: "{{friend_name}} があなたを誘っています。" },
+      { title: "🚀 {{friend_name}} が招待しました", body: "{{board_title}} に参加してチームで整理しよう。" },
+    ],
+    task_assigned: [
+      { title: "🎯 新しいタスク", body: "{{friend_name}} が「{{task_title}}」に追加しました。" },
+      { title: "📌 担当になりました", body: "「{{task_title}}」が待っています。" },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} がコメント", body: "「{{task_title}}」: {{content}}" },
+      { title: "🗨️ 新しいコメント", body: "{{friend_name}} が「{{task_title}}」に返信しました。" },
+    ],
+    morning_kickoff: [
+      { title: "☀️ おはよう！タスクが{{task_count}}件", body: "「{{task_title}}」から始めよう。" },
+      { title: "🌅 始めますか？", body: "未完了{{task_count}}件。25分で変わります。" },
+    ],
+    task_due_today: [
+      { title: "⏰ 「{{task_title}}」は今日締切", body: "まだ間に合います。" },
+      { title: "🔔 今日が期限", body: "{{task_count}}件が今日締切です。" },
+    ],
+  },
+  "ko-KR": {
+    friend_request: [
+      { title: "🤝 {{friend_name}}님의 친구 요청", body: "수락하고 서로의 집중을 응원하세요." },
+      { title: "👋 새 친구 요청", body: "{{friend_name}}님이 함께 집중하고 싶어 해요." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}}님이 수락했어요", body: "이제 연결되었습니다. 집중해요!" },
+      { title: "✅ 새로운 친구", body: "{{friend_name}}님이 친구 목록에 추가됐어요." },
+    ],
+    board_invite: [
+      { title: "📋 {{board_title}} 초대", body: "{{friend_name}}님이 이 보드에 초대했어요." },
+      { title: "🚀 {{friend_name}}님의 초대", body: "{{board_title}}에 참여해 팀과 정리하세요." },
+    ],
+    task_assigned: [
+      { title: "🎯 새 작업이 있어요", body: "{{friend_name}}님이 “{{task_title}}”에 추가했어요." },
+      { title: "📌 담당자로 지정됨", body: "“{{task_title}}”이 기다리고 있어요." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}}님의 댓글", body: "“{{task_title}}”: {{content}}" },
+      { title: "🗨️ 새 댓글", body: "{{friend_name}}님이 “{{task_title}}”에 답했어요." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ 좋은 아침! 작업 {{task_count}}개", body: "“{{task_title}}”부터 시작해요." },
+      { title: "🌅 시작할까요?", body: "미완료 {{task_count}}개. 25분이면 충분해요." },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}” 오늘 마감", body: "아직 끝낼 시간이 있어요." },
+      { title: "🔔 오늘 마감", body: "{{task_count}}개 작업이 오늘 마감입니다." },
+    ],
+  },
+  "zh-CN": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} 想加你为好友", body: "接受并互相关注专注进度。" },
+      { title: "👋 新的好友请求", body: "{{friend_name}} 想和你一起专注。" },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} 接受了你的请求", body: "你们已连接，开始专注吧！" },
+      { title: "✅ 新的好友", body: "{{friend_name}} 已加入你的好友列表。" },
+    ],
+    board_invite: [
+      { title: "📋 邀请加入 {{board_title}}", body: "{{friend_name}} 想让你加入这个看板。" },
+      { title: "🚀 {{friend_name}} 邀请了你", body: "加入 {{board_title}}，和团队一起整理。" },
+    ],
+    task_assigned: [
+      { title: "🎯 有新任务", body: "{{friend_name}} 把你加入了“{{task_title}}”。" },
+      { title: "📌 任务已分配", body: "“{{task_title}}”正在等你。" },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} 发表了评论", body: "在“{{task_title}}”：{{content}}" },
+      { title: "🗨️ 新评论", body: "{{friend_name}} 回复了“{{task_title}}”。" },
+    ],
+    morning_kickoff: [
+      { title: "☀️ 早安！还有 {{task_count}} 个任务", body: "从“{{task_title}}”开始吧。" },
+      { title: "🌅 现在开始？", body: "{{task_count}} 个未完成任务，25 分钟就够。" },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}”今天到期", body: "还来得及完成。" },
+      { title: "🔔 今天到期", body: "{{task_count}} 个任务今天到期。" },
+    ],
+  },
+  "ru-RU": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} хочет добавить вас", body: "Примите и следите за прогрессом друг друга." },
+      { title: "👋 Новая заявка в друзья", body: "{{friend_name}} хочет заниматься вместе." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} принял(а) заявку", body: "Вы теперь друзья. За работу!" },
+      { title: "✅ Новая дружба", body: "{{friend_name}} в вашем списке друзей." },
+    ],
+    board_invite: [
+      { title: "📋 Приглашение в {{board_title}}", body: "{{friend_name}} зовёт вас на эту доску." },
+      { title: "🚀 {{friend_name}} пригласил(а) вас", body: "Присоединяйтесь к {{board_title}}." },
+    ],
+    task_assigned: [
+      { title: "🎯 Новая задача для вас", body: "{{friend_name}} добавил(а) вас в «{{task_title}}»." },
+      { title: "📌 Задача назначена", body: "«{{task_title}}» ждёт вас." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} оставил(а) комментарий", body: "В «{{task_title}}»: {{content}}" },
+      { title: "🗨️ Новый комментарий", body: "{{friend_name}} ответил(а) в «{{task_title}}»." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Доброе утро! Задач: {{task_count}}", body: "Начните с «{{task_title}}»." },
+      { title: "🌅 Начнём?", body: "{{task_count}} открытых задач. Хватит 25 минут." },
+    ],
+    task_due_today: [
+      { title: "⏰ «{{task_title}}» — срок сегодня", body: "Ещё есть время закончить." },
+      { title: "🔔 Срок сегодня", body: "Сегодня истекает срок у {{task_count}} задач." },
+    ],
+  },
+  "ar-SA": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} يريد إضافتك", body: "اقبل وتابعا تركيز بعضكما." },
+      { title: "👋 طلب صداقة جديد", body: "{{friend_name}} يريد التركيز معك." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} قبل طلبك", body: "أصبحتما متصلين. هيا للتركيز!" },
+      { title: "✅ صداقة جديدة", body: "{{friend_name}} أصبح في قائمة أصدقائك." },
+    ],
+    board_invite: [
+      { title: "📋 دعوة إلى {{board_title}}", body: "{{friend_name}} يريدك في هذه اللوحة." },
+      { title: "🚀 {{friend_name}} دعاك", body: "انضم إلى {{board_title}} ونظّم مع الفريق." },
+    ],
+    task_assigned: [
+      { title: "🎯 مهمة جديدة لك", body: "{{friend_name}} أضافك إلى «{{task_title}}»." },
+      { title: "📌 تم إسناد مهمة", body: "«{{task_title}}» في انتظارك." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} علّق", body: "على «{{task_title}}»: {{content}}" },
+      { title: "🗨️ تعليق جديد", body: "{{friend_name}} رد على «{{task_title}}»." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ صباح الخير! لديك {{task_count}} مهام", body: "ابدأ بـ «{{task_title}}»." },
+      { title: "🌅 هل نبدأ؟", body: "{{task_count}} مهام مفتوحة. 25 دقيقة تكفي." },
+    ],
+    task_due_today: [
+      { title: "⏰ «{{task_title}}» تنتهي اليوم", body: "ما زال هناك وقت لإنهائها." },
+      { title: "🔔 الموعد اليوم", body: "{{task_count}} مهام تنتهي اليوم." },
+    ],
+  },
+  "id-ID": {
+    friend_request: [
+      { title: "🤝 {{friend_name}} ingin berteman", body: "Terima dan saling pantau fokus kalian." },
+      { title: "👋 Permintaan pertemanan baru", body: "{{friend_name}} ingin fokus bersamamu." },
+    ],
+    friend_accepted: [
+      { title: "🎉 {{friend_name}} menerima permintaanmu", body: "Kalian terhubung. Ayo fokus!" },
+      { title: "✅ Teman baru", body: "{{friend_name}} masuk daftar temanmu." },
+    ],
+    board_invite: [
+      { title: "📋 Undangan ke {{board_title}}", body: "{{friend_name}} mengajakmu ke papan ini." },
+      { title: "🚀 {{friend_name}} mengundangmu", body: "Gabung ke {{board_title}} dan atur bersama tim." },
+    ],
+    task_assigned: [
+      { title: "🎯 Tugas baru untukmu", body: "{{friend_name}} menambahkanmu ke “{{task_title}}”." },
+      { title: "📌 Kamu ditugaskan", body: "“{{task_title}}” menunggumu." },
+    ],
+    task_comment: [
+      { title: "💬 {{friend_name}} berkomentar", body: "Di “{{task_title}}”: {{content}}" },
+      { title: "🗨️ Komentar baru", body: "{{friend_name}} membalas di “{{task_title}}”." },
+    ],
+    morning_kickoff: [
+      { title: "☀️ Selamat pagi! {{task_count}} tugas menunggu", body: "Mulai dari “{{task_title}}”." },
+      { title: "🌅 Siap mulai?", body: "{{task_count}} tugas terbuka. 25 menit sudah cukup." },
+    ],
+    task_due_today: [
+      { title: "⏰ “{{task_title}}” jatuh tempo hari ini", body: "Masih sempat menyelesaikannya." },
+      { title: "🔔 Tenggat hari ini", body: "{{task_count}} tugas jatuh tempo hari ini." },
+    ],
+  },
+};
+
 function render(tpl: string, vars: Record<string, string | number>): string {
   return tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? ""));
 }
@@ -479,8 +844,15 @@ export function pickTemplate(
   vars: Record<string, string | number>,
 ): { title: string; body: string } {
   const normalized = (lang || "en-US").replace("_", "-");
-  const pack = T[normalized] || T[normalized.slice(0, 2)] || T["en-US"];
-  const list = pack[kind] || T["en-US"][kind] || T["en-US"]["test"];
+  const short = normalized.slice(0, 2);
+  const list =
+    T[normalized]?.[kind] ||
+    S[normalized]?.[kind] ||
+    T[short]?.[kind] ||
+    S[short]?.[kind] ||
+    T["en-US"][kind] ||
+    S["en-US"][kind] ||
+    T["en-US"]["test"]!;
   const choice = list[Math.floor(Math.random() * list.length)];
   return { title: render(choice.title, vars), body: render(choice.body, vars) };
 }
