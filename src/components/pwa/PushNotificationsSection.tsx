@@ -18,6 +18,9 @@ type Prefs = {
   re_engagement: boolean;
   chat_mentions: boolean;
   weekly_recap: boolean;
+  social_invites: boolean;
+  task_updates: boolean;
+  morning_kickoff: boolean;
 };
 
 const DEFAULTS: Prefs = {
@@ -28,6 +31,9 @@ const DEFAULTS: Prefs = {
   re_engagement: true,
   chat_mentions: true,
   weekly_recap: true,
+  social_invites: true,
+  task_updates: true,
+  morning_kickoff: true,
 };
 
 function explainError(msg: string, t: (k: string) => string): string {
