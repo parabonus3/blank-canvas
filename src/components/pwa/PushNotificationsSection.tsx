@@ -67,6 +67,9 @@ export function PushNotificationsSection() {
           re_engagement: data.re_engagement ?? true,
           chat_mentions: data.chat_mentions ?? true,
           weekly_recap: data.weekly_recap ?? true,
+          social_invites: (data as any).social_invites ?? true,
+          task_updates: (data as any).task_updates ?? true,
+          morning_kickoff: (data as any).morning_kickoff ?? true,
         });
       }
     })();
