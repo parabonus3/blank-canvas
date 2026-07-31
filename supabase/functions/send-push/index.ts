@@ -87,34 +87,57 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
       weekly_recap: "weekly_recap",
       friend_activity: "friend_activity",
       chat_mentions: "chat_mentions",
+      friend_request: "social_invites",
+      friend_accepted: "social_invites",
+      board_invite: "social_invites",
+      task_assigned: "task_updates",
+      task_comment: "task_updates",
+      task_due_today: "task_updates",
+      morning_kickoff: "morning_kickoff",
     };
     if (prefs) {
       const key = prefKey[kind];
-      if (key && (prefs as any)[key] === false) return { sent: 0, skipped: "pref-off" };
+      if (key && (prefs as any)[key] !== undefined && (prefs as any)[key] === false) {
+        return { sent: 0, skipped: "pref-off" };
+      }
 
       const tz = subs[0].timezone || "America/Sao_Paulo";
       if (inQuietHours(new Date(), tz, prefs.quiet_hours_start ?? 22, prefs.quiet_hours_end ?? 8)) {
         return { sent: 0, skipped: "quiet-hours" };
       }
 
-      // max per day
-      const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
-      const { count } = await admin
-        .from("notification_log")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", userId)
-        .gte("sent_at", since);
-      if ((count ?? 0) >= (prefs.max_per_day ?? 3)) return { sent: 0, skipped: "max-per-day" };
+      if (isInstant) {
+        // Event-driven: dedup by exact payload (same person + same item) in last 12h,
+        // so distinct invites/assignments all arrive but duplicates never do.
+        const since12 = new Date(Date.now() - 12 * 3600 * 1000).toISOString();
+        const { count: samePayload } = await admin
+          .from("notification_log")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("kind", kind)
+          .eq("payload_hash", payloadHash)
+          .gte("sent_at", since12);
+        if ((samePayload ?? 0) > 0) return { sent: 0, skipped: "dedup" };
+      } else {
+        // max per day (scheduled digests only)
+        const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+        const { count } = await admin
+          .from("notification_log")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .gte("sent_at", since);
+        if ((count ?? 0) >= (prefs.max_per_day ?? 3)) return { sent: 0, skipped: "max-per-day" };
 
-      // dedup same kind in last 12h
-      const since12 = new Date(Date.now() - 12 * 3600 * 1000).toISOString();
-      const { count: sameKind } = await admin
-        .from("notification_log")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", userId)
-        .eq("kind", kind)
-        .gte("sent_at", since12);
-      if ((sameKind ?? 0) > 0) return { sent: 0, skipped: "dedup" };
+        // dedup same kind in last 12h
+        const since12 = new Date(Date.now() - 12 * 3600 * 1000).toISOString();
+        const { count: sameKind } = await admin
+          .from("notification_log")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("kind", kind)
+          .gte("sent_at", since12);
+        if ((sameKind ?? 0) > 0) return { sent: 0, skipped: "dedup" };
+      }
     }
   }
 
@@ -135,7 +158,9 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
         { TTL: 3600 },
       );
       sent++;
-      await admin.from("notification_log").insert({ user_id: userId, kind, lang, meta: { url } });
+      await admin
+        .from("notification_log")
+        .insert({ user_id: userId, kind, lang, payload_hash: payloadHash, meta: { url } });
     } catch (err: any) {
       const status = err?.statusCode;
       if (status === 404 || status === 410) {
