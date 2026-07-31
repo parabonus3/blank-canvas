@@ -153,6 +153,9 @@ export function PushNotificationsSection() {
                 ["friend_activity", "push.kinds.friends"],
                 ["chat_mentions", "push.kinds.mentions"],
                 ["re_engagement", "push.kinds.reengage"],
+                ["social_invites", "push.kinds.social_invites"],
+                ["task_updates", "push.kinds.task_updates"],
+                ["morning_kickoff", "push.kinds.morning_kickoff"],
               ] as const
             ).map(([key, label]) => (
               <div key={key} className="flex items-center justify-between rounded-md border p-3">
