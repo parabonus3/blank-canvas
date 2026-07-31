@@ -375,6 +375,8 @@ Deno.serve(async (_req) => {
       runSafe("re_engagement", () => processReEngagement(users)),
       runSafe("weekly_recap", () => processWeeklyRecap(users)),
       runSafe("friend_activity", () => processFriendActivity(users)),
+      runSafe("morning_kickoff", () => processMorningKickoff(users)),
+      runSafe("task_due_today", () => processTaskDueToday(users)),
     ]);
     const cleaned = await cleanupDeadSubscriptions().catch(() => 0);
     return new Response(
