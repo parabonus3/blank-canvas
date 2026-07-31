@@ -11,9 +11,16 @@ export type NotifKind =
   | "re_engagement"
   | "weekly_recap"
   | "friend_activity"
-  | "chat_mentions";
+  | "chat_mentions"
+  | "friend_request"
+  | "friend_accepted"
+  | "board_invite"
+  | "task_assigned"
+  | "task_comment"
+  | "morning_kickoff"
+  | "task_due_today";
 
-type LangPack = Record<NotifKind, { title: string; body: string }[]>;
+type LangPack = Partial<Record<NotifKind, { title: string; body: string }[]>>;
 
 const T: Record<string, LangPack> = {
   "pt-BR": {
