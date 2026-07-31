@@ -2327,7 +2327,10 @@
       "weekly": "ملخص أسبوعي",
       "friends": "نشاط الأصدقاء",
       "mentions": "الإشارات",
-      "reengage": "اشتقنا لك"
+      "reengage": "اشتقنا لك",
+      "social_invites": "الدعوات والأصدقاء",
+      "task_updates": "المهام واللوحات",
+      "morning_kickoff": "انطلاقة الصباح"
     },
     "diagnostics": "التشخيص",
     "errors": {

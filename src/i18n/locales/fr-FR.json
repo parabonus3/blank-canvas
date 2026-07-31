@@ -2341,7 +2341,10 @@
       "weekly": "Récap hebdo",
       "friends": "Activité des amis",
       "mentions": "Mentions",
-      "reengage": "Vous nous manquez"
+      "reengage": "Vous nous manquez",
+      "social_invites": "Invitations et amis",
+      "task_updates": "Tâches et tableaux",
+      "morning_kickoff": "Coup d'envoi du matin"
     },
     "diagnostics": "Diagnostic",
     "errors": {

@@ -2327,7 +2327,10 @@
       "weekly": "Riepilogo settimanale",
       "friends": "Attività amici",
       "mentions": "Menzioni",
-      "reengage": "Ci manchi"
+      "reengage": "Ci manchi",
+      "social_invites": "Inviti e amici",
+      "task_updates": "Attività e bacheche",
+      "morning_kickoff": "Avvio mattutino"
     },
     "diagnostics": "Diagnostica",
     "errors": {

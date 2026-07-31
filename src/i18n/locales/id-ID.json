@@ -2341,7 +2341,10 @@
       "weekly": "Ringkasan mingguan",
       "friends": "Aktivitas teman",
       "mentions": "Sebutan",
-      "reengage": "Kami rindu kamu"
+      "reengage": "Kami rindu kamu",
+      "social_invites": "Undangan & teman",
+      "task_updates": "Tugas & papan",
+      "morning_kickoff": "Pemicu pagi"
     },
     "diagnostics": "Diagnostik",
     "errors": {

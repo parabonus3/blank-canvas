@@ -2491,7 +2491,10 @@
       "weekly": "Resumo semanal",
       "friends": "Atividade de amigos",
       "mentions": "Menções no chat",
-      "reengage": "Sentimos sua falta"
+      "reengage": "Sentimos sua falta",
+      "social_invites": "Convites e amizades",
+      "task_updates": "Tarefas e quadros",
+      "morning_kickoff": "Convite matinal"
     },
     "diagnostics": "Diagnóstico",
     "errors": {

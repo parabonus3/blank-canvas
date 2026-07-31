@@ -2327,7 +2327,10 @@
       "weekly": "Итоги недели",
       "friends": "Активность друзей",
       "mentions": "Упоминания",
-      "reengage": "Скучаем"
+      "reengage": "Скучаем",
+      "social_invites": "Приглашения и друзья",
+      "task_updates": "Задачи и доски",
+      "morning_kickoff": "Утренний старт"
     },
     "diagnostics": "Диагностика",
     "errors": {
