@@ -2341,7 +2341,10 @@
       "weekly": "Wochenrückblick",
       "friends": "Freundesaktivität",
       "mentions": "Erwähnungen",
-      "reengage": "Wir vermissen dich"
+      "reengage": "Wir vermissen dich",
+      "social_invites": "Einladungen & Freunde",
+      "task_updates": "Aufgaben & Boards",
+      "morning_kickoff": "Morgenstart"
     },
     "diagnostics": "Diagnose",
     "errors": {

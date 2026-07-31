@@ -832,12 +832,15 @@ export type Database = {
           chat_mentions: boolean
           friend_activity: boolean
           max_per_day: number
+          morning_kickoff: boolean
           quiet_hours_end: number
           quiet_hours_start: number
           re_engagement: boolean
           room_challenge_deadline: boolean
           room_goal_reminder: boolean
+          social_invites: boolean
           streak_risk: boolean
+          task_updates: boolean
           updated_at: string
           user_id: string
           weekly_recap: boolean
@@ -846,12 +849,15 @@ export type Database = {
           chat_mentions?: boolean
           friend_activity?: boolean
           max_per_day?: number
+          morning_kickoff?: boolean
           quiet_hours_end?: number
           quiet_hours_start?: number
           re_engagement?: boolean
           room_challenge_deadline?: boolean
           room_goal_reminder?: boolean
+          social_invites?: boolean
           streak_risk?: boolean
+          task_updates?: boolean
           updated_at?: string
           user_id: string
           weekly_recap?: boolean
@@ -860,12 +866,15 @@ export type Database = {
           chat_mentions?: boolean
           friend_activity?: boolean
           max_per_day?: number
+          morning_kickoff?: boolean
           quiet_hours_end?: number
           quiet_hours_start?: number
           re_engagement?: boolean
           room_challenge_deadline?: boolean
           room_goal_reminder?: boolean
+          social_invites?: boolean
           streak_risk?: boolean
+          task_updates?: boolean
           updated_at?: string
           user_id?: string
           weekly_recap?: boolean
@@ -2381,6 +2390,10 @@ export type Database = {
         Returns: undefined
       }
       delete_room_challenge: { Args: { _id: string }; Returns: undefined }
+      dispatch_push: {
+        Args: { _kind: string; _url: string; _user_id: string; _vars: Json }
+        Returns: undefined
+      }
       duplicate_goals_to_year: {
         Args: { _from: number; _to: number }
         Returns: number

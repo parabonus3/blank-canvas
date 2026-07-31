@@ -272,6 +272,70 @@ async function processFriendActivity(users: { user_id: string; tz: string }[]) {
   }
 }
 
+/** Open (not completed) tasks the user owns or is assigned to. */
+async function openTasksFor(userId: string): Promise<{ id: string; title: string; due_date: string | null }[]> {
+  const { data: owned } = await admin
+    .from("tasks")
+    .select("id,title,due_date,is_completed")
+    .eq("user_id", userId)
+    .eq("is_completed", false);
+
+  const { data: memberships } = await admin
+    .from("task_members")
+    .select("task_id")
+    .eq("user_id", userId);
+  const memberIds = (memberships || []).map((m: any) => m.task_id);
+
+  let assigned: any[] = [];
+  if (memberIds.length) {
+    const { data } = await admin
+      .from("tasks")
+      .select("id,title,due_date,is_completed")
+      .in("id", memberIds)
+      .eq("is_completed", false);
+    assigned = data || [];
+  }
+
+  const map = new Map<string, any>();
+  [...(owned || []), ...assigned].forEach((t: any) => map.set(t.id, t));
+  return Array.from(map.values());
+}
+
+async function processMorningKickoff(users: { user_id: string; tz: string }[]) {
+  for (const u of users) {
+    if (localHour(u.tz) !== 8) continue;
+    const tasks = await openTasksFor(u.user_id);
+    if (tasks.length === 0) continue;
+    // Highlight the task with the nearest due date (fallback: first one)
+    const withDue = tasks.filter((t) => t.due_date).sort(
+      (a, b) => new Date(a.due_date!).getTime() - new Date(b.due_date!).getTime(),
+    );
+    const highlight = withDue[0] || tasks[0];
+    await sendPushToUser({
+      userId: u.user_id,
+      kind: "morning_kickoff",
+      vars: { task_count: tasks.length, task_title: highlight.title },
+      url: "/tasks",
+    });
+  }
+}
+
+async function processTaskDueToday(users: { user_id: string; tz: string }[]) {
+  for (const u of users) {
+    if (localHour(u.tz) !== 13) continue;
+    const today = localDate(u.tz);
+    const tasks = await openTasksFor(u.user_id);
+    const dueToday = tasks.filter((t) => t.due_date && localDate(u.tz, new Date(t.due_date)) === today);
+    if (dueToday.length === 0) continue;
+    await sendPushToUser({
+      userId: u.user_id,
+      kind: "task_due_today",
+      vars: { task_count: dueToday.length, task_title: dueToday[0].title },
+      url: "/tasks",
+    });
+  }
+}
+
 async function cleanupDeadSubscriptions(): Promise<number> {
   const cutoff = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
   const { data, error } = await admin
@@ -311,6 +375,8 @@ Deno.serve(async (_req) => {
       runSafe("re_engagement", () => processReEngagement(users)),
       runSafe("weekly_recap", () => processWeeklyRecap(users)),
       runSafe("friend_activity", () => processFriendActivity(users)),
+      runSafe("morning_kickoff", () => processMorningKickoff(users)),
+      runSafe("task_due_today", () => processTaskDueToday(users)),
     ]);
     const cleaned = await cleanupDeadSubscriptions().catch(() => 0);
     return new Response(

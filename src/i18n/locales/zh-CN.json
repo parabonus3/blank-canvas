@@ -2341,7 +2341,10 @@
       "weekly": "周报",
       "friends": "好友动态",
       "mentions": "提及",
-      "reengage": "想你了"
+      "reengage": "想你了",
+      "social_invites": "邀请与好友",
+      "task_updates": "任务与看板",
+      "morning_kickoff": "早晨启动"
     },
     "diagnostics": "诊断",
     "errors": {

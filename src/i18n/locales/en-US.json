@@ -2436,7 +2436,10 @@
       "weekly": "Weekly recap",
       "friends": "Friend activity",
       "mentions": "Chat mentions",
-      "reengage": "We miss you"
+      "reengage": "We miss you",
+      "social_invites": "Invites & friends",
+      "task_updates": "Tasks & boards",
+      "morning_kickoff": "Morning kickoff"
     },
     "diagnostics": "Diagnostics",
     "errors": {

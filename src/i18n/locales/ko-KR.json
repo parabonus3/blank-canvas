@@ -2327,7 +2327,10 @@
       "weekly": "주간 요약",
       "friends": "친구 활동",
       "mentions": "멘션",
-      "reengage": "보고 싶어요"
+      "reengage": "보고 싶어요",
+      "social_invites": "초대 및 친구",
+      "task_updates": "작업 및 보드",
+      "morning_kickoff": "아침 시작 알림"
     },
     "diagnostics": "진단",
     "errors": {

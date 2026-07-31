@@ -2348,7 +2348,10 @@
       "weekly": "Resumen semanal",
       "friends": "Actividad de amigos",
       "mentions": "Menciones",
-      "reengage": "Te extrañamos"
+      "reengage": "Te extrañamos",
+      "social_invites": "Invitaciones y amigos",
+      "task_updates": "Tareas y tableros",
+      "morning_kickoff": "Arranque matinal"
     },
     "diagnostics": "Diagnóstico",
     "errors": {

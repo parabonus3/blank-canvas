@@ -18,6 +18,9 @@ type Prefs = {
   re_engagement: boolean;
   chat_mentions: boolean;
   weekly_recap: boolean;
+  social_invites: boolean;
+  task_updates: boolean;
+  morning_kickoff: boolean;
 };
 
 const DEFAULTS: Prefs = {
@@ -28,6 +31,9 @@ const DEFAULTS: Prefs = {
   re_engagement: true,
   chat_mentions: true,
   weekly_recap: true,
+  social_invites: true,
+  task_updates: true,
+  morning_kickoff: true,
 };
 
 function explainError(msg: string, t: (k: string) => string): string {
@@ -61,6 +67,9 @@ export function PushNotificationsSection() {
           re_engagement: data.re_engagement ?? true,
           chat_mentions: data.chat_mentions ?? true,
           weekly_recap: data.weekly_recap ?? true,
+          social_invites: (data as any).social_invites ?? true,
+          task_updates: (data as any).task_updates ?? true,
+          morning_kickoff: (data as any).morning_kickoff ?? true,
         });
       }
     })();
@@ -144,6 +153,9 @@ export function PushNotificationsSection() {
                 ["friend_activity", "push.kinds.friends"],
                 ["chat_mentions", "push.kinds.mentions"],
                 ["re_engagement", "push.kinds.reengage"],
+                ["social_invites", "push.kinds.social_invites"],
+                ["task_updates", "push.kinds.task_updates"],
+                ["morning_kickoff", "push.kinds.morning_kickoff"],
               ] as const
             ).map(([key, label]) => (
               <div key={key} className="flex items-center justify-between rounded-md border p-3">

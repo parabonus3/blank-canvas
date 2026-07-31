@@ -2341,7 +2341,10 @@
       "weekly": "週次まとめ",
       "friends": "友達のアクティビティ",
       "mentions": "メンション",
-      "reengage": "会いたかった"
+      "reengage": "会いたかった",
+      "social_invites": "招待と友達",
+      "task_updates": "タスクとボード",
+      "morning_kickoff": "朝のスタート"
     },
     "diagnostics": "診断",
     "errors": {
