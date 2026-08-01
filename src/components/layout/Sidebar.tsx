@@ -25,6 +25,8 @@ import { useIsSupportAgent } from "@/hooks/useSupportAgents";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePendingInvitations } from "@/hooks/useRoomInvitations";
+import { useMyBoardInvitations } from "@/hooks/useBoardCollab";
+
 import { useFriendships } from "@/hooks/useFriendships";
 import { useUnreadDMCount } from "@/hooks/useDirectMessages";
 import { useUnreadTicketCount } from "@/hooks/useSupportTickets";
@@ -64,6 +66,9 @@ export function AppSidebar() {
   const pendingCount = pendingInvitations?.length || 0;
   const friendRequestCount = pendingReceived?.length || 0;
   const friendsBadge = friendRequestCount + (unreadDMs as number);
+  const { data: boardInvites = [] } = useMyBoardInvitations();
+  const tasksBadge = boardInvites.length;
+
 
   const navItems = [
     { title: t('sidebar.timer'), url: "/timer", icon: Timer },
@@ -139,6 +144,12 @@ export function AppSidebar() {
                               {friendsBadge > 9 ? "9+" : friendsBadge}
                             </span>
                           )}
+                          {item.url === "/tasks" && tasksBadge > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+                              {tasksBadge > 9 ? "9+" : tasksBadge}
+                            </span>
+                          )}
+
                           {item.url === "/sac" && (unreadTickets as number) > 0 && (
                             <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
                               {(unreadTickets as number) > 9 ? "9+" : unreadTickets}

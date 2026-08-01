@@ -11,7 +11,9 @@
     "close": "Schließen",
     "project": "Projekt",
     "back": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "just_now": "gerade eben",
+    "someone": "Jemand"
   },
   "landing": {
     "tagline_1": "Deine Zeit",
@@ -2493,6 +2495,10 @@
     "attachment_uploaded": "Anhang hochgeladen",
     "set_as_cover": "Als Titelbild festlegen",
     "cover": "Kartenbild",
-    "remove_cover": "Titelbild entfernen"
+    "remove_cover": "Titelbild entfernen",
+    "invites_pending_title": "Einladungen zur Zusammenarbeit",
+    "invite_cta": "hat dich zur Zusammenarbeit eingeladen",
+    "decline": "Ablehnen",
+    "board": "Board"
   }
 }

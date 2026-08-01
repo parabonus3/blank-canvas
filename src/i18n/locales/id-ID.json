@@ -11,7 +11,9 @@
     "close": "Tutup",
     "project": "Proyek",
     "back": "Kembali",
-    "next": "Berikutnya"
+    "next": "Berikutnya",
+    "just_now": "baru saja",
+    "someone": "Seseorang"
   },
   "landing": {
     "tagline_1": "Waktumu",
@@ -2493,6 +2495,10 @@
     "attachment_uploaded": "Lampiran diunggah",
     "set_as_cover": "Jadikan sampul",
     "cover": "Sampul kartu",
-    "remove_cover": "Hapus sampul"
+    "remove_cover": "Hapus sampul",
+    "invites_pending_title": "Undangan kolaborasi",
+    "invite_cta": "mengundangmu untuk berkolaborasi",
+    "decline": "Tolak",
+    "board": "Papan"
   }
 }

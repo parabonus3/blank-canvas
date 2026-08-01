@@ -11,7 +11,9 @@
     "close": "Close",
     "project": "Project",
     "back": "Back",
-    "next": "Next"
+    "next": "Next",
+    "just_now": "just now",
+    "someone": "Someone"
   },
   "landing": {
     "tagline_1": "Your time",
@@ -2588,6 +2590,10 @@
     "attachment_uploaded": "Attachment uploaded",
     "set_as_cover": "Set as cover",
     "cover": "Card cover",
-    "remove_cover": "Remove cover"
+    "remove_cover": "Remove cover",
+    "invites_pending_title": "Collaboration invites",
+    "invite_cta": "invited you to collaborate",
+    "decline": "Decline",
+    "board": "Board"
   }
 }
