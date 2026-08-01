@@ -66,6 +66,9 @@ export function AppSidebar() {
   const pendingCount = pendingInvitations?.length || 0;
   const friendRequestCount = pendingReceived?.length || 0;
   const friendsBadge = friendRequestCount + (unreadDMs as number);
+  const { data: boardInvites = [] } = useMyBoardInvitations();
+  const tasksBadge = boardInvites.length;
+
 
   const navItems = [
     { title: t('sidebar.timer'), url: "/timer", icon: Timer },
