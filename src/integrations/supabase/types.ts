@@ -2497,6 +2497,19 @@ export type Database = {
         }[]
       }
       get_member_room_streak: { Args: { _user_id: string }; Returns: number }
+      get_my_board_invitations: {
+        Args: never
+        Returns: {
+          board_color: string
+          board_id: string
+          board_title: string
+          created_at: string
+          id: string
+          inviter_avatar: string
+          inviter_id: string
+          inviter_name: string
+        }[]
+      }
       get_my_rooms: {
         Args: never
         Returns: {
