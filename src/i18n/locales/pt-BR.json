@@ -13,7 +13,9 @@
     "clear_filters": "Limpar filtros",
     "project": "Projeto",
     "back": "Voltar",
-    "next": "Próximo"
+    "next": "Próximo",
+    "just_now": "agora",
+    "someone": "Alguém"
   },
   "landing": {
     "tagline_1": "Seu tempo",
@@ -2643,6 +2645,10 @@
     "attachment_uploaded": "Anexo enviado",
     "set_as_cover": "Definir como capa",
     "cover": "Capa do card",
-    "remove_cover": "Remover capa"
+    "remove_cover": "Remover capa",
+    "invites_pending_title": "Convites para colaborar",
+    "invite_cta": "te convidou para colaborar",
+    "decline": "Recusar",
+    "board": "Quadro"
   }
 }

@@ -11,7 +11,9 @@
     "close": "Fermer",
     "project": "Projet",
     "back": "Retour",
-    "next": "Suivant"
+    "next": "Suivant",
+    "just_now": "à l'instant",
+    "someone": "Quelqu'un"
   },
   "landing": {
     "tagline_1": "Votre temps",
@@ -2493,6 +2495,10 @@
     "attachment_uploaded": "Pièce jointe ajoutée",
     "set_as_cover": "Définir comme couverture",
     "cover": "Couverture de la carte",
-    "remove_cover": "Retirer la couverture"
+    "remove_cover": "Retirer la couverture",
+    "invites_pending_title": "Invitations à collaborer",
+    "invite_cta": "vous a invité à collaborer",
+    "decline": "Refuser",
+    "board": "Tableau"
   }
 }

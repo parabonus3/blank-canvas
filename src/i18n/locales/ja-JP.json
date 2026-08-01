@@ -11,7 +11,9 @@
     "close": "閉じる",
     "project": "プロジェクト",
     "back": "戻る",
-    "next": "次へ"
+    "next": "次へ",
+    "just_now": "たった今",
+    "someone": "誰か"
   },
   "landing": {
     "tagline_1": "あなたの時間",
@@ -2493,6 +2495,10 @@
     "attachment_uploaded": "添付をアップロードしました",
     "set_as_cover": "カバーに設定",
     "cover": "カードのカバー",
-    "remove_cover": "カバーを削除"
+    "remove_cover": "カバーを削除",
+    "invites_pending_title": "コラボの招待",
+    "invite_cta": "さんがコラボに招待しました",
+    "decline": "辞退",
+    "board": "ボード"
   }
 }

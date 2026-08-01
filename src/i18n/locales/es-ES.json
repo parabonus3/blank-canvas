@@ -11,7 +11,9 @@
     "close": "Cerrar",
     "project": "Proyecto",
     "back": "Atrás",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "just_now": "ahora",
+    "someone": "Alguien"
   },
   "landing": {
     "tagline_1": "Tu tiempo",
@@ -2500,6 +2502,10 @@
     "attachment_uploaded": "Adjunto subido",
     "set_as_cover": "Definir como portada",
     "cover": "Portada de la tarjeta",
-    "remove_cover": "Quitar portada"
+    "remove_cover": "Quitar portada",
+    "invites_pending_title": "Invitaciones para colaborar",
+    "invite_cta": "te invitó a colaborar",
+    "decline": "Rechazar",
+    "board": "Tablero"
   }
 }

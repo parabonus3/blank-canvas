@@ -11,7 +11,9 @@
     "close": "Chiudi",
     "project": "Progetto",
     "back": "Indietro",
-    "next": "Avanti"
+    "next": "Avanti",
+    "just_now": "adesso",
+    "someone": "Qualcuno"
   },
   "landing": {
     "tagline_1": "Il tuo tempo",
@@ -2479,6 +2481,10 @@
     "attachment_uploaded": "Allegato caricato",
     "set_as_cover": "Imposta come copertina",
     "cover": "Copertina della scheda",
-    "remove_cover": "Rimuovi copertina"
+    "remove_cover": "Rimuovi copertina",
+    "invites_pending_title": "Inviti a collaborare",
+    "invite_cta": "ti ha invitato a collaborare",
+    "decline": "Rifiuta",
+    "board": "Bacheca"
   }
 }

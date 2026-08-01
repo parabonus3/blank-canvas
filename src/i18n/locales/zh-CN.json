@@ -11,7 +11,9 @@
     "close": "关闭",
     "project": "项目",
     "back": "返回",
-    "next": "下一步"
+    "next": "下一步",
+    "just_now": "刚刚",
+    "someone": "某人"
   },
   "landing": {
     "tagline_1": "你的时间",
@@ -2493,6 +2495,10 @@
     "attachment_uploaded": "附件已上传",
     "set_as_cover": "设为封面",
     "cover": "卡片封面",
-    "remove_cover": "移除封面"
+    "remove_cover": "移除封面",
+    "invites_pending_title": "协作邀请",
+    "invite_cta": "邀请你一起协作",
+    "decline": "拒绝",
+    "board": "看板"
   }
 }

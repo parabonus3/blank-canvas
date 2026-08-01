@@ -11,7 +11,9 @@
     "close": "닫기",
     "project": "프로젝트",
     "back": "뒤로",
-    "next": "다음"
+    "next": "다음",
+    "just_now": "방금",
+    "someone": "누군가"
   },
   "landing": {
     "tagline_1": "당신의 시간",
@@ -2479,6 +2481,10 @@
     "attachment_uploaded": "첨부파일 업로드됨",
     "set_as_cover": "커버로 설정",
     "cover": "카드 커버",
-    "remove_cover": "커버 제거"
+    "remove_cover": "커버 제거",
+    "invites_pending_title": "협업 초대",
+    "invite_cta": "님이 협업에 초대했어요",
+    "decline": "거절",
+    "board": "보드"
   }
 }
