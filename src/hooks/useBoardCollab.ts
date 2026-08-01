@@ -92,12 +92,15 @@ export interface BoardInvitation {
   id: string;
   board_id: string;
   inviter_id: string;
-  invitee_id: string;
-  status: string;
+  invitee_id?: string;
+  status?: string;
   created_at: string;
   board_title?: string | null;
+  board_color?: string | null;
   inviter_name?: string | null;
+  inviter_avatar?: string | null;
 }
+
 
 export interface TaskMember {
   id: string;
