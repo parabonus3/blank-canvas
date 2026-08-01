@@ -250,29 +250,23 @@ export function useMyBoardInvitations() {
     queryKey: ["my_board_invitations", user?.id],
     queryFn: async () => {
       if (!user) return [] as BoardInvitation[];
-      const { data, error } = await (supabase as any)
-        .from("board_invitations")
-        .select("*")
-        .eq("invitee_id", user.id)
-        .eq("status", "pending")
-        .order("created_at", { ascending: false });
+      // SECURITY DEFINER RPC: invitees are not board members yet, so they cannot
+      // read `boards` directly (board title would come back as null).
+      const { data, error } = await (supabase as any).rpc("get_my_board_invitations");
       if (error) throw error;
-      const invs = (data || []) as any[];
-      if (!invs.length) return [] as BoardInvitation[];
-
-      const boardIds = Array.from(new Set(invs.map(i => i.board_id)));
-      const inviterIds = Array.from(new Set(invs.map(i => i.inviter_id)));
-      const [{ data: boards }, profiles] = await Promise.all([
-        supabase.from("boards").select("id,title").in("id", boardIds),
-        fetchProfileMap(inviterIds),
-      ]);
-      const bmap = new Map((boards || []).map((b: any) => [b.id, b.title]));
-      return invs.map(i => ({
-        ...i,
-        board_title: bmap.get(i.board_id) || null,
-        inviter_name: profiles.get(i.inviter_id)?.display_name || null,
+      return ((data || []) as any[]).map((i) => ({
+        id: i.id,
+        board_id: i.board_id,
+        board_title: i.board_title ?? null,
+        board_color: i.board_color ?? null,
+        inviter_id: i.inviter_id,
+        inviter_name: i.inviter_name ?? null,
+        inviter_avatar: i.inviter_avatar ?? null,
+        created_at: i.created_at,
+        status: "pending",
       })) as BoardInvitation[];
     },
+
     enabled: !!user,
   });
 
