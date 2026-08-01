@@ -25,6 +25,8 @@ import { useIsSupportAgent } from "@/hooks/useSupportAgents";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePendingInvitations } from "@/hooks/useRoomInvitations";
+import { useMyBoardInvitations } from "@/hooks/useBoardCollab";
+
 import { useFriendships } from "@/hooks/useFriendships";
 import { useUnreadDMCount } from "@/hooks/useDirectMessages";
 import { useUnreadTicketCount } from "@/hooks/useSupportTickets";
