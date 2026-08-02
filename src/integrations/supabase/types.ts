@@ -2322,6 +2322,10 @@ export type Database = {
         Args: { _task_id: string; _user_id: string }
         Returns: boolean
       }
+      cancel_board_invitation: {
+        Args: { _invitation_id: string }
+        Returns: undefined
+      }
       check_and_grant_freeze_missions: {
         Args: never
         Returns: {
@@ -2768,6 +2772,10 @@ export type Database = {
         Returns: undefined
       }
       refresh_last_known_streak: { Args: never; Returns: number }
+      reject_board_invitation: {
+        Args: { _invitation_id: string }
+        Returns: undefined
+      }
       reorder_task: {
         Args: {
           _new_column_id: string
