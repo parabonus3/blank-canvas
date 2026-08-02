@@ -365,18 +365,25 @@ export function useBoardOutgoingInvitations(boardId: string | undefined) {
 export function useCancelBoardInvitation() {
   const qc = useQueryClient();
   const { toast } = useToast();
+  const { t } = useTranslation();
   return useMutation({
+    // RPC deletes the row (see useRejectBoardInvitation for why).
     mutationFn: async ({ invitationId }: { invitationId: string; boardId: string }) => {
-      const { error } = await (supabase as any)
-        .from("board_invitations")
-        .update({ status: "cancelled" })
-        .eq("id", invitationId);
+      const { error } = await (supabase as any).rpc("cancel_board_invitation", {
+        _invitation_id: invitationId,
+      });
       if (error) throw error;
     },
     onSuccess: (_, v) => {
       qc.invalidateQueries({ queryKey: ["board_outgoing_invitations", v.boardId] });
+      qc.invalidateQueries({ queryKey: ["board_members", v.boardId] });
     },
-    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+    onError: () =>
+      toast({
+        title: t("common.error"),
+        description: t("kanban.invite_cancel_error", "Não foi possível cancelar o convite. Tente novamente."),
+        variant: "destructive",
+      }),
   });
 }
 
