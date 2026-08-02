@@ -170,7 +170,19 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
   for (const s of subs) {
     const lang = s.lang || "en-US";
     const { title, body } = pickTemplate(kind as NotifKind, lang, vars);
-    const payload = JSON.stringify({ title, body, url, kind, icon: "/icons/icon-192.png" });
+    // Use the actor's avatar (inviter / assigner / commenter) as the notification icon
+    // so the person's photo shows up; fall back to the app icon.
+    const actorAvatar = typeof (vars as any)?.actor_avatar === "string" && (vars as any).actor_avatar
+      ? String((vars as any).actor_avatar)
+      : null;
+    const payload = JSON.stringify({
+      title,
+      body,
+      url,
+      kind,
+      icon: actorAvatar ?? "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+    });
     try {
       await webpush.sendNotification(
         { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } } as any,

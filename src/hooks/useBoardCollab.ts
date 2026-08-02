@@ -305,15 +305,25 @@ export function useAcceptBoardInvitation() {
 
 export function useRejectBoardInvitation() {
   const qc = useQueryClient();
+  const { toast } = useToast();
+  const { t } = useTranslation();
   return useMutation({
+    // RPC deletes the row: flipping the status collides with the
+    // unique (board_id, invitee_id, status) constraint when an older
+    // rejected/cancelled row already exists for the same pair.
     mutationFn: async (invitationId: string) => {
-      const { error } = await (supabase as any)
-        .from("board_invitations")
-        .update({ status: "rejected" })
-        .eq("id", invitationId);
+      const { error } = await (supabase as any).rpc("reject_board_invitation", {
+        _invitation_id: invitationId,
+      });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["my_board_invitations"] }),
+    onError: () =>
+      toast({
+        title: t("common.error"),
+        description: t("kanban.invite_decline_error", "Não foi possível recusar o convite. Tente novamente."),
+        variant: "destructive",
+      }),
   });
 }
 
