@@ -2649,6 +2649,8 @@
     "invites_pending_title": "Convites para colaborar",
     "invite_cta": "te convidou para colaborar",
     "decline": "Recusar",
-    "board": "Quadro"
+    "board": "Quadro",
+    "invite_decline_error": "Não foi possível recusar o convite. Tente novamente.",
+    "invite_cancel_error": "Não foi possível cancelar o convite. Tente novamente."
   }
 }

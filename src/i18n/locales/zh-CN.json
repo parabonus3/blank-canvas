@@ -2499,6 +2499,8 @@
     "invites_pending_title": "协作邀请",
     "invite_cta": "邀请你一起协作",
     "decline": "拒绝",
-    "board": "看板"
+    "board": "看板",
+    "invite_decline_error": "无法拒绝邀请，请重试。",
+    "invite_cancel_error": "无法取消邀请，请重试。"
   }
 }

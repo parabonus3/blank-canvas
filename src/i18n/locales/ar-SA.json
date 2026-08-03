@@ -2485,6 +2485,8 @@
     "invites_pending_title": "دعوات للتعاون",
     "invite_cta": "دعاك للتعاون",
     "decline": "رفض",
-    "board": "لوحة"
+    "board": "لوحة",
+    "invite_decline_error": "تعذّر رفض الدعوة. حاول مرة أخرى.",
+    "invite_cancel_error": "تعذّر إلغاء الدعوة. حاول مرة أخرى."
   }
 }

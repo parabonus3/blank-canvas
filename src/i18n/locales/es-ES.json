@@ -2506,6 +2506,8 @@
     "invites_pending_title": "Invitaciones para colaborar",
     "invite_cta": "te invitó a colaborar",
     "decline": "Rechazar",
-    "board": "Tablero"
+    "board": "Tablero",
+    "invite_decline_error": "No se pudo rechazar la invitación. Inténtalo de nuevo.",
+    "invite_cancel_error": "No se pudo cancelar la invitación. Inténtalo de nuevo."
   }
 }

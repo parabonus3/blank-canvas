@@ -2499,6 +2499,8 @@
     "invites_pending_title": "Invitations à collaborer",
     "invite_cta": "vous a invité à collaborer",
     "decline": "Refuser",
-    "board": "Tableau"
+    "board": "Tableau",
+    "invite_decline_error": "Impossible de refuser l'invitation. Veuillez réessayer.",
+    "invite_cancel_error": "Impossible d'annuler l'invitation. Veuillez réessayer."
   }
 }

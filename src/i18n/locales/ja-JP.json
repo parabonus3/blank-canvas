@@ -2499,6 +2499,8 @@
     "invites_pending_title": "コラボの招待",
     "invite_cta": "さんがコラボに招待しました",
     "decline": "辞退",
-    "board": "ボード"
+    "board": "ボード",
+    "invite_decline_error": "招待を辞退できませんでした。もう一度お試しください。",
+    "invite_cancel_error": "招待を取り消せませんでした。もう一度お試しください。"
   }
 }

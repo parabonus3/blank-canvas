@@ -2485,6 +2485,8 @@
     "invites_pending_title": "협업 초대",
     "invite_cta": "님이 협업에 초대했어요",
     "decline": "거절",
-    "board": "보드"
+    "board": "보드",
+    "invite_decline_error": "초대를 거절할 수 없습니다. 다시 시도해 주세요.",
+    "invite_cancel_error": "초대를 취소할 수 없습니다. 다시 시도해 주세요."
   }
 }
