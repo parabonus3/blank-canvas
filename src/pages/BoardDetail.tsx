@@ -180,6 +180,11 @@ export default function BoardDetail() {
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [taskDialogColumnId, setTaskDialogColumnId] = useState<string | null>(null);
   const [openTask, setOpenTask] = useState<Task | null>(null);
+  const [openTaskSection, setOpenTaskSection] = useState<"checklist" | null>(null);
+  const openTaskAt = useCallback((task: Task, section?: "checklist") => {
+    setOpenTask(task);
+    setOpenTaskSection(section ?? null);
+  }, []);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [addingColumn, setAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
