@@ -8,8 +8,10 @@ import { useSignedAttachmentUrl } from "@/hooks/useTaskAttachments";
 import { PriorityBadge } from "./PriorityBadge";
 import { DueDateBadge } from "./DueDateBadge";
 import { MemberAvatars } from "./MemberAvatars";
+import { TaskChecklistPreview } from "./TaskChecklistPreview";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckSquare, Clock, Play, Paperclip } from "lucide-react";
+import { Clock, Play, Paperclip } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
