@@ -2487,6 +2487,9 @@
     "decline": "Отклонить",
     "board": "Доска",
     "invite_decline_error": "Не удалось отклонить приглашение. Попробуйте снова.",
-    "invite_cancel_error": "Не удалось отменить приглашение. Попробуйте снова."
+    "invite_cancel_error": "Не удалось отменить приглашение. Попробуйте снова.",
+    "checklist_completed_label": "Выполнено",
+    "checklist_more_items": "+{{count}} пунктов",
+    "checklist_by": "Выполнил {{name}}"
   }
 }

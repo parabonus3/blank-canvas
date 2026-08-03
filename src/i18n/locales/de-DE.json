@@ -2501,6 +2501,9 @@
     "decline": "Ablehnen",
     "board": "Board",
     "invite_decline_error": "Einladung konnte nicht abgelehnt werden. Bitte erneut versuchen.",
-    "invite_cancel_error": "Einladung konnte nicht storniert werden. Bitte erneut versuchen."
+    "invite_cancel_error": "Einladung konnte nicht storniert werden. Bitte erneut versuchen.",
+    "checklist_completed_label": "Erledigt",
+    "checklist_more_items": "+{{count}} Einträge",
+    "checklist_by": "Erledigt von {{name}}"
   }
 }

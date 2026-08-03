@@ -2651,6 +2651,9 @@
     "decline": "Recusar",
     "board": "Quadro",
     "invite_decline_error": "Não foi possível recusar o convite. Tente novamente.",
-    "invite_cancel_error": "Não foi possível cancelar o convite. Tente novamente."
+    "invite_cancel_error": "Não foi possível cancelar o convite. Tente novamente.",
+    "checklist_completed_label": "Concluído",
+    "checklist_more_items": "+{{count}} itens",
+    "checklist_by": "Concluído por {{name}}"
   }
 }

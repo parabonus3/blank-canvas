@@ -2508,6 +2508,9 @@
     "decline": "Rechazar",
     "board": "Tablero",
     "invite_decline_error": "No se pudo rechazar la invitación. Inténtalo de nuevo.",
-    "invite_cancel_error": "No se pudo cancelar la invitación. Inténtalo de nuevo."
+    "invite_cancel_error": "No se pudo cancelar la invitación. Inténtalo de nuevo.",
+    "checklist_completed_label": "Completado",
+    "checklist_more_items": "+{{count}} elementos",
+    "checklist_by": "Completado por {{name}}"
   }
 }
