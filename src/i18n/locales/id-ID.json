@@ -2499,6 +2499,8 @@
     "invites_pending_title": "Undangan kolaborasi",
     "invite_cta": "mengundangmu untuk berkolaborasi",
     "decline": "Tolak",
-    "board": "Papan"
+    "board": "Papan",
+    "invite_decline_error": "Tidak dapat menolak undangan. Coba lagi.",
+    "invite_cancel_error": "Tidak dapat membatalkan undangan. Coba lagi."
   }
 }

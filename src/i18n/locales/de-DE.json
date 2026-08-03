@@ -2499,6 +2499,8 @@
     "invites_pending_title": "Einladungen zur Zusammenarbeit",
     "invite_cta": "hat dich zur Zusammenarbeit eingeladen",
     "decline": "Ablehnen",
-    "board": "Board"
+    "board": "Board",
+    "invite_decline_error": "Einladung konnte nicht abgelehnt werden. Bitte erneut versuchen.",
+    "invite_cancel_error": "Einladung konnte nicht storniert werden. Bitte erneut versuchen."
   }
 }

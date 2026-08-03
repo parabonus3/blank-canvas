@@ -2594,6 +2594,8 @@
     "invites_pending_title": "Collaboration invites",
     "invite_cta": "invited you to collaborate",
     "decline": "Decline",
-    "board": "Board"
+    "board": "Board",
+    "invite_decline_error": "Couldn't decline the invitation. Please try again.",
+    "invite_cancel_error": "Couldn't cancel the invitation. Please try again."
   }
 }

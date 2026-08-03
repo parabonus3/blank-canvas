@@ -2485,6 +2485,8 @@
     "invites_pending_title": "Inviti a collaborare",
     "invite_cta": "ti ha invitato a collaborare",
     "decline": "Rifiuta",
-    "board": "Bacheca"
+    "board": "Bacheca",
+    "invite_decline_error": "Impossibile rifiutare l'invito. Riprova.",
+    "invite_cancel_error": "Impossibile annullare l'invito. Riprova."
   }
 }
