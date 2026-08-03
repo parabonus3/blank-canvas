@@ -98,8 +98,9 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const [section, setSection] = useState<SectionId | null>(null);
 
   useEffect(() => {
-    if (task) { setTitle(task.title); setDescription(task.description || ""); setSection(null); }
-  }, [task?.id]);
+    if (task) { setTitle(task.title); setDescription(task.description || ""); setSection(initialSection ?? null); }
+  }, [task?.id, initialSection]);
+
 
   if (!task) return null;
 
