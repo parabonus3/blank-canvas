@@ -24,7 +24,7 @@ function fmtHM(sec: number) {
 
 interface Props {
   task: Task;
-  onClick: (task: Task) => void;
+  onClick: (task: Task, section?: "checklist") => void;
   onToggleComplete: (task: Task) => void;
   onStartTimer?: (task: Task) => void;
   hasActiveTimer?: boolean;
