@@ -42,7 +42,7 @@ interface ColumnContainerProps {
   column: BoardColumn;
   tasks: Task[];
   onAddTask: (columnId: string) => void;
-  onOpenTask: (task: Task) => void;
+  onOpenTask: (task: Task, section?: "checklist") => void;
   onToggleComplete: (task: Task) => void;
   onStartTimer: (task: Task) => void;
   onDelete: () => void;
