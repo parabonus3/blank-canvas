@@ -90,33 +90,20 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           </h4>
         </div>
 
-        {/* Checklist progress bar */}
+        {/* Checklist block */}
         {checkTotal > 0 && (
-          <div className="h-1 bg-muted rounded-full overflow-hidden">
-            <div
-              className={cn(
-                "h-full transition-all",
-                checkDone === checkTotal ? "bg-green-500" : "bg-primary"
-              )}
-              style={{ width: `${Math.round((checkDone / checkTotal) * 100)}%` }}
-            />
-          </div>
+          <TaskChecklistPreview
+            items={checklists || []}
+            members={members}
+            onOpen={() => onClick(task, "checklist")}
+          />
         )}
 
         {/* Meta */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {task.priority !== "medium" && <PriorityBadge priority={task.priority} size="xs" />}
           {task.due_date && <DueDateBadge dueDate={task.due_date} completed={task.is_completed} />}
-          {checkTotal > 0 && (
-            <span className={cn(
-              "inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border",
-              checkDone === checkTotal
-                ? "text-white border-green-500/50 bg-green-500"
-                : "text-muted-foreground border-border bg-muted"
-            )}>
-              <CheckSquare className="h-2.5 w-2.5" />{checkDone}/{checkTotal}
-            </span>
-          )}
+
           {task.total_tracked_seconds > 0 && (
             <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary">
               <Clock className="h-2.5 w-2.5" />{fmtHM(task.total_tracked_seconds)}
