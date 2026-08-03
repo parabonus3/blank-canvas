@@ -58,11 +58,13 @@ interface Props {
   onStartTimer: (task: Task) => void;
   hasActiveTimer: boolean;
   boardId?: string;
+  initialSection?: SectionId | null;
 }
 
 type SectionId = "details" | "checklist" | "members" | "comments" | "time" | "attachments";
 
-export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
+export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId, initialSection }: Props) {
+
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const dateLocale = DATE_LOCALES[i18n.language] || enUS;
