@@ -2487,6 +2487,9 @@
     "decline": "رفض",
     "board": "لوحة",
     "invite_decline_error": "تعذّر رفض الدعوة. حاول مرة أخرى.",
-    "invite_cancel_error": "تعذّر إلغاء الدعوة. حاول مرة أخرى."
+    "invite_cancel_error": "تعذّر إلغاء الدعوة. حاول مرة أخرى.",
+    "checklist_completed_label": "مكتمل",
+    "checklist_more_items": "+{{count}} عناصر",
+    "checklist_by": "أكملها {{name}}"
   }
 }

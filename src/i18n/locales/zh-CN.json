@@ -2501,6 +2501,9 @@
     "decline": "拒绝",
     "board": "看板",
     "invite_decline_error": "无法拒绝邀请，请重试。",
-    "invite_cancel_error": "无法取消邀请，请重试。"
+    "invite_cancel_error": "无法取消邀请，请重试。",
+    "checklist_completed_label": "已完成",
+    "checklist_more_items": "还有 {{count}} 项",
+    "checklist_by": "由 {{name}} 完成"
   }
 }

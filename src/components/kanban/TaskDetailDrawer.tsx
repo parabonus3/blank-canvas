@@ -58,11 +58,13 @@ interface Props {
   onStartTimer: (task: Task) => void;
   hasActiveTimer: boolean;
   boardId?: string;
+  initialSection?: SectionId | null;
 }
 
 type SectionId = "details" | "checklist" | "members" | "comments" | "time" | "attachments";
 
-export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId }: Props) {
+export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId, initialSection }: Props) {
+
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const dateLocale = DATE_LOCALES[i18n.language] || enUS;
@@ -96,8 +98,9 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const [section, setSection] = useState<SectionId | null>(null);
 
   useEffect(() => {
-    if (task) { setTitle(task.title); setDescription(task.description || ""); setSection(null); }
-  }, [task?.id]);
+    if (task) { setTitle(task.title); setDescription(task.description || ""); setSection(initialSection ?? null); }
+  }, [task?.id, initialSection]);
+
 
   if (!task) return null;
 

@@ -2487,6 +2487,9 @@
     "decline": "Rifiuta",
     "board": "Bacheca",
     "invite_decline_error": "Impossibile rifiutare l'invito. Riprova.",
-    "invite_cancel_error": "Impossibile annullare l'invito. Riprova."
+    "invite_cancel_error": "Impossibile annullare l'invito. Riprova.",
+    "checklist_completed_label": "Completato",
+    "checklist_more_items": "+{{count}} elementi",
+    "checklist_by": "Completato da {{name}}"
   }
 }

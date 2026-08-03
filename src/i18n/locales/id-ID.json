@@ -2501,6 +2501,9 @@
     "decline": "Tolak",
     "board": "Papan",
     "invite_decline_error": "Tidak dapat menolak undangan. Coba lagi.",
-    "invite_cancel_error": "Tidak dapat membatalkan undangan. Coba lagi."
+    "invite_cancel_error": "Tidak dapat membatalkan undangan. Coba lagi.",
+    "checklist_completed_label": "Selesai",
+    "checklist_more_items": "+{{count}} item",
+    "checklist_by": "Diselesaikan oleh {{name}}"
   }
 }

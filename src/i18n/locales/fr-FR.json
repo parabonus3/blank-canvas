@@ -2501,6 +2501,9 @@
     "decline": "Refuser",
     "board": "Tableau",
     "invite_decline_error": "Impossible de refuser l'invitation. Veuillez réessayer.",
-    "invite_cancel_error": "Impossible d'annuler l'invitation. Veuillez réessayer."
+    "invite_cancel_error": "Impossible d'annuler l'invitation. Veuillez réessayer.",
+    "checklist_completed_label": "Terminé",
+    "checklist_more_items": "+{{count}} éléments",
+    "checklist_by": "Terminé par {{name}}"
   }
 }

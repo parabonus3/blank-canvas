@@ -2596,6 +2596,9 @@
     "decline": "Decline",
     "board": "Board",
     "invite_decline_error": "Couldn't decline the invitation. Please try again.",
-    "invite_cancel_error": "Couldn't cancel the invitation. Please try again."
+    "invite_cancel_error": "Couldn't cancel the invitation. Please try again.",
+    "checklist_completed_label": "Completed",
+    "checklist_more_items": "+{{count}} items",
+    "checklist_by": "Completed by {{name}}"
   }
 }

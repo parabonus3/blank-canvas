@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -42,7 +42,7 @@ interface ColumnContainerProps {
   column: BoardColumn;
   tasks: Task[];
   onAddTask: (columnId: string) => void;
-  onOpenTask: (task: Task) => void;
+  onOpenTask: (task: Task, section?: "checklist") => void;
   onToggleComplete: (task: Task) => void;
   onStartTimer: (task: Task) => void;
   onDelete: () => void;
@@ -180,6 +180,11 @@ export default function BoardDetail() {
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [taskDialogColumnId, setTaskDialogColumnId] = useState<string | null>(null);
   const [openTask, setOpenTask] = useState<Task | null>(null);
+  const [openTaskSection, setOpenTaskSection] = useState<"checklist" | null>(null);
+  const openTaskAt = useCallback((task: Task, section?: "checklist") => {
+    setOpenTask(task);
+    setOpenTaskSection(section ?? null);
+  }, []);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [addingColumn, setAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
@@ -338,7 +343,7 @@ export default function BoardDetail() {
                     {(columns || []).map(col => (
                       <ColumnContainer key={col.id} column={col} tasks={tasksByColumn.get(col.id) || []}
                         onAddTask={(cid) => { setTaskDialogColumnId(cid); setTaskDialogOpen(true); }}
-                        onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
+                        onOpenTask={openTaskAt} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                         onDelete={() => deleteColumn.mutate(col.id)}
                         onRename={(title) => updateColumn.mutate({ id: col.id, title })}
                         hasActiveTimer={!!activeEntry} isMobile onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} attachmentCounts={attachmentCounts} />
@@ -362,7 +367,7 @@ export default function BoardDetail() {
                   {(columns || []).map(col => (
                     <ColumnContainer key={col.id} column={col} tasks={tasksByColumn.get(col.id) || []}
                       onAddTask={(cid) => { setTaskDialogColumnId(cid); setTaskDialogOpen(true); }}
-                      onOpenTask={setOpenTask} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
+                      onOpenTask={openTaskAt} onToggleComplete={handleToggleComplete} onStartTimer={handleStartTimer}
                       onDelete={() => deleteColumn.mutate(col.id)}
                       onRename={(title) => updateColumn.mutate({ id: col.id, title })}
                       hasActiveTimer={!!activeEntry} isMobile={false} onChangeColor={(color) => updateColumn.mutate({ id: col.id, color })} taskMembersMap={taskMembersMap} activeWorkers={activeWorkers} attachmentCounts={attachmentCounts} />
@@ -394,7 +399,7 @@ export default function BoardDetail() {
           </TabsContent>
 
           <TabsContent value="calendar" className="mt-3">
-            <KanbanCalendar tasks={tasks || []} onOpenTask={setOpenTask} />
+            <KanbanCalendar tasks={tasks || []} onOpenTask={openTaskAt} />
           </TabsContent>
 
           <TabsContent value="reports" className="mt-3">
@@ -405,7 +410,7 @@ export default function BoardDetail() {
         <TaskFormDialog open={taskDialogOpen} onOpenChange={setTaskDialogOpen}
           boardId={id!} columnId={taskDialogColumnId} defaultProjectId={board.project_id} />
 
-        <TaskDetailDrawer task={openTask} onClose={() => setOpenTask(null)} onStartTimer={handleStartTimer} hasActiveTimer={!!activeEntry} boardId={id} />
+        <TaskDetailDrawer task={openTask} initialSection={openTaskSection} onClose={() => { setOpenTask(null); setOpenTaskSection(null); }} onStartTimer={handleStartTimer} hasActiveTimer={!!activeEntry} boardId={id} />
 
         <BoardInviteDialog open={membersOpen} onOpenChange={setMembersOpen} boardId={id!} isOwner={isOwner} />
 
