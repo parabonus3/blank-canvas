@@ -2171,7 +2171,12 @@
       "filter_missing": "Faltam bater",
       "filter_not_started": "Não começaram",
       "room_day": "Dia da sala",
-      "rollover_in": "vira em"
+      "rollover_in": "vira em",
+      "history_title": "Desafios encerrados",
+      "history_view_ranking": "Ver ranking",
+      "history_no_data": "Ninguém registrou tempo neste desafio.",
+      "history_absent": "Não participaram",
+      "history_summary": "{{total}} no total · {{people}} participaram · {{pct}}% de conclusão média"
     },
     "heatmap_less": "Menos",
     "heatmap_more": "Mais",

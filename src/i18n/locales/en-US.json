@@ -2116,7 +2116,12 @@
       "filter_missing": "Yet to hit",
       "filter_not_started": "Not started",
       "room_day": "Room day",
-      "rollover_in": "resets in"
+      "rollover_in": "resets in",
+      "history_title": "Ended challenges",
+      "history_view_ranking": "View ranking",
+      "history_no_data": "Nobody logged time in this challenge.",
+      "history_absent": "Didn't take part",
+      "history_summary": "{{total}} total · {{people}} took part · {{pct}}% average completion"
     },
     "heatmap_less": "Less",
     "heatmap_more": "More",

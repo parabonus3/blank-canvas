@@ -1382,7 +1382,12 @@
       "filter_missing": "متبقٍّ عليهم",
       "filter_not_started": "لم يبدؤوا",
       "room_day": "يوم الغرفة",
-      "rollover_in": "يتجدد خلال"
+      "rollover_in": "يتجدد خلال",
+      "history_title": "التحديات المنتهية",
+      "history_view_ranking": "عرض الترتيب",
+      "history_no_data": "لم يسجّل أحد وقتًا في هذا التحدي.",
+      "history_absent": "لم يشاركوا",
+      "history_summary": "{{total}} إجمالاً · شارك {{people}} · متوسط الإنجاز {{pct}}%"
     },
     "heatmap_less": "أقل",
     "heatmap_more": "أكثر",

@@ -28,7 +28,7 @@ export function RoomChallengeBanner({ roomId, activeChallengeId }: Props) {
   const showAlerts = (profile as any)?.show_room_challenge_alerts ?? true;
 
   const active = useMemo(
-    () => challenges.filter((c) => c.is_active && !dismissedIds.includes(c.challenge_id)),
+    () => challenges.filter((c) => c.is_active && !c.is_ended && !dismissedIds.includes(c.challenge_id)),
     [challenges, dismissedIds],
   );
 

@@ -127,7 +127,48 @@ export function useDeleteChallenge() {
   });
 }
 
+export interface RoomChallengeHistoryMember {
+  user_id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  avatar_flair: string | null;
+  avatar_flair_color: string | null;
+  total_seconds: number;
+  completed_periods: number;
+}
+
+export interface RoomChallengeHistoryItem {
+  challenge_id: string;
+  title: string;
+  description: string | null;
+  emoji: string;
+  period_type: "daily" | "weekly";
+  target_minutes: number;
+  start_date: string;
+  end_date: string;
+  total_periods: number;
+  created_at: string;
+  members: RoomChallengeHistoryMember[];
+}
+
+export function useRoomChallengeHistory(roomId: string | undefined, enabled = true) {
+  return useQuery({
+    queryKey: ["roomChallengeHistory", roomId],
+    queryFn: async (): Promise<RoomChallengeHistoryItem[]> => {
+      if (!roomId) return [];
+      const { data, error } = await (supabase.rpc as any)("get_room_challenge_history", {
+        _room_id: roomId,
+      });
+      if (error) throw error;
+      return (data || []) as RoomChallengeHistoryItem[];
+    },
+    enabled: !!roomId && enabled,
+    staleTime: 5 * 60_000,
+  });
+}
+
 export function useMemberChallengeCalendar(
+
   challengeId: string | undefined,
   userId: string | undefined,
   from: string,

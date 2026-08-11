@@ -1382,7 +1382,12 @@
       "filter_missing": "Belum",
       "filter_not_started": "Belum mulai",
       "room_day": "Hari ruangan",
-      "rollover_in": "berganti dalam"
+      "rollover_in": "berganti dalam",
+      "history_title": "Tantangan yang berakhir",
+      "history_view_ranking": "Lihat peringkat",
+      "history_no_data": "Belum ada waktu yang dicatat di tantangan ini.",
+      "history_absent": "Tidak ikut",
+      "history_summary": "{{total}} total · {{people}} ikut · rata-rata penyelesaian {{pct}}%"
     },
     "heatmap_less": "Sedikit",
     "heatmap_more": "Banyak",

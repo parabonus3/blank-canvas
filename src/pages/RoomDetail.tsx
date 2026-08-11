@@ -173,7 +173,7 @@ export default function RoomDetail() {
   const isOwner = room?.owner_id === user?.id;
   const isOwnerOrMod = isOwner || myMember?.role === "moderator";
   const { data: challengesData = [] } = useRoomChallenges(id);
-  const hasActiveChallenges = challengesData.some((c) => c.is_active);
+  const hasActiveChallenges = challengesData.some((c) => c.is_active && !c.is_ended);
 
   const handleLeave = async () => {
     if (!id) return;

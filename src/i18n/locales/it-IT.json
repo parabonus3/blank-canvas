@@ -1382,7 +1382,12 @@
       "filter_missing": "Da fare",
       "filter_not_started": "Non iniziato",
       "room_day": "Giorno della stanza",
-      "rollover_in": "cambia tra"
+      "rollover_in": "cambia tra",
+      "history_title": "Sfide concluse",
+      "history_view_ranking": "Vedi classifica",
+      "history_no_data": "Nessuno ha registrato tempo in questa sfida.",
+      "history_absent": "Non hanno partecipato",
+      "history_summary": "{{total}} in totale · {{people}} hanno partecipato · {{pct}}% di completamento medio"
     },
     "heatmap_less": "Meno",
     "heatmap_more": "Più",

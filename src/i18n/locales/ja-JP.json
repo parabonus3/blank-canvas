@@ -1382,7 +1382,12 @@
       "filter_missing": "未達成",
       "filter_not_started": "未着手",
       "room_day": "ルームの日付",
-      "rollover_in": "リセットまで"
+      "rollover_in": "リセットまで",
+      "history_title": "終了したチャレンジ",
+      "history_view_ranking": "ランキングを見る",
+      "history_no_data": "このチャレンジで記録された時間はありません。",
+      "history_absent": "未参加",
+      "history_summary": "合計 {{total}} · {{people}}人が参加 · 平均達成率 {{pct}}%"
     },
     "heatmap_less": "少ない",
     "heatmap_more": "多い",
