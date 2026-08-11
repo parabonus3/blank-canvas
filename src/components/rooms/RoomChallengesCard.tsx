@@ -19,6 +19,8 @@ import {
 import { useRoomTodayWindow } from "@/hooks/useRoomTodayWindow";
 import { CreateChallengeDialog } from "./CreateChallengeDialog";
 import { ChallengeCalendarModal } from "./ChallengeCalendarModal";
+import { RoomChallengeHistoryCard } from "./RoomChallengeHistoryCard";
+
 import { RoomChallengesMatrix, type MatrixMemberExtra } from "./RoomChallengesMatrix";
 import { MemberProfileModal } from "./MemberProfileModal";
 import type { RoomMember } from "@/hooks/useRoomMembers";
