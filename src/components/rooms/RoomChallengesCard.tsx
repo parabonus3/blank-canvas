@@ -104,8 +104,9 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
 
   if (isLoading) return null;
 
-  const active = challenges.filter((c) => c.is_active);
-  if (active.length === 0 && !isOwner) return null;
+  const active = challenges.filter((c) => c.is_active && !c.is_ended);
+  if (active.length === 0 && !isOwner && challenges.length === 0) return null;
+
 
   const rolloverHours = todayWindow ? Math.floor(todayWindow.seconds_until_rollover / 3600) : 0;
   const rolloverMins = todayWindow ? Math.floor((todayWindow.seconds_until_rollover % 3600) / 60) : 0;
