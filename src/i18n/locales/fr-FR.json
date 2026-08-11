@@ -1382,7 +1382,12 @@
       "filter_missing": "Reste à faire",
       "filter_not_started": "Pas commencé",
       "room_day": "Jour de la salle",
-      "rollover_in": "change dans"
+      "rollover_in": "change dans",
+      "history_title": "Défis terminés",
+      "history_view_ranking": "Voir le classement",
+      "history_no_data": "Personne n'a enregistré de temps sur ce défi.",
+      "history_absent": "N'ont pas participé",
+      "history_summary": "{{total}} au total · {{people}} ont participé · {{pct}}% de réussite moyenne"
     },
     "heatmap_less": "Moins",
     "heatmap_more": "Plus",

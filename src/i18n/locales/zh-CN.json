@@ -1382,7 +1382,12 @@
       "filter_missing": "还未完成",
       "filter_not_started": "尚未开始",
       "room_day": "房间日期",
-      "rollover_in": "重置于"
+      "rollover_in": "重置于",
+      "history_title": "已结束的挑战",
+      "history_view_ranking": "查看排行",
+      "history_no_data": "该挑战没有任何时间记录。",
+      "history_absent": "未参与",
+      "history_summary": "共 {{total}} · {{people}} 人参与 · 平均完成率 {{pct}}%"
     },
     "heatmap_less": "较少",
     "heatmap_more": "较多",

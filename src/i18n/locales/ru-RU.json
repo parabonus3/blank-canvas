@@ -1382,7 +1382,12 @@
       "filter_missing": "Не выполнили",
       "filter_not_started": "Не начали",
       "room_day": "День комнаты",
-      "rollover_in": "сброс через"
+      "rollover_in": "сброс через",
+      "history_title": "Завершённые челленджи",
+      "history_view_ranking": "Посмотреть рейтинг",
+      "history_no_data": "Никто не записал время в этом челлендже.",
+      "history_absent": "Не участвовали",
+      "history_summary": "{{total}} всего · участников: {{people}} · среднее выполнение {{pct}}%"
     },
     "heatmap_less": "Меньше",
     "heatmap_more": "Больше",

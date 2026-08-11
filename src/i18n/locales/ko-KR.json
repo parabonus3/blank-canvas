@@ -1382,7 +1382,12 @@
       "filter_missing": "미달성",
       "filter_not_started": "시작 안 함",
       "room_day": "룸 날짜",
-      "rollover_in": "초기화까지"
+      "rollover_in": "초기화까지",
+      "history_title": "종료된 챌린지",
+      "history_view_ranking": "랭킹 보기",
+      "history_no_data": "이 챌린지에 기록된 시간이 없습니다.",
+      "history_absent": "미참여",
+      "history_summary": "총 {{total}} · {{people}}명 참여 · 평균 달성률 {{pct}}%"
     },
     "heatmap_less": "적음",
     "heatmap_more": "많음",

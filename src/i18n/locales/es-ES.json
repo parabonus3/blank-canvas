@@ -1382,7 +1382,12 @@
       "filter_missing": "Faltan por cumplir",
       "filter_not_started": "Sin empezar",
       "room_day": "Día de la sala",
-      "rollover_in": "cambia en"
+      "rollover_in": "cambia en",
+      "history_title": "Retos finalizados",
+      "history_view_ranking": "Ver ranking",
+      "history_no_data": "Nadie registró tiempo en este reto.",
+      "history_absent": "No participaron",
+      "history_summary": "{{total}} en total · {{people}} participaron · {{pct}}% de finalización media"
     },
     "heatmap_less": "Menos",
     "heatmap_more": "Más",

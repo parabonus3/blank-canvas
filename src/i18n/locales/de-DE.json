@@ -1382,7 +1382,12 @@
       "filter_missing": "Noch offen",
       "filter_not_started": "Nicht begonnen",
       "room_day": "Raum-Tag",
-      "rollover_in": "wechselt in"
+      "rollover_in": "wechselt in",
+      "history_title": "Beendete Challenges",
+      "history_view_ranking": "Rangliste ansehen",
+      "history_no_data": "Niemand hat Zeit in dieser Challenge erfasst.",
+      "history_absent": "Nicht teilgenommen",
+      "history_summary": "{{total}} insgesamt · {{people}} haben teilgenommen · {{pct}}% durchschnittlicher Abschluss"
     },
     "heatmap_less": "Weniger",
     "heatmap_more": "Mehr",
