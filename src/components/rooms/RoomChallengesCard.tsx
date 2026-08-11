@@ -169,6 +169,9 @@ export function RoomChallengesCard({ roomId, isOwner, members = [] }: Props) {
         />
       )}
 
+      <RoomChallengeHistoryCard roomId={roomId} />
+
+
       <CreateChallengeDialog open={createOpen} onOpenChange={setCreateOpen} roomId={roomId} editing={editing} />
       {calendarFor && (
         <ChallengeCalendarModal
