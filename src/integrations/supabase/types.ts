@@ -2590,6 +2590,22 @@ export type Database = {
           total_minutes: number
         }[]
       }
+      get_room_challenge_history: {
+        Args: { _room_id: string }
+        Returns: {
+          challenge_id: string
+          created_at: string
+          description: string
+          emoji: string
+          end_date: string
+          members: Json
+          period_type: string
+          start_date: string
+          target_minutes: number
+          title: string
+          total_periods: number
+        }[]
+      }
       get_room_challenges_with_status: {
         Args: { _room_id: string }
         Returns: {
