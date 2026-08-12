@@ -610,7 +610,8 @@
     "admin": "Admin",
     "friends": "Amis",
     "mindmaps": "Cartes mentales",
-    "support": "Support"
+    "support": "Support",
+    "runs": "Courses"
   },
   "achievements": {
     "title": "Accomplissements",
@@ -2510,5 +2511,41 @@
     "checklist_completed_label": "Terminé",
     "checklist_more_items": "+{{count}} éléments",
     "checklist_by": "Terminé par {{name}}"
+  },
+  "runs": {
+    "title": "Courses",
+    "subtitle": "Votre parcours, distance et allure enregistrés avec le chrono",
+    "live_title": "Parcours en direct",
+    "distance": "Distance",
+    "pace": "Allure",
+    "per_km": "/km",
+    "points": "Points",
+    "time": "Temps",
+    "avg_pace": "Allure moyenne",
+    "elevation": "Dénivelé",
+    "splits": "Temps au km",
+    "delete": "Supprimer la course",
+    "this_month": "Ce mois",
+    "this_year": "Cette année",
+    "longest": "La plus longue",
+    "best_pace": "Meilleure allure",
+    "empty_title": "Aucune course pour l'instant",
+    "empty_desc": "Activez le Mode course dans le chrono avant de démarrer et votre parcours est enregistré automatiquement.",
+    "mode_title": "Mode course (GPS)",
+    "mode_desc": "Enregistre le parcours sur la carte, la distance et l'allure pendant le chrono",
+    "not_supported": "Le GPS n'est pas disponible dans votre navigateur",
+    "gps_ok": "GPS actif",
+    "gps_acquiring": "Recherche du GPS…",
+    "gps_weak": "Signal faible",
+    "gps_denied_short": "Non autorisé",
+    "gps_denied_desc": "Autorisation de localisation refusée. Le temps continue normalement.",
+    "waiting_signal": "En attente du premier point GPS…",
+    "keep_open_hint": "Gardez l'app ouverte et l'écran allumé pour ne pas perdre le parcours.",
+    "free_maps_note": "Cartes © OpenStreetMap — gratuit, sans clé API",
+    "saved_title": "Course enregistrée !",
+    "saved_desc": "{{distance}} km ajoutés à votre historique",
+    "save_error": "Impossible d'enregistrer le parcours",
+    "resumed_title": "Course reprise",
+    "resumed_desc": "Nous avons repris l'enregistrement de votre parcours"
   }
 }

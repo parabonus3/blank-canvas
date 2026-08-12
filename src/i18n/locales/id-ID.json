@@ -610,7 +610,8 @@
     "admin": "Admin",
     "friends": "Teman",
     "mindmaps": "Peta Pikiran",
-    "support": "Dukungan"
+    "support": "Dukungan",
+    "runs": "Lari"
   },
   "achievements": {
     "title": "Pencapaian",
@@ -2510,5 +2511,41 @@
     "checklist_completed_label": "Selesai",
     "checklist_more_items": "+{{count}} item",
     "checklist_by": "Diselesaikan oleh {{name}}"
+  },
+  "runs": {
+    "title": "Lari",
+    "subtitle": "Rute, jarak, dan pace kamu — direkam bersama timer",
+    "live_title": "Rute langsung",
+    "distance": "Jarak",
+    "pace": "Pace",
+    "per_km": "/km",
+    "points": "Titik",
+    "time": "Waktu",
+    "avg_pace": "Pace rata-rata",
+    "elevation": "Elevasi",
+    "splits": "Split per km",
+    "delete": "Hapus lari",
+    "this_month": "Bulan ini",
+    "this_year": "Tahun ini",
+    "longest": "Terpanjang",
+    "best_pace": "Pace terbaik",
+    "empty_title": "Belum ada lari",
+    "empty_desc": "Aktifkan Mode lari di timer sebelum mulai dan rutemu direkam otomatis.",
+    "mode_title": "Mode lari (GPS)",
+    "mode_desc": "Merekam rute di peta, jarak, dan pace selama timer berjalan",
+    "not_supported": "GPS tidak tersedia di browser kamu",
+    "gps_ok": "GPS aktif",
+    "gps_acquiring": "Mencari GPS…",
+    "gps_weak": "Sinyal lemah",
+    "gps_denied_short": "Tanpa izin",
+    "gps_denied_desc": "Izin lokasi ditolak. Waktu tetap berjalan normal.",
+    "waiting_signal": "Menunggu titik GPS pertama…",
+    "keep_open_hint": "Biarkan aplikasi terbuka dan layar menyala agar rute tidak terputus.",
+    "free_maps_note": "Peta © OpenStreetMap — gratis, tanpa API key",
+    "saved_title": "Lari tersimpan!",
+    "saved_desc": "{{distance}} km ditambahkan ke riwayatmu",
+    "save_error": "Rute gagal disimpan",
+    "resumed_title": "Lari dilanjutkan",
+    "resumed_desc": "Kami melanjutkan perekaman rute dari titik terakhir"
   }
 }

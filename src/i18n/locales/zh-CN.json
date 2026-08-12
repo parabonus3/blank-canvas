@@ -610,7 +610,8 @@
     "admin": "管理员",
     "friends": "好友",
     "mindmaps": "思维导图",
-    "support": "支持"
+    "support": "支持",
+    "runs": "跑步"
   },
   "achievements": {
     "title": "成就",
@@ -2510,5 +2511,41 @@
     "checklist_completed_label": "已完成",
     "checklist_more_items": "还有 {{count}} 项",
     "checklist_by": "由 {{name}} 完成"
+  },
+  "runs": {
+    "title": "跑步",
+    "subtitle": "路线、距离和配速，与计时器一同记录",
+    "live_title": "实时路线",
+    "distance": "距离",
+    "pace": "配速",
+    "per_km": "/公里",
+    "points": "轨迹点",
+    "time": "时间",
+    "avg_pace": "平均配速",
+    "elevation": "累计爬升",
+    "splits": "每公里分段",
+    "delete": "删除记录",
+    "this_month": "本月",
+    "this_year": "本年",
+    "longest": "最长",
+    "best_pace": "最佳配速",
+    "empty_title": "还没有跑步记录",
+    "empty_desc": "开始前在计时器中打开跑步模式，路线会自动记录。",
+    "mode_title": "跑步模式（GPS）",
+    "mode_desc": "计时进行时记录地图路线、距离和配速",
+    "not_supported": "你的浏览器不支持 GPS",
+    "gps_ok": "GPS 已开启",
+    "gps_acquiring": "正在定位…",
+    "gps_weak": "信号较弱",
+    "gps_denied_short": "未授权",
+    "gps_denied_desc": "定位权限被拒绝，计时仍会正常进行。",
+    "waiting_signal": "正在等待第一个 GPS 点…",
+    "keep_open_hint": "请保持应用打开、屏幕常亮，避免路线中断。",
+    "free_maps_note": "地图 © OpenStreetMap — 免费，无需 API 密钥",
+    "saved_title": "跑步已保存！",
+    "saved_desc": "已将 {{distance}} 公里加入你的记录",
+    "save_error": "无法保存路线",
+    "resumed_title": "已继续跑步",
+    "resumed_desc": "我们从中断处继续记录你的路线"
   }
 }

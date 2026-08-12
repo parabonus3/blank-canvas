@@ -610,7 +610,8 @@
     "admin": "Admin",
     "friends": "Freunde",
     "mindmaps": "Mindmaps",
-    "support": "Support"
+    "support": "Support",
+    "runs": "Läufe"
   },
   "achievements": {
     "title": "Erfolge",
@@ -2510,5 +2511,41 @@
     "checklist_completed_label": "Erledigt",
     "checklist_more_items": "+{{count}} Einträge",
     "checklist_by": "Erledigt von {{name}}"
+  },
+  "runs": {
+    "title": "Läufe",
+    "subtitle": "Deine Strecke, Distanz und Pace – zusammen mit dem Timer aufgezeichnet",
+    "live_title": "Live-Strecke",
+    "distance": "Distanz",
+    "pace": "Pace",
+    "per_km": "/km",
+    "points": "Punkte",
+    "time": "Zeit",
+    "avg_pace": "Ø Pace",
+    "elevation": "Höhenmeter",
+    "splits": "Kilometer-Splits",
+    "delete": "Lauf löschen",
+    "this_month": "Diesen Monat",
+    "this_year": "Dieses Jahr",
+    "longest": "Längster",
+    "best_pace": "Beste Pace",
+    "empty_title": "Noch keine Läufe",
+    "empty_desc": "Aktiviere den Laufmodus im Timer, bevor du startest – die Strecke wird automatisch aufgezeichnet.",
+    "mode_title": "Laufmodus (GPS)",
+    "mode_desc": "Zeichnet Strecke auf der Karte, Distanz und Pace auf, während der Timer läuft",
+    "not_supported": "GPS ist in deinem Browser nicht verfügbar",
+    "gps_ok": "GPS aktiv",
+    "gps_acquiring": "GPS wird gesucht…",
+    "gps_weak": "Schwaches Signal",
+    "gps_denied_short": "Keine Freigabe",
+    "gps_denied_desc": "Standortfreigabe verweigert. Die Zeit läuft normal weiter.",
+    "waiting_signal": "Warte auf den ersten GPS-Punkt…",
+    "keep_open_hint": "Lass die App offen und den Bildschirm an, damit die Strecke nicht abbricht.",
+    "free_maps_note": "Karten © OpenStreetMap – kostenlos, ohne API-Key",
+    "saved_title": "Lauf gespeichert!",
+    "saved_desc": "{{distance}} km in deinem Verlauf gespeichert",
+    "save_error": "Strecke konnte nicht gespeichert werden",
+    "resumed_title": "Lauf fortgesetzt",
+    "resumed_desc": "Wir zeichnen deine Strecke weiter auf"
   }
 }

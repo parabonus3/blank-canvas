@@ -610,7 +610,8 @@
     "admin": "관리자",
     "friends": "친구",
     "mindmaps": "마인드맵",
-    "support": "지원"
+    "support": "지원",
+    "runs": "러닝"
   },
   "achievements": {
     "title": "업적",
@@ -2496,5 +2497,41 @@
     "checklist_completed_label": "완료",
     "checklist_more_items": "+{{count}}개 항목",
     "checklist_by": "{{name}}님이 완료"
+  },
+  "runs": {
+    "title": "러닝",
+    "subtitle": "경로·거리·페이스를 타이머와 함께 기록",
+    "live_title": "실시간 경로",
+    "distance": "거리",
+    "pace": "페이스",
+    "per_km": "/km",
+    "points": "포인트",
+    "time": "시간",
+    "avg_pace": "평균 페이스",
+    "elevation": "누적 고도",
+    "splits": "1km 구간 기록",
+    "delete": "러닝 삭제",
+    "this_month": "이번 달",
+    "this_year": "올해",
+    "longest": "최장 거리",
+    "best_pace": "최고 페이스",
+    "empty_title": "아직 러닝이 없어요",
+    "empty_desc": "시작 전에 타이머에서 러닝 모드를 켜면 경로가 자동으로 기록됩니다.",
+    "mode_title": "러닝 모드 (GPS)",
+    "mode_desc": "타이머가 돌아가는 동안 지도 경로·거리·페이스를 기록합니다",
+    "not_supported": "브라우저에서 GPS를 사용할 수 없습니다",
+    "gps_ok": "GPS 켜짐",
+    "gps_acquiring": "GPS 찾는 중…",
+    "gps_weak": "신호 약함",
+    "gps_denied_short": "권한 없음",
+    "gps_denied_desc": "위치 권한이 거부되었습니다. 시간은 정상적으로 계속 측정됩니다.",
+    "waiting_signal": "첫 GPS 지점을 기다리는 중…",
+    "keep_open_hint": "경로가 끊기지 않도록 앱을 열어두고 화면을 켜두세요.",
+    "free_maps_note": "지도 © OpenStreetMap — 무료, API 키 불필요",
+    "saved_title": "러닝 저장 완료!",
+    "saved_desc": "{{distance}} km를 기록에 추가했어요",
+    "save_error": "경로를 저장할 수 없습니다",
+    "resumed_title": "러닝 재개",
+    "resumed_desc": "중단된 지점부터 경로를 계속 기록합니다"
   }
 }

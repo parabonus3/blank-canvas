@@ -610,7 +610,8 @@
     "admin": "المشرف",
     "friends": "الأصدقاء",
     "mindmaps": "خرائط ذهنية",
-    "support": "الدعم"
+    "support": "الدعم",
+    "runs": "الجري"
   },
   "achievements": {
     "title": "الإنجازات",
@@ -2496,5 +2497,41 @@
     "checklist_completed_label": "مكتمل",
     "checklist_more_items": "+{{count}} عناصر",
     "checklist_by": "أكملها {{name}}"
+  },
+  "runs": {
+    "title": "الجري",
+    "subtitle": "مسارك ومسافتك وإيقاعك — يُسجّل مع المؤقّت",
+    "live_title": "المسار المباشر",
+    "distance": "المسافة",
+    "pace": "الإيقاع",
+    "per_km": "/كم",
+    "points": "النقاط",
+    "time": "الوقت",
+    "avg_pace": "متوسط الإيقاع",
+    "elevation": "الارتفاع",
+    "splits": "أزمنة كل كيلومتر",
+    "delete": "حذف الجري",
+    "this_month": "هذا الشهر",
+    "this_year": "هذه السنة",
+    "longest": "الأطول",
+    "best_pace": "أفضل إيقاع",
+    "empty_title": "لا يوجد جري بعد",
+    "empty_desc": "شغّل وضع الجري في المؤقّت قبل البدء وسيُسجَّل مسارك تلقائيًا.",
+    "mode_title": "وضع الجري (GPS)",
+    "mode_desc": "يسجّل المسار على الخريطة والمسافة والإيقاع أثناء عمل المؤقّت",
+    "not_supported": "خدمة GPS غير متوفرة في متصفحك",
+    "gps_ok": "GPS يعمل",
+    "gps_acquiring": "جارٍ تحديد الموقع…",
+    "gps_weak": "إشارة ضعيفة",
+    "gps_denied_short": "لا يوجد إذن",
+    "gps_denied_desc": "تم رفض إذن الموقع. الوقت يستمر في العد بشكل طبيعي.",
+    "waiting_signal": "في انتظار أول نقطة GPS…",
+    "keep_open_hint": "أبقِ التطبيق مفتوحًا والشاشة مضاءة حتى لا ينقطع المسار.",
+    "free_maps_note": "الخرائط © OpenStreetMap — مجانية وبدون مفتاح API",
+    "saved_title": "تم حفظ الجري!",
+    "saved_desc": "تمت إضافة {{distance}} كم إلى سجلك",
+    "save_error": "تعذّر حفظ المسار",
+    "resumed_title": "تم استئناف الجري",
+    "resumed_desc": "واصلنا تسجيل مسارك من حيث توقف"
   }
 }

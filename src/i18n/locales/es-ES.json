@@ -610,7 +610,8 @@
     "admin": "Admin",
     "friends": "Amigos",
     "mindmaps": "Mapas mentales",
-    "support": "Soporte"
+    "support": "Soporte",
+    "runs": "Carreras"
   },
   "achievements": {
     "title": "Logros",
@@ -2517,5 +2518,41 @@
     "checklist_completed_label": "Completado",
     "checklist_more_items": "+{{count}} elementos",
     "checklist_by": "Completado por {{name}}"
+  },
+  "runs": {
+    "title": "Carreras",
+    "subtitle": "Tu ruta, distancia y ritmo, grabados junto al cronómetro",
+    "live_title": "Ruta en vivo",
+    "distance": "Distancia",
+    "pace": "Ritmo",
+    "per_km": "/km",
+    "points": "Puntos",
+    "time": "Tiempo",
+    "avg_pace": "Ritmo medio",
+    "elevation": "Elevación",
+    "splits": "Parciales por km",
+    "delete": "Eliminar carrera",
+    "this_month": "Este mes",
+    "this_year": "Este año",
+    "longest": "Más larga",
+    "best_pace": "Mejor ritmo",
+    "empty_title": "Aún no hay carreras",
+    "empty_desc": "Activa el Modo carrera en el cronómetro antes de empezar y tu ruta se graba automáticamente.",
+    "mode_title": "Modo carrera (GPS)",
+    "mode_desc": "Graba la ruta en el mapa, la distancia y el ritmo mientras corre el cronómetro",
+    "not_supported": "Tu navegador no tiene GPS disponible",
+    "gps_ok": "GPS activo",
+    "gps_acquiring": "Buscando GPS…",
+    "gps_weak": "Señal débil",
+    "gps_denied_short": "Sin permiso",
+    "gps_denied_desc": "Permiso de ubicación denegado. El tiempo sigue contando normalmente.",
+    "waiting_signal": "Esperando el primer punto de GPS…",
+    "keep_open_hint": "Mantén la app abierta y la pantalla encendida para no perder la ruta.",
+    "free_maps_note": "Mapas © OpenStreetMap: gratis, sin clave de API",
+    "saved_title": "¡Carrera guardada!",
+    "saved_desc": "{{distance}} km añadidos a tu historial",
+    "save_error": "No se pudo guardar la ruta",
+    "resumed_title": "Carrera reanudada",
+    "resumed_desc": "Seguimos grabando tu ruta desde donde se detuvo"
   }
 }

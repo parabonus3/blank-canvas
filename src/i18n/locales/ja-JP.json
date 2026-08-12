@@ -610,7 +610,8 @@
     "admin": "管理者",
     "friends": "友達",
     "mindmaps": "マインドマップ",
-    "support": "サポート"
+    "support": "サポート",
+    "runs": "ランニング"
   },
   "achievements": {
     "title": "実績",
@@ -2510,5 +2511,41 @@
     "checklist_completed_label": "完了",
     "checklist_more_items": "他 {{count}} 件",
     "checklist_by": "{{name}} が完了"
+  },
+  "runs": {
+    "title": "ランニング",
+    "subtitle": "ルート・距離・ペースをタイマーと一緒に記録",
+    "live_title": "ライブルート",
+    "distance": "距離",
+    "pace": "ペース",
+    "per_km": "/km",
+    "points": "ポイント",
+    "time": "時間",
+    "avg_pace": "平均ペース",
+    "elevation": "獲得標高",
+    "splits": "1kmごとのラップ",
+    "delete": "ランを削除",
+    "this_month": "今月",
+    "this_year": "今年",
+    "longest": "最長",
+    "best_pace": "最速ペース",
+    "empty_title": "まだランがありません",
+    "empty_desc": "スタート前にタイマーでランモードをオンにすると、ルートが自動で記録されます。",
+    "mode_title": "ランモード（GPS）",
+    "mode_desc": "タイマー作動中に地図上のルート・距離・ペースを記録します",
+    "not_supported": "お使いのブラウザではGPSを利用できません",
+    "gps_ok": "GPS 有効",
+    "gps_acquiring": "GPSを検索中…",
+    "gps_weak": "電波が弱い",
+    "gps_denied_short": "許可なし",
+    "gps_denied_desc": "位置情報が拒否されました。時間の計測は通常どおり続きます。",
+    "waiting_signal": "最初のGPSポイントを待っています…",
+    "keep_open_hint": "ルートが途切れないよう、アプリを開いたまま画面をオンにしてください。",
+    "free_maps_note": "地図 © OpenStreetMap — 無料・APIキー不要",
+    "saved_title": "ランを保存しました！",
+    "saved_desc": "{{distance}} km を履歴に追加しました",
+    "save_error": "ルートを保存できませんでした",
+    "resumed_title": "ランを再開しました",
+    "resumed_desc": "中断した場所からルート記録を続けています"
   }
 }

@@ -1290,7 +1290,8 @@
     "admin": "Admin",
     "mindmaps": "Mapas Mentais",
     "friends": "Amigos",
-    "support": "Suporte"
+    "support": "Suporte",
+    "runs": "Corridas"
   },
   "mindmaps": {
     "title": "Mapas Mentais",
@@ -2660,5 +2661,41 @@
     "checklist_completed_label": "Concluído",
     "checklist_more_items": "+{{count}} itens",
     "checklist_by": "Concluído por {{name}}"
+  },
+  "runs": {
+    "title": "Corridas",
+    "subtitle": "Seu trajeto, distância e ritmo — gravados junto com o cronômetro",
+    "live_title": "Trajeto ao vivo",
+    "distance": "Distância",
+    "pace": "Ritmo",
+    "per_km": "/km",
+    "points": "Pontos",
+    "time": "Tempo",
+    "avg_pace": "Ritmo médio",
+    "elevation": "Elevação",
+    "splits": "Parciais por km",
+    "delete": "Excluir corrida",
+    "this_month": "No mês",
+    "this_year": "No ano",
+    "longest": "Mais longa",
+    "best_pace": "Melhor ritmo",
+    "empty_title": "Nenhuma corrida ainda",
+    "empty_desc": "Ative o Modo corrida no cronômetro antes de começar e seu trajeto será gravado automaticamente.",
+    "mode_title": "Modo corrida (GPS)",
+    "mode_desc": "Grava o trajeto no mapa, distância e ritmo enquanto o cronômetro roda",
+    "not_supported": "Seu navegador não tem GPS disponível",
+    "gps_ok": "GPS ativo",
+    "gps_acquiring": "Buscando GPS…",
+    "gps_weak": "Sinal fraco",
+    "gps_denied_short": "Sem permissão",
+    "gps_denied_desc": "Permissão de localização negada. O tempo continua contando normalmente.",
+    "waiting_signal": "Aguardando o primeiro ponto de GPS…",
+    "keep_open_hint": "Mantenha o app aberto e a tela ligada para o trajeto não falhar.",
+    "free_maps_note": "Mapas © OpenStreetMap — gratuitos, sem chave de API",
+    "saved_title": "Corrida salva!",
+    "saved_desc": "{{distance}} km gravados no seu histórico",
+    "save_error": "Não foi possível salvar o trajeto",
+    "resumed_title": "Corrida retomada",
+    "resumed_desc": "Continuamos gravando seu trajeto de onde parou"
   }
 }
