@@ -19,6 +19,7 @@ import {
   UserPlus,
   Headset,
   KanbanSquare,
+  Footprints,
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useIsSupportAgent } from "@/hooks/useSupportAgents";
@@ -75,6 +76,7 @@ export function AppSidebar() {
     { title: t('sidebar.dashboard'), url: "/dashboard", icon: LayoutDashboard },
     { title: t('sidebar.projects'), url: "/projects", icon: FolderOpen },
     { title: t('sidebar.goals'), url: "/goals", icon: Target },
+    { title: t('sidebar.runs', 'Corridas'), url: "/runs", icon: Footprints },
     { title: t('sidebar.history'), url: "/history", icon: History },
     { title: t('sidebar.notes'), url: "/notes", icon: StickyNote },
     { title: t('sidebar.tasks', 'Tarefas'), url: "/tasks", icon: KanbanSquare },
