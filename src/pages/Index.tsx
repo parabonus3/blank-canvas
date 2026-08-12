@@ -621,6 +621,7 @@ export default function Index() {
                     onChange={setSelectedChallenge}
                   />
                   <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
+                  <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
@@ -680,6 +681,18 @@ export default function Index() {
           </Card>
         ) : (
           <PomodoroTimer />
+        )}
+
+        {/* Modo corrida — trajeto ao vivo */}
+        {isRunning && timerMode === "normal" && gps.isTracking && (
+          <RunLivePanel
+            points={gps.points}
+            distance={gps.distance}
+            currentPace={gps.currentPace}
+            accuracy={gps.accuracy}
+            acquiring={gps.acquiring}
+            error={gps.error}
+          />
         )}
 
         {/* Ambient Sound Player */}
