@@ -1288,7 +1288,8 @@
     "admin": "Admin",
     "mindmaps": "Mind Maps",
     "friends": "Friends",
-    "support": "Support"
+    "support": "Support",
+    "runs": "Runs"
   },
   "mindmaps": {
     "title": "Mind Maps",
@@ -2605,5 +2606,41 @@
     "checklist_completed_label": "Completed",
     "checklist_more_items": "+{{count}} items",
     "checklist_by": "Completed by {{name}}"
+  },
+  "runs": {
+    "title": "Runs",
+    "subtitle": "Your route, distance and pace — recorded alongside the timer",
+    "live_title": "Live route",
+    "distance": "Distance",
+    "pace": "Pace",
+    "per_km": "/km",
+    "points": "Points",
+    "time": "Time",
+    "avg_pace": "Avg pace",
+    "elevation": "Elevation",
+    "splits": "Kilometer splits",
+    "delete": "Delete run",
+    "this_month": "This month",
+    "this_year": "This year",
+    "longest": "Longest",
+    "best_pace": "Best pace",
+    "empty_title": "No runs yet",
+    "empty_desc": "Turn on Run mode in the timer before you start and your route is recorded automatically.",
+    "mode_title": "Run mode (GPS)",
+    "mode_desc": "Records your route on the map, distance and pace while the timer runs",
+    "not_supported": "GPS is not available in your browser",
+    "gps_ok": "GPS on",
+    "gps_acquiring": "Locating…",
+    "gps_weak": "Weak signal",
+    "gps_denied_short": "No permission",
+    "gps_denied_desc": "Location permission denied. Your time keeps counting normally.",
+    "waiting_signal": "Waiting for the first GPS point…",
+    "keep_open_hint": "Keep the app open and the screen on so the route doesn't break.",
+    "free_maps_note": "Maps © OpenStreetMap — free, no API key",
+    "saved_title": "Run saved!",
+    "saved_desc": "{{distance}} km added to your history",
+    "save_error": "Couldn't save the route",
+    "resumed_title": "Run resumed",
+    "resumed_desc": "We kept recording your route from where it stopped"
   }
 }

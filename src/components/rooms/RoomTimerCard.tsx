@@ -13,6 +13,10 @@ import { useAmbientSoundContext } from "@/contexts/AmbientSoundContext";
 import { useRoomChallenges } from "@/hooks/useRoomChallenges";
 import { RoomChallengePicker } from "@/components/timer/RoomChallengePicker";
 import { cn } from "@/lib/utils";
+import { useGpsTracker } from "@/hooks/useGpsTracker";
+import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
+import { RunModeToggle } from "@/components/gps/RunModeToggle";
+import { RunLivePanel } from "@/components/gps/RunLivePanel";
 
 interface Props {
   roomId: string;
@@ -41,6 +45,10 @@ export function RoomTimerCard({ roomId }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [showSounds, setShowSounds] = useState(false);
   const [fsOpen, setFsOpen] = useState(false);
+  const [runMode, setRunMode] = useState(() => localStorage.getItem("timezoni.runMode") === "1");
+
+  const gps = useGpsTracker();
+  const saveGpsActivity = useSaveGpsActivity();
 
   const ambient = useAmbientSoundContext();
   const { isPaused, pausedElapsed, pauseStartTime, pause, resume, resetPause } = useTimerContext();
@@ -91,14 +99,29 @@ export function RoomTimerCard({ roomId }: Props) {
     if (!projectId) return;
     resetPause();
     localStorage.setItem("lastProjectId", projectId);
+    localStorage.setItem("timezoni.runMode", runMode ? "1" : "0");
+    if (runMode && gps.supported) gps.start();
     start.mutate({ projectId, roomId, challengeId: selectedChallenge });
   };
 
   const handleStop = () => {
     if (!active) return;
+    const runSummary = gps.isTracking ? gps.stop(elapsed) : null;
+    const runProjectId = (active as any).project_id || projectId || null;
     stop.mutate(
       { entryId: active.id, roomId, clientSeconds: elapsed },
-      { onSuccess: () => resetPause() },
+      {
+        onSuccess: (data: any) => {
+          resetPause();
+          if (runSummary) {
+            saveGpsActivity.mutate({
+              summary: runSummary,
+              timeEntryId: data?.id ?? active.id,
+              projectId: runProjectId,
+            });
+          }
+        },
+      },
     );
     setFsOpen(false);
   };
@@ -263,6 +286,7 @@ export function RoomTimerCard({ roomId }: Props) {
             value={selectedChallenge}
             onChange={setSelectedChallenge}
           />
+          <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
           <Button
             size="lg"
             className="w-full font-semibold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
@@ -289,6 +313,17 @@ export function RoomTimerCard({ roomId }: Props) {
             </p>
           )}
         </div>
+      )}
+
+      {isActiveInThisRoom && gps.isTracking && (
+        <RunLivePanel
+          points={gps.points}
+          distance={gps.distance}
+          currentPace={gps.currentPace}
+          accuracy={gps.accuracy}
+          acquiring={gps.acquiring}
+          error={gps.error}
+        />
       )}
 
       {showSounds && (

@@ -610,7 +610,8 @@
     "admin": "Admin",
     "friends": "Amici",
     "mindmaps": "Mappe mentali",
-    "support": "Supporto"
+    "support": "Supporto",
+    "runs": "Corse"
   },
   "achievements": {
     "title": "Traguardi",
@@ -2496,5 +2497,41 @@
     "checklist_completed_label": "Completato",
     "checklist_more_items": "+{{count}} elementi",
     "checklist_by": "Completato da {{name}}"
+  },
+  "runs": {
+    "title": "Corse",
+    "subtitle": "Il tuo percorso, distanza e ritmo registrati insieme al timer",
+    "live_title": "Percorso in diretta",
+    "distance": "Distanza",
+    "pace": "Ritmo",
+    "per_km": "/km",
+    "points": "Punti",
+    "time": "Tempo",
+    "avg_pace": "Ritmo medio",
+    "elevation": "Dislivello",
+    "splits": "Parziali al km",
+    "delete": "Elimina corsa",
+    "this_month": "Questo mese",
+    "this_year": "Quest'anno",
+    "longest": "Più lunga",
+    "best_pace": "Miglior ritmo",
+    "empty_title": "Ancora nessuna corsa",
+    "empty_desc": "Attiva la Modalità corsa nel timer prima di iniziare: il percorso viene registrato automaticamente.",
+    "mode_title": "Modalità corsa (GPS)",
+    "mode_desc": "Registra il percorso sulla mappa, la distanza e il ritmo mentre il timer va",
+    "not_supported": "Il GPS non è disponibile nel tuo browser",
+    "gps_ok": "GPS attivo",
+    "gps_acquiring": "Ricerca GPS…",
+    "gps_weak": "Segnale debole",
+    "gps_denied_short": "Senza permesso",
+    "gps_denied_desc": "Permesso di posizione negato. Il tempo continua a contare normalmente.",
+    "waiting_signal": "In attesa del primo punto GPS…",
+    "keep_open_hint": "Tieni l'app aperta e lo schermo accesso per non perdere il percorso.",
+    "free_maps_note": "Mappe © OpenStreetMap — gratis, senza chiave API",
+    "saved_title": "Corsa salvata!",
+    "saved_desc": "{{distance}} km aggiunti alla cronologia",
+    "save_error": "Impossibile salvare il percorso",
+    "resumed_title": "Corsa ripresa",
+    "resumed_desc": "Abbiamo ripreso a registrare il tuo percorso"
   }
 }

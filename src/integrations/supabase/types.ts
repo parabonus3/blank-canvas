@@ -630,6 +630,81 @@ export type Database = {
           },
         ]
       }
+      gps_activities: {
+        Row: {
+          avg_pace_seconds_per_km: number | null
+          bounds: Json | null
+          created_at: string
+          distance_meters: number
+          elapsed_seconds: number
+          elevation_gain_meters: number
+          ended_at: string | null
+          id: string
+          max_speed: number | null
+          moving_seconds: number
+          points: Json
+          project_id: string | null
+          source: string
+          started_at: string
+          time_entry_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_pace_seconds_per_km?: number | null
+          bounds?: Json | null
+          created_at?: string
+          distance_meters?: number
+          elapsed_seconds?: number
+          elevation_gain_meters?: number
+          ended_at?: string | null
+          id?: string
+          max_speed?: number | null
+          moving_seconds?: number
+          points?: Json
+          project_id?: string | null
+          source?: string
+          started_at?: string
+          time_entry_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avg_pace_seconds_per_km?: number | null
+          bounds?: Json | null
+          created_at?: string
+          distance_meters?: number
+          elapsed_seconds?: number
+          elevation_gain_meters?: number
+          ended_at?: string | null
+          id?: string
+          max_speed?: number | null
+          moving_seconds?: number
+          points?: Json
+          project_id?: string | null
+          source?: string
+          started_at?: string
+          time_entry_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gps_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gps_activities_time_entry_id_fkey"
+            columns: ["time_entry_id"]
+            isOneToOne: true
+            referencedRelation: "time_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       life_categories: {
         Row: {
           color: string

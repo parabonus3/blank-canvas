@@ -37,6 +37,7 @@ import MindMaps from "./pages/MindMaps";
 import MindMapEditor from "./pages/MindMapEditor";
 import Friends from "./pages/Friends";
 import Tasks from "./pages/Tasks";
+import Runs from "./pages/Runs";
 import BoardDetail from "./pages/BoardDetail";
 import SacIndex from "./pages/sac/SacIndex";
 import NewTicket from "./pages/sac/NewTicket";
@@ -101,6 +102,7 @@ const App = () => (
                   <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                   <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
                   <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
+                  <Route path="/runs" element={<ProtectedRoute><Runs /></ProtectedRoute>} />
                   <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
                   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                   <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />

@@ -35,6 +35,10 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
 import { InactivityCheckModal, resetInactivityCheck, initInactivityCheck } from "@/components/InactivityCheckModal";
 import { PauseWarningDialog, PAUSE_WARNING_KEY } from "@/components/PauseWarningDialog";
+import { useGpsTracker, hasStoredRun } from "@/hooks/useGpsTracker";
+import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
+import { RunModeToggle } from "@/components/gps/RunModeToggle";
+import { RunLivePanel } from "@/components/gps/RunLivePanel";
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -63,6 +67,11 @@ export default function Index() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showPauseWarning, setShowPauseWarning] = useState(false);
+  const [runMode, setRunMode] = useState(() => localStorage.getItem("timezoni.runMode") === "1");
+
+  const gps = useGpsTracker();
+  const saveGpsActivity = useSaveGpsActivity();
+  const gpsResumedRef = useRef(false);
 
   const { isPaused, pausedElapsed, pauseStartTime, pause: contextPause, resume: contextResume, resetPause, addPausedSeconds, hydrateFromServer } = useTimerContext();
   const { user } = useAuth();
@@ -383,9 +392,25 @@ export default function Index() {
       resetInactivityCheck(); // Clear stale check from previous session
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
+      if (runMode && gps.supported) gps.start();
       startTimer.mutate({ projectId: selectedProject, roomId, challengeId: roomId ? selectedChallenge : null });
     }
   };
+
+  useEffect(() => {
+    localStorage.setItem("timezoni.runMode", runMode ? "1" : "0");
+  }, [runMode]);
+
+  // Recupera o trajeto se o app foi fechado/recarregado com o cronômetro rodando
+  useEffect(() => {
+    if (gpsResumedRef.current) return;
+    if (!activeEntry || gps.isTracking || !gps.supported) return;
+    if (!hasStoredRun()) return;
+    gpsResumedRef.current = true;
+    setRunMode(true);
+    gps.start({ resume: true });
+    toast({ title: t("runs.resumed_title"), description: t("runs.resumed_desc") });
+  }, [activeEntry, gps, t, toast]);
 
   const handleStopClick = () => {
     setShowStopDialog(true);
@@ -423,8 +448,28 @@ export default function Index() {
         try { await pauseSyncRef.current; } catch {}
         pauseSyncRef.current = null;
       }
+      const runSummary = gps.isTracking ? gps.stop(clientSeconds) : null;
+      const runProjectId = activeEntry.project_id || selectedProject || null;
       stopTimer.mutate({ entryId: activeEntry.id, roomId, clientSeconds }, {
         onSuccess: async (data) => {
+          if (runSummary) {
+            try {
+              await saveGpsActivity.mutateAsync({
+                summary: runSummary,
+                timeEntryId: data.id,
+                projectId: runProjectId,
+              });
+              toast({
+                title: t("runs.saved_title"),
+                description: t("runs.saved_desc", {
+                  distance: (runSummary.distanceMeters / 1000).toFixed(2),
+                }),
+              });
+            } catch (e) {
+              console.error("[runs] erro ao salvar trajeto:", e);
+              toast({ title: t("runs.save_error"), variant: "destructive" });
+            }
+          }
           if (notes) {
             const { supabase } = await import("@/integrations/supabase/client");
             await supabase.from("time_entries").update({ notes }).eq("id", data.id);
@@ -576,6 +621,7 @@ export default function Index() {
                     onChange={setSelectedChallenge}
                   />
                   <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
+                  <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
@@ -635,6 +681,18 @@ export default function Index() {
           </Card>
         ) : (
           <PomodoroTimer />
+        )}
+
+        {/* Modo corrida — trajeto ao vivo */}
+        {isRunning && timerMode === "normal" && gps.isTracking && (
+          <RunLivePanel
+            points={gps.points}
+            distance={gps.distance}
+            currentPace={gps.currentPace}
+            accuracy={gps.accuracy}
+            acquiring={gps.acquiring}
+            error={gps.error}
+          />
         )}
 
         {/* Ambient Sound Player */}
