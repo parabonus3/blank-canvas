@@ -74,47 +74,52 @@ export function RunLivePanel({
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-xl bg-muted/50 py-2">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.distance")}</p>
-          <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{formatDistance(distance)}</p>
-        </div>
-        <div className="rounded-xl bg-muted/50 py-2">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.pace")}</p>
-          <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{formatPace(currentPace)}</p>
-          <p className="text-[10px] text-muted-foreground">{t("runs.per_km")}</p>
-        </div>
-        <div className="rounded-xl bg-muted/50 py-2">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.points")}</p>
-          <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{points.length}</p>
-          {accuracy != null && (
-            <p className="text-[10px] text-muted-foreground">±{Math.round(accuracy)} m</p>
+      {!collapsed && (
+        <>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="rounded-xl bg-muted/50 py-2">
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.distance")}</p>
+              <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{formatDistance(distance)}</p>
+            </div>
+            <div className="rounded-xl bg-muted/50 py-2">
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.pace")}</p>
+              <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{formatPace(currentPace)}</p>
+              <p className="text-[10px] text-muted-foreground">{t("runs.per_km")}</p>
+            </div>
+            <div className="rounded-xl bg-muted/50 py-2">
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.points")}</p>
+              <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{points.length}</p>
+              {accuracy != null && (
+                <p className="text-[10px] text-muted-foreground">±{Math.round(accuracy)} m</p>
+              )}
+            </div>
+          </div>
+
+          {points.length > 0 ? (
+            <LazyRouteMap points={points} follow={!paused} className="h-40 sm:h-52" interactive={false} />
+          ) : (
+            <div className="h-40 sm:h-52 rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 text-center px-4">
+              <MapPin className="h-5 w-5 text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">
+                {error === "denied" ? t("runs.gps_denied_desc") : t("runs.waiting_signal")}
+              </p>
+            </div>
           )}
-        </div>
-      </div>
 
-      {points.length > 0 ? (
-        <LazyRouteMap points={points} follow className="h-40 sm:h-52" interactive={false} />
-      ) : (
-        <div className="h-40 sm:h-52 rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 text-center px-4">
-          <MapPin className="h-5 w-5 text-muted-foreground" />
-          <p className="text-xs text-muted-foreground">
-            {error === "denied" ? t("runs.gps_denied_desc") : t("runs.waiting_signal")}
+          <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/30 p-2">
+            <Gauge className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
+            <p className="text-[11px] leading-relaxed text-warning-foreground/90 dark:text-warning">
+              {t("runs.keep_open_hint")}
+            </p>
+          </div>
+
+          <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
+            <Mountain className="h-3 w-3" />
+            {t("runs.free_maps_note")}
           </p>
-        </div>
+        </>
       )}
-
-      <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/30 p-2">
-        <Gauge className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
-        <p className="text-[11px] leading-relaxed text-warning-foreground/90 dark:text-warning">
-          {t("runs.keep_open_hint")}
-        </p>
-      </div>
-
-      <p className="flex items-center gap-1 text-[10px] text-muted-foreground">
-        <Mountain className="h-3 w-3" />
-        {t("runs.free_maps_note")}
-      </p>
     </div>
   );
 }
+
