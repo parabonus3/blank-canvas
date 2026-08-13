@@ -31,6 +31,7 @@ export interface GpsRunSummary {
 interface StoredRun {
   startedAt: number;
   points: GeoPoint[];
+  pausedMs?: number;
 }
 
 function loadStored(): StoredRun | null {
@@ -81,6 +82,7 @@ export function useGpsTracker() {
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [error, setError] = useState<"denied" | "unavailable" | "timeout" | null>(null);
   const [acquiring, setAcquiring] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const watchIdRef = useRef<number | null>(null);
   const startedAtRef = useRef<number | null>(null);
@@ -88,6 +90,10 @@ export function useGpsTracker() {
   const distanceRef = useRef(0);
   const maxSpeedRef = useRef(0);
   const wakeLockRef = useRef<any>(null);
+  const pausedMsRef = useRef(0);
+  const pauseWallRef = useRef<number | null>(null);
+  /** After a resume, the first fix must not add the distance covered while paused. */
+  const skipDistanceRef = useRef(false);
 
   const releaseWakeLock = useCallback(() => {
     try {
@@ -125,8 +131,22 @@ export function useGpsTracker() {
 
     const startedAt = startedAtRef.current ?? Date.now();
     startedAtRef.current = startedAt;
-    const t = Math.max(0, pos.timestamp - startedAt);
+    const t = Math.max(0, pos.timestamp - startedAt - pausedMsRef.current);
     const prev = pointsRef.current[pointsRef.current.length - 1];
+
+    if (prev && skipDistanceRef.current) {
+      skipDistanceRef.current = false;
+      const point: GeoPoint = [
+        Number(latitude.toFixed(6)),
+        Number(longitude.toFixed(6)),
+        Math.max(t, prev[2]),
+        altitude != null && Number.isFinite(altitude) ? Math.round(altitude) : null,
+      ];
+      pointsRef.current = [...pointsRef.current, point];
+      setPoints(pointsRef.current);
+      persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+      return;
+    }
 
     if (prev) {
       const dt = t - prev[2];
@@ -150,7 +170,7 @@ export function useGpsTracker() {
     ];
     pointsRef.current = [...pointsRef.current, point];
     setPoints(pointsRef.current);
-    persist({ startedAt, points: pointsRef.current });
+    persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
   }, []);
 
   const handleError = useCallback((err: GeolocationPositionError) => {
@@ -177,6 +197,8 @@ export function useGpsTracker() {
       if (stored) {
         startedAtRef.current = stored.startedAt;
         pointsRef.current = stored.points;
+        pausedMsRef.current = stored.pausedMs ?? 0;
+        skipDistanceRef.current = true;
         distanceRef.current = totalDistanceMeters(stored.points);
         setPoints(stored.points);
         setDistance(distanceRef.current);
@@ -185,11 +207,15 @@ export function useGpsTracker() {
         pointsRef.current = [];
         distanceRef.current = 0;
         maxSpeedRef.current = 0;
+        pausedMsRef.current = 0;
+        skipDistanceRef.current = false;
         setPoints([]);
         setDistance(0);
         clearStoredRun();
       }
 
+      pauseWallRef.current = null;
+      setIsPaused(false);
       setError(null);
       setAcquiring(true);
       setIsTracking(true);
@@ -205,10 +231,36 @@ export function useGpsTracker() {
     [handleError, handlePosition, requestWakeLock],
   );
 
+  const pause = useCallback(() => {
+    if (!isTracking || pauseWallRef.current != null) return;
+    pauseWallRef.current = Date.now();
+    setIsPaused(true);
+    setAcquiring(false);
+    stopWatch();
+  }, [isTracking, stopWatch]);
+
+  const resume = useCallback(() => {
+    if (!isTracking || pauseWallRef.current == null) return;
+    pausedMsRef.current += Date.now() - pauseWallRef.current;
+    pauseWallRef.current = null;
+    skipDistanceRef.current = pointsRef.current.length > 0;
+    setIsPaused(false);
+    setError(null);
+    setAcquiring(true);
+    void requestWakeLock();
+    watchIdRef.current = navigator.geolocation.watchPosition(handlePosition, handleError, {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 30000,
+    });
+  }, [handleError, handlePosition, isTracking, requestWakeLock]);
+
   const stop = useCallback((elapsedSeconds?: number): GpsRunSummary | null => {
     stopWatch();
     setIsTracking(false);
+    setIsPaused(false);
     setAcquiring(false);
+    pauseWallRef.current = null;
 
     const raw = pointsRef.current;
     const startedAt = startedAtRef.current ?? Date.now();
@@ -238,6 +290,9 @@ export function useGpsTracker() {
   const discard = useCallback(() => {
     stopWatch();
     setIsTracking(false);
+    setIsPaused(false);
+    pauseWallRef.current = null;
+    pausedMsRef.current = 0;
     setPoints([]);
     setDistance(0);
     pointsRef.current = [];
@@ -250,13 +305,13 @@ export function useGpsTracker() {
   // Re-acquire the wake lock when the user comes back to the tab
   useEffect(() => {
     const onVisible = () => {
-      if (document.visibilityState === "visible" && isTracking && !wakeLockRef.current) {
+      if (document.visibilityState === "visible" && isTracking && !isPaused && !wakeLockRef.current) {
         void requestWakeLock();
       }
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => document.removeEventListener("visibilitychange", onVisible);
-  }, [isTracking, requestWakeLock]);
+  }, [isTracking, isPaused, requestWakeLock]);
 
   useEffect(() => stopWatch, [stopWatch]);
 
@@ -277,6 +332,7 @@ export function useGpsTracker() {
   return {
     supported: isGpsSupported(),
     isTracking,
+    isPaused,
     acquiring,
     error,
     accuracy,
@@ -284,6 +340,8 @@ export function useGpsTracker() {
     distance,
     currentPace,
     start,
+    pause,
+    resume,
     stop,
     discard,
   };

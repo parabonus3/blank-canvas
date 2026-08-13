@@ -72,6 +72,7 @@ export default function Index() {
   const gps = useGpsTracker();
   const saveGpsActivity = useSaveGpsActivity();
   const gpsResumedRef = useRef(false);
+  const [runPanelCollapsed, setRunPanelCollapsed] = useState(false);
 
   const { isPaused, pausedElapsed, pauseStartTime, pause: contextPause, resume: contextResume, resetPause, addPausedSeconds, hydrateFromServer } = useTimerContext();
   const { user } = useAuth();
@@ -401,6 +402,13 @@ export default function Index() {
     localStorage.setItem("timezoni.runMode", runMode ? "1" : "0");
   }, [runMode]);
 
+  // Pausar/retomar o rastreamento junto com o cronômetro (sem encerrar a corrida)
+  useEffect(() => {
+    if (!gps.isTracking) return;
+    if (isPaused) gps.pause();
+    else gps.resume();
+  }, [isPaused, gps.isTracking, gps.pause, gps.resume]);
+
   // Recupera o trajeto se o app foi fechado/recarregado com o cronômetro rodando
   useEffect(() => {
     if (gpsResumedRef.current) return;
@@ -692,7 +700,26 @@ export default function Index() {
             accuracy={gps.accuracy}
             acquiring={gps.acquiring}
             error={gps.error}
+            paused={gps.isPaused || isPaused}
+            collapsed={runPanelCollapsed}
+            onToggleCollapsed={() => setRunPanelCollapsed((v) => !v)}
           />
+        )}
+
+        {/* Ativar o modo corrida com a sessão já em andamento (ou depois de um erro de GPS) */}
+        {isRunning && timerMode === "normal" && !gps.isTracking && gps.supported && (
+          <Button
+            variant="outline"
+            className="w-full h-11 gap-2"
+            onClick={() => {
+              setRunMode(true);
+              setRunPanelCollapsed(false);
+              gps.start({ resume: hasStoredRun() });
+            }}
+          >
+            <Footprints className="h-4 w-4" />
+            {t("runs.enable_now")}
+          </Button>
         )}
 
         {/* Ambient Sound Player */}
