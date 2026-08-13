@@ -1,5 +1,6 @@
 import { Component, Suspense, lazy, type ReactNode } from "react";
 import { MapPinOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { GeoPoint } from "@/lib/geo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ class MapErrorBoundary extends Component<
 
 /** Loads Leaflet only when a map is actually shown. */
 export function LazyRouteMap({ points, className, follow, interactive }: Props) {
+  const { t } = useTranslation();
   return (
     <MapErrorBoundary
       fallback={
@@ -46,7 +48,7 @@ export function LazyRouteMap({ points, className, follow, interactive }: Props) 
         >
           <MapPinOff className="h-5 w-5 text-muted-foreground" />
           <p className="text-xs text-muted-foreground">
-            O mapa não pôde ser carregado — o trajeto continua sendo gravado.
+            {t("runs.map_error")}
           </p>
         </div>
       }
