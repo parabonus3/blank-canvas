@@ -22,6 +22,8 @@ const ACCURACY_FACTOR = 0.7;
 const WARMUP_MS = 10000;
 /** Peso do ponto anterior na suavização quando a precisão está ruim. */
 const SMOOTHING = 0.35;
+/** Abaixo disso a "corrida" é só ruído — não vale salvar trajeto. */
+const MIN_RUN_DISTANCE_M = 50;
 
 export type AccuracyQuality = "good" | "fair" | "weak" | null;
 
@@ -377,8 +379,12 @@ export function useGpsTracker() {
     return paceFrom(d, seconds);
   })();
 
+  const accuracyQuality: AccuracyQuality =
+    accuracy == null ? null : accuracy <= GOOD_ACCURACY_M ? "good" : accuracy <= 25 ? "fair" : "weak";
+
   return {
     supported: isGpsSupported(),
+    accuracyQuality,
     isTracking,
     isPaused,
     acquiring,
