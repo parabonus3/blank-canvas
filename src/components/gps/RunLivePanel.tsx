@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ChevronUp, Footprints, Gauge, MapPin, Mountain, Pause, Satellite, TriangleAlert } from "lucide-react";
+import { ChevronDown, ChevronUp, Footprints, Gauge, Info, MapPin, Mountain, Pause, Satellite, TriangleAlert } from "lucide-react";
 import { LazyRouteMap } from "@/components/gps/LazyRouteMap";
 import { formatDistance, formatPace, type GeoPoint } from "@/lib/geo";
 import { cn } from "@/lib/utils";
