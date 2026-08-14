@@ -91,6 +91,13 @@ export function RoomTimerCard({ roomId }: Props) {
     return () => clearInterval(id);
   }, [active?.start_time, active?.paused_seconds, isPaused, pausedElapsed, pauseStartTime]);
 
+  // Pausar/retomar o rastreamento GPS junto com o cronômetro
+  useEffect(() => {
+    if (!gps.isTracking) return;
+    if (isPaused) gps.pause();
+    else gps.resume();
+  }, [isPaused, gps.isTracking, gps.pause, gps.resume]);
+
   const isActiveInThisRoom = !!active && (active as any).room_id === roomId;
   const isActiveElsewhere = !!active && !isActiveInThisRoom;
   const otherRoomId = isActiveElsewhere ? (active as any).room_id : null;
@@ -323,6 +330,7 @@ export function RoomTimerCard({ roomId }: Props) {
           accuracy={gps.accuracy}
           acquiring={gps.acquiring}
           error={gps.error}
+          paused={gps.isPaused || isPaused}
         />
       )}
 
