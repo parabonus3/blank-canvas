@@ -2644,6 +2644,11 @@
     "resumed_desc": "We kept recording your route from where it stopped",
     "paused": "Paused",
     "enable_now": "Turn on run mode",
-    "map_error": "The map could not load — your route is still being recorded."
+    "map_error": "The map could not load — your route is still being recorded.",
+    "approx_note": "Distance and route are approximate — they depend on your phone's GPS signal and can vary by a few meters.",
+    "signal_quality": "{{quality}} signal (±{{meters}} m)",
+    "signal_good": "Good",
+    "signal_fair": "Fair",
+    "signal_weak": "Weak"
   }
 }

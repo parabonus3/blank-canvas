@@ -2699,6 +2699,11 @@
     "resumed_desc": "Continuamos gravando seu trajeto de onde parou",
     "paused": "Pausado",
     "enable_now": "Ativar modo corrida",
-    "map_error": "O mapa não pôde ser carregado — o trajeto continua sendo gravado."
+    "map_error": "O mapa não pôde ser carregado — o trajeto continua sendo gravado.",
+    "approx_note": "Distância e trajeto são aproximados — dependem do sinal do GPS do celular e podem variar alguns metros.",
+    "signal_quality": "Sinal {{quality}} (±{{meters}} m)",
+    "signal_good": "bom",
+    "signal_fair": "regular",
+    "signal_weak": "fraco"
   }
 }
