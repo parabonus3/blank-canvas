@@ -11,9 +11,20 @@ import {
 
 const STORAGE_KEY = "timezoni.gpsRun.v1";
 const MAX_ACCURACY_M = 35;
+const GOOD_ACCURACY_M = 12;
 const MAX_SPEED_MPS = 12; // ~43 km/h — anything above is a GPS jump
+const MIN_SPEED_MPS = 0.7; // abaixo disso é oscilação com a pessoa parada
 const MIN_INTERVAL_MS = 3000;
-const MIN_DISTANCE_M = 5;
+const MIN_DISTANCE_M = 8;
+/** Deslocamento precisa superar esta fração da incerteza do fix. */
+const ACCURACY_FACTOR = 0.7;
+/** Janela inicial em que o sinal só serve para fixar a posição de partida. */
+const WARMUP_MS = 10000;
+/** Peso do ponto anterior na suavização quando a precisão está ruim. */
+const SMOOTHING = 0.35;
+
+export type AccuracyQuality = "good" | "fair" | "weak" | null;
+
 
 export interface GpsRunSummary {
   points: GeoPoint[];
