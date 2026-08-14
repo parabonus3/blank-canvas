@@ -105,6 +105,9 @@ export function useGpsTracker() {
   const pauseWallRef = useRef<number | null>(null);
   /** After a resume, the first fix must not add the distance covered while paused. */
   const skipDistanceRef = useRef(false);
+  /** Fim da janela de aquecimento do sinal (sem acumular distância). */
+  const warmupUntilRef = useRef<number | null>(null);
+
 
   const releaseWakeLock = useCallback(() => {
     try {
