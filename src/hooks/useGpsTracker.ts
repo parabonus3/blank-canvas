@@ -165,7 +165,7 @@ export function useGpsTracker() {
       ];
       pointsRef.current = [...pointsRef.current, point];
       setPoints(pointsRef.current);
-      persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+      persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current, distance: distanceRef.current });
     };
 
     if (prev && skipDistanceRef.current) {
@@ -266,7 +266,7 @@ export function useGpsTracker() {
         pointsRef.current = stored.points;
         pausedMsRef.current = stored.pausedMs ?? 0;
         skipDistanceRef.current = true;
-        distanceRef.current = totalDistanceMeters(stored.points);
+        distanceRef.current = stored.distance ?? totalDistanceMeters(stored.points);
         setPoints(stored.points);
         setDistance(distanceRef.current);
       } else {
