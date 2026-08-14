@@ -173,7 +173,7 @@ export function useGpsTracker() {
 
     // Warm-up: os primeiros segundos só servem para fixar a posição inicial.
     if (warmupUntilRef.current == null) warmupUntilRef.current = Date.now() + WARMUP_MS;
-    const warmingUp = Date.now() < warmupUntilRef.current && (acc == null || acc > GOOD_ACCURACY_M);
+    const warmingUp = Date.now() < warmupUntilRef.current;
 
     if (!prev) {
       pushPoint(latitude, longitude, t);
@@ -182,40 +182,58 @@ export function useGpsTracker() {
 
     const dt = t - prev[2];
     const rawSeg = haversineMeters(prev[0], prev[1], latitude, longitude);
-    // Limiar dependente da precisão: deslocamento precisa superar a incerteza do fix.
-    const threshold = Math.max(MIN_DISTANCE_M, (acc ?? MIN_DISTANCE_M) * ACCURACY_FACTOR);
+    // Limiar dependente da precisão, mas com teto — sinal ruim não pode travar o traçado.
+    const threshold = Math.min(
+      MAX_THRESHOLD_M,
+      Math.max(MIN_DISTANCE_M, (acc ?? MIN_DISTANCE_M) * ACCURACY_FACTOR),
+    );
 
     if (warmingUp) {
       // Reposiciona o ponto inicial enquanto o sinal estabiliza, sem somar distância.
       if (pointsRef.current.length === 1) {
         pointsRef.current = [[Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), prev[2], prev[3]]];
         setPoints(pointsRef.current);
-        persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+        persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current, distance: distanceRef.current });
       }
       return;
     }
 
-    if (dt < MIN_INTERVAL_MS && rawSeg < threshold) return;
-    if (rawSeg < threshold) return;
+    // Salto impossível → fix corrompido, ignora por completo.
+    if (dt > 0 && rawSeg / (dt / 1000) > MAX_SPEED_MPS) return;
 
-    if (dt > 0) {
+    // Cadência de gravação: o traçado sempre avança, mesmo com sinal médio.
+    const shouldRecord = dt >= RECORD_INTERVAL_MS || rawSeg >= MIN_DISTANCE_M;
+    if (!shouldRecord) return;
+
+    // A distância tem filtro rígido (evita quilômetros fantasmas com a pessoa parada).
+    let countDistance = rawSeg >= threshold;
+    if (countDistance && dt > 0) {
       const speed = rawSeg / (dt / 1000);
-      if (speed > MAX_SPEED_MPS) return; // salto impossível
-      if (speed < MIN_SPEED_MPS) return; // oscilação com a pessoa parada
-      if (speed > maxSpeedRef.current) maxSpeedRef.current = speed;
+      if (speed < MIN_SPEED_MPS) countDistance = false;
+      else if (speed > maxSpeedRef.current) maxSpeedRef.current = speed;
     }
-
-    // Aparelho informando velocidade ~0 → está parado, é ruído.
-    if (reportedSpeed != null && Number.isFinite(reportedSpeed) && reportedSpeed < MIN_SPEED_MPS) return;
+    // Aparelho informando velocidade válida e ~0 → está parado, é ruído.
+    if (
+      countDistance &&
+      reportedSpeed != null &&
+      Number.isFinite(reportedSpeed) &&
+      reportedSpeed > 0 &&
+      reportedSpeed < MIN_SPEED_MPS
+    ) {
+      countDistance = false;
+    }
 
     // Suavização ponderada pela precisão para o traçado ficar menos serrilhado.
     const w = acc != null && acc > GOOD_ACCURACY_M ? SMOOTHING : 0;
     const lat = latitude * (1 - w) + prev[0] * w;
     const lng = longitude * (1 - w) + prev[1] * w;
 
-    distanceRef.current += haversineMeters(prev[0], prev[1], lat, lng);
-    setDistance(distanceRef.current);
+    if (countDistance) {
+      distanceRef.current += haversineMeters(prev[0], prev[1], lat, lng);
+      setDistance(distanceRef.current);
+    }
     pushPoint(lat, lng, t);
+
   }, []);
 
 
