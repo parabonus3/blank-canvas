@@ -124,7 +124,7 @@ export function useGpsTracker() {
   const handlePosition = useCallback((pos: GeolocationPosition) => {
     setAcquiring(false);
     setError(null);
-    const { latitude, longitude, altitude, accuracy: acc } = pos.coords;
+    const { latitude, longitude, altitude, accuracy: acc, speed: reportedSpeed } = pos.coords;
     setAccuracy(acc ?? null);
 
     if (acc != null && acc > MAX_ACCURACY_M) return;
@@ -134,44 +134,71 @@ export function useGpsTracker() {
     const t = Math.max(0, pos.timestamp - startedAt - pausedMsRef.current);
     const prev = pointsRef.current[pointsRef.current.length - 1];
 
-    if (prev && skipDistanceRef.current) {
-      skipDistanceRef.current = false;
+    const pushPoint = (lat: number, lng: number, tMs: number) => {
       const point: GeoPoint = [
-        Number(latitude.toFixed(6)),
-        Number(longitude.toFixed(6)),
-        Math.max(t, prev[2]),
+        Number(lat.toFixed(6)),
+        Number(lng.toFixed(6)),
+        tMs,
         altitude != null && Number.isFinite(altitude) ? Math.round(altitude) : null,
       ];
       pointsRef.current = [...pointsRef.current, point];
       setPoints(pointsRef.current);
       persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+    };
+
+    if (prev && skipDistanceRef.current) {
+      skipDistanceRef.current = false;
+      pushPoint(latitude, longitude, Math.max(t, prev[2]));
       return;
     }
 
-    if (prev) {
-      const dt = t - prev[2];
-      const seg = haversineMeters(prev[0], prev[1], latitude, longitude);
-      if (dt < MIN_INTERVAL_MS && seg < MIN_DISTANCE_M) return;
-      if (dt > 0) {
-        const speed = seg / (dt / 1000);
-        if (speed > MAX_SPEED_MPS) return; // impossible jump
-        if (speed > maxSpeedRef.current) maxSpeedRef.current = speed;
-      }
-      if (seg < MIN_DISTANCE_M) return;
-      distanceRef.current += seg;
-      setDistance(distanceRef.current);
+    // Warm-up: os primeiros segundos só servem para fixar a posição inicial.
+    if (warmupUntilRef.current == null) warmupUntilRef.current = Date.now() + WARMUP_MS;
+    const warmingUp = Date.now() < warmupUntilRef.current && (acc == null || acc > GOOD_ACCURACY_M);
+
+    if (!prev) {
+      pushPoint(latitude, longitude, t);
+      return;
     }
 
-    const point: GeoPoint = [
-      Number(latitude.toFixed(6)),
-      Number(longitude.toFixed(6)),
-      t,
-      altitude != null && Number.isFinite(altitude) ? Math.round(altitude) : null,
-    ];
-    pointsRef.current = [...pointsRef.current, point];
-    setPoints(pointsRef.current);
-    persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+    const dt = t - prev[2];
+    const rawSeg = haversineMeters(prev[0], prev[1], latitude, longitude);
+    // Limiar dependente da precisão: deslocamento precisa superar a incerteza do fix.
+    const threshold = Math.max(MIN_DISTANCE_M, (acc ?? MIN_DISTANCE_M) * ACCURACY_FACTOR);
+
+    if (warmingUp) {
+      // Reposiciona o ponto inicial enquanto o sinal estabiliza, sem somar distância.
+      if (pointsRef.current.length === 1) {
+        pointsRef.current = [[Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), prev[2], prev[3]]];
+        setPoints(pointsRef.current);
+        persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+      }
+      return;
+    }
+
+    if (dt < MIN_INTERVAL_MS && rawSeg < threshold) return;
+    if (rawSeg < threshold) return;
+
+    if (dt > 0) {
+      const speed = rawSeg / (dt / 1000);
+      if (speed > MAX_SPEED_MPS) return; // salto impossível
+      if (speed < MIN_SPEED_MPS) return; // oscilação com a pessoa parada
+      if (speed > maxSpeedRef.current) maxSpeedRef.current = speed;
+    }
+
+    // Aparelho informando velocidade ~0 → está parado, é ruído.
+    if (reportedSpeed != null && Number.isFinite(reportedSpeed) && reportedSpeed < MIN_SPEED_MPS) return;
+
+    // Suavização ponderada pela precisão para o traçado ficar menos serrilhado.
+    const w = acc != null && acc > GOOD_ACCURACY_M ? SMOOTHING : 0;
+    const lat = latitude * (1 - w) + prev[0] * w;
+    const lng = longitude * (1 - w) + prev[1] * w;
+
+    distanceRef.current += haversineMeters(prev[0], prev[1], lat, lng);
+    setDistance(distanceRef.current);
+    pushPoint(lat, lng, t);
   }, []);
+
 
   const handleError = useCallback((err: GeolocationPositionError) => {
     setAcquiring(false);
