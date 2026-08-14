@@ -736,7 +736,11 @@ export default function Index() {
           onConfirm={handleStopConfirm}
           projectName={activeEntry?.project?.name}
           duration={formatTime(elapsed)}
+          runPoints={gps.isTracking ? gps.points : undefined}
+          runDistance={gps.distance}
+          runPace={gps.currentPace}
         />
+
 
         {/* Fullscreen Timer */}
         {isFullscreen && isRunning && timerMode === "normal" && (
