@@ -2553,6 +2553,9 @@
     "saved_desc": "{{distance}} km añadidos a tu historial",
     "save_error": "No se pudo guardar la ruta",
     "resumed_title": "Carrera reanudada",
-    "resumed_desc": "Seguimos grabando tu ruta desde donde se detuvo"
+    "resumed_desc": "Seguimos grabando tu ruta desde donde se detuvo",
+    "paused": "En pausa",
+    "enable_now": "Activar modo carrera",
+    "map_error": "No se pudo cargar el mapa: la ruta sigue registrándose."
   }
 }

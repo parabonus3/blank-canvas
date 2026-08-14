@@ -2546,6 +2546,9 @@
     "saved_desc": "已将 {{distance}} 公里加入你的记录",
     "save_error": "无法保存路线",
     "resumed_title": "已继续跑步",
-    "resumed_desc": "我们从中断处继续记录你的路线"
+    "resumed_desc": "我们从中断处继续记录你的路线",
+    "paused": "已暂停",
+    "enable_now": "开启跑步模式",
+    "map_error": "地图无法加载 — 轨迹仍在记录中。"
   }
 }

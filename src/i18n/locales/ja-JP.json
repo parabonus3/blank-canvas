@@ -2546,6 +2546,9 @@
     "saved_desc": "{{distance}} km を履歴に追加しました",
     "save_error": "ルートを保存できませんでした",
     "resumed_title": "ランを再開しました",
-    "resumed_desc": "中断した場所からルート記録を続けています"
+    "resumed_desc": "中断した場所からルート記録を続けています",
+    "paused": "一時停止中",
+    "enable_now": "ランモードをオン",
+    "map_error": "地図を読み込めませんでした。ルートの記録は続いています。"
   }
 }

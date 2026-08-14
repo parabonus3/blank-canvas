@@ -2532,6 +2532,9 @@
     "saved_desc": "{{distance}} km를 기록에 추가했어요",
     "save_error": "경로를 저장할 수 없습니다",
     "resumed_title": "러닝 재개",
-    "resumed_desc": "중단된 지점부터 경로를 계속 기록합니다"
+    "resumed_desc": "중단된 지점부터 경로를 계속 기록합니다",
+    "paused": "일시정지",
+    "enable_now": "러닝 모드 켜기",
+    "map_error": "지도를 불러올 수 없습니다. 경로는 계속 기록됩니다."
   }
 }

@@ -2546,6 +2546,9 @@
     "saved_desc": "{{distance}} km in deinem Verlauf gespeichert",
     "save_error": "Strecke konnte nicht gespeichert werden",
     "resumed_title": "Lauf fortgesetzt",
-    "resumed_desc": "Wir zeichnen deine Strecke weiter auf"
+    "resumed_desc": "Wir zeichnen deine Strecke weiter auf",
+    "paused": "Pausiert",
+    "enable_now": "Laufmodus aktivieren",
+    "map_error": "Die Karte konnte nicht geladen werden – die Route wird weiter aufgezeichnet."
   }
 }

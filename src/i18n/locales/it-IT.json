@@ -2532,6 +2532,9 @@
     "saved_desc": "{{distance}} km aggiunti alla cronologia",
     "save_error": "Impossibile salvare il percorso",
     "resumed_title": "Corsa ripresa",
-    "resumed_desc": "Abbiamo ripreso a registrare il tuo percorso"
+    "resumed_desc": "Abbiamo ripreso a registrare il tuo percorso",
+    "paused": "In pausa",
+    "enable_now": "Attiva modalità corsa",
+    "map_error": "La mappa non è stata caricata — il percorso continua a essere registrato."
   }
 }
