@@ -584,3 +584,25 @@
   animation: frame-rotate 8s linear infinite;
 }
 
+
+/* ============== Leaflet stacking: never let a map paint over modals ============== */
+.leaflet-container {
+  isolation: isolate;
+  z-index: 0;
+}
+.leaflet-pane,
+.leaflet-map-pane,
+.leaflet-tile-pane,
+.leaflet-overlay-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-tooltip-pane,
+.leaflet-popup-pane {
+  z-index: auto;
+}
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control,
+.leaflet-control-container {
+  z-index: 1;
+}
