@@ -2649,6 +2649,9 @@
     "signal_quality": "{{quality}} signal (±{{meters}} m)",
     "signal_good": "Good",
     "signal_fair": "Fair",
-    "signal_weak": "Weak"
+    "signal_weak": "Weak",
+    "no_track_title": "Not enough route data",
+    "no_track_desc": "GPS didn't capture enough points to draw the route — weak signal or permission denied.",
+    "weak_signal_hint": "Weak signal: the route isn't being captured yet. Stay in an open area and keep the screen on."
   }
 }

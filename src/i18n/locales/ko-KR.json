@@ -2540,6 +2540,9 @@
     "signal_quality": "신호 {{quality}} (±{{meters}} m)",
     "signal_good": "좋음",
     "signal_fair": "보통",
-    "signal_weak": "약함"
+    "signal_weak": "약함",
+    "no_track_title": "경로 데이터 부족",
+    "no_track_desc": "GPS가 경로를 그릴 만큼 지점을 받지 못했습니다 — 신호 약함 또는 권한 거부.",
+    "weak_signal_hint": "신호가 약해 경로가 아직 기록되지 않습니다. 개방된 장소에서 화면을 켜 두세요."
   }
 }

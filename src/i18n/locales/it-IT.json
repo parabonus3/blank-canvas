@@ -2540,6 +2540,9 @@
     "signal_quality": "Segnale {{quality}} (±{{meters}} m)",
     "signal_good": "buono",
     "signal_fair": "medio",
-    "signal_weak": "debole"
+    "signal_weak": "debole",
+    "no_track_title": "Percorso insufficiente",
+    "no_track_desc": "Il GPS non ha rilevato punti sufficienti per tracciare il percorso: segnale debole o permesso negato.",
+    "weak_signal_hint": "Segnale debole: il percorso non viene ancora rilevato. Resta in area aperta e tieni lo schermo accesso."
   }
 }

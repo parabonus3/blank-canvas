@@ -2554,6 +2554,9 @@
     "signal_quality": "Signal {{quality}} (±{{meters}} m)",
     "signal_good": "bon",
     "signal_fair": "moyen",
-    "signal_weak": "faible"
+    "signal_weak": "faible",
+    "no_track_title": "Tracé insuffisant",
+    "no_track_desc": "Le GPS n'a pas capté assez de points pour dessiner le tracé — signal faible ou permission refusée.",
+    "weak_signal_hint": "Signal faible : le tracé n'est pas encore capté. Restez en zone dégagée et gardez l'écran allumé."
   }
 }
