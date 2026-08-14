@@ -2704,6 +2704,9 @@
     "signal_quality": "Sinal {{quality}} (±{{meters}} m)",
     "signal_good": "bom",
     "signal_fair": "regular",
-    "signal_weak": "fraco"
+    "signal_weak": "fraco",
+    "no_track_title": "Trajeto insuficiente",
+    "no_track_desc": "O GPS não captou pontos suficientes para desenhar o trajeto — sinal fraco ou permissão negada.",
+    "weak_signal_hint": "Sinal fraco: o trajeto ainda não está sendo captado. Fique em área aberta e mantenha a tela ligada."
   }
 }

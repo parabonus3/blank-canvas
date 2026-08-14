@@ -456,8 +456,13 @@ export default function Index() {
         try { await pauseSyncRef.current; } catch {}
         pauseSyncRef.current = null;
       }
-      const runSummary = gps.isTracking ? gps.stop(clientSeconds) : null;
+      const wasTrackingRun = gps.isTracking;
+      const runSummary = wasTrackingRun ? gps.stop(clientSeconds) : null;
+      if (wasTrackingRun && !runSummary) {
+        toast({ title: t("runs.no_track_title"), description: t("runs.no_track_desc") });
+      }
       const runProjectId = activeEntry.project_id || selectedProject || null;
+
       stopTimer.mutate({ entryId: activeEntry.id, roomId, clientSeconds }, {
         onSuccess: async (data) => {
           if (runSummary) {
@@ -740,6 +745,8 @@ export default function Index() {
           runPoints={gps.isTracking ? gps.points : undefined}
           runDistance={gps.distance}
           runPace={gps.currentPace}
+          runActive={gps.isTracking}
+
         />
 
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Info } from "lucide-react";
+import { Info, MapPinOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,8 @@ interface StopTimerDialogProps {
   runPoints?: GeoPoint[];
   runDistance?: number;
   runPace?: number | null;
+  /** Modo corrida ativo — mostra o bloco de corrida mesmo sem traçado. */
+  runActive?: boolean;
 }
 
 export function StopTimerDialog({
@@ -35,12 +37,15 @@ export function StopTimerDialog({
   runPoints,
   runDistance,
   runPace,
+  runActive,
 }: StopTimerDialogProps) {
   const { t } = useTranslation();
   const [notes, setNotes] = useState("");
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
 
-  const hasRun = !!runPoints && runPoints.length > 1;
+  const hasTrack = !!runPoints && runPoints.length > 1;
+  const hasRun = hasTrack || !!runActive;
+
 
   const handleConfirm = () => {
     onConfirm(notes.trim() || undefined, selectedTagIds.length > 0 ? selectedTagIds : undefined);
@@ -70,12 +75,21 @@ export function StopTimerDialog({
           <div className={hasRun ? "grid gap-4 sm:grid-cols-2 sm:items-start" : "space-y-4"}>
             {hasRun && (
               <div className="space-y-2 min-w-0">
-                <LazyRouteMap
-                  points={runPoints!}
-                  follow={false}
-                  interactive={false}
-                  className="h-32 sm:h-52 w-full"
-                />
+                {hasTrack ? (
+                  <LazyRouteMap
+                    points={runPoints!}
+                    follow={false}
+                    interactive={false}
+                    className="h-32 sm:h-52 w-full"
+                  />
+                ) : (
+                  <div className="h-32 sm:h-52 w-full rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 px-4 text-center">
+                    <MapPinOff className="h-5 w-5 text-muted-foreground" />
+                    <p className="text-xs font-medium">{t("runs.no_track_title")}</p>
+                    <p className="text-[11px] text-muted-foreground">{t("runs.no_track_desc")}</p>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-xl bg-muted/50 py-2">
                     <p className="text-[10px] uppercase tracking-wide text-muted-foreground">

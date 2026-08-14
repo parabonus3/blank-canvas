@@ -2561,6 +2561,9 @@
     "signal_quality": "Señal {{quality}} (±{{meters}} m)",
     "signal_good": "buena",
     "signal_fair": "regular",
-    "signal_weak": "débil"
+    "signal_weak": "débil",
+    "no_track_title": "Recorrido insuficiente",
+    "no_track_desc": "El GPS no captó puntos suficientes para dibujar el recorrido: señal débil o permiso denegado.",
+    "weak_signal_hint": "Señal débil: el recorrido aún no se está captando. Ponte en zona abierta y mantén la pantalla encendida."
   }
 }

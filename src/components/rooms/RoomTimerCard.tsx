@@ -17,6 +17,8 @@ import { useGpsTracker } from "@/hooks/useGpsTracker";
 import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
 import { RunModeToggle } from "@/components/gps/RunModeToggle";
 import { RunLivePanel } from "@/components/gps/RunLivePanel";
+import { toast } from "@/hooks/use-toast";
+
 
 interface Props {
   roomId: string;
@@ -113,7 +115,12 @@ export function RoomTimerCard({ roomId }: Props) {
 
   const handleStop = () => {
     if (!active) return;
-    const runSummary = gps.isTracking ? gps.stop(elapsed) : null;
+    const wasTrackingRun = gps.isTracking;
+    const runSummary = wasTrackingRun ? gps.stop(elapsed) : null;
+    if (wasTrackingRun && !runSummary) {
+      toast({ title: t("runs.no_track_title"), description: t("runs.no_track_desc") });
+    }
+
     const runProjectId = (active as any).project_id || projectId || null;
     stop.mutate(
       { entryId: active.id, roomId, clientSeconds: elapsed },

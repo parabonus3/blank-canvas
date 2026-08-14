@@ -2554,6 +2554,9 @@
     "signal_quality": "Sinyal {{quality}} (±{{meters}} m)",
     "signal_good": "bagus",
     "signal_fair": "sedang",
-    "signal_weak": "lemah"
+    "signal_weak": "lemah",
+    "no_track_title": "Data rute tidak cukup",
+    "no_track_desc": "GPS tidak menangkap cukup titik untuk menggambar rute — sinyal lemah atau izin ditolak.",
+    "weak_signal_hint": "Sinyal lemah: rute belum terekam. Berada di area terbuka dan biarkan layar tetap menyala."
   }
 }

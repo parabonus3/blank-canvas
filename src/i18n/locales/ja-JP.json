@@ -2554,6 +2554,9 @@
     "signal_quality": "信号: {{quality}}（±{{meters}} m）",
     "signal_good": "良好",
     "signal_fair": "普通",
-    "signal_weak": "弱い"
+    "signal_weak": "弱い",
+    "no_track_title": "ルートのデータが不足",
+    "no_track_desc": "GPSの取得点が少なくルートを描けませんでした（電波が弱い、または権限が未許可）。",
+    "weak_signal_hint": "電波が弱く、ルートがまだ記録されていません。開けた場所で画面をオンのままにしてください。"
   }
 }

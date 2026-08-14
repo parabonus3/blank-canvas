@@ -2554,6 +2554,9 @@
     "signal_quality": "{{quality}} Signal (±{{meters}} m)",
     "signal_good": "Gutes",
     "signal_fair": "Mittleres",
-    "signal_weak": "Schwaches"
+    "signal_weak": "Schwaches",
+    "no_track_title": "Route unvollständig",
+    "no_track_desc": "Das GPS hat zu wenige Punkte erfasst, um die Route zu zeichnen – schwaches Signal oder Berechtigung verweigert.",
+    "weak_signal_hint": "Schwaches Signal: Die Route wird noch nicht erfasst. Bleibe im Freien und lass den Bildschirm an."
   }
 }
