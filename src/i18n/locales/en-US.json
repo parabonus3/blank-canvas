@@ -2641,6 +2641,9 @@
     "saved_desc": "{{distance}} km added to your history",
     "save_error": "Couldn't save the route",
     "resumed_title": "Run resumed",
-    "resumed_desc": "We kept recording your route from where it stopped"
+    "resumed_desc": "We kept recording your route from where it stopped",
+    "paused": "Paused",
+    "enable_now": "Turn on run mode",
+    "map_error": "The map could not load — your route is still being recorded."
   }
 }

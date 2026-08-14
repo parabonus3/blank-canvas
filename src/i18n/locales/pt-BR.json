@@ -2696,6 +2696,9 @@
     "saved_desc": "{{distance}} km gravados no seu histórico",
     "save_error": "Não foi possível salvar o trajeto",
     "resumed_title": "Corrida retomada",
-    "resumed_desc": "Continuamos gravando seu trajeto de onde parou"
+    "resumed_desc": "Continuamos gravando seu trajeto de onde parou",
+    "paused": "Pausado",
+    "enable_now": "Ativar modo corrida",
+    "map_error": "O mapa não pôde ser carregado — o trajeto continua sendo gravado."
   }
 }

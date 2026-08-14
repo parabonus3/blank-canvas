@@ -2546,6 +2546,9 @@
     "saved_desc": "{{distance}} km ajoutés à votre historique",
     "save_error": "Impossible d'enregistrer le parcours",
     "resumed_title": "Course reprise",
-    "resumed_desc": "Nous avons repris l'enregistrement de votre parcours"
+    "resumed_desc": "Nous avons repris l'enregistrement de votre parcours",
+    "paused": "En pause",
+    "enable_now": "Activer le mode course",
+    "map_error": "La carte n'a pas pu se charger — le trajet continue d'être enregistré."
   }
 }

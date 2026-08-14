@@ -24,7 +24,7 @@ import { ProjectPicker } from "@/components/ProjectPicker";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { AmbientSoundPlayer } from "@/components/AmbientSoundPlayer";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
-import { Play, Square, Clock, Timer, Pause, Flame, Shield, Maximize2 } from "lucide-react";
+import { Play, Square, Clock, Timer, Pause, Flame, Shield, Maximize2, Footprints } from "lucide-react";
 import { FullscreenTimer } from "@/components/FullscreenTimer";
 import { cn } from "@/lib/utils";
 import { StopTimerDialog } from "@/components/StopTimerDialog";

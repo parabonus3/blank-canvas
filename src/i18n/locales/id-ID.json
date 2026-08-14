@@ -2546,6 +2546,9 @@
     "saved_desc": "{{distance}} km ditambahkan ke riwayatmu",
     "save_error": "Rute gagal disimpan",
     "resumed_title": "Lari dilanjutkan",
-    "resumed_desc": "Kami melanjutkan perekaman rute dari titik terakhir"
+    "resumed_desc": "Kami melanjutkan perekaman rute dari titik terakhir",
+    "paused": "Dijeda",
+    "enable_now": "Aktifkan mode lari",
+    "map_error": "Peta gagal dimuat — rute tetap direkam."
   }
 }
