@@ -48,7 +48,10 @@ interface StoredRun {
   startedAt: number;
   points: GeoPoint[];
   pausedMs?: number;
+  /** Distância já contabilizada (filtrada) — restaurada na retomada. */
+  distance?: number;
 }
+
 
 function loadStored(): StoredRun | null {
   try {
