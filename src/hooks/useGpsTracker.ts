@@ -315,8 +315,11 @@ export function useGpsTracker() {
 
     const cleaned = simplify(raw);
     const distanceMeters = Math.round(totalDistanceMeters(raw));
+    // Distância irrelevante (pessoa parada / só ruído de GPS) não gera corrida.
+    if (distanceMeters < MIN_RUN_DISTANCE_M) return null;
     const movingSeconds = Math.round((raw[raw.length - 1][2] - raw[0][2]) / 1000);
     const elapsed = Math.max(movingSeconds, Math.round(elapsedSeconds ?? movingSeconds));
+
 
     return {
       points: cleaned,
