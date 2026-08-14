@@ -17,6 +17,8 @@ import { useGpsTracker } from "@/hooks/useGpsTracker";
 import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
 import { RunModeToggle } from "@/components/gps/RunModeToggle";
 import { RunLivePanel } from "@/components/gps/RunLivePanel";
+import { toast } from "@/hooks/use-toast";
+
 
 interface Props {
   roomId: string;
