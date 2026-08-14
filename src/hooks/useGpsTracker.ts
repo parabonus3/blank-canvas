@@ -256,6 +256,8 @@ export function useGpsTracker() {
       }
 
       pauseWallRef.current = null;
+      warmupUntilRef.current = stored ? Date.now() : null;
+
       setIsPaused(false);
       setError(null);
       setAcquiring(true);
