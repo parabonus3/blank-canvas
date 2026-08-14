@@ -337,12 +337,15 @@ export function useGpsTracker() {
     const startedAt = startedAtRef.current ?? Date.now();
     clearStoredRun();
 
-    if (raw.length < 2) return null;
+    if (raw.length < 2) {
+      console.warn("[runs] trajeto descartado: sem pontos suficientes", { points: raw.length });
+      return null;
+    }
 
     const cleaned = simplify(raw);
-    const distanceMeters = Math.round(totalDistanceMeters(raw));
-    // Distância irrelevante (pessoa parada / só ruído de GPS) não gera corrida.
-    if (distanceMeters < MIN_RUN_DISTANCE_M) return null;
+    // Usa a distância filtrada (não a soma bruta dos pontos) para não inflar com ruído.
+    const distanceMeters = Math.round(distanceRef.current);
+
     const movingSeconds = Math.round((raw[raw.length - 1][2] - raw[0][2]) / 1000);
     const elapsed = Math.max(movingSeconds, Math.round(elapsedSeconds ?? movingSeconds));
 
