@@ -109,6 +109,14 @@ export function RunLivePanel({
             </div>
           )}
 
+          {!error && !paused && points.length < 2 && !acquiring && (
+            <div className="flex items-start gap-2 rounded-lg bg-destructive/10 border border-destructive/30 p-2">
+              <TriangleAlert className="h-3.5 w-3.5 text-destructive shrink-0 mt-0.5" />
+              <p className="text-[11px] leading-relaxed text-destructive">{t("runs.weak_signal_hint")}</p>
+            </div>
+          )}
+
+
           <div className="flex items-start gap-2 rounded-lg bg-muted/40 border border-border p-2">
             <Info className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
             <p className="text-[11px] leading-relaxed text-muted-foreground">
