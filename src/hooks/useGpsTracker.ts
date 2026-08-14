@@ -287,6 +287,8 @@ export function useGpsTracker() {
     pausedMsRef.current += Date.now() - pauseWallRef.current;
     pauseWallRef.current = null;
     skipDistanceRef.current = pointsRef.current.length > 0;
+    warmupUntilRef.current = Date.now();
+
     setIsPaused(false);
     setError(null);
     setAcquiring(true);
