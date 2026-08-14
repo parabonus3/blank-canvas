@@ -24,6 +24,8 @@ interface StopTimerDialogProps {
   runPoints?: GeoPoint[];
   runDistance?: number;
   runPace?: number | null;
+  /** Modo corrida ativo — mostra o bloco de corrida mesmo sem traçado. */
+  runActive?: boolean;
 }
 
 export function StopTimerDialog({
@@ -35,12 +37,15 @@ export function StopTimerDialog({
   runPoints,
   runDistance,
   runPace,
+  runActive,
 }: StopTimerDialogProps) {
   const { t } = useTranslation();
   const [notes, setNotes] = useState("");
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
 
-  const hasRun = !!runPoints && runPoints.length > 1;
+  const hasTrack = !!runPoints && runPoints.length > 1;
+  const hasRun = hasTrack || !!runActive;
+
 
   const handleConfirm = () => {
     onConfirm(notes.trim() || undefined, selectedTagIds.length > 0 ? selectedTagIds : undefined);
