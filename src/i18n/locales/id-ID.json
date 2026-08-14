@@ -2549,6 +2549,11 @@
     "resumed_desc": "Kami melanjutkan perekaman rute dari titik terakhir",
     "paused": "Dijeda",
     "enable_now": "Aktifkan mode lari",
-    "map_error": "Peta gagal dimuat — rute tetap direkam."
+    "map_error": "Peta gagal dimuat — rute tetap direkam.",
+    "approx_note": "Jarak dan rute bersifat perkiraan — bergantung pada sinyal GPS ponsel dan bisa berbeda beberapa meter.",
+    "signal_quality": "Sinyal {{quality}} (±{{meters}} m)",
+    "signal_good": "bagus",
+    "signal_fair": "sedang",
+    "signal_weak": "lemah"
   }
 }

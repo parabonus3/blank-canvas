@@ -2556,6 +2556,11 @@
     "resumed_desc": "Seguimos grabando tu ruta desde donde se detuvo",
     "paused": "En pausa",
     "enable_now": "Activar modo carrera",
-    "map_error": "No se pudo cargar el mapa: la ruta sigue registrándose."
+    "map_error": "No se pudo cargar el mapa: la ruta sigue registrándose.",
+    "approx_note": "La distancia y el recorrido son aproximados: dependen de la señal GPS del móvil y pueden variar algunos metros.",
+    "signal_quality": "Señal {{quality}} (±{{meters}} m)",
+    "signal_good": "buena",
+    "signal_fair": "regular",
+    "signal_weak": "débil"
   }
 }

@@ -2549,6 +2549,11 @@
     "resumed_desc": "Wir zeichnen deine Strecke weiter auf",
     "paused": "Pausiert",
     "enable_now": "Laufmodus aktivieren",
-    "map_error": "Die Karte konnte nicht geladen werden – die Route wird weiter aufgezeichnet."
+    "map_error": "Die Karte konnte nicht geladen werden – die Route wird weiter aufgezeichnet.",
+    "approx_note": "Distanz und Route sind Näherungswerte – sie hängen vom GPS-Signal des Handys ab und können um einige Meter abweichen.",
+    "signal_quality": "{{quality}} Signal (±{{meters}} m)",
+    "signal_good": "Gutes",
+    "signal_fair": "Mittleres",
+    "signal_weak": "Schwaches"
   }
 }

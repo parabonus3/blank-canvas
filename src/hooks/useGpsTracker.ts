@@ -11,9 +11,22 @@ import {
 
 const STORAGE_KEY = "timezoni.gpsRun.v1";
 const MAX_ACCURACY_M = 35;
+const GOOD_ACCURACY_M = 12;
 const MAX_SPEED_MPS = 12; // ~43 km/h — anything above is a GPS jump
+const MIN_SPEED_MPS = 0.7; // abaixo disso é oscilação com a pessoa parada
 const MIN_INTERVAL_MS = 3000;
-const MIN_DISTANCE_M = 5;
+const MIN_DISTANCE_M = 8;
+/** Deslocamento precisa superar esta fração da incerteza do fix. */
+const ACCURACY_FACTOR = 0.7;
+/** Janela inicial em que o sinal só serve para fixar a posição de partida. */
+const WARMUP_MS = 10000;
+/** Peso do ponto anterior na suavização quando a precisão está ruim. */
+const SMOOTHING = 0.35;
+/** Abaixo disso a "corrida" é só ruído — não vale salvar trajeto. */
+const MIN_RUN_DISTANCE_M = 50;
+
+export type AccuracyQuality = "good" | "fair" | "weak" | null;
+
 
 export interface GpsRunSummary {
   points: GeoPoint[];
@@ -94,6 +107,9 @@ export function useGpsTracker() {
   const pauseWallRef = useRef<number | null>(null);
   /** After a resume, the first fix must not add the distance covered while paused. */
   const skipDistanceRef = useRef(false);
+  /** Fim da janela de aquecimento do sinal (sem acumular distância). */
+  const warmupUntilRef = useRef<number | null>(null);
+
 
   const releaseWakeLock = useCallback(() => {
     try {
@@ -124,7 +140,7 @@ export function useGpsTracker() {
   const handlePosition = useCallback((pos: GeolocationPosition) => {
     setAcquiring(false);
     setError(null);
-    const { latitude, longitude, altitude, accuracy: acc } = pos.coords;
+    const { latitude, longitude, altitude, accuracy: acc, speed: reportedSpeed } = pos.coords;
     setAccuracy(acc ?? null);
 
     if (acc != null && acc > MAX_ACCURACY_M) return;
@@ -134,44 +150,71 @@ export function useGpsTracker() {
     const t = Math.max(0, pos.timestamp - startedAt - pausedMsRef.current);
     const prev = pointsRef.current[pointsRef.current.length - 1];
 
-    if (prev && skipDistanceRef.current) {
-      skipDistanceRef.current = false;
+    const pushPoint = (lat: number, lng: number, tMs: number) => {
       const point: GeoPoint = [
-        Number(latitude.toFixed(6)),
-        Number(longitude.toFixed(6)),
-        Math.max(t, prev[2]),
+        Number(lat.toFixed(6)),
+        Number(lng.toFixed(6)),
+        tMs,
         altitude != null && Number.isFinite(altitude) ? Math.round(altitude) : null,
       ];
       pointsRef.current = [...pointsRef.current, point];
       setPoints(pointsRef.current);
       persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+    };
+
+    if (prev && skipDistanceRef.current) {
+      skipDistanceRef.current = false;
+      pushPoint(latitude, longitude, Math.max(t, prev[2]));
       return;
     }
 
-    if (prev) {
-      const dt = t - prev[2];
-      const seg = haversineMeters(prev[0], prev[1], latitude, longitude);
-      if (dt < MIN_INTERVAL_MS && seg < MIN_DISTANCE_M) return;
-      if (dt > 0) {
-        const speed = seg / (dt / 1000);
-        if (speed > MAX_SPEED_MPS) return; // impossible jump
-        if (speed > maxSpeedRef.current) maxSpeedRef.current = speed;
-      }
-      if (seg < MIN_DISTANCE_M) return;
-      distanceRef.current += seg;
-      setDistance(distanceRef.current);
+    // Warm-up: os primeiros segundos só servem para fixar a posição inicial.
+    if (warmupUntilRef.current == null) warmupUntilRef.current = Date.now() + WARMUP_MS;
+    const warmingUp = Date.now() < warmupUntilRef.current && (acc == null || acc > GOOD_ACCURACY_M);
+
+    if (!prev) {
+      pushPoint(latitude, longitude, t);
+      return;
     }
 
-    const point: GeoPoint = [
-      Number(latitude.toFixed(6)),
-      Number(longitude.toFixed(6)),
-      t,
-      altitude != null && Number.isFinite(altitude) ? Math.round(altitude) : null,
-    ];
-    pointsRef.current = [...pointsRef.current, point];
-    setPoints(pointsRef.current);
-    persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+    const dt = t - prev[2];
+    const rawSeg = haversineMeters(prev[0], prev[1], latitude, longitude);
+    // Limiar dependente da precisão: deslocamento precisa superar a incerteza do fix.
+    const threshold = Math.max(MIN_DISTANCE_M, (acc ?? MIN_DISTANCE_M) * ACCURACY_FACTOR);
+
+    if (warmingUp) {
+      // Reposiciona o ponto inicial enquanto o sinal estabiliza, sem somar distância.
+      if (pointsRef.current.length === 1) {
+        pointsRef.current = [[Number(latitude.toFixed(6)), Number(longitude.toFixed(6)), prev[2], prev[3]]];
+        setPoints(pointsRef.current);
+        persist({ startedAt, points: pointsRef.current, pausedMs: pausedMsRef.current });
+      }
+      return;
+    }
+
+    if (dt < MIN_INTERVAL_MS && rawSeg < threshold) return;
+    if (rawSeg < threshold) return;
+
+    if (dt > 0) {
+      const speed = rawSeg / (dt / 1000);
+      if (speed > MAX_SPEED_MPS) return; // salto impossível
+      if (speed < MIN_SPEED_MPS) return; // oscilação com a pessoa parada
+      if (speed > maxSpeedRef.current) maxSpeedRef.current = speed;
+    }
+
+    // Aparelho informando velocidade ~0 → está parado, é ruído.
+    if (reportedSpeed != null && Number.isFinite(reportedSpeed) && reportedSpeed < MIN_SPEED_MPS) return;
+
+    // Suavização ponderada pela precisão para o traçado ficar menos serrilhado.
+    const w = acc != null && acc > GOOD_ACCURACY_M ? SMOOTHING : 0;
+    const lat = latitude * (1 - w) + prev[0] * w;
+    const lng = longitude * (1 - w) + prev[1] * w;
+
+    distanceRef.current += haversineMeters(prev[0], prev[1], lat, lng);
+    setDistance(distanceRef.current);
+    pushPoint(lat, lng, t);
   }, []);
+
 
   const handleError = useCallback((err: GeolocationPositionError) => {
     setAcquiring(false);
@@ -215,6 +258,8 @@ export function useGpsTracker() {
       }
 
       pauseWallRef.current = null;
+      warmupUntilRef.current = stored ? Date.now() : null;
+
       setIsPaused(false);
       setError(null);
       setAcquiring(true);
@@ -244,6 +289,8 @@ export function useGpsTracker() {
     pausedMsRef.current += Date.now() - pauseWallRef.current;
     pauseWallRef.current = null;
     skipDistanceRef.current = pointsRef.current.length > 0;
+    warmupUntilRef.current = Date.now();
+
     setIsPaused(false);
     setError(null);
     setAcquiring(true);
@@ -270,8 +317,11 @@ export function useGpsTracker() {
 
     const cleaned = simplify(raw);
     const distanceMeters = Math.round(totalDistanceMeters(raw));
+    // Distância irrelevante (pessoa parada / só ruído de GPS) não gera corrida.
+    if (distanceMeters < MIN_RUN_DISTANCE_M) return null;
     const movingSeconds = Math.round((raw[raw.length - 1][2] - raw[0][2]) / 1000);
     const elapsed = Math.max(movingSeconds, Math.round(elapsedSeconds ?? movingSeconds));
+
 
     return {
       points: cleaned,
@@ -329,8 +379,12 @@ export function useGpsTracker() {
     return paceFrom(d, seconds);
   })();
 
+  const accuracyQuality: AccuracyQuality =
+    accuracy == null ? null : accuracy <= GOOD_ACCURACY_M ? "good" : accuracy <= 25 ? "fair" : "weak";
+
   return {
     supported: isGpsSupported(),
+    accuracyQuality,
     isTracking,
     isPaused,
     acquiring,

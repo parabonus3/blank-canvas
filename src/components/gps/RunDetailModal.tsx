@@ -35,7 +35,12 @@ export function RunDetailModal({ activity, onClose, onDelete }: Props) {
           <p className="text-xs text-muted-foreground">{dateLabel}</p>
         </DialogHeader>
 
-        <LazyRouteMap points={points} className="h-56 sm:h-72" />
+        <LazyRouteMap points={points} className="h-44 sm:h-72" />
+
+        <p className="text-[11px] leading-relaxed text-muted-foreground rounded-lg bg-muted/40 border border-border p-2">
+          {t("runs.approx_note")}
+        </p>
+
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
           <Stat label={t("runs.distance")} value={formatDistance(Number(activity.distance_meters))} />

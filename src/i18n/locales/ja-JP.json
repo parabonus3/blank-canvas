@@ -2549,6 +2549,11 @@
     "resumed_desc": "中断した場所からルート記録を続けています",
     "paused": "一時停止中",
     "enable_now": "ランモードをオン",
-    "map_error": "地図を読み込めませんでした。ルートの記録は続いています。"
+    "map_error": "地図を読み込めませんでした。ルートの記録は続いています。",
+    "approx_note": "距離とルートはおおよその値です。スマートフォンのGPS信号によって数メートル変動することがあります。",
+    "signal_quality": "信号: {{quality}}（±{{meters}} m）",
+    "signal_good": "良好",
+    "signal_fair": "普通",
+    "signal_weak": "弱い"
   }
 }

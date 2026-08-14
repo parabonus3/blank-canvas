@@ -2549,6 +2549,11 @@
     "resumed_desc": "Nous avons repris l'enregistrement de votre parcours",
     "paused": "En pause",
     "enable_now": "Activer le mode course",
-    "map_error": "La carte n'a pas pu se charger — le trajet continue d'être enregistré."
+    "map_error": "La carte n'a pas pu se charger — le trajet continue d'être enregistré.",
+    "approx_note": "La distance et le parcours sont approximatifs : ils dépendent du signal GPS du téléphone et peuvent varier de quelques mètres.",
+    "signal_quality": "Signal {{quality}} (±{{meters}} m)",
+    "signal_good": "bon",
+    "signal_fair": "moyen",
+    "signal_weak": "faible"
   }
 }

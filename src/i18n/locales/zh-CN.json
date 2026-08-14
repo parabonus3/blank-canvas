@@ -2549,6 +2549,11 @@
     "resumed_desc": "我们从中断处继续记录你的路线",
     "paused": "已暂停",
     "enable_now": "开启跑步模式",
-    "map_error": "地图无法加载 — 轨迹仍在记录中。"
+    "map_error": "地图无法加载 — 轨迹仍在记录中。",
+    "approx_note": "距离和路线为近似值——取决于手机的 GPS 信号，可能有几米的误差。",
+    "signal_quality": "信号{{quality}}（±{{meters}} 米）",
+    "signal_good": "良好",
+    "signal_fair": "一般",
+    "signal_weak": "较弱"
   }
 }

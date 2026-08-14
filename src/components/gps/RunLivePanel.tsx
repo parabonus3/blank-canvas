@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ChevronUp, Footprints, Gauge, MapPin, Mountain, Pause, Satellite, TriangleAlert } from "lucide-react";
+import { ChevronDown, ChevronUp, Footprints, Gauge, Info, MapPin, Mountain, Pause, Satellite, TriangleAlert } from "lucide-react";
 import { LazyRouteMap } from "@/components/gps/LazyRouteMap";
 import { formatDistance, formatPace, type GeoPoint } from "@/lib/geo";
 import { cn } from "@/lib/utils";
@@ -106,6 +106,33 @@ export function RunLivePanel({
             </div>
           )}
 
+          <div className="flex items-start gap-2 rounded-lg bg-muted/40 border border-border p-2">
+            <Info className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
+              {t("runs.approx_note")}
+              {accuracy != null && (
+                <>
+                  {" "}
+                  <span
+                    className={cn(
+                      "font-medium",
+                      accuracy <= 12 ? "text-success" : accuracy <= 25 ? "text-warning" : "text-destructive",
+                    )}
+                  >
+                    {t("runs.signal_quality", {
+                      quality: accuracy <= 12
+                        ? t("runs.signal_good")
+                        : accuracy <= 25
+                          ? t("runs.signal_fair")
+                          : t("runs.signal_weak"),
+                      meters: Math.round(accuracy),
+                    })}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+
           <div className="flex items-start gap-2 rounded-lg bg-warning/10 border border-warning/30 p-2">
             <Gauge className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
             <p className="text-[11px] leading-relaxed text-warning-foreground/90 dark:text-warning">
@@ -117,6 +144,7 @@ export function RunLivePanel({
             <Mountain className="h-3 w-3" />
             {t("runs.free_maps_note")}
           </p>
+
         </>
       )}
     </div>
