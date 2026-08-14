@@ -14,6 +14,8 @@ interface Props {
   paused?: boolean;
   collapsed?: boolean;
   onToggleCollapsed?: () => void;
+  /** Esconde o mapa (ex.: enquanto um modal está aberto). */
+  hideMap?: boolean;
   className?: string;
 }
 
@@ -27,6 +29,7 @@ export function RunLivePanel({
   paused,
   collapsed,
   onToggleCollapsed,
+  hideMap,
   className,
 }: Props) {
   const { t } = useTranslation();
@@ -95,7 +98,7 @@ export function RunLivePanel({
             </div>
           </div>
 
-          {points.length > 0 ? (
+          {hideMap ? null : points.length > 0 ? (
             <LazyRouteMap points={points} follow={!paused} className="h-40 sm:h-52" interactive={false} />
           ) : (
             <div className="h-40 sm:h-52 rounded-xl border border-dashed border-border flex flex-col items-center justify-center gap-2 text-center px-4">

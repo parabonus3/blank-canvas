@@ -701,6 +701,7 @@ export default function Index() {
             acquiring={gps.acquiring}
             error={gps.error}
             paused={gps.isPaused || isPaused}
+            hideMap={showStopDialog}
             collapsed={runPanelCollapsed}
             onToggleCollapsed={() => setRunPanelCollapsed((v) => !v)}
           />
