@@ -200,6 +200,7 @@ export function formatDuration(seconds: number): string {
 }
 
 export function paceFrom(distanceMeters: number, seconds: number): number | null {
-  if (distanceMeters < 20 || seconds <= 0) return null;
+  // Abaixo de 100 m o ritmo não é confiável (ruído de GPS) — melhor não mostrar.
+  if (distanceMeters < 100 || seconds <= 0) return null;
   return (seconds / distanceMeters) * 1000;
 }
