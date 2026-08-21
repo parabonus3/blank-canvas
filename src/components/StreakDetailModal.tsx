@@ -17,9 +17,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Flame, Shield, CheckCircle2, XCircle, ChevronDown, Gem, ShoppingCart } from "lucide-react";
+import { Flame, Shield, CheckCircle2, XCircle, ChevronDown, Gem, ShoppingCart, Trophy, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BuyFreezesDialog } from "@/components/BuyFreezesDialog";
+import { useStreakShield, shieldBonusFor, nextShieldMilestone } from "@/hooks/useStreakShield";
 
 interface StreakDetailModalProps {
   open: boolean;
