@@ -18,7 +18,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
-  Users, FileText, ChevronLeft, Paperclip,
+  Users, FileText, ChevronLeft, Paperclip, History, FileDown,
 } from "lucide-react";
 import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
@@ -26,6 +26,11 @@ import { MemberAvatars } from "./MemberAvatars";
 import { TaskAttachmentsSection } from "./TaskAttachmentsSection";
 import { useTaskAttachments } from "@/hooks/useTaskAttachments";
 import { useTaskMembers, useBoardRole } from "@/hooks/useBoardCollab";
+import { TaskActivityFeed } from "./TaskActivityFeed";
+import { useTaskActivity, activityLabel } from "@/hooks/useTaskActivity";
+import { exportWorkOrderPDF } from "@/lib/pdfExport";
+import { useBoardColumns } from "@/hooks/useBoardColumns";
+import { useBoards } from "@/hooks/useBoards";
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,7 +66,7 @@ interface Props {
   initialSection?: SectionId | null;
 }
 
-type SectionId = "details" | "checklist" | "members" | "comments" | "time" | "attachments";
+type SectionId = "details" | "checklist" | "members" | "comments" | "time" | "attachments" | "activity";
 
 export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, boardId, initialSection }: Props) {
 
@@ -87,6 +92,9 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   const removeLabel = useRemoveLabel();
   const { data: timeLogs } = useTaskTimeLogs(task?.id);
   const addLog = useAddTimeLog();
+  const { data: activity = [] } = useTaskActivity(task?.id);
+  const { data: boardColumns = [] } = useBoardColumns(boardId);
+  const { data: boards = [] } = useBoards();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -125,7 +133,83 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
     { id: "comments", label: t("kanban.tab_comments", "Comentários"), icon: MessageSquare, badge: commentCount > 0 ? String(commentCount) : undefined },
     { id: "time", label: t("kanban.tab_time", "Tempo"), icon: Clock, badge: totalSec > 0 ? fmtShort(totalSec) : undefined },
     { id: "attachments", label: t("kanban.tab_attachments", "Anexos"), icon: Paperclip, badge: attachments.length > 0 ? String(attachments.length) : undefined },
+    { id: "activity", label: t("kanban.tab_activity", "Histórico"), icon: History, badge: activity.length > 0 ? String(activity.length) : undefined },
   ];
+
+  const memberNameFor = (uid: string) =>
+    taskMembers.find((m: any) => m.user_id === uid)?.display_name || "—";
+
+  const handleExportWorkOrder = async () => {
+    const board = boards.find((b: any) => b.id === (boardId || task.board_id));
+    const column = boardColumns.find((c: any) => c.id === task.column_id);
+    const project = (projects || []).find((p: any) => p.id === task.project_id);
+    const fmtDate = (d: string) => format(new Date(d), "dd/MM/yyyy HH:mm");
+
+    const secondsByMember = new Map<string, number>();
+    (timeLogs || []).forEach((l: any) => {
+      secondsByMember.set(l.user_id, (secondsByMember.get(l.user_id) || 0) + (l.seconds || 0));
+    });
+
+    await exportWorkOrderPDF({
+      boardTitle: board?.title || "—",
+      columnTitle: column?.title || null,
+      taskTitle: task.title,
+      description: task.description,
+      priority: t(`kanban.priority.${task.priority}`, task.priority),
+      status: task.is_completed ? t("kanban.status_done", "Concluída") : t("kanban.status_open", "Em aberto"),
+      dueDate: task.due_date ? format(new Date(task.due_date), "dd/MM/yyyy") : null,
+      createdAt: fmtDate(task.created_at),
+      project: project?.name || null,
+      labels: (labels || []).map((l: any) => l.name),
+      members: taskMembers.map((m: any) => ({
+        name: m.display_name || "—",
+        seconds: secondsByMember.get(m.user_id) || 0,
+      })),
+      checklists: (checklists || []).map((c: any) => ({
+        title: c.title,
+        done: c.is_completed,
+        by: c.completed_by ? memberNameFor(c.completed_by) : null,
+        at: c.completed_at ? fmtDate(c.completed_at) : null,
+      })),
+      comments: (comments || []).map((c: any) => ({
+        who: c.display_name || "—",
+        when: fmtDate(c.created_at),
+        text: c.content,
+      })),
+      attachments: attachments.map((a: any) => a.file_name),
+      totalSeconds: totalSec,
+      estimatedMinutes: task.estimated_minutes,
+      activity: activity.map((a) => ({
+        who: a.display_name || "—",
+        what: activityLabel(a, t as any, memberNameFor),
+        when: fmtDate(a.created_at),
+      })),
+      labelsI18n: {
+        work_order: t("kanban.work_order", "Ordem de Serviço"),
+        status: t("kanban.status", "Status"),
+        priority: t("kanban.priority.label", "Prioridade"),
+        column: t("kanban.column", "Coluna"),
+        project: t("kanban.project", "Projeto"),
+        due_date: t("kanban.due_date", "Prazo"),
+        created_at: t("kanban.created_at", "Criado em"),
+        total_tracked: t("kanban.total_tracked", "Total registrado"),
+        labels: t("kanban.labels", "Etiquetas"),
+        description: t("kanban.task_description", "Descrição"),
+        team: t("kanban.team", "Equipe"),
+        member: t("kanban.member", "Membro"),
+        time_logged: t("kanban.time_logged", "Tempo"),
+        checklist: t("kanban.tab_checklist", "Checklist"),
+        item: t("kanban.item", "Item"),
+        done_by: t("kanban.done_by", "Concluído por"),
+        attachments: t("kanban.tab_attachments", "Anexos"),
+        comments: t("kanban.tab_comments", "Comentários"),
+        who: t("kanban.who", "Quem"),
+        when: t("kanban.when", "Quando"),
+        comment: t("kanban.comment", "Comentário"),
+        activity: t("kanban.tab_activity", "Histórico"),
+      },
+    });
+  };
 
   const renderTiles = () => (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
@@ -344,6 +428,16 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+        )}
+
+        {section === "activity" && (
+          <div className="space-y-3">
+            <Button variant="outline" size="sm" className="w-full min-h-10" onClick={handleExportWorkOrder}>
+              <FileDown className="h-4 w-4 me-2" />
+              {t("kanban.export_work_order", "Exportar ordem de serviço (PDF)")}
+            </Button>
+            <TaskActivityFeed taskId={task.id} dateLocale={dateLocale} nameFor={memberNameFor} />
           </div>
         )}
 
