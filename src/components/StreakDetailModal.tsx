@@ -319,7 +319,7 @@ export function StreakDetailModal({
           </div>
 
           {/* Escudo proporcional + segunda chance */}
-          {status && (
+          {shield && (
             <div className="mt-3 rounded-xl border bg-gradient-to-br from-orange-500/10 to-amber-500/5 p-3 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 text-xs font-semibold">
@@ -327,7 +327,7 @@ export function StreakDetailModal({
                   {t("streak.best_ever")}
                 </div>
                 <span className="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
-                  {status.best_streak} {t("streak.days_short")}
+                  {shield.best_streak} {t("streak.days_short")}
                 </span>
               </div>
 
@@ -340,17 +340,17 @@ export function StreakDetailModal({
                 <p className="text-[11px] text-muted-foreground leading-snug">
                   {t("streak.shield_next_milestone", {
                     days: milestone,
-                    remaining: Math.max(0, milestone - status.best_streak),
+                    remaining: Math.max(0, milestone - shield.best_streak),
                   })}
                 </p>
               )}
 
-              {status.rescue_available ? (
+              {shield.rescue_available ? (
                 <>
                   <p className="text-[11px] text-foreground/80 leading-snug">
                     {t("streak.rescue_offer", {
-                      days: status.rescue_days_cover,
-                      streak: status.best_streak,
+                      days: shield.rescue_days_cover,
+                      streak: shield.best_streak,
                     })}
                   </p>
                   <Button
@@ -362,9 +362,9 @@ export function StreakDetailModal({
                     {t("streak.rescue_cta")}
                   </Button>
                 </>
-              ) : status.rescue_next_available_in > 0 ? (
+              ) : shield.rescue_next_available_in > 0 ? (
                 <p className="text-[11px] text-muted-foreground leading-snug">
-                  {t("streak.rescue_cooldown", { days: status.rescue_next_available_in })}
+                  {t("streak.rescue_cooldown", { days: shield.rescue_next_available_in })}
                 </p>
               ) : (
                 <p className="text-[11px] text-muted-foreground leading-snug">
