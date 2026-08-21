@@ -313,7 +313,7 @@ export function StreakDetailModal({
               <Gem className="h-4 w-4 text-purple-500 mb-0.5" />
               <span className="text-xs text-muted-foreground">{t("streak.purchased_balance")}</span>
               <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                {status?.purchased_balance ?? purchasedBalance}
+                {shield?.purchased_balance ?? purchasedBalance}
               </span>
             </div>
           </div>
