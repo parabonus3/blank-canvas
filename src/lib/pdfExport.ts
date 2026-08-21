@@ -813,3 +813,306 @@ export async function exportNoteToPDF(data: NotePDFData): Promise<void> {
   const safeTitle = (data.title || 'note').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'note';
   pdf.save(`${safeTitle}-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
 }
+
+// ============================================================================
+// KANBAN — ORDEM DE SERVIÇO (por cartão) e RELATÓRIO DE OPERAÇÃO (por quadro)
+// ============================================================================
+
+export interface WorkOrderMember { name: string; seconds: number; }
+export interface WorkOrderChecklist { title: string; done: boolean; by?: string | null; at?: string | null; }
+export interface WorkOrderActivity { who: string; what: string; when: string; }
+
+export interface WorkOrderData {
+  boardTitle: string;
+  columnTitle?: string | null;
+  taskTitle: string;
+  description?: string | null;
+  priority: string;
+  status: string;
+  dueDate?: string | null;
+  createdAt: string;
+  project?: string | null;
+  labels: string[];
+  members: WorkOrderMember[];
+  checklists: WorkOrderChecklist[];
+  comments: Array<{ who: string; when: string; text: string }>;
+  attachments: string[];
+  totalSeconds: number;
+  estimatedMinutes?: number | null;
+  activity: WorkOrderActivity[];
+  labelsI18n: Record<string, string>;
+}
+
+function hm(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+}
+
+function sectionTitle(pdf: jsPDF, title: string, y: number): number {
+  pdf.setFillColor(...COLORS.gray100);
+  pdf.rect(14, y - 5, pdf.internal.pageSize.getWidth() - 28, 8, 'F');
+  pdf.setTextColor(...COLORS.primaryDark);
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'bold');
+  pdf.text(title.toUpperCase(), 16, y);
+  return y + 8;
+}
+
+function ensureSpace(pdf: jsPDF, y: number, needed = 30): number {
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  if (y + needed > pageHeight - 18) {
+    pdf.addPage();
+    return 24;
+  }
+  return y;
+}
+
+export async function exportWorkOrderPDF(data: WorkOrderData): Promise<void> {
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const L = data.labelsI18n;
+  const generatedAt = format(new Date(), 'dd/MM/yyyy HH:mm');
+
+  drawHeader(pdf, pageWidth, `${L.work_order} — ${data.boardTitle}`);
+  let y = 50;
+
+  // Título do cartão
+  pdf.setTextColor(...COLORS.black);
+  pdf.setFontSize(16);
+  pdf.setFont('helvetica', 'bold');
+  const titleLines = pdf.splitTextToSize(data.taskTitle, pageWidth - 32);
+  pdf.text(titleLines, 16, y);
+  y += titleLines.length * 7 + 2;
+
+  // Metadados
+  pdf.setFontSize(9);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setTextColor(...COLORS.gray600);
+  const meta = [
+    `${L.status}: ${data.status}`,
+    `${L.priority}: ${data.priority}`,
+    data.columnTitle ? `${L.column}: ${data.columnTitle}` : null,
+    data.project ? `${L.project}: ${data.project}` : null,
+    data.dueDate ? `${L.due_date}: ${data.dueDate}` : null,
+    `${L.created_at}: ${data.createdAt}`,
+    `${L.total_tracked}: ${hm(data.totalSeconds)}${data.estimatedMinutes ? ` / ${hm(data.estimatedMinutes * 60)}` : ''}`,
+    data.labels.length ? `${L.labels}: ${data.labels.join(', ')}` : null,
+  ].filter(Boolean) as string[];
+  meta.forEach((line) => {
+    const wrapped = pdf.splitTextToSize(line, pageWidth - 32);
+    pdf.text(wrapped, 16, y);
+    y += wrapped.length * 4.6;
+  });
+  y += 4;
+
+  if (data.description) {
+    y = ensureSpace(pdf, y, 24);
+    y = sectionTitle(pdf, L.description, y);
+    pdf.setTextColor(...COLORS.black);
+    pdf.setFontSize(9);
+    const lines = pdf.splitTextToSize(data.description, pageWidth - 32);
+    lines.forEach((line: string) => {
+      y = ensureSpace(pdf, y, 10);
+      pdf.text(line, 16, y);
+      y += 4.6;
+    });
+    y += 4;
+  }
+
+  if (data.members.length) {
+    y = ensureSpace(pdf, y, 30);
+    y = sectionTitle(pdf, L.team, y);
+    autoTable(pdf, {
+      startY: y,
+      head: [[L.member, L.time_logged]],
+      body: data.members.map((m) => [m.name, hm(m.seconds)]),
+      theme: 'grid',
+      headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 8 },
+      bodyStyles: { fontSize: 8, textColor: COLORS.black },
+      alternateRowStyles: { fillColor: COLORS.gray50 },
+      margin: { left: 16, right: 16 },
+    });
+    y = (pdf as any).lastAutoTable.finalY + 8;
+  }
+
+  if (data.checklists.length) {
+    y = ensureSpace(pdf, y, 30);
+    y = sectionTitle(pdf, L.checklist, y);
+    autoTable(pdf, {
+      startY: y,
+      head: [['', L.item, L.done_by]],
+      body: data.checklists.map((c) => [c.done ? 'X' : '', c.title, c.done ? `${c.by || '—'}${c.at ? ` (${c.at})` : ''}` : '—']),
+      theme: 'grid',
+      headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 8 },
+      bodyStyles: { fontSize: 8, textColor: COLORS.black },
+      columnStyles: { 0: { cellWidth: 8, halign: 'center' } },
+      alternateRowStyles: { fillColor: COLORS.gray50 },
+      margin: { left: 16, right: 16 },
+    });
+    y = (pdf as any).lastAutoTable.finalY + 8;
+  }
+
+  if (data.attachments.length) {
+    y = ensureSpace(pdf, y, 20);
+    y = sectionTitle(pdf, L.attachments, y);
+    pdf.setFontSize(8);
+    pdf.setTextColor(...COLORS.black);
+    data.attachments.forEach((a) => {
+      y = ensureSpace(pdf, y, 10);
+      pdf.text(`• ${a}`, 16, y);
+      y += 4.6;
+    });
+    y += 4;
+  }
+
+  if (data.comments.length) {
+    y = ensureSpace(pdf, y, 30);
+    y = sectionTitle(pdf, L.comments, y);
+    autoTable(pdf, {
+      startY: y,
+      head: [[L.who, L.when, L.comment]],
+      body: data.comments.map((c) => [c.who, c.when, c.text]),
+      theme: 'grid',
+      headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 8 },
+      bodyStyles: { fontSize: 8, textColor: COLORS.black },
+      columnStyles: { 0: { cellWidth: 32 }, 1: { cellWidth: 28 } },
+      alternateRowStyles: { fillColor: COLORS.gray50 },
+      margin: { left: 16, right: 16 },
+    });
+    y = (pdf as any).lastAutoTable.finalY + 8;
+  }
+
+  if (data.activity.length) {
+    y = ensureSpace(pdf, y, 30);
+    y = sectionTitle(pdf, L.activity, y);
+    autoTable(pdf, {
+      startY: y,
+      head: [[L.when, L.who, L.what]],
+      body: data.activity.map((a) => [a.when, a.who, a.what]),
+      theme: 'striped',
+      headStyles: { fillColor: COLORS.primaryDark, textColor: COLORS.white, fontSize: 8 },
+      bodyStyles: { fontSize: 8, textColor: COLORS.black },
+      columnStyles: { 0: { cellWidth: 30 }, 1: { cellWidth: 32 } },
+      margin: { left: 16, right: 16 },
+    });
+  }
+
+  const total = (pdf as any).internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    pdf.setPage(i);
+    drawFooter(pdf, pageWidth, pdf.internal.pageSize.getHeight(), i, total, `TimeZoni • ${generatedAt}`, `${i}/${total}`);
+  }
+
+  pdf.save(`${L.work_order}-${data.taskTitle.slice(0, 40).replace(/[^\w\s-]/g, '')}.pdf`);
+}
+
+export interface BoardReportData {
+  boardTitle: string;
+  generatedFor: string;
+  totals: { tasks: number; done: number; open: number; overdue: number; seconds: number };
+  byColumn: Array<{ column: string; total: number; done: number; seconds: number }>;
+  byMember: Array<{ name: string; assigned: number; done: number; seconds: number; checkDone: number }>;
+  tasks: Array<{ title: string; column: string; status: string; priority: string; due: string; members: string; progress: string; time: string }>;
+  activity: WorkOrderActivity[];
+  labelsI18n: Record<string, string>;
+}
+
+export async function exportBoardOperationPDF(data: BoardReportData): Promise<void> {
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const L = data.labelsI18n;
+  const generatedAt = format(new Date(), 'dd/MM/yyyy HH:mm');
+
+  drawHeader(pdf, pageWidth, `${L.board_report} — ${data.boardTitle}`);
+  let y = 50;
+
+  // Cards de resumo
+  const cards = [
+    { label: L.tasks, value: String(data.totals.tasks) },
+    { label: L.done, value: String(data.totals.done) },
+    { label: L.open, value: String(data.totals.open) },
+    { label: L.overdue, value: String(data.totals.overdue) },
+    { label: L.total_tracked, value: hm(data.totals.seconds) },
+  ];
+  const cardW = (pageWidth - 32 - 4 * 3) / 5;
+  cards.forEach((c, i) => {
+    const x = 16 + i * (cardW + 3);
+    pdf.setFillColor(...COLORS.gray50);
+    pdf.setDrawColor(...COLORS.gray400);
+    pdf.roundedRect(x, y, cardW, 18, 2, 2, 'FD');
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(...COLORS.primaryDark);
+    pdf.text(c.value, x + cardW / 2, y + 8, { align: 'center' });
+    pdf.setFontSize(6.5);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(...COLORS.gray600);
+    pdf.text(pdf.splitTextToSize(c.label, cardW - 3), x + cardW / 2, y + 13, { align: 'center' });
+  });
+  y += 26;
+
+  y = sectionTitle(pdf, L.by_member, y);
+  autoTable(pdf, {
+    startY: y,
+    head: [[L.member, L.assigned, L.done, L.checklist, L.time_logged]],
+    body: data.byMember.map((m) => [m.name, String(m.assigned), String(m.done), String(m.checkDone), hm(m.seconds)]),
+    theme: 'grid',
+    headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 8 },
+    bodyStyles: { fontSize: 8, textColor: COLORS.black },
+    alternateRowStyles: { fillColor: COLORS.gray50 },
+    margin: { left: 16, right: 16 },
+  });
+  y = (pdf as any).lastAutoTable.finalY + 8;
+
+  y = ensureSpace(pdf, y, 30);
+  y = sectionTitle(pdf, L.by_column, y);
+  autoTable(pdf, {
+    startY: y,
+    head: [[L.column, L.tasks, L.done, L.time_logged]],
+    body: data.byColumn.map((c) => [c.column, String(c.total), String(c.done), hm(c.seconds)]),
+    theme: 'grid',
+    headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 8 },
+    bodyStyles: { fontSize: 8, textColor: COLORS.black },
+    alternateRowStyles: { fillColor: COLORS.gray50 },
+    margin: { left: 16, right: 16 },
+  });
+  y = (pdf as any).lastAutoTable.finalY + 8;
+
+  y = ensureSpace(pdf, y, 40);
+  y = sectionTitle(pdf, L.tasks, y);
+  autoTable(pdf, {
+    startY: y,
+    head: [[L.task, L.column, L.priority, L.due_date, L.member, L.checklist, L.time_logged]],
+    body: data.tasks.map((tk) => [tk.title, tk.column, tk.priority, tk.due, tk.members, tk.progress, tk.time]),
+    theme: 'striped',
+    headStyles: { fillColor: COLORS.primaryDark, textColor: COLORS.white, fontSize: 7.5 },
+    bodyStyles: { fontSize: 7.5, textColor: COLORS.black },
+    columnStyles: { 0: { cellWidth: 42 }, 4: { cellWidth: 28 } },
+    margin: { left: 16, right: 16 },
+  });
+  y = (pdf as any).lastAutoTable.finalY + 8;
+
+  if (data.activity.length) {
+    y = ensureSpace(pdf, y, 30);
+    y = sectionTitle(pdf, L.activity, y);
+    autoTable(pdf, {
+      startY: y,
+      head: [[L.when, L.who, L.what]],
+      body: data.activity.map((a) => [a.when, a.who, a.what]),
+      theme: 'striped',
+      headStyles: { fillColor: COLORS.primaryDark, textColor: COLORS.white, fontSize: 7.5 },
+      bodyStyles: { fontSize: 7.5, textColor: COLORS.black },
+      columnStyles: { 0: { cellWidth: 30 }, 1: { cellWidth: 32 } },
+      margin: { left: 16, right: 16 },
+    });
+  }
+
+  const total = (pdf as any).internal.getNumberOfPages();
+  for (let i = 1; i <= total; i++) {
+    pdf.setPage(i);
+    drawFooter(pdf, pageWidth, pdf.internal.pageSize.getHeight(), i, total, `TimeZoni • ${data.generatedFor} • ${generatedAt}`, `${i}/${total}`);
+  }
+
+  pdf.save(`${L.board_report}-${data.boardTitle.slice(0, 40).replace(/[^\w\s-]/g, '')}.pdf`);
+}
