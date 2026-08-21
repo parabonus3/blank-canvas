@@ -76,6 +76,12 @@ export function StreakDetailModal({
   const daysToShow = showHistory ? 30 : 7;
   const locale = i18n.language || "en";
 
+  const { status: shield, rescue } = useStreakShield();
+  const shieldRemaining = shield?.monthly_remaining ?? remaining;
+  const shieldTotal = Math.max(shield?.monthly_allowance ?? total, total);
+  const bonus = shield ? shieldBonusFor(shield.best_streak) : 0;
+  const milestone = shield ? nextShieldMilestone(shield.best_streak) : null;
+
   const { data: studiedDates } = useQuery({
     queryKey: ["streakStudiedDates", user?.id, daysToShow, timezone],
     queryFn: async () => {
