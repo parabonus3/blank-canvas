@@ -28,11 +28,27 @@ export function useStreakFreeze() {
   const autoUsedRef = useRef(false);
 
   const monthYear = getCurrentMonthYear();
-  const granted = STREAK_FREEZE_LIMITS[tier] || 0;
+
+  // Limite mensal calculado no servidor: plano + bônus por recorde de sequência
+  const { data: allowance } = useQuery({
+    queryKey: ["freezeAllowance", user?.id, monthYear],
+    queryFn: async () => {
+      if (!user) return 0;
+      const { data, error } = await (supabase as any).rpc("get_monthly_freeze_allowance", {
+        _user_id: user.id,
+      });
+      if (error) throw error;
+      return (data ?? 0) as number;
+    },
+    enabled: !!user,
+    staleTime: 300000,
+  });
+
+  const granted = allowance ?? (STREAK_FREEZE_LIMITS[tier] || 0);
 
   // Monthly freeze record
   const { data: freezeData, isLoading } = useQuery({
-    queryKey: ["streakFreeze", user?.id, monthYear],
+    queryKey: ["streakFreeze", user?.id, monthYear, granted],
     queryFn: async () => {
       if (!user) return null;
 
@@ -46,7 +62,8 @@ export function useStreakFreeze() {
       if (error) throw error;
 
       if (data) {
-        if (data.total_granted !== granted && granted > 0) {
+        // Nunca reduzir: resgates e bônus podem ter aumentado o total concedido.
+        if (granted > data.total_granted) {
           await supabase
             .from("streak_freezes")
             .update({ total_granted: granted })
@@ -55,6 +72,7 @@ export function useStreakFreeze() {
         }
         return data;
       }
+
 
       if (granted === 0) return null;
 

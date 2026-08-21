@@ -17,9 +17,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Flame, Shield, CheckCircle2, XCircle, ChevronDown, Gem, ShoppingCart } from "lucide-react";
+import { Flame, Shield, CheckCircle2, XCircle, ChevronDown, Gem, ShoppingCart, Trophy, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BuyFreezesDialog } from "@/components/BuyFreezesDialog";
+import { useStreakShield, shieldBonusFor, nextShieldMilestone } from "@/hooks/useStreakShield";
 
 interface StreakDetailModalProps {
   open: boolean;
@@ -74,6 +75,12 @@ export function StreakDetailModal({
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const daysToShow = showHistory ? 30 : 7;
   const locale = i18n.language || "en";
+
+  const { status: shield, rescue } = useStreakShield();
+  const shieldRemaining = shield?.monthly_remaining ?? remaining;
+  const shieldTotal = Math.max(shield?.monthly_allowance ?? total, total);
+  const bonus = shield ? shieldBonusFor(shield.best_streak) : 0;
+  const milestone = shield ? nextShieldMilestone(shield.best_streak) : null;
 
   const { data: studiedDates } = useQuery({
     queryKey: ["streakStudiedDates", user?.id, daysToShow, timezone],
@@ -299,17 +306,74 @@ export function StreakDetailModal({
               <Shield className="h-4 w-4 text-blue-500 mb-0.5" />
               <span className="text-xs text-muted-foreground">{t("streak.monthly_balance")}</span>
               <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                {remaining} / {total}
+                {shieldRemaining} / {shieldTotal}
               </span>
             </div>
             <div className="rounded-lg bg-purple-500/10 border border-purple-500/20 px-3 py-2 flex flex-col items-center">
               <Gem className="h-4 w-4 text-purple-500 mb-0.5" />
               <span className="text-xs text-muted-foreground">{t("streak.purchased_balance")}</span>
               <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                {purchasedBalance}
+                {shield?.purchased_balance ?? purchasedBalance}
               </span>
             </div>
           </div>
+
+          {/* Escudo proporcional + segunda chance */}
+          {shield && (
+            <div className="mt-3 rounded-xl border bg-gradient-to-br from-orange-500/10 to-amber-500/5 p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold">
+                  <Trophy className="h-4 w-4 text-amber-500" />
+                  {t("streak.best_ever")}
+                </div>
+                <span className="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
+                  {shield.best_streak} {t("streak.days_short")}
+                </span>
+              </div>
+
+              {bonus > 0 && (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.shield_bonus_active", { bonus })}
+                </p>
+              )}
+              {milestone && (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.shield_next_milestone", {
+                    days: milestone,
+                    remaining: Math.max(0, milestone - shield.best_streak),
+                  })}
+                </p>
+              )}
+
+              {shield.rescue_available ? (
+                <>
+                  <p className="text-[11px] text-foreground/80 leading-snug">
+                    {t("streak.rescue_offer", {
+                      days: shield.rescue_days_cover,
+                      streak: shield.best_streak,
+                    })}
+                  </p>
+                  <Button
+                    onClick={() => rescue.mutate()}
+                    disabled={rescue.isPending}
+                    className="w-full min-h-11 bg-orange-500 hover:bg-orange-600 text-primary-foreground"
+                  >
+                    <Sparkles className="h-4 w-4 me-2" />
+                    {t("streak.rescue_cta")}
+                  </Button>
+                </>
+              ) : shield.rescue_next_available_in > 0 ? (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.rescue_cooldown", { days: shield.rescue_next_available_in })}
+                </p>
+              ) : (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.rescue_hint")}
+                </p>
+              )}
+            </div>
+          )}
+
 
           {/* Buy CTA */}
           <Button
