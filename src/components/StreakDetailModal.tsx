@@ -299,17 +299,74 @@ export function StreakDetailModal({
               <Shield className="h-4 w-4 text-blue-500 mb-0.5" />
               <span className="text-xs text-muted-foreground">{t("streak.monthly_balance")}</span>
               <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                {remaining} / {total}
+                {shieldRemaining} / {shieldTotal}
               </span>
             </div>
             <div className="rounded-lg bg-purple-500/10 border border-purple-500/20 px-3 py-2 flex flex-col items-center">
               <Gem className="h-4 w-4 text-purple-500 mb-0.5" />
               <span className="text-xs text-muted-foreground">{t("streak.purchased_balance")}</span>
               <span className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                {purchasedBalance}
+                {status?.purchased_balance ?? purchasedBalance}
               </span>
             </div>
           </div>
+
+          {/* Escudo proporcional + segunda chance */}
+          {status && (
+            <div className="mt-3 rounded-xl border bg-gradient-to-br from-orange-500/10 to-amber-500/5 p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold">
+                  <Trophy className="h-4 w-4 text-amber-500" />
+                  {t("streak.best_ever")}
+                </div>
+                <span className="text-sm font-black text-amber-600 dark:text-amber-400 tabular-nums">
+                  {status.best_streak} {t("streak.days_short")}
+                </span>
+              </div>
+
+              {bonus > 0 && (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.shield_bonus_active", { bonus })}
+                </p>
+              )}
+              {milestone && (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.shield_next_milestone", {
+                    days: milestone,
+                    remaining: Math.max(0, milestone - status.best_streak),
+                  })}
+                </p>
+              )}
+
+              {status.rescue_available ? (
+                <>
+                  <p className="text-[11px] text-foreground/80 leading-snug">
+                    {t("streak.rescue_offer", {
+                      days: status.rescue_days_cover,
+                      streak: status.best_streak,
+                    })}
+                  </p>
+                  <Button
+                    onClick={() => rescue.mutate()}
+                    disabled={rescue.isPending}
+                    className="w-full min-h-11 bg-orange-500 hover:bg-orange-600 text-primary-foreground"
+                  >
+                    <Sparkles className="h-4 w-4 me-2" />
+                    {t("streak.rescue_cta")}
+                  </Button>
+                </>
+              ) : status.rescue_next_available_in > 0 ? (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.rescue_cooldown", { days: status.rescue_next_available_in })}
+                </p>
+              ) : (
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {t("streak.rescue_hint")}
+                </p>
+              )}
+            </div>
+          )}
+
 
           {/* Buy CTA */}
           <Button
