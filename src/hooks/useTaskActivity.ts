@@ -50,7 +50,7 @@ export function useBoardActivity(boardId: string | undefined, limit = 200) {
 /** Texto legível de uma ação, usando i18n com fallback embutido. */
 export function activityLabel(
   row: TaskActivityRow,
-  t: (k: string, o?: any) => string,
+  t: (k: string, def?: any, o?: any) => string,
   nameFor?: (userId: string) => string
 ): string {
   const m = row.meta || {};
