@@ -1790,6 +1790,51 @@ export type Database = {
         }
         Relationships: []
       }
+      task_activity: {
+        Row: {
+          action: string
+          board_id: string
+          created_at: string
+          id: string
+          meta: Json
+          task_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          board_id: string
+          created_at?: string
+          id?: string
+          meta?: Json
+          task_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          board_id?: string
+          created_at?: string
+          id?: string
+          meta?: Json
+          task_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_activity_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "task_activity_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_attachments: {
         Row: {
           created_at: string
@@ -2504,6 +2549,21 @@ export type Database = {
           total_goals: number
         }[]
       }
+      get_best_ever_streak: { Args: { _user_id: string }; Returns: number }
+      get_board_activity: {
+        Args: { _board_id: string; _limit?: number }
+        Returns: {
+          action: string
+          avatar_url: string
+          created_at: string
+          display_name: string
+          id: string
+          meta: Json
+          task_id: string
+          task_title: string
+          user_id: string
+        }[]
+      }
       get_freeze_missions_progress: {
         Args: never
         Returns: {
@@ -2576,6 +2636,10 @@ export type Database = {
         }[]
       }
       get_member_room_streak: { Args: { _user_id: string }; Returns: number }
+      get_monthly_freeze_allowance: {
+        Args: { _user_id: string }
+        Returns: number
+      }
       get_my_board_invitations: {
         Args: never
         Returns: {
@@ -2772,6 +2836,35 @@ export type Database = {
           today_local: string
         }[]
       }
+      get_streak_shield_status: {
+        Args: never
+        Returns: {
+          best_streak: number
+          current_streak: number
+          last_rescue_at: string
+          monthly_allowance: number
+          monthly_remaining: number
+          monthly_used: number
+          purchased_balance: number
+          rescue_available: boolean
+          rescue_days_absent: number
+          rescue_days_cover: number
+          rescue_next_available_in: number
+        }[]
+      }
+      get_task_activity: {
+        Args: { _limit?: number; _task_id: string }
+        Returns: {
+          action: string
+          avatar_url: string
+          created_at: string
+          display_name: string
+          id: string
+          meta: Json
+          task_id: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2816,6 +2909,15 @@ export type Database = {
       }
       kick_room_member: {
         Args: { _member_user_id: string; _room_id: string }
+        Returns: undefined
+      }
+      log_task_activity: {
+        Args: {
+          _action: string
+          _board_id: string
+          _meta: Json
+          _task_id: string
+        }
         Returns: undefined
       }
       mark_stale_members_offline: { Args: never; Returns: undefined }
