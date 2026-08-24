@@ -98,7 +98,7 @@ export function RoomActivityFeed({ roomId, memberProfiles }: Props) {
   useEffect(() => {
     if (!roomId) return;
     const channel = supabase
-      .channel(`room-activity-${roomId}`)
+      .channel(`room-activity-${roomId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "room_activity_log", filter: `room_id=eq.${roomId}` }, () => {
         queryClient.invalidateQueries({ queryKey: ["roomActivity", roomId] });
       })

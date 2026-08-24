@@ -52,7 +52,7 @@ export function useTasks(boardId: string | undefined) {
   useEffect(() => {
     if (!boardId) return;
     const ch = supabase
-      .channel(`tasks-${boardId}`)
+      .channel(`tasks-${boardId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "tasks", filter: `board_id=eq.${boardId}` }, () => {
         qc.invalidateQueries({ queryKey: ["tasks", boardId] });
       })

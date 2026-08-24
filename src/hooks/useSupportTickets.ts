@@ -63,7 +63,7 @@ export function useTicketReplies(ticketId: string | undefined) {
   useEffect(() => {
     if (!ticketId) return;
     const channel = supabase
-      .channel(`ticket-replies-${ticketId}`)
+      .channel(`ticket-replies-${ticketId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", {
         event: "INSERT",
         schema: "public",

@@ -88,7 +88,7 @@ export default function RoomDetail() {
   useEffect(() => {
     if (!id) return;
     const channel = supabase
-      .channel(`room-focus-${id}`)
+      .channel(`room-focus-${id}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "study_rooms", filter: `id=eq.${id}` }, () => {
         queryClient.invalidateQueries({ queryKey: ["rooms"] });
       })
