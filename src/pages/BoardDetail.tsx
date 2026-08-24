@@ -403,7 +403,7 @@ export default function BoardDetail() {
           </TabsContent>
 
           <TabsContent value="reports" className="mt-3">
-            <KanbanReports tasks={tasks || []} columns={columns || []} boardId={boardId} boardTitle={board?.title} />
+            <KanbanReports tasks={tasks || []} columns={columns || []} boardId={id} boardTitle={board?.title} />
           </TabsContent>
         </Tabs>
 

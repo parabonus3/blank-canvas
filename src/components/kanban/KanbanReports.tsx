@@ -87,7 +87,7 @@ export function KanbanReports({ tasks, columns, boardId, boardTitle }: Props) {
         checklist: t("kanban.tab_checklist", "Checklist"),
         time_logged: t("kanban.time_logged", "Tempo"),
         column: t("kanban.column", "Coluna"),
-        priority: t("kanban.priority.label", "Prioridade"),
+        priority: t("kanban.priority", "Prioridade"),
         due_date: t("kanban.due_date", "Prazo"),
         who: t("kanban.who", "Quem"),
         when: t("kanban.when", "Quando"),
