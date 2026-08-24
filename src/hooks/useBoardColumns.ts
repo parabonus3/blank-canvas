@@ -36,7 +36,7 @@ export function useBoardColumns(boardId: string | undefined) {
   useEffect(() => {
     if (!boardId) return;
     const ch = supabase
-      .channel(`board-columns-${boardId}`)
+      .channel(`board-columns-${boardId}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "board_columns", filter: `board_id=eq.${boardId}` }, () => {
         qc.invalidateQueries({ queryKey: ["board_columns", boardId] });
       })
