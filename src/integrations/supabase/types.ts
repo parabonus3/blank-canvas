@@ -482,6 +482,57 @@ export type Database = {
         }
         Relationships: []
       }
+      focus_commitments: {
+        Row: {
+          achieved_seconds: number
+          completed: boolean
+          created_at: string
+          id: string
+          interruption_reason: string | null
+          project_id: string | null
+          target_minutes: number
+          time_entry_id: string | null
+          user_id: string
+        }
+        Insert: {
+          achieved_seconds?: number
+          completed?: boolean
+          created_at?: string
+          id?: string
+          interruption_reason?: string | null
+          project_id?: string | null
+          target_minutes: number
+          time_entry_id?: string | null
+          user_id: string
+        }
+        Update: {
+          achieved_seconds?: number
+          completed?: boolean
+          created_at?: string
+          id?: string
+          interruption_reason?: string | null
+          project_id?: string | null
+          target_minutes?: number
+          time_entry_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_commitments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "focus_commitments_time_entry_id_fkey"
+            columns: ["time_entry_id"]
+            isOneToOne: false
+            referencedRelation: "time_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       freeze_missions: {
         Row: {
           completed_at: string
