@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Info, MapPinOff } from "lucide-react";
+import { Info, MapPinOff, Target } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,12 +12,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { TagPicker } from "@/components/TagPicker";
 import { LazyRouteMap } from "@/components/gps/LazyRouteMap";
 import { formatDistance, formatPace, type GeoPoint } from "@/lib/geo";
+import { INTERRUPTION_REASONS, type InterruptionReason } from "@/hooks/useFocusCommitments";
 import { cn } from "@/lib/utils";
 
 interface StopTimerDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (notes?: string, tagIds?: string[]) => void;
+  onConfirm: (notes?: string, tagIds?: string[], reason?: InterruptionReason) => void;
   projectName?: string;
   duration?: string;
   /** Trajeto gravado nesta sessão (modo corrida). */
@@ -26,6 +27,9 @@ interface StopTimerDialogProps {
   runPace?: number | null;
   /** Modo corrida ativo — mostra o bloco de corrida mesmo sem traçado. */
   runActive?: boolean;
+  /** Deep Work: meta assumida e se ela foi cumprida. */
+  focusTargetMinutes?: number | null;
+  focusGoalMissed?: boolean;
 }
 
 export function StopTimerDialog({
@@ -38,26 +42,34 @@ export function StopTimerDialog({
   runDistance,
   runPace,
   runActive,
+  focusTargetMinutes,
+  focusGoalMissed,
 }: StopTimerDialogProps) {
   const { t } = useTranslation();
   const [notes, setNotes] = useState("");
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [reason, setReason] = useState<InterruptionReason | null>(null);
 
   const hasTrack = !!runPoints && runPoints.length > 1;
   const hasRun = hasTrack || !!runActive;
+  const askReason = !!focusTargetMinutes && !!focusGoalMissed;
 
-
-  const handleConfirm = () => {
-    onConfirm(notes.trim() || undefined, selectedTagIds.length > 0 ? selectedTagIds : undefined);
+  const reset = () => {
     setNotes("");
     setSelectedTagIds([]);
+    setReason(null);
+  };
+
+  const handleConfirm = () => {
+    onConfirm(notes.trim() || undefined, selectedTagIds.length > 0 ? selectedTagIds : undefined, reason ?? undefined);
+    reset();
   };
 
   const handleSkip = () => {
-    onConfirm();
-    setNotes("");
-    setSelectedTagIds([]);
+    onConfirm(undefined, undefined, reason ?? undefined);
+    reset();
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
