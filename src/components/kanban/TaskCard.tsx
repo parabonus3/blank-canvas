@@ -9,6 +9,8 @@ import { PriorityBadge } from "./PriorityBadge";
 import { DueDateBadge } from "./DueDateBadge";
 import { MemberAvatars } from "./MemberAvatars";
 import { TaskChecklistPreview } from "./TaskChecklistPreview";
+import { EstimateBar } from "./EstimateBar";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { Clock, Play, Paperclip } from "lucide-react";
 

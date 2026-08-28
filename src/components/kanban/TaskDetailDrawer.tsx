@@ -447,11 +447,12 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
               <div className="text-xs text-muted-foreground">{t("kanban.total_tracked", "Total registrado")}</div>
               <div className="text-2xl font-bold text-primary">{fmtHM(totalSec)}</div>
               {task.estimated_minutes && (
-                <div className="text-xs text-muted-foreground mt-1">
-                  {t("kanban.of_estimated", "de {{est}} estimado", { est: fmtHM(task.estimated_minutes * 60) })}
+                <div className="mt-2">
+                  <EstimateBar trackedSeconds={totalSec} estimatedMinutes={task.estimated_minutes} />
                 </div>
               )}
             </div>
+
             <div className="space-y-2">
               <Label>{t("kanban.log_time", "Registrar tempo manual (min)")}</Label>
               <div className="flex gap-2">
