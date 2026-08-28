@@ -36,7 +36,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR, enUS, es, fr, de, it, ja, ko, zhCN, ru, ar, id as idLocale } from "date-fns/locale";
+import { EstimateBar } from "./EstimateBar";
 import { cn } from "@/lib/utils";
+
 
 const DATE_LOCALES: Record<string, any> = {
   "pt-BR": ptBR, "en-US": enUS, "es-ES": es, "fr-FR": fr, "de-DE": de,
