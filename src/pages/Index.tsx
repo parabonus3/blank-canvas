@@ -713,6 +713,8 @@ export default function Index() {
                   />
                   <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
                   <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
+                  <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
+
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
