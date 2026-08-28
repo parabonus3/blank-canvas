@@ -2528,7 +2528,11 @@
     "what": "작업",
     "comment": "댓글",
     "team": "팀",
-    "task": "작업"
+    "task": "작업",
+    "estimate_vs_real": "예상 대비 실제",
+    "estimate_over": "예상보다 {{time}} 초과",
+    "estimate_close": "예상 한계에 근접",
+    "estimate_ok": "예상 범위 내 ({{pct}}%)"
   },
   "runs": {
     "title": "러닝",
@@ -2595,5 +2599,24 @@
     "comment_added": "댓글을 남겼습니다: \"{{excerpt}}\"",
     "attachment_added": "{{file}}을(를) 첨부했습니다",
     "time_logged": "{{min}}분을 기록했습니다"
+  },
+  "focus": {
+    "deep_work": "딥워크 모드",
+    "deep_work_hint": "집중 시간을 약속하세요. 일찍 멈추면 이유를 기록합니다.",
+    "off": "자유",
+    "commitment": "약속",
+    "remaining": "{{time}} 남음",
+    "goal_reached": "목표 달성!",
+    "missed_title": "{{min}}분 전에 멈췄어요",
+    "missed_desc": "무엇이 방해했나요? 방해 요소 리포트가 됩니다.",
+    "saved_completed": "🎯 {{min}}분 약속 완료!",
+    "reason": {
+      "distraction": "산만함",
+      "interruption": "방해",
+      "urgency": "급한 일",
+      "tired": "피곤함",
+      "done_early": "일찍 끝냄",
+      "other": "기타"
+    }
   }
 }

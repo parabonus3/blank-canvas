@@ -2542,7 +2542,11 @@
     "what": "操作",
     "comment": "コメント",
     "team": "チーム",
-    "task": "タスク"
+    "task": "タスク",
+    "estimate_vs_real": "見積 対 実績",
+    "estimate_over": "見積を {{time}} 超過",
+    "estimate_close": "見積の上限に近い",
+    "estimate_ok": "見積内（{{pct}}%）"
   },
   "runs": {
     "title": "ランニング",
@@ -2609,5 +2613,24 @@
     "comment_added": "がコメントしました：「{{excerpt}}」",
     "attachment_added": "が{{file}}を添付しました",
     "time_logged": "が{{min}}分を記録しました"
+  },
+  "focus": {
+    "deep_work": "ディープワークモード",
+    "deep_work_hint": "集中する時間を宣言しましょう。早く止めた場合は理由を記録します。",
+    "off": "自由",
+    "commitment": "宣言",
+    "remaining": "残り {{time}}",
+    "goal_reached": "目標達成！",
+    "missed_title": "{{min}}分より前に止めました",
+    "missed_desc": "何に中断されましたか？集中の妨げレポートになります。",
+    "saved_completed": "🎯 {{min}}分の宣言を達成！",
+    "reason": {
+      "distraction": "気が散った",
+      "interruption": "割り込み",
+      "urgency": "急用",
+      "tired": "疲れ",
+      "done_early": "早く終わった",
+      "other": "その他"
+    }
   }
 }

@@ -2637,7 +2637,11 @@
     "what": "Action",
     "comment": "Comment",
     "team": "Team",
-    "task": "Task"
+    "task": "Task",
+    "estimate_vs_real": "Estimate vs. actual",
+    "estimate_over": "{{time}} over the estimate",
+    "estimate_close": "Close to the estimate limit",
+    "estimate_ok": "Within the estimate ({{pct}}%)"
   },
   "runs": {
     "title": "Runs",
@@ -2704,5 +2708,24 @@
     "comment_added": "commented: \"{{excerpt}}\"",
     "attachment_added": "attached {{file}}",
     "time_logged": "logged {{min}} min"
+  },
+  "focus": {
+    "deep_work": "Deep Work mode",
+    "deep_work_hint": "Commit to a focus block. If you stop early, we log the reason so you learn what interrupts you.",
+    "off": "Free",
+    "commitment": "Commitment",
+    "remaining": "{{time}} left",
+    "goal_reached": "Goal reached!",
+    "missed_title": "You stopped before {{min}}min",
+    "missed_desc": "What interrupted you? This builds your distraction report.",
+    "saved_completed": "🎯 {{min}}min commitment completed!",
+    "reason": {
+      "distraction": "Distraction",
+      "interruption": "Interruption",
+      "urgency": "Urgent matter",
+      "tired": "Tired",
+      "done_early": "Finished early",
+      "other": "Other"
+    }
   }
 }
