@@ -106,11 +106,14 @@ function TaskCardComponent({ task, onClick, onToggleComplete, onStartTimer, hasA
           {task.priority !== "medium" && <PriorityBadge priority={task.priority} size="xs" />}
           {task.due_date && <DueDateBadge dueDate={task.due_date} completed={task.is_completed} />}
 
-          {task.total_tracked_seconds > 0 && (
+          {task.estimated_minutes ? (
+            <EstimateBar compact trackedSeconds={task.total_tracked_seconds || 0} estimatedMinutes={task.estimated_minutes} />
+          ) : task.total_tracked_seconds > 0 ? (
             <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border border-primary/30 bg-primary/10 text-primary">
               <Clock className="h-2.5 w-2.5" />{fmtHM(task.total_tracked_seconds)}
             </span>
-          )}
+          ) : null}
+
           {attachmentCount > 0 && (
             <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border border-border bg-muted text-muted-foreground">
               <Paperclip className="h-2.5 w-2.5" />{attachmentCount}
