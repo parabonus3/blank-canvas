@@ -422,6 +422,12 @@ export default function Index() {
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       if (runMode && gps.supported) gps.start();
+      // Deep Work: congela a meta assumida nesta sessão (sobrevive a refresh).
+      setActiveFocusTarget(focusTarget);
+      try {
+        if (focusTarget) localStorage.setItem(ACTIVE_FOCUS_KEY, String(focusTarget));
+        else localStorage.removeItem(ACTIVE_FOCUS_KEY);
+      } catch {}
       startTimer.mutate({ projectId: selectedProject, roomId, challengeId: roomId ? selectedChallenge : null });
     }
   };
@@ -429,6 +435,21 @@ export default function Index() {
   useEffect(() => {
     localStorage.setItem("timezoni.runMode", runMode ? "1" : "0");
   }, [runMode]);
+
+  useEffect(() => {
+    try {
+      if (focusTarget) localStorage.setItem("timezoni.focusTarget", String(focusTarget));
+      else localStorage.removeItem("timezoni.focusTarget");
+    } catch {}
+  }, [focusTarget]);
+
+  // Sem sessão ativa não existe compromisso em andamento.
+  useEffect(() => {
+    if (isLoadingEntry || activeEntry) return;
+    setActiveFocusTarget(null);
+    try { localStorage.removeItem(ACTIVE_FOCUS_KEY); } catch {}
+  }, [activeEntry, isLoadingEntry]);
+
 
   // Pausar/retomar o rastreamento junto com o cronômetro (sem encerrar a corrida)
   useEffect(() => {
