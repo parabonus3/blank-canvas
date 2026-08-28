@@ -39,6 +39,22 @@ import { useGpsTracker, hasStoredRun } from "@/hooks/useGpsTracker";
 import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
 import { RunModeToggle } from "@/components/gps/RunModeToggle";
 import { RunLivePanel } from "@/components/gps/RunLivePanel";
+import { DeepWorkPicker } from "@/components/timer/DeepWorkPicker";
+import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
+import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
+
+const ACTIVE_FOCUS_KEY = "timezoni.activeFocusTarget";
+
+function readActiveFocusTarget(): number | null {
+  try {
+    const raw = localStorage.getItem(ACTIVE_FOCUS_KEY);
+    const n = raw ? parseInt(raw, 10) : NaN;
+    return Number.isFinite(n) && n > 0 ? n : null;
+  } catch {
+    return null;
+  }
+}
+
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
