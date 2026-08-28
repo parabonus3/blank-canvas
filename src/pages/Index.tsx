@@ -473,7 +473,7 @@ export default function Index() {
     setShowStopDialog(true);
   };
 
-  const handleStopConfirm = async (notes?: string, tagIds?: string[]) => {
+  const handleStopConfirm = async (notes?: string, tagIds?: string[], reason?: InterruptionReason) => {
     if (activeEntry) {
       // Tocar som ANTES de qualquer trabalho assíncrono para preservar o user gesture do clique de confirmação.
       playStopSound();
