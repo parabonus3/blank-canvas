@@ -84,9 +84,21 @@ export default function Index() {
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showPauseWarning, setShowPauseWarning] = useState(false);
   const [runMode, setRunMode] = useState(() => localStorage.getItem("timezoni.runMode") === "1");
+  const [focusTarget, setFocusTarget] = useState<number | null>(() => {
+    try {
+      const raw = localStorage.getItem("timezoni.focusTarget");
+      const n = raw ? parseInt(raw, 10) : NaN;
+      return Number.isFinite(n) && n > 0 ? n : null;
+    } catch {
+      return null;
+    }
+  });
+  const [activeFocusTarget, setActiveFocusTarget] = useState<number | null>(() => readActiveFocusTarget());
+  const saveFocusCommitment = useSaveFocusCommitment();
 
   const gps = useGpsTracker();
   const saveGpsActivity = useSaveGpsActivity();
+
   const gpsResumedRef = useRef(false);
   const [runPanelCollapsed, setRunPanelCollapsed] = useState(false);
 
