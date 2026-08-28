@@ -826,8 +826,10 @@ export default function Index() {
           runDistance={gps.distance}
           runPace={gps.currentPace}
           runActive={gps.isTracking}
-
+          focusTargetMinutes={activeFocusTarget}
+          focusGoalMissed={!!activeFocusTarget && elapsed < activeFocusTarget * 60}
         />
+
 
 
         {/* Fullscreen Timer */}
