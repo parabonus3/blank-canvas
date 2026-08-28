@@ -539,10 +539,32 @@ export default function Index() {
           if (tagIds && tagIds.length > 0) {
             saveEntryTags.mutate({ timeEntryId: data.id, tagIds });
           }
+          // Deep Work: registra o compromisso desta sessão (meta batida ou motivo da interrupção).
+          if (activeFocusTarget) {
+            try {
+              await saveFocusCommitment.mutateAsync({
+                targetMinutes: activeFocusTarget,
+                achievedSeconds: clientSeconds,
+                timeEntryId: data.id,
+                projectId: runProjectId,
+                reason: reason ?? null,
+              });
+              if (clientSeconds >= activeFocusTarget * 60) {
+                toast({
+                  title: t("focus.saved_completed", "🎯 Compromisso de {{min}}min cumprido!", { min: activeFocusTarget }),
+                });
+              }
+            } catch (e) {
+              console.error("[focus] erro ao salvar compromisso:", e);
+            }
+          }
         }
       });
+      setActiveFocusTarget(null);
+      try { localStorage.removeItem(ACTIVE_FOCUS_KEY); } catch {}
       resetPause();
     }
+
     setShowStopDialog(false);
   };
 
