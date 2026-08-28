@@ -2542,7 +2542,11 @@
     "what": "Aktion",
     "comment": "Kommentar",
     "team": "Team",
-    "task": "Aufgabe"
+    "task": "Aufgabe",
+    "estimate_vs_real": "Schätzung vs. real",
+    "estimate_over": "{{time}} über der Schätzung",
+    "estimate_close": "Nahe an der Schätzgrenze",
+    "estimate_ok": "Innerhalb der Schätzung ({{pct}}%)"
   },
   "runs": {
     "title": "Läufe",
@@ -2609,5 +2613,28 @@
     "comment_added": "hat kommentiert: \"{{excerpt}}\"",
     "attachment_added": "hat {{file}} angehängt",
     "time_logged": "hat {{min}} Min erfasst"
+  },
+  "focus": {
+    "deep_work": "Deep-Work-Modus",
+    "deep_work_hint": "Verpflichte dich zu einem Fokusblock. Brichst du früher ab, notieren wir den Grund.",
+    "off": "Frei",
+    "commitment": "Verpflichtung",
+    "remaining": "noch {{time}}",
+    "goal_reached": "Ziel erreicht!",
+    "missed_title": "Du hast vor {{min}} Min. gestoppt",
+    "missed_desc": "Was hat dich unterbrochen? Daraus entsteht dein Ablenkungsbericht.",
+    "saved_completed": "🎯 {{min}}-Minuten-Ziel erreicht!",
+    "reason": {
+      "distraction": "Ablenkung",
+      "interruption": "Unterbrechung",
+      "urgency": "Dringendes",
+      "tired": "Müdigkeit",
+      "done_early": "Früher fertig",
+      "other": "Sonstiges"
+    },
+    "report_title": "Fokus der letzten 30 Tage",
+    "success_rate": "Erreichte Ziele",
+    "focused_time": "Fokuszeit",
+    "top_reasons": "Was dich am meisten unterbricht"
   }
 }

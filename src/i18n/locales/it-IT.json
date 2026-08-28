@@ -2528,7 +2528,11 @@
     "what": "Azione",
     "comment": "Commento",
     "team": "Team",
-    "task": "Attività"
+    "task": "Attività",
+    "estimate_vs_real": "Stimato vs. reale",
+    "estimate_over": "{{time}} oltre la stima",
+    "estimate_close": "Vicino al limite della stima",
+    "estimate_ok": "Entro la stima ({{pct}}%)"
   },
   "runs": {
     "title": "Corse",
@@ -2595,5 +2599,28 @@
     "comment_added": "ha commentato: \"{{excerpt}}\"",
     "attachment_added": "ha allegato {{file}}",
     "time_logged": "ha registrato {{min}} min"
+  },
+  "focus": {
+    "deep_work": "Modalità Deep Work",
+    "deep_work_hint": "Prendi un impegno di concentrazione. Se ti fermi prima, registriamo il motivo.",
+    "off": "Libero",
+    "commitment": "Impegno",
+    "remaining": "mancano {{time}}",
+    "goal_reached": "Obiettivo raggiunto!",
+    "missed_title": "Ti sei fermato prima dei {{min}}min",
+    "missed_desc": "Cosa ti ha interrotto? Diventa il tuo report delle distrazioni.",
+    "saved_completed": "🎯 Impegno di {{min}}min completato!",
+    "reason": {
+      "distraction": "Distrazione",
+      "interruption": "Interruzione",
+      "urgency": "Urgenza",
+      "tired": "Stanchezza",
+      "done_early": "Finito prima",
+      "other": "Altro"
+    },
+    "report_title": "Focus negli ultimi 30 giorni",
+    "success_rate": "Obiettivi raggiunti",
+    "focused_time": "Tempo di focus",
+    "top_reasons": "Cosa ti interrompe di più"
   }
 }

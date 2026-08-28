@@ -137,6 +137,37 @@ export function StopTimerDialog({
                 <span className="text-muted-foreground truncate">{projectName}</span>
                 <span className="font-mono font-bold text-primary shrink-0">{duration}</span>
               </div>
+
+              {askReason && (
+                <div className="rounded-xl border border-orange-500/40 bg-orange-500/5 p-3 space-y-2">
+                  <p className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
+                    <Target className="h-3.5 w-3.5" />
+                    {t("focus.missed_title", "Você parou antes dos {{min}}min", { min: focusTargetMinutes })}
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    {t("focus.missed_desc", "O que te interrompeu? Isso vira o seu relatório de distrações.")}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {INTERRUPTION_REASONS.map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setReason((prev) => (prev === r ? null : r))}
+                        aria-pressed={reason === r}
+                        className={cn(
+                          "min-h-10 rounded-lg border px-2 text-[11px] font-medium transition-colors",
+                          reason === r
+                            ? "border-orange-500 bg-orange-500/15 text-orange-700 dark:text-orange-300"
+                            : "border-border text-muted-foreground hover:border-orange-500/40",
+                        )}
+                      >
+                        {t(`focus.reason.${r}`, r)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <Textarea
                 placeholder={t("timer.session_notes_placeholder")}
                 value={notes}
@@ -145,6 +176,7 @@ export function StopTimerDialog({
               />
               <TagPicker selectedTagIds={selectedTagIds} onTagsChange={setSelectedTagIds} />
             </div>
+
           </div>
         </div>
 

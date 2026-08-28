@@ -39,6 +39,22 @@ import { useGpsTracker, hasStoredRun } from "@/hooks/useGpsTracker";
 import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
 import { RunModeToggle } from "@/components/gps/RunModeToggle";
 import { RunLivePanel } from "@/components/gps/RunLivePanel";
+import { DeepWorkPicker } from "@/components/timer/DeepWorkPicker";
+import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
+import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
+
+const ACTIVE_FOCUS_KEY = "timezoni.activeFocusTarget";
+
+function readActiveFocusTarget(): number | null {
+  try {
+    const raw = localStorage.getItem(ACTIVE_FOCUS_KEY);
+    const n = raw ? parseInt(raw, 10) : NaN;
+    return Number.isFinite(n) && n > 0 ? n : null;
+  } catch {
+    return null;
+  }
+}
+
 
 function formatTime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -68,9 +84,21 @@ export default function Index() {
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showPauseWarning, setShowPauseWarning] = useState(false);
   const [runMode, setRunMode] = useState(() => localStorage.getItem("timezoni.runMode") === "1");
+  const [focusTarget, setFocusTarget] = useState<number | null>(() => {
+    try {
+      const raw = localStorage.getItem("timezoni.focusTarget");
+      const n = raw ? parseInt(raw, 10) : NaN;
+      return Number.isFinite(n) && n > 0 ? n : null;
+    } catch {
+      return null;
+    }
+  });
+  const [activeFocusTarget, setActiveFocusTarget] = useState<number | null>(() => readActiveFocusTarget());
+  const saveFocusCommitment = useSaveFocusCommitment();
 
   const gps = useGpsTracker();
   const saveGpsActivity = useSaveGpsActivity();
+
   const gpsResumedRef = useRef(false);
   const [runPanelCollapsed, setRunPanelCollapsed] = useState(false);
 
@@ -394,6 +422,12 @@ export default function Index() {
       initInactivityCheck(Date.now()); // Initialize timestamp tracking
       const roomId = selectedRoom !== "none" ? selectedRoom : undefined;
       if (runMode && gps.supported) gps.start();
+      // Deep Work: congela a meta assumida nesta sessão (sobrevive a refresh).
+      setActiveFocusTarget(focusTarget);
+      try {
+        if (focusTarget) localStorage.setItem(ACTIVE_FOCUS_KEY, String(focusTarget));
+        else localStorage.removeItem(ACTIVE_FOCUS_KEY);
+      } catch {}
       startTimer.mutate({ projectId: selectedProject, roomId, challengeId: roomId ? selectedChallenge : null });
     }
   };
@@ -401,6 +435,21 @@ export default function Index() {
   useEffect(() => {
     localStorage.setItem("timezoni.runMode", runMode ? "1" : "0");
   }, [runMode]);
+
+  useEffect(() => {
+    try {
+      if (focusTarget) localStorage.setItem("timezoni.focusTarget", String(focusTarget));
+      else localStorage.removeItem("timezoni.focusTarget");
+    } catch {}
+  }, [focusTarget]);
+
+  // Sem sessão ativa não existe compromisso em andamento.
+  useEffect(() => {
+    if (isLoadingEntry || activeEntry) return;
+    setActiveFocusTarget(null);
+    try { localStorage.removeItem(ACTIVE_FOCUS_KEY); } catch {}
+  }, [activeEntry, isLoadingEntry]);
+
 
   // Pausar/retomar o rastreamento junto com o cronômetro (sem encerrar a corrida)
   useEffect(() => {
@@ -424,7 +473,7 @@ export default function Index() {
     setShowStopDialog(true);
   };
 
-  const handleStopConfirm = async (notes?: string, tagIds?: string[]) => {
+  const handleStopConfirm = async (notes?: string, tagIds?: string[], reason?: InterruptionReason) => {
     if (activeEntry) {
       // Tocar som ANTES de qualquer trabalho assíncrono para preservar o user gesture do clique de confirmação.
       playStopSound();
@@ -490,10 +539,32 @@ export default function Index() {
           if (tagIds && tagIds.length > 0) {
             saveEntryTags.mutate({ timeEntryId: data.id, tagIds });
           }
+          // Deep Work: registra o compromisso desta sessão (meta batida ou motivo da interrupção).
+          if (activeFocusTarget) {
+            try {
+              await saveFocusCommitment.mutateAsync({
+                targetMinutes: activeFocusTarget,
+                achievedSeconds: clientSeconds,
+                timeEntryId: data.id,
+                projectId: runProjectId,
+                reason: reason ?? null,
+              });
+              if (clientSeconds >= activeFocusTarget * 60) {
+                toast({
+                  title: t("focus.saved_completed", "🎯 Compromisso de {{min}}min cumprido!", { min: activeFocusTarget }),
+                });
+              }
+            } catch (e) {
+              console.error("[focus] erro ao salvar compromisso:", e);
+            }
+          }
         }
       });
+      setActiveFocusTarget(null);
+      try { localStorage.removeItem(ACTIVE_FOCUS_KEY); } catch {}
       resetPause();
     }
+
     setShowStopDialog(false);
   };
 
@@ -616,6 +687,13 @@ export default function Index() {
                 )}
               </div>
 
+              {/* Deep Work — progresso do compromisso */}
+              {isRunning && activeFocusTarget && (
+                <DeepWorkBar targetMinutes={activeFocusTarget} elapsedSeconds={elapsed} />
+              )}
+
+
+
               {/* Project Selection */}
               {!isRunning && (
                 <div className="space-y-3">
@@ -635,6 +713,8 @@ export default function Index() {
                   />
                   <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
                   <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
+                  <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
+
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
                       {t('timer.no_projects')}
@@ -746,8 +826,10 @@ export default function Index() {
           runDistance={gps.distance}
           runPace={gps.currentPace}
           runActive={gps.isTracking}
-
+          focusTargetMinutes={activeFocusTarget}
+          focusGoalMissed={!!activeFocusTarget && elapsed < activeFocusTarget * 60}
         />
+
 
 
         {/* Fullscreen Timer */}

@@ -2542,7 +2542,11 @@
     "what": "操作",
     "comment": "评论",
     "team": "团队",
-    "task": "任务"
+    "task": "任务",
+    "estimate_vs_real": "预估 vs 实际",
+    "estimate_over": "超出预估 {{time}}",
+    "estimate_close": "接近预估上限",
+    "estimate_ok": "在预估内（{{pct}}%）"
   },
   "runs": {
     "title": "跑步",
@@ -2609,5 +2613,28 @@
     "comment_added": "评论：“{{excerpt}}”",
     "attachment_added": "附加了 {{file}}",
     "time_logged": "记录了 {{min}} 分钟"
+  },
+  "focus": {
+    "deep_work": "深度工作模式",
+    "deep_work_hint": "为专注时段做出承诺。若提前停止，我们会记录原因。",
+    "off": "自由",
+    "commitment": "承诺",
+    "remaining": "还剩 {{time}}",
+    "goal_reached": "目标达成！",
+    "missed_title": "你在 {{min}} 分钟前停止了",
+    "missed_desc": "是什么打断了你？这会生成你的分心报告。",
+    "saved_completed": "🎯 {{min}} 分钟承诺已完成！",
+    "reason": {
+      "distraction": "分心",
+      "interruption": "被打断",
+      "urgency": "紧急事务",
+      "tired": "疲惫",
+      "done_early": "提前完成",
+      "other": "其他"
+    },
+    "report_title": "最近 30 天的专注",
+    "success_rate": "已达成目标",
+    "focused_time": "专注时间",
+    "top_reasons": "最常打断你的原因"
   }
 }

@@ -2542,7 +2542,11 @@
     "what": "Aksi",
     "comment": "Komentar",
     "team": "Tim",
-    "task": "Tugas"
+    "task": "Tugas",
+    "estimate_vs_real": "Estimasi vs. aktual",
+    "estimate_over": "{{time}} melebihi estimasi",
+    "estimate_close": "Dekat batas estimasi",
+    "estimate_ok": "Dalam estimasi ({{pct}}%)"
   },
   "runs": {
     "title": "Lari",
@@ -2609,5 +2613,28 @@
     "comment_added": "berkomentar: \"{{excerpt}}\"",
     "attachment_added": "melampirkan {{file}}",
     "time_logged": "mencatat {{min}} mnt"
+  },
+  "focus": {
+    "deep_work": "Mode Deep Work",
+    "deep_work_hint": "Berkomitmen pada blok fokus. Jika berhenti lebih awal, kami catat alasannya.",
+    "off": "Bebas",
+    "commitment": "Komitmen",
+    "remaining": "sisa {{time}}",
+    "goal_reached": "Target tercapai!",
+    "missed_title": "Kamu berhenti sebelum {{min}} menit",
+    "missed_desc": "Apa yang mengganggumu? Ini menjadi laporan gangguanmu.",
+    "saved_completed": "🎯 Komitmen {{min}} menit tercapai!",
+    "reason": {
+      "distraction": "Terdistraksi",
+      "interruption": "Gangguan",
+      "urgency": "Hal mendesak",
+      "tired": "Lelah",
+      "done_early": "Selesai lebih awal",
+      "other": "Lainnya"
+    },
+    "report_title": "Fokus 30 hari terakhir",
+    "success_rate": "Target tercapai",
+    "focused_time": "Waktu fokus",
+    "top_reasons": "Yang paling mengganggu"
   }
 }

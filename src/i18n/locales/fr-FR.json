@@ -2542,7 +2542,11 @@
     "what": "Action",
     "comment": "Commentaire",
     "team": "Équipe",
-    "task": "Tâche"
+    "task": "Tâche",
+    "estimate_vs_real": "Estimé vs. réel",
+    "estimate_over": "{{time}} au-delà de l'estimation",
+    "estimate_close": "Proche de la limite estimée",
+    "estimate_ok": "Dans l'estimation ({{pct}}%)"
   },
   "runs": {
     "title": "Courses",
@@ -2609,5 +2613,28 @@
     "comment_added": "a commenté : \"{{excerpt}}\"",
     "attachment_added": "a joint {{file}}",
     "time_logged": "a enregistré {{min}} min"
+  },
+  "focus": {
+    "deep_work": "Mode Deep Work",
+    "deep_work_hint": "Engagez-vous sur un bloc de concentration. Si vous arrêtez avant, nous notons la raison.",
+    "off": "Libre",
+    "commitment": "Engagement",
+    "remaining": "reste {{time}}",
+    "goal_reached": "Objectif atteint !",
+    "missed_title": "Vous avez arrêté avant {{min}}min",
+    "missed_desc": "Qu'est-ce qui vous a interrompu ? Cela alimente votre rapport de distractions.",
+    "saved_completed": "🎯 Engagement de {{min}}min tenu !",
+    "reason": {
+      "distraction": "Distraction",
+      "interruption": "Interruption",
+      "urgency": "Urgence",
+      "tired": "Fatigue",
+      "done_early": "Fini plus tôt",
+      "other": "Autre"
+    },
+    "report_title": "Concentration sur 30 jours",
+    "success_rate": "Objectifs atteints",
+    "focused_time": "Temps concentré",
+    "top_reasons": "Ce qui vous interrompt le plus"
   }
 }

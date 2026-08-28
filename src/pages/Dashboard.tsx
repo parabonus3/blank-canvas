@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { useTimeEntries } from "@/hooks/useTimeEntries";
+import { FocusReportCard } from "@/components/timer/FocusReportCard";
+
 import { useProjects, useCategories } from "@/hooks/useProjects";
 import { useGoalsWithProgress } from "@/hooks/useGoals";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -448,6 +450,9 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+
+        <FocusReportCard />
+
 
         {/* Charts */}
         <div className="grid gap-6 md:grid-cols-2" id="dashboard-charts">

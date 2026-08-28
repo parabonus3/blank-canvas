@@ -2692,7 +2692,11 @@
     "what": "Ação",
     "comment": "Comentário",
     "team": "Equipe",
-    "task": "Tarefa"
+    "task": "Tarefa",
+    "estimate_vs_real": "Estimado vs. real",
+    "estimate_over": "Passou {{time}} da estimativa",
+    "estimate_close": "Perto do limite da estimativa",
+    "estimate_ok": "Dentro da estimativa ({{pct}}%)"
   },
   "runs": {
     "title": "Corridas",
@@ -2759,5 +2763,28 @@
     "comment_added": "comentou: \"{{excerpt}}\"",
     "attachment_added": "anexou {{file}}",
     "time_logged": "apontou {{min}} min"
+  },
+  "focus": {
+    "deep_work": "Modo Deep Work",
+    "deep_work_hint": "Assuma um compromisso de foco. Se parar antes, registramos o motivo para você entender o que te interrompe.",
+    "off": "Livre",
+    "commitment": "Compromisso",
+    "remaining": "faltam {{time}}",
+    "goal_reached": "Meta batida!",
+    "missed_title": "Você parou antes dos {{min}}min",
+    "missed_desc": "O que te interrompeu? Isso vira o seu relatório de distrações.",
+    "saved_completed": "🎯 Compromisso de {{min}}min cumprido!",
+    "reason": {
+      "distraction": "Distração",
+      "interruption": "Interrupção",
+      "urgency": "Urgência",
+      "tired": "Cansaço",
+      "done_early": "Terminei antes",
+      "other": "Outro"
+    },
+    "report_title": "Foco nos últimos 30 dias",
+    "success_rate": "Metas cumpridas",
+    "focused_time": "Tempo em foco",
+    "top_reasons": "O que mais te interrompe"
   }
 }

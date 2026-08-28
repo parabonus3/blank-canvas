@@ -2528,7 +2528,11 @@
     "what": "الإجراء",
     "comment": "تعليق",
     "team": "الفريق",
-    "task": "مهمة"
+    "task": "مهمة",
+    "estimate_vs_real": "المقدَّر مقابل الفعلي",
+    "estimate_over": "تجاوز التقدير بـ {{time}}",
+    "estimate_close": "قريب من حد التقدير",
+    "estimate_ok": "داخل التقدير ({{pct}}%)"
   },
   "runs": {
     "title": "الجري",
@@ -2595,5 +2599,28 @@
     "comment_added": "علّق: \"{{excerpt}}\"",
     "attachment_added": "أرفق {{file}}",
     "time_logged": "سجّل {{min}} دقيقة"
+  },
+  "focus": {
+    "deep_work": "وضع العمل العميق",
+    "deep_work_hint": "التزم بفترة تركيز. إذا توقفت مبكرًا، نسجل السبب.",
+    "off": "حر",
+    "commitment": "التزام",
+    "remaining": "يتبقى {{time}}",
+    "goal_reached": "تم تحقيق الهدف!",
+    "missed_title": "توقفت قبل {{min}} دقيقة",
+    "missed_desc": "ما الذي قاطعك؟ يتحول ذلك إلى تقرير المشتتات.",
+    "saved_completed": "🎯 تم إتمام التزام {{min}} دقيقة!",
+    "reason": {
+      "distraction": "تشتت",
+      "interruption": "مقاطعة",
+      "urgency": "أمر عاجل",
+      "tired": "إرهاق",
+      "done_early": "انتهيت مبكرًا",
+      "other": "أخرى"
+    },
+    "report_title": "التركيز خلال 30 يومًا",
+    "success_rate": "الأهداف المنجزة",
+    "focused_time": "وقت التركيز",
+    "top_reasons": "أكثر ما يقاطعك"
   }
 }
