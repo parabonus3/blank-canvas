@@ -449,6 +449,9 @@ export default function Dashboard() {
           </Card>
         </div>
 
+        <FocusReportCard />
+
+
         {/* Charts */}
         <div className="grid gap-6 md:grid-cols-2" id="dashboard-charts">
           <Card>
