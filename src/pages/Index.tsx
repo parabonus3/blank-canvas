@@ -687,6 +687,13 @@ export default function Index() {
                 )}
               </div>
 
+              {/* Deep Work — progresso do compromisso */}
+              {isRunning && activeFocusTarget && (
+                <DeepWorkBar targetMinutes={activeFocusTarget} elapsedSeconds={elapsed} />
+              )}
+
+
+
               {/* Project Selection */}
               {!isRunning && (
                 <div className="space-y-3">
