@@ -2631,6 +2631,10 @@
       "tired": "Müdigkeit",
       "done_early": "Früher fertig",
       "other": "Sonstiges"
-    }
+    },
+    "report_title": "Fokus der letzten 30 Tage",
+    "success_rate": "Erreichte Ziele",
+    "focused_time": "Fokuszeit",
+    "top_reasons": "Was dich am meisten unterbricht"
   }
 }

@@ -2631,6 +2631,10 @@
       "tired": "疲れ",
       "done_early": "早く終わった",
       "other": "その他"
-    }
+    },
+    "report_title": "過去30日の集中",
+    "success_rate": "達成した目標",
+    "focused_time": "集中時間",
+    "top_reasons": "最も多い中断の原因"
   }
 }

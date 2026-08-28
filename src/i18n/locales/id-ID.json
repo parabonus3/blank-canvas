@@ -2631,6 +2631,10 @@
       "tired": "Lelah",
       "done_early": "Selesai lebih awal",
       "other": "Lainnya"
-    }
+    },
+    "report_title": "Fokus 30 hari terakhir",
+    "success_rate": "Target tercapai",
+    "focused_time": "Waktu fokus",
+    "top_reasons": "Yang paling mengganggu"
   }
 }

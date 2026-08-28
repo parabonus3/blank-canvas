@@ -2617,6 +2617,10 @@
       "tired": "Stanchezza",
       "done_early": "Finito prima",
       "other": "Altro"
-    }
+    },
+    "report_title": "Focus negli ultimi 30 giorni",
+    "success_rate": "Obiettivi raggiunti",
+    "focused_time": "Tempo di focus",
+    "top_reasons": "Cosa ti interrompe di più"
   }
 }

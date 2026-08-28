@@ -2631,6 +2631,10 @@
       "tired": "疲惫",
       "done_early": "提前完成",
       "other": "其他"
-    }
+    },
+    "report_title": "最近 30 天的专注",
+    "success_rate": "已达成目标",
+    "focused_time": "专注时间",
+    "top_reasons": "最常打断你的原因"
   }
 }

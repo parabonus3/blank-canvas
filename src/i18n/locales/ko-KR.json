@@ -2617,6 +2617,10 @@
       "tired": "피곤함",
       "done_early": "일찍 끝냄",
       "other": "기타"
-    }
+    },
+    "report_title": "최근 30일 집중",
+    "success_rate": "달성한 목표",
+    "focused_time": "집중 시간",
+    "top_reasons": "가장 큰 방해 요소"
   }
 }

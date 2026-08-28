@@ -2638,6 +2638,10 @@
       "tired": "Cansancio",
       "done_early": "Terminé antes",
       "other": "Otro"
-    }
+    },
+    "report_title": "Foco en los últimos 30 días",
+    "success_rate": "Metas cumplidas",
+    "focused_time": "Tiempo en foco",
+    "top_reasons": "Qué te interrumpe más"
   }
 }

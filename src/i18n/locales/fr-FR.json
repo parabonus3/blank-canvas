@@ -2631,6 +2631,10 @@
       "tired": "Fatigue",
       "done_early": "Fini plus tôt",
       "other": "Autre"
-    }
+    },
+    "report_title": "Concentration sur 30 jours",
+    "success_rate": "Objectifs atteints",
+    "focused_time": "Temps concentré",
+    "top_reasons": "Ce qui vous interrompt le plus"
   }
 }

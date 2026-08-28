@@ -2781,6 +2781,10 @@
       "tired": "Cansaço",
       "done_early": "Terminei antes",
       "other": "Outro"
-    }
+    },
+    "report_title": "Foco nos últimos 30 dias",
+    "success_rate": "Metas cumpridas",
+    "focused_time": "Tempo em foco",
+    "top_reasons": "O que mais te interrompe"
   }
 }

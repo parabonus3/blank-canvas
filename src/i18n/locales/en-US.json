@@ -2726,6 +2726,10 @@
       "tired": "Tired",
       "done_early": "Finished early",
       "other": "Other"
-    }
+    },
+    "report_title": "Focus in the last 30 days",
+    "success_rate": "Goals completed",
+    "focused_time": "Focused time",
+    "top_reasons": "What interrupts you most"
   }
 }
