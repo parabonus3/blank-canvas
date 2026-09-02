@@ -9,6 +9,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { useTimeEntries } from "@/hooks/useTimeEntries";
 import { FocusReportCard } from "@/components/timer/FocusReportCard";
+import { HourHeatmapCard } from "@/components/timer/HourHeatmapCard";
+import { CategoryBudgetCard } from "@/components/timer/CategoryBudgetCard";
+
 
 import { useProjects, useCategories } from "@/hooks/useProjects";
 import { useGoalsWithProgress } from "@/hooks/useGoals";
@@ -452,6 +455,13 @@ export default function Dashboard() {
         </div>
 
         <FocusReportCard />
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <HourHeatmapCard />
+          <CategoryBudgetCard />
+        </div>
+
+
 
 
         {/* Charts */}

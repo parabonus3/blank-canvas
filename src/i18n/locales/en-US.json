@@ -2731,5 +2731,40 @@
     "success_rate": "Goals completed",
     "focused_time": "Focused time",
     "top_reasons": "What interrupts you most"
+  },
+  "heatmap": {
+    "title": "Your productive hours",
+    "period": "last {{count}} days",
+    "best_hour": "Best hour",
+    "best_day": "Best day",
+    "less": "Less",
+    "more": "More"
+  },
+  "budget": {
+    "title": "Weekly budget",
+    "edit": "Set",
+    "dialog_title": "Weekly budget by category",
+    "dialog_hint": "Set how many hours per week you want for each category. Leave empty to skip tracking.",
+    "hours_short": "h",
+    "empty": "Set a weekly hour target to track your balance across categories.",
+    "over": "Budget exceeded",
+    "near": "Close to the limit"
+  },
+  "timeblock": {
+    "title": "Today's agenda",
+    "add": "Block",
+    "empty": "Reserve time slots for your day and start the timer straight from a block.",
+    "planned_vs_real": "planned {{planned}}min · actual {{real}}min",
+    "start": "Start",
+    "mark_done": "Complete",
+    "new_title": "New time block",
+    "field_task": "Task (optional)",
+    "no_task": "No task",
+    "field_title": "Title",
+    "title_placeholder": "E.g. Study calculus",
+    "field_project": "Project (for the timer)",
+    "no_project": "No project",
+    "field_start": "Start",
+    "field_duration": "Duration"
   }
 }

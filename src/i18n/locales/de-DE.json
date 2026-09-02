@@ -2636,5 +2636,40 @@
     "success_rate": "Erreichte Ziele",
     "focused_time": "Fokuszeit",
     "top_reasons": "Was dich am meisten unterbricht"
+  },
+  "heatmap": {
+    "title": "Deine produktiven Stunden",
+    "period": "letzte {{count}} Tage",
+    "best_hour": "Beste Stunde",
+    "best_day": "Bester Tag",
+    "less": "Weniger",
+    "more": "Mehr"
+  },
+  "budget": {
+    "title": "Wochenbudget",
+    "edit": "Festlegen",
+    "dialog_title": "Wochenbudget pro Kategorie",
+    "dialog_hint": "Lege fest, wie viele Stunden pro Woche du je Kategorie einplanen willst. Leer lassen, um nicht zu verfolgen.",
+    "hours_short": "h",
+    "empty": "Setze ein Wochenziel, um deine Balance zwischen Kategorien zu verfolgen.",
+    "over": "Budget überschritten",
+    "near": "Nahe am Limit"
+  },
+  "timeblock": {
+    "title": "Heutiger Zeitplan",
+    "add": "Block",
+    "empty": "Plane Zeitfenster für deinen Tag und starte den Timer direkt aus dem Block.",
+    "planned_vs_real": "geplant {{planned}}min · tatsächlich {{real}}min",
+    "start": "Starten",
+    "mark_done": "Abschließen",
+    "new_title": "Neuer Zeitblock",
+    "field_task": "Aufgabe (optional)",
+    "no_task": "Keine Aufgabe",
+    "field_title": "Titel",
+    "title_placeholder": "Z. B. Mathe lernen",
+    "field_project": "Projekt (für den Timer)",
+    "no_project": "Kein Projekt",
+    "field_start": "Beginn",
+    "field_duration": "Dauer"
   }
 }

@@ -22,6 +22,8 @@ import { Plus, KanbanSquare, Star, Trash2, Archive, ArchiveRestore, MoreVertical
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { BoardInvitationsBanner } from "@/components/kanban/BoardInvitationsBanner";
+import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
+
 import { useBoardMembers } from "@/hooks/useBoardCollab";
 import { MemberAvatars } from "@/components/kanban/MemberAvatars";
 import { useAuth } from "@/contexts/AuthContext";
@@ -137,6 +139,9 @@ export default function Tasks() {
         </div>
 
         <BoardInvitationsBanner />
+
+        <DayAgendaCard />
+
 
         {isLoading ? (
           <div className="text-center text-muted-foreground py-16">{t("common.loading")}</div>
