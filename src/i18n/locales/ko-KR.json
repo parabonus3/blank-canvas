@@ -2622,5 +2622,40 @@
     "success_rate": "달성한 목표",
     "focused_time": "집중 시간",
     "top_reasons": "가장 큰 방해 요소"
+  },
+  "heatmap": {
+    "title": "생산적인 시간대",
+    "period": "최근 {{count}}일",
+    "best_hour": "최고의 시간",
+    "best_day": "최고의 요일",
+    "less": "적음",
+    "more": "많음"
+  },
+  "budget": {
+    "title": "이번 주 예산",
+    "edit": "설정",
+    "dialog_title": "카테고리별 주간 예산",
+    "dialog_hint": "각 카테고리에 주당 몇 시간을 쓸지 설정하세요. 비워두면 추적하지 않습니다.",
+    "hours_short": "시간",
+    "empty": "주간 목표 시간을 설정해 카테고리 균형을 확인하세요.",
+    "over": "예산 초과",
+    "near": "한도에 가까움"
+  },
+  "timeblock": {
+    "title": "오늘 일정",
+    "add": "블록",
+    "empty": "하루의 시간대를 예약하고 블록에서 바로 타이머를 시작하세요.",
+    "planned_vs_real": "계획 {{planned}}분 · 실제 {{real}}분",
+    "start": "시작",
+    "mark_done": "완료",
+    "new_title": "새 시간 블록",
+    "field_task": "작업 (선택)",
+    "no_task": "작업 없음",
+    "field_title": "제목",
+    "title_placeholder": "예: 미적분 공부",
+    "field_project": "프로젝트 (타이머용)",
+    "no_project": "프로젝트 없음",
+    "field_start": "시작",
+    "field_duration": "길이"
   }
 }

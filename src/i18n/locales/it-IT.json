@@ -2622,5 +2622,40 @@
     "success_rate": "Obiettivi raggiunti",
     "focused_time": "Tempo di focus",
     "top_reasons": "Cosa ti interrompe di più"
+  },
+  "heatmap": {
+    "title": "Le tue ore produttive",
+    "period": "ultimi {{count}} giorni",
+    "best_hour": "Ora migliore",
+    "best_day": "Giorno migliore",
+    "less": "Meno",
+    "more": "Più"
+  },
+  "budget": {
+    "title": "Budget della settimana",
+    "edit": "Imposta",
+    "dialog_title": "Budget settimanale per categoria",
+    "dialog_hint": "Imposta quante ore a settimana dedicare a ogni categoria. Lascia vuoto per non monitorare.",
+    "hours_short": "h",
+    "empty": "Imposta un obiettivo di ore settimanali per monitorare il tuo equilibrio.",
+    "over": "Budget superato",
+    "near": "Vicino al limite"
+  },
+  "timeblock": {
+    "title": "Agenda di oggi",
+    "add": "Blocco",
+    "empty": "Riserva fasce orarie e avvia il timer direttamente dal blocco.",
+    "planned_vs_real": "previsto {{planned}}min · reale {{real}}min",
+    "start": "Avvia",
+    "mark_done": "Completa",
+    "new_title": "Nuovo blocco orario",
+    "field_task": "Attività (opzionale)",
+    "no_task": "Nessuna attività",
+    "field_title": "Titolo",
+    "title_placeholder": "Es.: Studiare analisi",
+    "field_project": "Progetto (per il timer)",
+    "no_project": "Nessun progetto",
+    "field_start": "Inizio",
+    "field_duration": "Durata"
   }
 }

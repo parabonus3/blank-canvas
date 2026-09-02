@@ -2636,5 +2636,40 @@
     "success_rate": "Target tercapai",
     "focused_time": "Waktu fokus",
     "top_reasons": "Yang paling mengganggu"
+  },
+  "heatmap": {
+    "title": "Jam produktif kamu",
+    "period": "{{count}} hari terakhir",
+    "best_hour": "Jam terbaik",
+    "best_day": "Hari terbaik",
+    "less": "Sedikit",
+    "more": "Banyak"
+  },
+  "budget": {
+    "title": "Anggaran pekan ini",
+    "edit": "Atur",
+    "dialog_title": "Anggaran mingguan per kategori",
+    "dialog_hint": "Tentukan berapa jam per pekan untuk setiap kategori. Biarkan kosong jika tidak ingin dipantau.",
+    "hours_short": "j",
+    "empty": "Tetapkan target jam per pekan untuk memantau keseimbangan antar kategori.",
+    "over": "Anggaran terlampaui",
+    "near": "Mendekati batas"
+  },
+  "timeblock": {
+    "title": "Agenda hari ini",
+    "add": "Blok",
+    "empty": "Pesan slot waktu harianmu dan mulai timer langsung dari blok.",
+    "planned_vs_real": "rencana {{planned}}mnt · aktual {{real}}mnt",
+    "start": "Mulai",
+    "mark_done": "Selesai",
+    "new_title": "Blok waktu baru",
+    "field_task": "Tugas (opsional)",
+    "no_task": "Tanpa tugas",
+    "field_title": "Judul",
+    "title_placeholder": "Mis.: Belajar kalkulus",
+    "field_project": "Proyek (untuk timer)",
+    "no_project": "Tanpa proyek",
+    "field_start": "Mulai",
+    "field_duration": "Durasi"
   }
 }

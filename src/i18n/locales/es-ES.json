@@ -2643,5 +2643,40 @@
     "success_rate": "Metas cumplidas",
     "focused_time": "Tiempo en foco",
     "top_reasons": "Qué te interrumpe más"
+  },
+  "heatmap": {
+    "title": "Tus horas productivas",
+    "period": "últimos {{count}} días",
+    "best_hour": "Mejor hora",
+    "best_day": "Mejor día",
+    "less": "Menos",
+    "more": "Más"
+  },
+  "budget": {
+    "title": "Presupuesto semanal",
+    "edit": "Definir",
+    "dialog_title": "Presupuesto semanal por categoría",
+    "dialog_hint": "Define cuántas horas por semana quieres dedicar a cada categoría. Déjalo vacío para no seguirlo.",
+    "hours_short": "h",
+    "empty": "Define un objetivo de horas semanales para seguir tu equilibrio entre categorías.",
+    "over": "Presupuesto excedido",
+    "near": "Cerca del límite"
+  },
+  "timeblock": {
+    "title": "Agenda de hoy",
+    "add": "Bloque",
+    "empty": "Reserva horarios de tu día e inicia el cronómetro desde el bloque.",
+    "planned_vs_real": "planeado {{planned}}min · real {{real}}min",
+    "start": "Iniciar",
+    "mark_done": "Completar",
+    "new_title": "Nuevo bloque de horario",
+    "field_task": "Tarea (opcional)",
+    "no_task": "Sin tarea",
+    "field_title": "Título",
+    "title_placeholder": "Ej.: Estudiar cálculo",
+    "field_project": "Proyecto (para el cronómetro)",
+    "no_project": "Sin proyecto",
+    "field_start": "Inicio",
+    "field_duration": "Duración"
   }
 }

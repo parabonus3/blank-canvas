@@ -2636,5 +2636,40 @@
     "success_rate": "Objectifs atteints",
     "focused_time": "Temps concentré",
     "top_reasons": "Ce qui vous interrompt le plus"
+  },
+  "heatmap": {
+    "title": "Vos heures productives",
+    "period": "{{count}} derniers jours",
+    "best_hour": "Meilleure heure",
+    "best_day": "Meilleur jour",
+    "less": "Moins",
+    "more": "Plus"
+  },
+  "budget": {
+    "title": "Budget de la semaine",
+    "edit": "Définir",
+    "dialog_title": "Budget hebdomadaire par catégorie",
+    "dialog_hint": "Définissez combien d'heures par semaine consacrer à chaque catégorie. Laissez vide pour ne pas suivre.",
+    "hours_short": "h",
+    "empty": "Définissez un objectif d'heures par semaine pour suivre votre équilibre.",
+    "over": "Budget dépassé",
+    "near": "Proche de la limite"
+  },
+  "timeblock": {
+    "title": "Agenda du jour",
+    "add": "Bloc",
+    "empty": "Réservez des créneaux et lancez le chronomètre depuis le bloc.",
+    "planned_vs_real": "prévu {{planned}}min · réel {{real}}min",
+    "start": "Démarrer",
+    "mark_done": "Terminer",
+    "new_title": "Nouveau créneau",
+    "field_task": "Tâche (facultatif)",
+    "no_task": "Aucune tâche",
+    "field_title": "Titre",
+    "title_placeholder": "Ex. : Réviser les maths",
+    "field_project": "Projet (pour le chronomètre)",
+    "no_project": "Aucun projet",
+    "field_start": "Début",
+    "field_duration": "Durée"
   }
 }

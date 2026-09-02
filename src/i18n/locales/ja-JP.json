@@ -2636,5 +2636,40 @@
     "success_rate": "達成した目標",
     "focused_time": "集中時間",
     "top_reasons": "最も多い中断の原因"
+  },
+  "heatmap": {
+    "title": "生産的な時間帯",
+    "period": "直近{{count}}日",
+    "best_hour": "最も良い時間",
+    "best_day": "最も良い曜日",
+    "less": "少ない",
+    "more": "多い"
+  },
+  "budget": {
+    "title": "今週の予算",
+    "edit": "設定",
+    "dialog_title": "カテゴリー別の週間予算",
+    "dialog_hint": "各カテゴリーに週何時間使うかを設定します。空欄なら計測しません。",
+    "hours_short": "時間",
+    "empty": "週の目標時間を設定して、カテゴリー間のバランスを把握しましょう。",
+    "over": "予算超過",
+    "near": "上限に近づいています"
+  },
+  "timeblock": {
+    "title": "今日の予定",
+    "add": "ブロック",
+    "empty": "1日の時間枠を確保し、ブロックからそのままタイマーを開始できます。",
+    "planned_vs_real": "予定{{planned}}分 · 実績{{real}}分",
+    "start": "開始",
+    "mark_done": "完了",
+    "new_title": "新しい時間ブロック",
+    "field_task": "タスク（任意）",
+    "no_task": "タスクなし",
+    "field_title": "タイトル",
+    "title_placeholder": "例：微積分の勉強",
+    "field_project": "プロジェクト（タイマー用）",
+    "no_project": "プロジェクトなし",
+    "field_start": "開始",
+    "field_duration": "長さ"
   }
 }

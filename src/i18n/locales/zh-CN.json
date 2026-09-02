@@ -2636,5 +2636,40 @@
     "success_rate": "已达成目标",
     "focused_time": "专注时间",
     "top_reasons": "最常打断你的原因"
+  },
+  "heatmap": {
+    "title": "你的高效时段",
+    "period": "最近 {{count}} 天",
+    "best_hour": "最佳时段",
+    "best_day": "最佳日期",
+    "less": "较少",
+    "more": "较多"
+  },
+  "budget": {
+    "title": "本周预算",
+    "edit": "设置",
+    "dialog_title": "按分类的每周预算",
+    "dialog_hint": "设置每个分类每周想投入的小时数。留空表示不跟踪。",
+    "hours_short": "小时",
+    "empty": "设置每周小时目标，跟踪各分类之间的平衡。",
+    "over": "已超出预算",
+    "near": "接近上限"
+  },
+  "timeblock": {
+    "title": "今日日程",
+    "add": "时间块",
+    "empty": "为一天预留时间段，并直接从时间块启动计时器。",
+    "planned_vs_real": "计划 {{planned}}分钟 · 实际 {{real}}分钟",
+    "start": "开始",
+    "mark_done": "完成",
+    "new_title": "新建时间块",
+    "field_task": "任务（可选）",
+    "no_task": "无任务",
+    "field_title": "标题",
+    "title_placeholder": "例如：学习微积分",
+    "field_project": "项目（用于计时）",
+    "no_project": "无项目",
+    "field_start": "开始时间",
+    "field_duration": "时长"
   }
 }
