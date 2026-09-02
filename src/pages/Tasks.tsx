@@ -138,6 +138,9 @@ export default function Tasks() {
 
         <BoardInvitationsBanner />
 
+        <DayAgendaCard />
+
+
         {isLoading ? (
           <div className="text-center text-muted-foreground py-16">{t("common.loading")}</div>
         ) : !boards?.length ? (
