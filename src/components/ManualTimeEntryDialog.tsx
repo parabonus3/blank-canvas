@@ -24,9 +24,21 @@ import { toast } from "sonner";
 interface ManualTimeEntryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Preenche data/hora inicial (ex.: lacuna da linha do tempo). */
+  initialStart?: Date;
+  initialEnd?: Date;
 }
 
-export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDialogProps) {
+const pad = (n: number) => String(n).padStart(2, "0");
+const toDateStr = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const toTimeStr = (d: Date) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+export function ManualTimeEntryDialog({
+  open,
+  onOpenChange,
+  initialStart,
+  initialEnd,
+}: ManualTimeEntryDialogProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { data: projects } = useProjects();
