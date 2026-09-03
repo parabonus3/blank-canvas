@@ -56,6 +56,14 @@ export function ManualTimeEntryDialog({
 
   const activeProjects = projects?.filter(p => p.is_active) || [];
 
+  // Aplica o prefill sempre que o diálogo abre com valores sugeridos.
+  useEffect(() => {
+    if (!open || !initialStart) return;
+    setDate(toDateStr(initialStart));
+    setStartTime(toTimeStr(initialStart));
+    if (initialEnd) setEndTime(toTimeStr(initialEnd));
+  }, [open, initialStart, initialEnd]);
+
   const handleSave = async () => {
     if (!user || !projectId || !date || !startTime || !endTime) return;
 
