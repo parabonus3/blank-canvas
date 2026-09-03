@@ -455,9 +455,10 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <FocusReportCard />
+         <FocusReportCard />
+         <DayTimelineCard />
 
-        <div className="grid gap-4 lg:grid-cols-2">
+         <div className="grid gap-4 lg:grid-cols-2">
           <HourHeatmapCard />
           <CategoryBudgetCard />
         </div>
