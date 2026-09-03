@@ -11,6 +11,7 @@ import { useTimeEntries } from "@/hooks/useTimeEntries";
 import { FocusReportCard } from "@/components/timer/FocusReportCard";
 import { HourHeatmapCard } from "@/components/timer/HourHeatmapCard";
 import { CategoryBudgetCard } from "@/components/timer/CategoryBudgetCard";
+import { DayTimelineCard } from "@/components/timer/DayTimelineCard";
 
 
 import { useProjects, useCategories } from "@/hooks/useProjects";
