@@ -496,6 +496,48 @@ export type Database = {
         }
         Relationships: []
       }
+      duels: {
+        Row: {
+          challenger_id: string
+          created_at: string
+          end_date: string
+          id: string
+          opponent_id: string
+          start_date: string
+          status: string
+          target_minutes: number
+          title: string | null
+          updated_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          challenger_id: string
+          created_at?: string
+          end_date: string
+          id?: string
+          opponent_id: string
+          start_date?: string
+          status?: string
+          target_minutes?: number
+          title?: string | null
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          challenger_id?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          opponent_id?: string
+          start_date?: string
+          status?: string
+          target_minutes?: number
+          title?: string | null
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       email_rate_limits: {
         Row: {
           count: number
@@ -567,6 +609,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      focus_routines: {
+        Row: {
+          created_at: string
+          emoji: string | null
+          id: string
+          position: number
+          steps: Json
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          position?: number
+          steps?: Json
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          position?: number
+          steps?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       freeze_missions: {
         Row: {
@@ -718,6 +793,7 @@ export type Database = {
       }
       gps_activities: {
         Row: {
+          activity_type: string
           avg_pace_seconds_per_km: number | null
           bounds: Json | null
           created_at: string
@@ -737,6 +813,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          activity_type?: string
           avg_pace_seconds_per_km?: number | null
           bounds?: Json | null
           created_at?: string
@@ -756,6 +833,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          activity_type?: string
           avg_pace_seconds_per_km?: number | null
           bounds?: Json | null
           created_at?: string
@@ -1591,6 +1669,95 @@ export type Database = {
           },
           {
             foreignKeyName: "room_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      room_session_attendees: {
+        Row: {
+          confirmed: boolean
+          created_at: string
+          id: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          confirmed?: boolean
+          created_at?: string
+          id?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          confirmed?: boolean
+          created_at?: string
+          id?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_session_attendees_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "room_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      room_sessions: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          end_at: string
+          id: string
+          is_cancelled: boolean
+          reminder_sent_at: string | null
+          room_id: string
+          start_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          end_at: string
+          id?: string
+          is_cancelled?: boolean
+          reminder_sent_at?: string | null
+          room_id: string
+          start_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          end_at?: string
+          id?: string
+          is_cancelled?: boolean
+          reminder_sent_at?: string | null
+          room_id?: string
+          start_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_sessions_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_sessions_room_id_fkey"
             columns: ["room_id"]
             isOneToOne: false
             referencedRelation: "study_rooms_safe"
@@ -2714,6 +2881,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_duel_scoreboard: {
+        Args: { _duel_id: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          seconds: number
+          user_id: string
+        }[]
+      }
       get_freeze_missions_progress: {
         Args: never
         Returns: {
@@ -2801,6 +2977,17 @@ export type Database = {
           inviter_avatar: string
           inviter_id: string
           inviter_name: string
+        }[]
+      }
+      get_my_gps_records: {
+        Args: never
+        Returns: {
+          activity_type: string
+          best_pace_seconds_per_km: number
+          longest_distance_meters: number
+          max_speed: number
+          total_activities: number
+          total_distance_meters: number
         }[]
       }
       get_my_hour_heatmap: {

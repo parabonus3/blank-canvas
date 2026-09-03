@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProjects } from "@/hooks/useProjects";
@@ -24,9 +24,21 @@ import { toast } from "sonner";
 interface ManualTimeEntryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Preenche data/hora inicial (ex.: lacuna da linha do tempo). */
+  initialStart?: Date;
+  initialEnd?: Date;
 }
 
-export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDialogProps) {
+const pad = (n: number) => String(n).padStart(2, "0");
+const toDateStr = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const toTimeStr = (d: Date) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+export function ManualTimeEntryDialog({
+  open,
+  onOpenChange,
+  initialStart,
+  initialEnd,
+}: ManualTimeEntryDialogProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { data: projects } = useProjects();
@@ -43,6 +55,14 @@ export function ManualTimeEntryDialog({ open, onOpenChange }: ManualTimeEntryDia
   const [saving, setSaving] = useState(false);
 
   const activeProjects = projects?.filter(p => p.is_active) || [];
+
+  // Aplica o prefill sempre que o diálogo abre com valores sugeridos.
+  useEffect(() => {
+    if (!open || !initialStart) return;
+    setDate(toDateStr(initialStart));
+    setStartTime(toTimeStr(initialStart));
+    if (initialEnd) setEndTime(toTimeStr(initialEnd));
+  }, [open, initialStart, initialEnd]);
 
   const handleSave = async () => {
     if (!user || !projectId || !date || !startTime || !endTime) return;

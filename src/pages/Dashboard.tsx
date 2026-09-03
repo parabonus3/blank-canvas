@@ -11,6 +11,7 @@ import { useTimeEntries } from "@/hooks/useTimeEntries";
 import { FocusReportCard } from "@/components/timer/FocusReportCard";
 import { HourHeatmapCard } from "@/components/timer/HourHeatmapCard";
 import { CategoryBudgetCard } from "@/components/timer/CategoryBudgetCard";
+import { DayTimelineCard } from "@/components/timer/DayTimelineCard";
 
 
 import { useProjects, useCategories } from "@/hooks/useProjects";
@@ -454,9 +455,10 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <FocusReportCard />
+         <FocusReportCard />
+         <DayTimelineCard />
 
-        <div className="grid gap-4 lg:grid-cols-2">
+         <div className="grid gap-4 lg:grid-cols-2">
           <HourHeatmapCard />
           <CategoryBudgetCard />
         </div>
