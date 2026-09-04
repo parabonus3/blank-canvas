@@ -2678,5 +2678,14 @@
     "no_project": "Sin proyecto",
     "field_start": "Inicio",
     "field_duration": "Duración"
+  },
+  "timeline": {
+    "title": "Línea de tiempo del día",
+    "add_session": "Registrar sesión",
+    "empty": "Aún no hay sesiones registradas hoy.",
+    "gap": "Hueco",
+    "tracked": "Registrado",
+    "gaps": "Huecos",
+    "gap_fill": "Hueco de {{time}}: toca para completar"
   }
 }

@@ -2766,5 +2766,14 @@
     "no_project": "No project",
     "field_start": "Start",
     "field_duration": "Duration"
+  },
+  "timeline": {
+    "title": "Day timeline",
+    "add_session": "Log session",
+    "empty": "No sessions logged today yet.",
+    "gap": "Gap",
+    "tracked": "Tracked",
+    "gaps": "Gaps",
+    "gap_fill": "{{time}} gap — tap to fill in"
   }
 }

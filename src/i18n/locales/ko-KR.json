@@ -2657,5 +2657,14 @@
     "no_project": "프로젝트 없음",
     "field_start": "시작",
     "field_duration": "길이"
+  },
+  "timeline": {
+    "title": "하루 타임라인",
+    "add_session": "세션 기록",
+    "empty": "오늘 기록된 세션이 없습니다.",
+    "gap": "공백",
+    "tracked": "기록됨",
+    "gaps": "공백",
+    "gap_fill": "{{time}} 공백 — 눌러서 채우기"
   }
 }

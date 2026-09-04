@@ -2657,5 +2657,14 @@
     "no_project": "Nessun progetto",
     "field_start": "Inizio",
     "field_duration": "Durata"
+  },
+  "timeline": {
+    "title": "Cronologia del giorno",
+    "add_session": "Registra sessione",
+    "empty": "Nessuna sessione registrata oggi.",
+    "gap": "Vuoto",
+    "tracked": "Registrato",
+    "gaps": "Vuoti",
+    "gap_fill": "Vuoto di {{time}} — tocca per compilare"
   }
 }

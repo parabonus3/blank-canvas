@@ -2671,5 +2671,14 @@
     "no_project": "Kein Projekt",
     "field_start": "Beginn",
     "field_duration": "Dauer"
+  },
+  "timeline": {
+    "title": "Tages-Zeitleiste",
+    "add_session": "Sitzung erfassen",
+    "empty": "Heute noch keine Sitzung erfasst.",
+    "gap": "Lücke",
+    "tracked": "Erfasst",
+    "gaps": "Lücken",
+    "gap_fill": "Lücke von {{time}} — zum Ausfüllen tippen"
   }
 }

@@ -2671,5 +2671,14 @@
     "no_project": "Tanpa proyek",
     "field_start": "Mulai",
     "field_duration": "Durasi"
+  },
+  "timeline": {
+    "title": "Garis waktu hari ini",
+    "add_session": "Catat sesi",
+    "empty": "Belum ada sesi tercatat hari ini.",
+    "gap": "Jeda",
+    "tracked": "Tercatat",
+    "gaps": "Jeda",
+    "gap_fill": "Jeda {{time}} — ketuk untuk mengisi"
   }
 }

@@ -2671,5 +2671,14 @@
     "no_project": "プロジェクトなし",
     "field_start": "開始",
     "field_duration": "長さ"
+  },
+  "timeline": {
+    "title": "1日のタイムライン",
+    "add_session": "セッションを記録",
+    "empty": "今日はまだ記録がありません。",
+    "gap": "空白",
+    "tracked": "記録済み",
+    "gaps": "空白",
+    "gap_fill": "{{time}} の空白 — タップして記録"
   }
 }

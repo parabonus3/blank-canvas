@@ -2671,5 +2671,14 @@
     "no_project": "无项目",
     "field_start": "开始时间",
     "field_duration": "时长"
+  },
+  "timeline": {
+    "title": "当日时间轴",
+    "add_session": "记录时段",
+    "empty": "今天还没有记录任何时段。",
+    "gap": "空档",
+    "tracked": "已记录",
+    "gaps": "空档",
+    "gap_fill": "{{time}} 空档 — 点击补录"
   }
 }

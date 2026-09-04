@@ -2821,5 +2821,14 @@
     "no_project": "Sem projeto",
     "field_start": "Início",
     "field_duration": "Duração"
+  },
+  "timeline": {
+    "title": "Linha do tempo do dia",
+    "add_session": "Registrar sessão",
+    "empty": "Nenhuma sessão registrada hoje ainda.",
+    "gap": "Lacuna",
+    "tracked": "Registrado",
+    "gaps": "Lacunas",
+    "gap_fill": "Lacuna de {{time}} — toque para preencher"
   }
 }
