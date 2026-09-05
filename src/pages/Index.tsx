@@ -42,6 +42,9 @@ import { RunLivePanel } from "@/components/gps/RunLivePanel";
 import { DeepWorkPicker } from "@/components/timer/DeepWorkPicker";
 import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
 import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
+import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
+import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
+import { useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
 
 const ACTIVE_FOCUS_KEY = "timezoni.activeFocusTarget";
 
@@ -95,6 +98,17 @@ export default function Index() {
   });
   const [activeFocusTarget, setActiveFocusTarget] = useState<number | null>(() => readActiveFocusTarget());
   const saveFocusCommitment = useSaveFocusCommitment();
+  const routineRun = useRoutineRun();
+
+  const handleStartRoutine = useCallback((routine: FocusRoutine) => {
+    routineRun.start(routine);
+    const first = routine.steps[0];
+    if (first) {
+      if (first.kind === "focus" && first.projectId) setSelectedProject(first.projectId);
+      setFocusTarget(first.kind === "focus" ? first.minutes : null);
+    }
+    toast({ title: t("routines.started_title", "Rotina iniciada"), description: routine.title });
+  }, [routineRun, toast, t]);
 
   const gps = useGpsTracker();
   const saveGpsActivity = useSaveGpsActivity();
