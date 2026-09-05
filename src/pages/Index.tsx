@@ -42,6 +42,9 @@ import { RunLivePanel } from "@/components/gps/RunLivePanel";
 import { DeepWorkPicker } from "@/components/timer/DeepWorkPicker";
 import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
 import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
+import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
+import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
+import { useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
 
 const ACTIVE_FOCUS_KEY = "timezoni.activeFocusTarget";
 
@@ -95,6 +98,8 @@ export default function Index() {
   });
   const [activeFocusTarget, setActiveFocusTarget] = useState<number | null>(() => readActiveFocusTarget());
   const saveFocusCommitment = useSaveFocusCommitment();
+  const routineRun = useRoutineRun();
+
 
   const gps = useGpsTracker();
   const saveGpsActivity = useSaveGpsActivity();
@@ -109,6 +114,46 @@ export default function Index() {
   const { toast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleStartRoutine = useCallback((routine: FocusRoutine) => {
+    routineRun.start(routine);
+    const first = routine.steps[0];
+    if (first) {
+      if (first.kind === "focus" && first.projectId) setSelectedProject(first.projectId);
+      setFocusTarget(first.kind === "focus" ? first.minutes : null);
+    }
+    toast({ title: t("routines.started_title", "Rotina iniciada"), description: routine.title });
+  }, [routineRun, toast, t]);
+
+  // Rotina: avança para a próxima etapa e aplica projeto/meta do passo.
+  const advanceRoutineStep = useCallback(() => {
+    const run = routineRun.run;
+    if (!run) return;
+    routineRun.completeCurrent();
+    const next = run.steps[run.index + 1];
+    if (next) {
+      if (next.kind === "focus") {
+        if (next.projectId) setSelectedProject(next.projectId);
+        setFocusTarget(next.minutes);
+        toast({ title: t("routines.next_step", "Próxima etapa"), description: next.title || undefined });
+      } else {
+        setFocusTarget(null);
+        toast({ title: t("routines.break_step", "Hora da pausa ☕"), description: next.title || undefined });
+      }
+    } else {
+      toast({ title: t("routines.finished", "Rotina concluída! 🎉") });
+    }
+  }, [routineRun, toast, t]);
+
+  // Quando uma sessão termina com uma etapa de foco ativa, avança a rotina.
+  useEffect(() => {
+    if (isLoadingEntry || activeEntry) return;
+    const run = routineRun.run;
+    if (!run) return;
+    const current = run.steps[run.index];
+    if (current?.kind === "focus") advanceRoutineStep();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeEntry, isLoadingEntry]);
 
   // Handle Stripe freeze purchase return
   useEffect(() => {
@@ -692,6 +737,18 @@ export default function Index() {
                 <DeepWorkBar targetMinutes={activeFocusTarget} elapsedSeconds={elapsed} />
               )}
 
+              {/* Rotina em execução — visível também durante a sessão */}
+              {isRunning && routineRun.run && routineRun.currentStep && (
+                <RoutineRunBar
+                  run={routineRun.run}
+                  currentStep={routineRun.currentStep}
+                  isRunning={isRunning}
+                  onComplete={routineRun.completeCurrent}
+                  onSkip={routineRun.skipCurrent}
+                  onStop={routineRun.stop}
+                />
+              )}
+
 
 
               {/* Project Selection */}
@@ -714,6 +771,18 @@ export default function Index() {
                   <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
                   <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
                   <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
+                  {routineRun.run && routineRun.currentStep ? (
+                    <RoutineRunBar
+                      run={routineRun.run}
+                      currentStep={routineRun.currentStep}
+                      isRunning={isRunning}
+                      onComplete={routineRun.completeCurrent}
+                      onSkip={routineRun.skipCurrent}
+                      onStop={routineRun.stop}
+                    />
+                  ) : (
+                    <FocusRoutinesCard onStart={handleStartRoutine} />
+                  )}
 
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
