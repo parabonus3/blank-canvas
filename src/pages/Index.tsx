@@ -736,6 +736,18 @@ export default function Index() {
                 <DeepWorkBar targetMinutes={activeFocusTarget} elapsedSeconds={elapsed} />
               )}
 
+              {/* Rotina em execução — visível também durante a sessão */}
+              {isRunning && routineRun.run && routineRun.currentStep && (
+                <RoutineRunBar
+                  run={routineRun.run}
+                  currentStep={routineRun.currentStep}
+                  isRunning={isRunning}
+                  onComplete={routineRun.completeCurrent}
+                  onSkip={routineRun.skipCurrent}
+                  onStop={routineRun.stop}
+                />
+              )}
+
 
 
               {/* Project Selection */}
