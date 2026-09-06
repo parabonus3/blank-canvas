@@ -20,6 +20,7 @@ export interface GpsActivity {
   points: GeoPoint[];
   bounds: [[number, number], [number, number]] | null;
   source: string;
+  activity_type: string;
   created_at: string;
   project?: { id: string; name: string; color: string | null } | null;
 }
@@ -110,6 +111,7 @@ export function useSaveGpsActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gpsActivities"] });
+      queryClient.invalidateQueries({ queryKey: ["gpsRecords"] });
     },
   });
 }
@@ -124,6 +126,7 @@ export function useDeleteGpsActivity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gpsActivities"] });
+      queryClient.invalidateQueries({ queryKey: ["gpsRecords"] });
     },
   });
 }
