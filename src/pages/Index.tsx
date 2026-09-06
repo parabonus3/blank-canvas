@@ -38,6 +38,7 @@ import { PauseWarningDialog, PAUSE_WARNING_KEY } from "@/components/PauseWarning
 import { useGpsTracker, hasStoredRun } from "@/hooks/useGpsTracker";
 import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
 import { RunModeToggle } from "@/components/gps/RunModeToggle";
+import { normalizeActivityType, type ActivityType } from "@/lib/activityTypes";
 import { RunLivePanel } from "@/components/gps/RunLivePanel";
 import { DeepWorkPicker } from "@/components/timer/DeepWorkPicker";
 import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
@@ -87,6 +88,9 @@ export default function Index() {
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showPauseWarning, setShowPauseWarning] = useState(false);
   const [runMode, setRunMode] = useState(() => localStorage.getItem("timezoni.runMode") === "1");
+  const [runActivityType, setRunActivityType] = useState<ActivityType>(() =>
+    normalizeActivityType(localStorage.getItem("timezoni.runActivityType")),
+  );
   const [focusTarget, setFocusTarget] = useState<number | null>(() => {
     try {
       const raw = localStorage.getItem("timezoni.focusTarget");
@@ -482,6 +486,10 @@ export default function Index() {
   }, [runMode]);
 
   useEffect(() => {
+    localStorage.setItem("timezoni.runActivityType", runActivityType);
+  }, [runActivityType]);
+
+  useEffect(() => {
     try {
       if (focusTarget) localStorage.setItem("timezoni.focusTarget", String(focusTarget));
       else localStorage.removeItem("timezoni.focusTarget");
@@ -565,6 +573,7 @@ export default function Index() {
                 summary: runSummary,
                 timeEntryId: data.id,
                 projectId: runProjectId,
+                activityType: runActivityType,
               });
               toast({
                 title: t("runs.saved_title"),
@@ -769,7 +778,13 @@ export default function Index() {
                     onChange={setSelectedChallenge}
                   />
                   <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
-                  <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
+                  <RunModeToggle
+                    enabled={runMode}
+                    onChange={setRunMode}
+                    supported={gps.supported}
+                    activityType={runActivityType}
+                    onActivityTypeChange={setRunActivityType}
+                  />
                   <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
                   {routineRun.run && routineRun.currentStep ? (
                     <RoutineRunBar
@@ -854,6 +869,7 @@ export default function Index() {
             accuracy={gps.accuracy}
             acquiring={gps.acquiring}
             error={gps.error}
+            activityType={runActivityType}
             paused={gps.isPaused || isPaused}
             hideMap={showStopDialog}
             collapsed={runPanelCollapsed}
