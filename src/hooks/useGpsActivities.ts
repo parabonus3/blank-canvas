@@ -44,6 +44,29 @@ export function useGpsActivities() {
   });
 }
 
+export interface GpsRecord {
+  activity_type: string;
+  total_activities: number;
+  total_distance_meters: number;
+  longest_distance_meters: number;
+  best_pace_seconds_per_km: number | null;
+  max_speed: number | null;
+}
+
+/** Recordes pessoais por modalidade (RPC no banco). */
+export function useGpsRecords() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["gpsRecords", user?.id],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any).rpc("get_my_gps_records");
+      if (error) throw error;
+      return (data || []) as GpsRecord[];
+    },
+    enabled: !!user,
+  });
+}
+
 export function useSaveGpsActivity() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -53,10 +76,12 @@ export function useSaveGpsActivity() {
       summary,
       timeEntryId,
       projectId,
+      activityType,
     }: {
       summary: GpsRunSummary;
       timeEntryId?: string | null;
       projectId?: string | null;
+      activityType?: string | null;
     }) => {
       if (!user) throw new Error("Not authenticated");
       const { data, error } = await (supabase as any)
