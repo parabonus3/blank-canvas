@@ -101,6 +101,7 @@ export function useSaveGpsActivity() {
           points: summary.points,
           bounds: summary.bounds,
           source: "browser",
+          activity_type: activityType || "run",
         })
         .select("*")
         .single();
