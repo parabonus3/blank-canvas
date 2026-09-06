@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { useGpsTracker } from "@/hooks/useGpsTracker";
 import { useSaveGpsActivity } from "@/hooks/useGpsActivities";
 import { RunModeToggle } from "@/components/gps/RunModeToggle";
+import { normalizeActivityType, type ActivityType } from "@/lib/activityTypes";
 import { RunLivePanel } from "@/components/gps/RunLivePanel";
 import { toast } from "@/hooks/use-toast";
 
@@ -48,6 +49,9 @@ export function RoomTimerCard({ roomId }: Props) {
   const [showSounds, setShowSounds] = useState(false);
   const [fsOpen, setFsOpen] = useState(false);
   const [runMode, setRunMode] = useState(() => localStorage.getItem("timezoni.runMode") === "1");
+  const [runActivityType, setRunActivityType] = useState<ActivityType>(() =>
+    normalizeActivityType(localStorage.getItem("timezoni.runActivityType")),
+  );
 
   const gps = useGpsTracker();
   const saveGpsActivity = useSaveGpsActivity();
@@ -109,6 +113,7 @@ export function RoomTimerCard({ roomId }: Props) {
     resetPause();
     localStorage.setItem("lastProjectId", projectId);
     localStorage.setItem("timezoni.runMode", runMode ? "1" : "0");
+    localStorage.setItem("timezoni.runActivityType", runActivityType);
     if (runMode && gps.supported) gps.start();
     start.mutate({ projectId, roomId, challengeId: selectedChallenge });
   };
@@ -132,6 +137,7 @@ export function RoomTimerCard({ roomId }: Props) {
               summary: runSummary,
               timeEntryId: data?.id ?? active.id,
               projectId: runProjectId,
+              activityType: runActivityType,
             });
           }
         },
@@ -300,7 +306,13 @@ export function RoomTimerCard({ roomId }: Props) {
             value={selectedChallenge}
             onChange={setSelectedChallenge}
           />
-          <RunModeToggle enabled={runMode} onChange={setRunMode} supported={gps.supported} />
+          <RunModeToggle
+            enabled={runMode}
+            onChange={setRunMode}
+            supported={gps.supported}
+            activityType={runActivityType}
+            onActivityTypeChange={setRunActivityType}
+          />
           <Button
             size="lg"
             className="w-full font-semibold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
@@ -337,6 +349,7 @@ export function RoomTimerCard({ roomId }: Props) {
           accuracy={gps.accuracy}
           acquiring={gps.acquiring}
           error={gps.error}
+          activityType={runActivityType}
           paused={gps.isPaused || isPaused}
         />
       )}

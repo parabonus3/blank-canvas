@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ChevronUp, Footprints, Gauge, Info, MapPin, Mountain, Pause, Satellite, TriangleAlert } from "lucide-react";
+import { ChevronDown, ChevronUp, Gauge, Info, MapPin, Mountain, Pause, Satellite, TriangleAlert } from "lucide-react";
 import { LazyRouteMap } from "@/components/gps/LazyRouteMap";
 import { formatDistance, formatPace, type GeoPoint } from "@/lib/geo";
 import { cn } from "@/lib/utils";
+import { ACTIVITY_ICONS, formatSpeed, isSpeedBased, normalizeActivityType, type ActivityType } from "@/lib/activityTypes";
 
 interface Props {
   points: GeoPoint[];
@@ -12,6 +13,7 @@ interface Props {
   acquiring: boolean;
   error: "denied" | "unavailable" | "timeout" | null;
   paused?: boolean;
+  activityType?: ActivityType | string | null;
   collapsed?: boolean;
   onToggleCollapsed?: () => void;
   /** Esconde o mapa (ex.: enquanto um modal está aberto). */
@@ -27,12 +29,16 @@ export function RunLivePanel({
   acquiring,
   error,
   paused,
+  activityType,
   collapsed,
   onToggleCollapsed,
   hideMap,
   className,
 }: Props) {
   const { t } = useTranslation();
+  const type = normalizeActivityType(activityType);
+  const TypeIcon = ACTIVITY_ICONS[type];
+  const speedMode = isSpeedBased(type);
 
   return (
     <div className={cn("rounded-2xl border border-primary/25 bg-card p-3 sm:p-4 space-y-3", className)}>
@@ -44,9 +50,9 @@ export function RunLivePanel({
           aria-expanded={!collapsed}
         >
           <span className="h-8 w-8 rounded-lg bg-primary/10 ring-1 ring-primary/25 flex items-center justify-center shrink-0">
-            <Footprints className="h-4 w-4 text-primary" />
+            <TypeIcon className="h-4 w-4 text-primary" />
           </span>
-          <span className="text-sm font-semibold truncate">{t("runs.live_title")}</span>
+          <span className="text-sm font-semibold truncate">{t(`runs.type_${type}`)}</span>
           {onToggleCollapsed && (
             collapsed ? <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
               : <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -85,9 +91,15 @@ export function RunLivePanel({
               <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{formatDistance(distance)}</p>
             </div>
             <div className="rounded-xl bg-muted/50 py-2">
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.pace")}</p>
-              <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">{formatPace(currentPace)}</p>
-              <p className="text-[10px] text-muted-foreground">{t("runs.per_km")}</p>
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                {speedMode ? t("runs.speed") : t("runs.pace")}
+              </p>
+              <p className="text-lg sm:text-xl font-bold font-mono tabular-nums">
+                {speedMode ? formatSpeed(currentPace) : formatPace(currentPace)}
+              </p>
+              <p className="text-[10px] text-muted-foreground">
+                {speedMode ? t("runs.kmh") : t("runs.per_km")}
+              </p>
             </div>
             <div className="rounded-xl bg-muted/50 py-2">
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("runs.points")}</p>

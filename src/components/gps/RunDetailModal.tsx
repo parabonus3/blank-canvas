@@ -6,6 +6,7 @@ import { computeSplits, formatDistance, formatDuration, formatPace } from "@/lib
 import type { GpsActivity } from "@/hooks/useGpsActivities";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { ACTIVITY_ICONS, formatSpeed, isSpeedBased, normalizeActivityType } from "@/lib/activityTypes";
 
 interface Props {
   activity: GpsActivity | null;
@@ -20,6 +21,10 @@ export function RunDetailModal({ activity, onClose, onDelete }: Props) {
 
   if (!activity) return null;
 
+  const type = normalizeActivityType(activity.activity_type);
+  const TypeIcon = ACTIVITY_ICONS[type];
+  const speedMode = isSpeedBased(type);
+
   const dateLabel = new Date(activity.started_at).toLocaleString(i18n.language, {
     dateStyle: "medium",
     timeStyle: "short",
@@ -29,10 +34,13 @@ export function RunDetailModal({ activity, onClose, onDelete }: Props) {
     <Dialog open={!!activity} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-base">
-            {activity.project?.name || t("runs.title")}
+          <DialogTitle className="text-base flex items-center gap-2">
+            <TypeIcon className="h-4 w-4 text-primary shrink-0" />
+            <span className="truncate">{activity.project?.name || t(`runs.type_${type}`)}</span>
           </DialogTitle>
-          <p className="text-xs text-muted-foreground">{dateLabel}</p>
+          <p className="text-xs text-muted-foreground">
+            {t(`runs.type_${type}`)} · {dateLabel}
+          </p>
         </DialogHeader>
 
         <LazyRouteMap points={points} className="h-44 sm:h-72" />
@@ -46,8 +54,12 @@ export function RunDetailModal({ activity, onClose, onDelete }: Props) {
           <Stat label={t("runs.distance")} value={formatDistance(Number(activity.distance_meters))} />
           <Stat label={t("runs.time")} value={formatDuration(activity.elapsed_seconds || activity.moving_seconds)} />
           <Stat
-            label={t("runs.avg_pace")}
-            value={`${formatPace(activity.avg_pace_seconds_per_km ? Number(activity.avg_pace_seconds_per_km) : null)} /km`}
+            label={speedMode ? t("runs.avg_speed") : t("runs.avg_pace")}
+            value={
+              speedMode
+                ? `${formatSpeed(activity.avg_pace_seconds_per_km ? Number(activity.avg_pace_seconds_per_km) : null)} ${t("runs.kmh")}`
+                : `${formatPace(activity.avg_pace_seconds_per_km ? Number(activity.avg_pace_seconds_per_km) : null)} /km`
+            }
           />
           <Stat label={t("runs.elevation")} value={`${Math.round(Number(activity.elevation_gain_meters || 0))} m`} />
         </div>
