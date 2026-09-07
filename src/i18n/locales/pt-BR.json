@@ -2743,7 +2743,22 @@
     "signal_weak": "fraco",
     "no_track_title": "Trajeto insuficiente",
     "no_track_desc": "O GPS não captou pontos suficientes para desenhar o trajeto — sinal fraco ou permissão negada.",
-    "weak_signal_hint": "Sinal fraco: o trajeto ainda não está sendo captado. Fique em área aberta e mantenha a tela ligada."
+    "weak_signal_hint": "Sinal fraco: o trajeto ainda não está sendo captado. Fique em área aberta e mantenha a tela ligada.",
+    "activity_type": "Modalidade",
+    "type_run": "Corrida",
+    "type_walk": "Caminhada",
+    "type_ride": "Pedal",
+    "type_hike": "Trilha",
+    "speed": "Velocidade",
+    "kmh": "km/h",
+    "avg_speed": "Vel. média",
+    "all_types": "Todas",
+    "records_title": "Recordes pessoais",
+    "records_count": "{{count}} atividades",
+    "record_total": "Total",
+    "record_longest": "Mais longa",
+    "record_pace": "Melhor ritmo",
+    "record_speed": "Melhor vel."
   },
   "activity": {
     "empty": "Nenhuma atividade registrada ainda",

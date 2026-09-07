@@ -2593,7 +2593,22 @@
     "signal_weak": "弱い",
     "no_track_title": "ルートのデータが不足",
     "no_track_desc": "GPSの取得点が少なくルートを描けませんでした（電波が弱い、または権限が未許可）。",
-    "weak_signal_hint": "電波が弱く、ルートがまだ記録されていません。開けた場所で画面をオンのままにしてください。"
+    "weak_signal_hint": "電波が弱く、ルートがまだ記録されていません。開けた場所で画面をオンのままにしてください。",
+    "activity_type": "種目",
+    "type_run": "ラン",
+    "type_walk": "ウォーク",
+    "type_ride": "バイク",
+    "type_hike": "ハイク",
+    "speed": "速度",
+    "kmh": "km/h",
+    "avg_speed": "平均速度",
+    "all_types": "すべて",
+    "records_title": "自己記録",
+    "records_count": "{{count}}件の記録",
+    "record_total": "合計",
+    "record_longest": "最長",
+    "record_pace": "ベストペース",
+    "record_speed": "ベスト速度"
   },
   "activity": {
     "empty": "まだ履歴はありません",

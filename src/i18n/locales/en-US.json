@@ -2688,7 +2688,22 @@
     "signal_weak": "Weak",
     "no_track_title": "Not enough route data",
     "no_track_desc": "GPS didn't capture enough points to draw the route — weak signal or permission denied.",
-    "weak_signal_hint": "Weak signal: the route isn't being captured yet. Stay in an open area and keep the screen on."
+    "weak_signal_hint": "Weak signal: the route isn't being captured yet. Stay in an open area and keep the screen on.",
+    "activity_type": "Activity",
+    "type_run": "Run",
+    "type_walk": "Walk",
+    "type_ride": "Ride",
+    "type_hike": "Hike",
+    "speed": "Speed",
+    "kmh": "km/h",
+    "avg_speed": "Avg speed",
+    "all_types": "All",
+    "records_title": "Personal records",
+    "records_count": "{{count}} activities",
+    "record_total": "Total",
+    "record_longest": "Longest",
+    "record_pace": "Best pace",
+    "record_speed": "Best speed"
   },
   "activity": {
     "empty": "No activity recorded yet",

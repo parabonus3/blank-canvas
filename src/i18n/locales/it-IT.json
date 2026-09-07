@@ -2579,7 +2579,22 @@
     "signal_weak": "debole",
     "no_track_title": "Percorso insufficiente",
     "no_track_desc": "Il GPS non ha rilevato punti sufficienti per tracciare il percorso: segnale debole o permesso negato.",
-    "weak_signal_hint": "Segnale debole: il percorso non viene ancora rilevato. Resta in area aperta e tieni lo schermo accesso."
+    "weak_signal_hint": "Segnale debole: il percorso non viene ancora rilevato. Resta in area aperta e tieni lo schermo accesso.",
+    "activity_type": "Attività",
+    "type_run": "Corsa",
+    "type_walk": "Camminata",
+    "type_ride": "Bici",
+    "type_hike": "Trekking",
+    "speed": "Velocità",
+    "kmh": "km/h",
+    "avg_speed": "Vel. media",
+    "all_types": "Tutte",
+    "records_title": "Record personali",
+    "records_count": "{{count}} attività",
+    "record_total": "Totale",
+    "record_longest": "Più lunga",
+    "record_pace": "Miglior ritmo",
+    "record_speed": "Miglior vel."
   },
   "activity": {
     "empty": "Nessuna attività registrata",

@@ -2600,7 +2600,22 @@
     "signal_weak": "débil",
     "no_track_title": "Recorrido insuficiente",
     "no_track_desc": "El GPS no captó puntos suficientes para dibujar el recorrido: señal débil o permiso denegado.",
-    "weak_signal_hint": "Señal débil: el recorrido aún no se está captando. Ponte en zona abierta y mantén la pantalla encendida."
+    "weak_signal_hint": "Señal débil: el recorrido aún no se está captando. Ponte en zona abierta y mantén la pantalla encendida.",
+    "activity_type": "Modalidad",
+    "type_run": "Carrera",
+    "type_walk": "Caminata",
+    "type_ride": "Bici",
+    "type_hike": "Senderismo",
+    "speed": "Velocidad",
+    "kmh": "km/h",
+    "avg_speed": "Vel. media",
+    "all_types": "Todas",
+    "records_title": "Récords personales",
+    "records_count": "{{count}} actividades",
+    "record_total": "Total",
+    "record_longest": "Más larga",
+    "record_pace": "Mejor ritmo",
+    "record_speed": "Mejor vel."
   },
   "activity": {
     "empty": "Aún no hay actividad registrada",

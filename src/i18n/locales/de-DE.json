@@ -2593,7 +2593,22 @@
     "signal_weak": "Schwaches",
     "no_track_title": "Route unvollständig",
     "no_track_desc": "Das GPS hat zu wenige Punkte erfasst, um die Route zu zeichnen – schwaches Signal oder Berechtigung verweigert.",
-    "weak_signal_hint": "Schwaches Signal: Die Route wird noch nicht erfasst. Bleibe im Freien und lass den Bildschirm an."
+    "weak_signal_hint": "Schwaches Signal: Die Route wird noch nicht erfasst. Bleibe im Freien und lass den Bildschirm an.",
+    "activity_type": "Aktivität",
+    "type_run": "Laufen",
+    "type_walk": "Gehen",
+    "type_ride": "Radfahren",
+    "type_hike": "Wandern",
+    "speed": "Geschwindigkeit",
+    "kmh": "km/h",
+    "avg_speed": "Ø Geschw.",
+    "all_types": "Alle",
+    "records_title": "Persönliche Rekorde",
+    "records_count": "{{count}} Aktivitäten",
+    "record_total": "Gesamt",
+    "record_longest": "Längste",
+    "record_pace": "Beste Pace",
+    "record_speed": "Beste Geschw."
   },
   "activity": {
     "empty": "Noch keine Aktivität erfasst",

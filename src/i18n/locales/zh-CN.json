@@ -2593,7 +2593,22 @@
     "signal_weak": "较弱",
     "no_track_title": "路线数据不足",
     "no_track_desc": "GPS 采集的点太少，无法绘制路线——信号弱或未授权。",
-    "weak_signal_hint": "信号较弱，尚未记录到路线。请到开阔处并保持屏幕开启。"
+    "weak_signal_hint": "信号较弱，尚未记录到路线。请到开阔处并保持屏幕开启。",
+    "activity_type": "运动类型",
+    "type_run": "跑步",
+    "type_walk": "步行",
+    "type_ride": "骑行",
+    "type_hike": "徒步",
+    "speed": "速度",
+    "kmh": "公里/小时",
+    "avg_speed": "平均速度",
+    "all_types": "全部",
+    "records_title": "个人纪录",
+    "records_count": "{{count}} 次活动",
+    "record_total": "总计",
+    "record_longest": "最长",
+    "record_pace": "最佳配速",
+    "record_speed": "最高速度"
   },
   "activity": {
     "empty": "暂无活动记录",

@@ -2593,7 +2593,22 @@
     "signal_weak": "faible",
     "no_track_title": "Tracé insuffisant",
     "no_track_desc": "Le GPS n'a pas capté assez de points pour dessiner le tracé — signal faible ou permission refusée.",
-    "weak_signal_hint": "Signal faible : le tracé n'est pas encore capté. Restez en zone dégagée et gardez l'écran allumé."
+    "weak_signal_hint": "Signal faible : le tracé n'est pas encore capté. Restez en zone dégagée et gardez l'écran allumé.",
+    "activity_type": "Activité",
+    "type_run": "Course",
+    "type_walk": "Marche",
+    "type_ride": "Vélo",
+    "type_hike": "Randonnée",
+    "speed": "Vitesse",
+    "kmh": "km/h",
+    "avg_speed": "Vit. moy.",
+    "all_types": "Toutes",
+    "records_title": "Records personnels",
+    "records_count": "{{count}} activités",
+    "record_total": "Total",
+    "record_longest": "La plus longue",
+    "record_pace": "Meilleure allure",
+    "record_speed": "Meilleure vit."
   },
   "activity": {
     "empty": "Aucune activité enregistrée",

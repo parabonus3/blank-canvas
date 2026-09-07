@@ -2579,7 +2579,22 @@
     "signal_weak": "약함",
     "no_track_title": "경로 데이터 부족",
     "no_track_desc": "GPS가 경로를 그릴 만큼 지점을 받지 못했습니다 — 신호 약함 또는 권한 거부.",
-    "weak_signal_hint": "신호가 약해 경로가 아직 기록되지 않습니다. 개방된 장소에서 화면을 켜 두세요."
+    "weak_signal_hint": "신호가 약해 경로가 아직 기록되지 않습니다. 개방된 장소에서 화면을 켜 두세요.",
+    "activity_type": "종목",
+    "type_run": "달리기",
+    "type_walk": "걷기",
+    "type_ride": "자전거",
+    "type_hike": "등산",
+    "speed": "속도",
+    "kmh": "km/h",
+    "avg_speed": "평균 속도",
+    "all_types": "전체",
+    "records_title": "개인 기록",
+    "records_count": "활동 {{count}}회",
+    "record_total": "총합",
+    "record_longest": "최장",
+    "record_pace": "최고 페이스",
+    "record_speed": "최고 속도"
   },
   "activity": {
     "empty": "아직 기록된 활동이 없습니다",
