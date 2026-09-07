@@ -4,6 +4,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { FriendsList } from "@/components/friends/FriendsList";
 import { AddFriendDialog } from "@/components/friends/AddFriendDialog";
+import { DuelsSection } from "@/components/duels/DuelsSection";
 import { useProfile } from "@/hooks/useProfile";
 import { UserPlus, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -50,6 +51,8 @@ export default function Friends() {
             </Button>
           </div>
         )}
+
+        <DuelsSection />
 
         <FriendsList />
 
