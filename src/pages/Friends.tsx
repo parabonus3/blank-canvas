@@ -51,6 +51,8 @@ export default function Friends() {
           </div>
         )}
 
+        <DuelsSection />
+
         <FriendsList />
 
         <AddFriendDialog open={showAddFriend} onOpenChange={setShowAddFriend} />
