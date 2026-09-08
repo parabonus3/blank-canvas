@@ -92,20 +92,41 @@ serve(async (req) => {
     const trialEndsAt: string | null = profileRow?.trial_ends_at ?? null;
     const trialActive = !!trialEndsAt && new Date(trialEndsAt).getTime() > Date.now();
 
+    // Active plan grant (access codes / partner grants)
+    let grantTier: string | null = null;
+    let grantEndsAt: string | null = null;
+    try {
+      const { data: grantRows } = await supabaseClient.rpc("get_effective_plan_grant", { _user_id: user.id });
+      const grant = Array.isArray(grantRows) ? grantRows[0] : grantRows;
+      if (grant?.plan_tier) {
+        grantTier = grant.plan_tier;
+        grantEndsAt = grant.expires_at ?? null;
+      }
+    } catch (grantError) {
+      logStep("Grant lookup failed (non-fatal)", { error: String(grantError) });
+    }
+    const TIER_RANK: Record<string, number> = { free: 0, pro: 1, premium: 2 };
+    const bestTier = (a: string, b: string) => ((TIER_RANK[a] ?? 0) >= (TIER_RANK[b] ?? 0) ? a : b);
+    logStep("Grant resolved", { grantTier, grantEndsAt, trialActive });
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
     if (customers.data.length === 0) {
       logStep("No customer found", { trialActive });
-      // If trial still active, keep plan_tier as premium; otherwise free
+      // Trial and/or access-code grant define the tier when there is no Stripe customer
+      const effectiveTier = bestTier(trialActive ? "premium" : "free", grantTier ?? "free");
       await supabaseClient
         .from("profiles")
-        .update({ plan_tier: trialActive ? "premium" : "free" })
+        .update({ plan_tier: effectiveTier })
         .eq("user_id", user.id);
       return new Response(JSON.stringify({
         subscribed: false,
         trial_active: trialActive,
         trial_ends_at: trialEndsAt,
+        grant_tier: grantTier,
+        grant_ends_at: grantEndsAt,
+        effective_tier: effectiveTier,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -139,7 +160,8 @@ serve(async (req) => {
       logStep("Active subscription found", { productId, priceId, subscriptionEnd });
 
       // Update plan_tier in profiles
-      const tier = typeof productId === "string" ? (PRODUCT_TIER_MAP[productId] || "free") : "free";
+      const stripeTier = typeof productId === "string" ? (PRODUCT_TIER_MAP[productId] || "free") : "free";
+      const tier = bestTier(stripeTier, grantTier ?? "free");
       await supabaseClient.from("profiles").update({ plan_tier: tier }).eq("user_id", user.id);
       logStep("Updated plan_tier", { tier });
 
@@ -176,10 +198,10 @@ serve(async (req) => {
         }
       }
     } else {
-      logStep("No active subscription found", { trialActive });
+      logStep("No active subscription found", { trialActive, grantTier });
       await supabaseClient
         .from("profiles")
-        .update({ plan_tier: trialActive ? "premium" : "free" })
+        .update({ plan_tier: bestTier(trialActive ? "premium" : "free", grantTier ?? "free") })
         .eq("user_id", user.id);
     }
 
@@ -191,6 +213,8 @@ serve(async (req) => {
       pending_plan_change: pendingPlanChange,
       trial_active: !hasActiveSub && trialActive,
       trial_ends_at: trialEndsAt,
+      grant_tier: grantTier,
+      grant_ends_at: grantEndsAt,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
