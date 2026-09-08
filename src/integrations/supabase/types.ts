@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_code_redemptions: {
+        Row: {
+          access_code_id: string
+          access_ends_at: string
+          access_starts_at: string
+          created_at: string
+          granted_days: number
+          id: string
+          plan_grant_id: string | null
+          plan_tier: string
+          user_id: string
+        }
+        Insert: {
+          access_code_id: string
+          access_ends_at: string
+          access_starts_at: string
+          created_at?: string
+          granted_days: number
+          id?: string
+          plan_grant_id?: string | null
+          plan_tier: string
+          user_id: string
+        }
+        Update: {
+          access_code_id?: string
+          access_ends_at?: string
+          access_starts_at?: string
+          created_at?: string
+          granted_days?: number
+          id?: string
+          plan_grant_id?: string | null
+          plan_tier?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "access_code_redemptions_access_code_id_fkey"
+            columns: ["access_code_id"]
+            isOneToOne: false
+            referencedRelation: "access_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "access_code_redemptions_plan_grant_id_fkey"
+            columns: ["plan_grant_id"]
+            isOneToOne: false
+            referencedRelation: "plan_grants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      access_codes: {
+        Row: {
+          batch_id: string | null
+          campaign: string | null
+          code: string
+          code_type: string
+          created_at: string
+          created_by: string | null
+          duration_days: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_redemptions: number | null
+          notes: string | null
+          partner_name: string | null
+          plan_tier: string
+          redemption_count: number
+          updated_at: string
+        }
+        Insert: {
+          batch_id?: string | null
+          campaign?: string | null
+          code: string
+          code_type?: string
+          created_at?: string
+          created_by?: string | null
+          duration_days: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          notes?: string | null
+          partner_name?: string | null
+          plan_tier: string
+          redemption_count?: number
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string | null
+          campaign?: string | null
+          code?: string
+          code_type?: string
+          created_at?: string
+          created_by?: string | null
+          duration_days?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          notes?: string | null
+          partner_name?: string | null
+          plan_tier?: string
+          redemption_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       activity_reactions: {
         Row: {
           activity_id: string
@@ -1119,6 +1227,53 @@ export type Database = {
           weekly_recap?: boolean
         }
         Relationships: []
+      }
+      plan_grants: {
+        Row: {
+          access_code_id: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          plan_tier: string
+          revoked_at: string | null
+          source: string
+          starts_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_code_id?: string | null
+          created_at?: string
+          expires_at: string
+          id?: string
+          plan_tier: string
+          revoked_at?: string | null
+          source?: string
+          starts_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_code_id?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          plan_tier?: string
+          revoked_at?: string | null
+          source?: string
+          starts_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_grants_access_code_id_fkey"
+            columns: ["access_code_id"]
+            isOneToOne: false
+            referencedRelation: "access_codes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -2890,6 +3045,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_effective_plan_grant: {
+        Args: { _user_id: string }
+        Returns: {
+          expires_at: string
+          plan_tier: string
+        }[]
+      }
       get_freeze_missions_progress: {
         Args: never
         Returns: {
@@ -3310,6 +3472,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      redeem_access_code: { Args: { _code: string }; Returns: Json }
       refresh_last_known_streak: { Args: never; Returns: number }
       reject_board_invitation: {
         Args: { _invitation_id: string }
