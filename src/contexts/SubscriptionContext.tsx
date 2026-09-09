@@ -22,6 +22,9 @@ interface SubscriptionState {
   isTrial: boolean;
   trialEndsAt: string | null;
   trialDaysLeft: number;
+  grantTier: PlanTier | null;
+  grantEndsAt: string | null;
+  isCodeAccess: boolean;
 }
 
 interface SubscriptionContextType extends SubscriptionState {
@@ -45,6 +48,10 @@ const computeTrialDaysLeft = (endsAt: string | null): number => {
   if (diff <= 0) return 0;
   return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 };
+
+const TIER_RANK: Record<string, number> = { free: 0, pro: 1, premium: 2 };
+const bestTier = (a: PlanTier, b: PlanTier): PlanTier =>
+  (TIER_RANK[a] ?? 0) >= (TIER_RANK[b] ?? 0) ? a : b;
 
 const INITIAL_STATE: SubscriptionState = {
   tier: "free",
@@ -106,6 +113,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           const trialEndsAt: string | null = data?.trial_ends_at ?? null;
           const trialActive: boolean = !hasStripeSub && !!data?.trial_active;
           const trialDaysLeft = trialActive ? computeTrialDaysLeft(trialEndsAt) : 0;
+          const rawGrantTier: string | null = data?.grant_tier ?? null;
+          const grantEndsAt: string | null = data?.grant_ends_at ?? null;
+          const grantTier: PlanTier | null =
+            rawGrantTier === "pro" || rawGrantTier === "premium" ? rawGrantTier : null;
 
           if (hasStripeSub) {
             const tier = getTierByProductId(data?.product_id);
@@ -124,7 +135,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
             }
 
             setState({
-              tier,
+              tier: grantTier ? bestTier(tier, grantTier) : tier,
               billingInterval,
               subscribed: true,
               subscriptionEnd: data?.subscription_end ?? null,
@@ -134,6 +145,9 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
               isTrial: false,
               trialEndsAt,
               trialDaysLeft: 0,
+              grantTier,
+              grantEndsAt,
+              isCodeAccess: !!grantTier && bestTier(tier, grantTier) === grantTier && grantTier !== tier,
             });
             return;
           }
@@ -142,17 +156,23 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           const wasSubscribed = !!subEnd;
           const isExpired = wasSubscribed && new Date(subEnd) < new Date();
 
+          const baseTier: PlanTier = trialActive ? "premium" : "free";
+          const effectiveTier: PlanTier = grantTier ? bestTier(baseTier, grantTier) : baseTier;
+
           setState({
-            tier: trialActive ? "premium" : "free",
+            tier: effectiveTier,
             billingInterval: null,
             subscribed: false,
             subscriptionEnd: subEnd,
             loading: false,
             pendingChange: null,
             isExpired,
-            isTrial: trialActive,
+            isTrial: trialActive && effectiveTier === baseTier,
             trialEndsAt,
             trialDaysLeft,
+            grantTier,
+            grantEndsAt,
+            isCodeAccess: !!grantTier && effectiveTier === grantTier,
           });
           return;
         } catch (err) {
@@ -220,6 +240,9 @@ const FALLBACK_SUBSCRIPTION: SubscriptionContextType = {
   isTrial: false,
   trialEndsAt: null,
   trialDaysLeft: 0,
+  grantTier: null,
+  grantEndsAt: null,
+  isCodeAccess: false,
   refreshSubscription: async () => {},
   hasFeature: () => false,
   getMaxRooms: () => ROOM_LIMITS.free,
