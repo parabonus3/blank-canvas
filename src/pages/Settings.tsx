@@ -23,6 +23,7 @@ import { AvatarFlairPicker } from "@/components/settings/AvatarFlairPicker";
 
 import { AvatarCropDialog } from "@/components/settings/AvatarCropDialog";
 import { PushNotificationsSection } from "@/components/pwa/PushNotificationsSection";
+import { RedeemCodeCard } from "@/components/settings/RedeemCodeCard";
 
 const groupedTimezones = getGroupedTimezones();
 
@@ -267,6 +268,9 @@ export default function Settings() {
           onCancel={() => { setCropOpen(false); setPendingFile(null); }}
           onConfirm={uploadCroppedAvatar}
         />
+
+        {/* Access code */}
+        <RedeemCodeCard />
 
         {/* Privacy */}
         <Card>
