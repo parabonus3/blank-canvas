@@ -46,6 +46,9 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AccessCodesTab } from "@/components/admin/AccessCodesTab";
+import { Ticket } from "lucide-react";
 import { PaginationControls } from "@/components/PaginationControls";
 import { ExportButton } from "@/components/ExportButton";
 import { AdminFilters, DEFAULT_ADMIN_FILTERS, type AdminFilterState } from "@/components/admin/AdminFilters";
@@ -212,6 +215,19 @@ export default function Admin() {
           />
         </div>
 
+        <Tabs defaultValue="users" className="space-y-4">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="users" className="flex-1 sm:flex-none gap-1.5">
+              <Shield className="h-4 w-4" />
+              {t("admin.tab_users")}
+            </TabsTrigger>
+            <TabsTrigger value="codes" className="flex-1 sm:flex-none gap-1.5">
+              <Ticket className="h-4 w-4" />
+              {t("access_codes.admin_tab")}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="users" className="space-y-6 mt-0">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <StatCard label={t("admin.total_users")} value={stats?.total_users ?? 0} />
@@ -349,6 +365,12 @@ export default function Admin() {
           </>
         )}
 
+          </TabsContent>
+
+          <TabsContent value="codes" className="mt-0">
+            <AccessCodesTab />
+          </TabsContent>
+        </Tabs>
         {/* Plan Dialog */}
         <Dialog open={!!planUser} onOpenChange={() => setPlanUser(null)}>
           <DialogContent>
