@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
+import { RedeemCodeCard } from "@/components/settings/RedeemCodeCard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -363,6 +364,8 @@ export default function Pricing() {
             );
           })}
         </div>
+
+        {session && <RedeemCodeCard className="max-w-xl mx-auto mt-10" />}
       </div>
 
       {/* Downgrade confirmation dialog */}
