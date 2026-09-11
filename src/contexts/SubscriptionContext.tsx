@@ -64,6 +64,9 @@ const INITIAL_STATE: SubscriptionState = {
   isTrial: false,
   trialEndsAt: null,
   trialDaysLeft: 0,
+  grantTier: null,
+  grantEndsAt: null,
+  isCodeAccess: false,
 };
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
