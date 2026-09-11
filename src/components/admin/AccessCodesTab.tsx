@@ -131,7 +131,7 @@ export function AccessCodesTab() {
           ...base,
           code: form.code || undefined,
           prefix: form.prefix,
-          max_redemptions: form.code_type === "single" ? 1 : form.max_redemptions || null,
+          max_redemptions: form.code_type === "single" ? 1 : form.max_redemptions ? Number(form.max_redemptions) : null,
         });
       }
       setFormOpen(false);
