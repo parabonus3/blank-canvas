@@ -1920,6 +1920,48 @@ export type Database = {
           },
         ]
       }
+      seed_config: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      seed_entities: {
+        Row: {
+          created_at: string
+          entity_id: string
+          id: string
+          kind: string
+          locale: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          id?: string
+          kind: string
+          locale?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          id?: string
+          kind?: string
+          locale?: string | null
+        }
+        Relationships: []
+      }
       streak_freeze_purchases: {
         Row: {
           amount_cents: number
@@ -2002,6 +2044,7 @@ export type Database = {
           invite_code: string
           is_active: boolean
           is_public: boolean
+          is_seed: boolean
           max_members: number
           name: string
           owner_id: string
@@ -2027,6 +2070,7 @@ export type Database = {
           invite_code?: string
           is_active?: boolean
           is_public?: boolean
+          is_seed?: boolean
           max_members?: number
           name: string
           owner_id: string
@@ -2052,6 +2096,7 @@ export type Database = {
           invite_code?: string
           is_active?: boolean
           is_public?: boolean
+          is_seed?: boolean
           max_members?: number
           name?: string
           owner_id?: string
@@ -3516,6 +3561,7 @@ export type Database = {
         }
       }
       room_has_password: { Args: { _room_id: string }; Returns: boolean }
+      seed_presence_tick: { Args: never; Returns: undefined }
       set_member_role: {
         Args: { _member_user_id: string; _role: string; _room_id: string }
         Returns: undefined
