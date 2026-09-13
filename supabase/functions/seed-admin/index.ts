@@ -95,7 +95,7 @@ Deno.serve(async (req) => {
       const offset = payload?.offset ?? 0;
       const total = 430;
       const created: string[] = [];
-      for (let i = offset; i < Math.min(offset + 20, total); i++) {
+      for (let i = offset; i < Math.min(offset + 5, total); i++) {
         const loc = locales[i % locales.length];
         const pool = names[loc[0]];
         const displayName = pool[Math.floor(i / locales.length) % pool.length] + (Math.floor(i / (locales.length * pool.length)) ? ` ${Math.floor(i / (locales.length * pool.length)) + 1}` : "");
@@ -139,7 +139,7 @@ Deno.serve(async (req) => {
     }
     if (action === "seed_history") {
       const offset = payload?.offset ?? 0;
-      const { data: users } = await admin.from("seed_entities").select("entity_id").eq("kind", "user").order("created_at").range(offset, offset + 19);
+      const { data: users } = await admin.from("seed_entities").select("entity_id").eq("kind", "user").order("created_at").range(offset, offset + 4);
       const { data: memberships } = await admin.from("room_members").select("user_id,room_id").in("user_id", users?.map((u) => u.entity_id) ?? []);
       const { data: projects } = await admin.from("projects").select("id,user_id").in("user_id", users?.map((u) => u.entity_id) ?? []);
       const rows: Record<string, unknown>[] = [];
@@ -160,7 +160,7 @@ Deno.serve(async (req) => {
         }
       }
       for (let i = 0; i < rows.length; i += 500) { const { error } = await admin.from("time_entries").insert(rows.slice(i, i + 500)); if (error) throw error; }
-      return json({ created: rows.length, next_offset: offset + (users?.length ?? 0), done: (users?.length ?? 0) < 20 || offset + (users?.length ?? 0) >= 430 });
+      return json({ created: rows.length, next_offset: offset + (users?.length ?? 0), done: (users?.length ?? 0) < 5 || offset + (users?.length ?? 0) >= 430 });
     }
     if (action === "purge") {
       const { data: demoUsers } = await admin.from("seed_entities").select("entity_id").eq("kind", "user");

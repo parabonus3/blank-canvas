@@ -16,18 +16,18 @@ export function SeedDataTab() {
 
   const generate = async () => {
     setProgress(1);
-    for (let offset = data?.users ?? 0; offset < 430; offset += 20) {
+    for (let offset = data?.users ?? 0; offset < 430; offset += 5) {
       await action.mutateAsync({ action: "seed_users", payload: { offset } });
-      setProgress(Math.min(45, Math.round(((offset + 20) / 430) * 45)));
+      setProgress(Math.min(45, Math.round(((offset + 5) / 430) * 45)));
     }
     for (let offset = 0; offset < 50; offset += 5) {
       await action.mutateAsync({ action: "seed_rooms", payload: { offset } });
       setProgress(45 + Math.round(((offset + 5) / 50) * 5));
     }
     setProgress(50);
-    for (let offset = data?.sessions ? 430 : 0; offset < 430; offset += 20) {
+    for (let offset = data?.sessions ? 430 : 0; offset < 430; offset += 5) {
       await action.mutateAsync({ action: "seed_history", payload: { offset } });
-      setProgress(50 + Math.round(((offset + 20) / 430) * 50));
+      setProgress(50 + Math.round(((offset + 5) / 430) * 50));
     }
     setProgress(100);
     toast({ title: "Demonstração criada", description: "50 salas e seus históricos já estão ativos." });
