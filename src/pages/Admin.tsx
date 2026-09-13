@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { format } from "date-fns";
 import {
   Shield, RotateCcw, Trash2, Edit, CreditCard, Crown, Eye,
-  Ban, ShieldCheck, ShieldOff, Headset, HeadsetIcon, MoreHorizontal,
+  Ban, ShieldCheck, ShieldOff, Headset, HeadsetIcon, MoreHorizontal, Bot,
 } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -48,6 +48,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccessCodesTab } from "@/components/admin/AccessCodesTab";
+import { SeedDataTab } from "@/components/admin/SeedDataTab";
 import { Ticket } from "lucide-react";
 import { PaginationControls } from "@/components/PaginationControls";
 import { ExportButton } from "@/components/ExportButton";
@@ -225,6 +226,10 @@ export default function Admin() {
               <Ticket className="h-4 w-4" />
               {t("access_codes.admin_tab")}
             </TabsTrigger>
+            <TabsTrigger value="demo" className="flex-1 sm:flex-none gap-1.5">
+              <Bot className="h-4 w-4" />
+              Demonstração
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-6 mt-0">
@@ -369,6 +374,9 @@ export default function Admin() {
 
           <TabsContent value="codes" className="mt-0">
             <AccessCodesTab />
+          </TabsContent>
+          <TabsContent value="demo" className="mt-0">
+            <SeedDataTab />
           </TabsContent>
         </Tabs>
         {/* Plan Dialog */}
