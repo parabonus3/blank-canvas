@@ -110,16 +110,22 @@ Deno.serve(async (req) => {
       return json({ created: created.length, next_offset: offset + created.length, done: offset + created.length >= total });
     }
     if (action === "seed_rooms") {
+      const offset = payload?.offset ?? 0;
+      const batchEnd = Math.min(offset + 5, rooms.length);
       const { data: users } = await admin.from("seed_entities").select("entity_id,locale").eq("kind", "user").order("created_at");
       if (!users || users.length < 430) return json({ error: "Create all demo users first" }, 400);
-      const existing = await admin.from("study_rooms").select("id").eq("is_seed", true).limit(1);
-      if ((existing.data?.length ?? 0) > 0) return json({ ok: true, skipped: true });
-      for (let r = 0; r < rooms.length; r++) {
+      const { data: existingRooms } = await admin.from("study_rooms").select("name").eq("is_seed", true);
+      const existingNames = new Set((existingRooms ?? []).map((room) => room.name));
+      // One inaccessible password per small batch keeps every room locked without
+      // exhausting the Edge worker with dozens of bcrypt calculations at once.
+      const passwordHash = await bcrypt.hash(crypto.randomUUID() + crypto.randomUUID(), 8);
+      let created = 0;
+      for (let r = offset; r < batchEnd; r++) {
         const spec = rooms[r];
+        if (existingNames.has(spec[2])) continue;
         const candidates = users.filter((u) => u.locale === spec[0]);
         const owner = candidates[r % candidates.length].entity_id;
         const memberCount = 7 + ((r * 11 + 3) % 28);
-        const passwordHash = await bcrypt.hash(crypto.randomUUID() + crypto.randomUUID(), 10);
         const { data: room, error } = await admin.from("study_rooms").insert({ name: spec[2], description: spec[3], room_type: spec[4], owner_id: owner, max_members: 50, is_active: true, is_public: true, country: spec[1], rules: spec[3], goal_hours: 12 + (r * 7) % 37, goal_label: spec[0] === "pt-BR" ? "Meta semanal" : "Weekly goal", chat_mode: "open", password_hash: passwordHash, is_seed: true }).select("id").single();
         if (error || !room) throw error ?? new Error("Room creation failed");
         await admin.from("seed_entities").insert({ kind: "room", entity_id: room.id, locale: spec[0] });
@@ -127,8 +133,9 @@ Deno.serve(async (req) => {
         await admin.from("room_members").insert(members.map((userId, j) => ({ room_id: room.id, user_id: userId, role: userId === owner ? "owner" : "member", joined_at: new Date(Date.now() - (4 + ((r * 17 + j * 5) % 82)) * 86400000).toISOString() })));
         await admin.from("room_messages").insert(members.slice(0, 3).map((userId, j) => ({ room_id: room.id, user_id: userId, content: spec[0] === "pt-BR" ? ["Bom estudo, pessoal!", "Meta de hoje iniciada 💪", "Vamos manter a constância!"][j] : ["Good focus everyone!", "Starting today's goal 💪", "Let's stay consistent!"][j], created_at: new Date(Date.now() - (r + j + 1) * 3600000).toISOString() })));
         await admin.from("room_activity_log").insert(members.slice(0, 5).map((userId, j) => ({ room_id: room.id, user_id: userId, action_type: j ? "member_joined" : "room_created", created_at: new Date(Date.now() - (r + j + 1) * 7200000).toISOString() })));
+        created++;
       }
-      return json({ ok: true, rooms: rooms.length });
+      return json({ ok: true, created, next_offset: batchEnd, done: batchEnd >= rooms.length });
     }
     if (action === "seed_history") {
       const offset = payload?.offset ?? 0;
