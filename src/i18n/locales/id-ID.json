@@ -2763,6 +2763,11 @@
     "result_loss": "Temanmu menang kali ini.",
     "result_tie": "Seri!"
   },
+  "seed_admin": {
+    "tab": "Demo", "title": "Lingkungan demo", "description": "Melengkapi ruang multibahasa berpassword, pengguna, dan riwayat tanpa mengubah data asli.",
+    "people": "Pengguna", "rooms": "Ruang", "sessions": "Sesi", "complete": "Demo lengkap", "complete_missing": "Lengkapi data yang kurang", "pause": "Jeda aktivitas", "activate": "Aktifkan aktivitas", "generating": "Membuat dengan aman… {{progress}}%", "by_language": "Cakupan per bahasa", "rooms_short": "ruang", "people_short": "orang", "members_short": "anggota", "history_short": "punya riwayat", "remove_title": "Hapus demo", "remove_desc": "Ketik REMOVER untuk menghapus data demo saja.", "remove_all": "Hapus semua", "completed_title": "Demo lengkap", "completed_desc": "Ruang dan riwayat yang kurang telah ditambahkan.", "removed_title": "Demo dihapus", "removed_desc": "Tidak ada data asli yang diubah.",
+    "languages": { "pt-BR": "Portugis", "en-US": "Inggris", "es-ES": "Spanyol", "fr-FR": "Prancis", "de-DE": "Jerman", "it-IT": "Italia", "ja-JP": "Jepang", "ko-KR": "Korea", "zh-CN": "Tionghoa", "ru-RU": "Rusia", "ar-SA": "Arab", "id-ID": "Indonesia" }
+  },
   "access_codes": {
     "title": "Kode akses",
     "subtitle": "Punya kode mitra? Tukarkan untuk membuka paketmu.",

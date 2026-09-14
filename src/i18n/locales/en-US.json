@@ -2858,6 +2858,11 @@
     "result_loss": "Your friend won this time.",
     "result_tie": "It's a tie!"
   },
+  "seed_admin": {
+    "tab": "Demo", "title": "Demo environment", "description": "Completes password-protected multilingual rooms, people and history without changing real data.",
+    "people": "People", "rooms": "Rooms", "sessions": "Sessions", "complete": "Demo complete", "complete_missing": "Complete missing data", "pause": "Pause activity", "activate": "Start activity", "generating": "Generating safely… {{progress}}%", "by_language": "Coverage by language", "rooms_short": "rooms", "people_short": "people", "members_short": "members", "history_short": "with history", "remove_title": "Remove demo", "remove_desc": "Type REMOVER to delete only demo rooms, people and sessions.", "remove_all": "Remove all", "completed_title": "Demo complete", "completed_desc": "Missing rooms and histories were added.", "removed_title": "Demo removed", "removed_desc": "No real data was changed.",
+    "languages": { "pt-BR": "Portuguese", "en-US": "English", "es-ES": "Spanish", "fr-FR": "French", "de-DE": "German", "it-IT": "Italian", "ja-JP": "Japanese", "ko-KR": "Korean", "zh-CN": "Chinese", "ru-RU": "Russian", "ar-SA": "Arabic", "id-ID": "Indonesian" }
+  },
   "access_codes": {
     "title": "Access code",
     "subtitle": "Got a partner code? Redeem it to unlock your plan.",

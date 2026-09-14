@@ -2749,6 +2749,11 @@
     "result_loss": "이번엔 친구가 이겼습니다.",
     "result_tie": "무승부!"
   },
+  "seed_admin": {
+    "tab": "데모", "title": "데모 환경", "description": "실제 데이터는 건드리지 않고 비밀번호로 보호된 다국어 방, 사용자와 기록을 완성합니다.",
+    "people": "사용자", "rooms": "방", "sessions": "세션", "complete": "데모 완료", "complete_missing": "누락 데이터 채우기", "pause": "활동 일시정지", "activate": "활동 시작", "generating": "안전하게 생성 중… {{progress}}%", "by_language": "언어별 현황", "rooms_short": "방", "people_short": "명", "members_short": "멤버", "history_short": "기록 있음", "remove_title": "데모 삭제", "remove_desc": "데모 데이터만 삭제하려면 REMOVER를 입력하세요.", "remove_all": "모두 삭제", "completed_title": "데모 완료", "completed_desc": "누락된 방과 기록을 추가했습니다.", "removed_title": "데모 삭제됨", "removed_desc": "실제 데이터는 변경되지 않았습니다.",
+    "languages": { "pt-BR": "포르투갈어", "en-US": "영어", "es-ES": "스페인어", "fr-FR": "프랑스어", "de-DE": "독일어", "it-IT": "이탈리아어", "ja-JP": "일본어", "ko-KR": "한국어", "zh-CN": "중국어", "ru-RU": "러시아어", "ar-SA": "아랍어", "id-ID": "인도네시아어" }
+  },
   "access_codes": {
     "title": "액세스 코드",
     "subtitle": "파트너 코드가 있나요? 등록해 플랜을 활성화하세요.",

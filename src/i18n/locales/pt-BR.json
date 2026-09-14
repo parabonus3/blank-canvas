@@ -2913,6 +2913,11 @@
     "result_loss": "Seu amigo venceu desta vez.",
     "result_tie": "Empate!"
   },
+  "seed_admin": {
+    "tab": "Demonstração", "title": "Ambiente de demonstração", "description": "Completa salas multilíngues protegidas por senha, pessoas e históricos sem alterar dados reais.",
+    "people": "Pessoas", "rooms": "Salas", "sessions": "Sessões", "complete": "Demonstração completa", "complete_missing": "Completar dados ausentes", "pause": "Pausar movimento", "activate": "Ativar movimento", "generating": "Gerando com segurança… {{progress}}%", "by_language": "Cobertura por idioma", "rooms_short": "salas", "people_short": "pessoas", "members_short": "membros", "history_short": "com histórico", "remove_title": "Remover demonstração", "remove_desc": "Digite REMOVER para apagar somente salas, pessoas e sessões de demonstração.", "remove_all": "Remover tudo", "completed_title": "Demonstração completa", "completed_desc": "As salas e os históricos ausentes foram adicionados.", "removed_title": "Demonstração removida", "removed_desc": "Nenhum dado real foi alterado.",
+    "languages": { "pt-BR": "Português", "en-US": "Inglês", "es-ES": "Espanhol", "fr-FR": "Francês", "de-DE": "Alemão", "it-IT": "Italiano", "ja-JP": "Japonês", "ko-KR": "Coreano", "zh-CN": "Chinês", "ru-RU": "Russo", "ar-SA": "Árabe", "id-ID": "Indonésio" }
+  },
   "access_codes": {
     "title": "Código de acesso",
     "subtitle": "Tem um código de parceiro? Resgate para liberar seu plano.",
