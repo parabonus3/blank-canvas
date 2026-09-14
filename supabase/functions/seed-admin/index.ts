@@ -91,36 +91,17 @@ Deno.serve(async (req) => {
     const { action, payload } = parsed.data;
 
     if (action === "stats") {
-      const userRows = (await admin.from("seed_entities").select("entity_id").eq("kind", "user")).data ?? [];
-      const [{ count: users }, { count: seededRooms }, sessionResult, { data: cfg }] = await Promise.all([
-        admin.from("seed_entities").select("id", { count: "exact", head: true }).eq("kind", "user"),
-        admin.from("study_rooms").select("id", { count: "exact", head: true }).eq("is_seed", true),
-        userRows.length ? admin.from("time_entries").select("id", { count: "exact", head: true }).in("user_id", userRows.map((x) => x.entity_id)) : Promise.resolve({ count: 0 }),
-        admin.from("seed_config").select("value").eq("key", "presence").single(),
-      ]);
-      const { data: entities } = await admin.from("seed_entities").select("kind,entity_id,locale");
-      const roomIds = (entities ?? []).filter((item) => item.kind === "room").map((item) => item.entity_id);
-      const userIds = (entities ?? []).filter((item) => item.kind === "user").map((item) => item.entity_id);
-      const [{ data: memberships }, { data: historyUsers }, { data: activeMembers }] = await Promise.all([
-        roomIds.length ? admin.from("room_members").select("room_id,user_id").in("room_id", roomIds) : Promise.resolve({ data: [] }),
-        userIds.length ? admin.from("time_entries").select("user_id").in("user_id", userIds).not("end_time", "is", null) : Promise.resolve({ data: [] }),
-        roomIds.length ? admin.from("room_members").select("room_id,user_id").in("room_id", roomIds).eq("is_online", true) : Promise.resolve({ data: [] }),
-      ]);
-      const historySet = new Set((historyUsers ?? []).map((row) => row.user_id));
-      const localeRows = locales.map(([locale]) => {
-        const localeUsers = new Set((entities ?? []).filter((item) => item.kind === "user" && item.locale === locale).map((item) => item.entity_id));
-        const localeRooms = new Set((entities ?? []).filter((item) => item.kind === "room" && item.locale === locale).map((item) => item.entity_id));
-        return {
-          locale,
-          users: localeUsers.size,
-          rooms: localeRooms.size,
-          target_rooms: roomTargets[locale],
-          members: new Set((memberships ?? []).filter((row) => localeRooms.has(row.room_id)).map((row) => row.user_id)).size,
-          with_history: [...localeUsers].filter((id) => historySet.has(id)).length,
-          online: (activeMembers ?? []).filter((row) => localeRooms.has(row.room_id)).length,
-        };
+      const { data: stats, error } = await admin.rpc("seed_admin_stats");
+      if (error) throw error;
+      const localeStats = Array.isArray(stats?.locales) ? stats.locales : [];
+      return json({
+        ...stats,
+        target_rooms: rooms.length,
+        locales: localeStats.map((item: Record<string, unknown>) => ({
+          ...item,
+          target_rooms: roomTargets[String(item.locale)] ?? 0,
+        })),
       });
-      return json({ users: users ?? 0, rooms: seededRooms ?? 0, target_rooms: rooms.length, sessions: sessionResult.count ?? 0, presence_enabled: cfg?.value?.enabled ?? false, locales: localeRows });
     }
     if (action === "set_presence") {
       await admin.from("seed_config").upsert({ key: "presence", value: { enabled: payload?.enabled ?? false }, updated_at: new Date().toISOString() });

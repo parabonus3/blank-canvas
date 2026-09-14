@@ -3561,6 +3561,7 @@ export type Database = {
         }
       }
       room_has_password: { Args: { _room_id: string }; Returns: boolean }
+      seed_admin_stats: { Args: never; Returns: Json }
       seed_presence_tick: { Args: never; Returns: undefined }
       set_member_role: {
         Args: { _member_user_id: string; _role: string; _room_id: string }
