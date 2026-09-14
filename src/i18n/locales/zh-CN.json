@@ -2763,6 +2763,11 @@
     "result_loss": "这次好友赢了。",
     "result_tie": "平局！"
   },
+  "seed_admin": {
+    "tab": "演示", "title": "演示环境", "description": "在不改动真实数据的前提下，补齐受密码保护的多语言房间、用户与历史记录。",
+    "people": "用户", "rooms": "房间", "sessions": "专注记录", "complete": "演示已完成", "complete_missing": "补齐缺失数据", "pause": "暂停活动", "activate": "开启活动", "generating": "正在安全生成… {{progress}}%", "by_language": "各语言覆盖", "rooms_short": "房间", "people_short": "用户", "members_short": "成员", "history_short": "有记录", "remove_title": "删除演示", "remove_desc": "输入 REMOVER，仅删除演示数据。", "remove_all": "全部删除", "completed_title": "演示已完成", "completed_desc": "已补齐缺失的房间和历史。", "removed_title": "演示已删除", "removed_desc": "未改动任何真实数据。",
+    "languages": { "pt-BR": "葡萄牙语", "en-US": "英语", "es-ES": "西班牙语", "fr-FR": "法语", "de-DE": "德语", "it-IT": "意大利语", "ja-JP": "日语", "ko-KR": "韩语", "zh-CN": "中文", "ru-RU": "俄语", "ar-SA": "阿拉伯语", "id-ID": "印度尼西亚语" }
+  },
   "access_codes": {
     "title": "访问码",
     "subtitle": "有合作方兑换码？兑换即可解锁你的方案。",

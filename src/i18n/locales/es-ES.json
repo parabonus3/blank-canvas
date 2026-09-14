@@ -2770,6 +2770,11 @@
     "result_loss": "Tu amigo ganó esta vez.",
     "result_tie": "¡Empate!"
   },
+  "seed_admin": {
+    "tab": "Demostración", "title": "Entorno de demostración", "description": "Completa salas multilingües con contraseña, personas e historiales sin cambiar datos reales.",
+    "people": "Personas", "rooms": "Salas", "sessions": "Sesiones", "complete": "Demostración completa", "complete_missing": "Completar datos pendientes", "pause": "Pausar actividad", "activate": "Activar actividad", "generating": "Generando de forma segura… {{progress}}%", "by_language": "Cobertura por idioma", "rooms_short": "salas", "people_short": "personas", "members_short": "miembros", "history_short": "con historial", "remove_title": "Eliminar demostración", "remove_desc": "Escribe REMOVER para borrar solo los datos de demostración.", "remove_all": "Eliminar todo", "completed_title": "Demostración completa", "completed_desc": "Se añadieron las salas y los historiales pendientes.", "removed_title": "Demostración eliminada", "removed_desc": "No se modificaron datos reales.",
+    "languages": { "pt-BR": "Portugués", "en-US": "Inglés", "es-ES": "Español", "fr-FR": "Francés", "de-DE": "Alemán", "it-IT": "Italiano", "ja-JP": "Japonés", "ko-KR": "Coreano", "zh-CN": "Chino", "ru-RU": "Ruso", "ar-SA": "Árabe", "id-ID": "Indonesio" }
+  },
   "access_codes": {
     "title": "Código de acceso",
     "subtitle": "¿Tienes un código de socio? Canjéalo para desbloquear tu plan.",

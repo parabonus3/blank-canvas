@@ -2763,6 +2763,11 @@
     "result_loss": "今回は友達の勝ちです。",
     "result_tie": "引き分け！"
   },
+  "seed_admin": {
+    "tab": "デモ", "title": "デモ環境", "description": "実データを変更せず、パスワード付き多言語ルーム、ユーザー、履歴を補完します。",
+    "people": "ユーザー", "rooms": "ルーム", "sessions": "セッション", "complete": "デモ完成", "complete_missing": "不足データを補完", "pause": "活動を停止", "activate": "活動を開始", "generating": "安全に生成中… {{progress}}%", "by_language": "言語別の状況", "rooms_short": "ルーム", "people_short": "人", "members_short": "メンバー", "history_short": "履歴あり", "remove_title": "デモを削除", "remove_desc": "デモデータのみを削除するには REMOVER と入力してください。", "remove_all": "すべて削除", "completed_title": "デモ完成", "completed_desc": "不足していたルームと履歴を追加しました。", "removed_title": "デモを削除しました", "removed_desc": "実データは変更されていません。",
+    "languages": { "pt-BR": "ポルトガル語", "en-US": "英語", "es-ES": "スペイン語", "fr-FR": "フランス語", "de-DE": "ドイツ語", "it-IT": "イタリア語", "ja-JP": "日本語", "ko-KR": "韓国語", "zh-CN": "中国語", "ru-RU": "ロシア語", "ar-SA": "アラビア語", "id-ID": "インドネシア語" }
+  },
   "access_codes": {
     "title": "アクセスコード",
     "subtitle": "パートナーコードをお持ちですか？引き換えてプランを解放しましょう。",

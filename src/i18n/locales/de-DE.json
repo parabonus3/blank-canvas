@@ -2763,6 +2763,11 @@
     "result_loss": "Dein Freund hat diesmal gewonnen.",
     "result_tie": "Unentschieden!"
   },
+  "seed_admin": {
+    "tab": "Demo", "title": "Demo-Umgebung", "description": "Vervollständigt passwortgeschützte mehrsprachige Räume, Personen und Verläufe, ohne echte Daten zu ändern.",
+    "people": "Personen", "rooms": "Räume", "sessions": "Sitzungen", "complete": "Demo vollständig", "complete_missing": "Fehlende Daten ergänzen", "pause": "Aktivität pausieren", "activate": "Aktivität starten", "generating": "Sichere Erstellung… {{progress}}%", "by_language": "Abdeckung nach Sprache", "rooms_short": "Räume", "people_short": "Personen", "members_short": "Mitglieder", "history_short": "mit Verlauf", "remove_title": "Demo entfernen", "remove_desc": "Gib REMOVER ein, um nur Demo-Daten zu löschen.", "remove_all": "Alles entfernen", "completed_title": "Demo vollständig", "completed_desc": "Fehlende Räume und Verläufe wurden ergänzt.", "removed_title": "Demo entfernt", "removed_desc": "Echte Daten wurden nicht verändert.",
+    "languages": { "pt-BR": "Portugiesisch", "en-US": "Englisch", "es-ES": "Spanisch", "fr-FR": "Französisch", "de-DE": "Deutsch", "it-IT": "Italienisch", "ja-JP": "Japanisch", "ko-KR": "Koreanisch", "zh-CN": "Chinesisch", "ru-RU": "Russisch", "ar-SA": "Arabisch", "id-ID": "Indonesisch" }
+  },
   "access_codes": {
     "title": "Zugangscode",
     "subtitle": "Du hast einen Partnercode? Löse ihn ein, um deinen Plan freizuschalten.",

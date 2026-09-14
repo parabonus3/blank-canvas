@@ -2749,6 +2749,11 @@
     "result_loss": "Questa volta ha vinto il tuo amico.",
     "result_tie": "Pareggio!"
   },
+  "seed_admin": {
+    "tab": "Demo", "title": "Ambiente dimostrativo", "description": "Completa stanze multilingue protette, persone e cronologie senza modificare dati reali.",
+    "people": "Persone", "rooms": "Stanze", "sessions": "Sessioni", "complete": "Demo completa", "complete_missing": "Completa dati mancanti", "pause": "Sospendi attività", "activate": "Attiva attività", "generating": "Generazione sicura… {{progress}}%", "by_language": "Copertura per lingua", "rooms_short": "stanze", "people_short": "persone", "members_short": "membri", "history_short": "con cronologia", "remove_title": "Rimuovi demo", "remove_desc": "Digita REMOVER per eliminare solo i dati dimostrativi.", "remove_all": "Rimuovi tutto", "completed_title": "Demo completa", "completed_desc": "Le stanze e le cronologie mancanti sono state aggiunte.", "removed_title": "Demo rimossa", "removed_desc": "Nessun dato reale è stato modificato.",
+    "languages": { "pt-BR": "Portoghese", "en-US": "Inglese", "es-ES": "Spagnolo", "fr-FR": "Francese", "de-DE": "Tedesco", "it-IT": "Italiano", "ja-JP": "Giapponese", "ko-KR": "Coreano", "zh-CN": "Cinese", "ru-RU": "Russo", "ar-SA": "Arabo", "id-ID": "Indonesiano" }
+  },
   "access_codes": {
     "title": "Codice di accesso",
     "subtitle": "Hai un codice partner? Riscattalo per sbloccare il tuo piano.",
