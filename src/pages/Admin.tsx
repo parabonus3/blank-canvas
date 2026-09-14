@@ -228,7 +228,7 @@ export default function Admin() {
             </TabsTrigger>
             <TabsTrigger value="demo" className="flex-1 sm:flex-none gap-1.5">
               <Bot className="h-4 w-4" />
-              Demonstração
+               {t("seed_admin.tab")}
             </TabsTrigger>
           </TabsList>
 

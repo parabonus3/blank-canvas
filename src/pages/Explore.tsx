@@ -19,6 +19,7 @@ import { PlanBadge, PlanAvatarRing } from "@/components/rooms/PlanBadge";
 import { useJoinPublicRoom, useRooms } from "@/hooks/useRooms";
 import { COUNTRIES, getFlagByCode } from "@/lib/countries";
 import { RoomFrame } from "@/components/RoomFrame";
+import { langFromI18n } from "@/lib/i18nRoutes";
 
 
 const typeIcons: Record<string, any> = {
@@ -36,6 +37,22 @@ const CATEGORIES = [
   { value: "custom", labelKey: "rooms.type_custom" },
 ];
 
+const ROOM_LANGUAGES = [
+  { value: "all", key: "explore.all_languages", countries: [] },
+  { value: "pt-BR", label: "Português", countries: ["BR"] },
+  { value: "en-US", label: "English", countries: ["US", "GB", "CA", "AU"] },
+  { value: "es-ES", label: "Español", countries: ["ES", "MX", "AR"] },
+  { value: "fr-FR", label: "Français", countries: ["FR"] },
+  { value: "de-DE", label: "Deutsch", countries: ["DE"] },
+  { value: "it-IT", label: "Italiano", countries: ["IT"] },
+  { value: "ja-JP", label: "日本語", countries: ["JP"] },
+  { value: "ko-KR", label: "한국어", countries: ["KR"] },
+  { value: "zh-CN", label: "中文", countries: ["CN"] },
+  { value: "ru-RU", label: "Русский", countries: ["RU"] },
+  { value: "ar-SA", label: "العربية", countries: ["SA"] },
+  { value: "id-ID", label: "Bahasa Indonesia", countries: ["ID"] },
+];
+
 function formatHours(seconds: number) {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -46,7 +63,7 @@ function formatHours(seconds: number) {
 type RankingPeriod = "now" | "today" | "week" | "all";
 
 export default function Explore() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { timezone } = useTimezone();
@@ -54,11 +71,13 @@ export default function Explore() {
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
+  const [languageFilter, setLanguageFilter] = useState("all");
   const [period, setPeriod] = useState<RankingPeriod>("now");
   const [passwordDialog, setPasswordDialog] = useState<{ open: boolean; roomId: string; roomName: string }>({ open: false, roomId: "", roomName: "" });
   const joinPublicRoom = useJoinPublicRoom();
   const { data: myRooms = [] } = useRooms();
   const myRoomIds = useMemo(() => new Set(myRooms.map((r) => r.id)), [myRooms]);
+  const currentLocale = langFromI18n(i18n.language).code;
 
   // Room ranking query
   const { data: rooms = [], isLoading: roomsLoading } = useQuery({
@@ -76,6 +95,15 @@ export default function Explore() {
     },
     enabled: !!user && activeTab === "rooms",
   });
+
+  const displayRooms = useMemo(() => {
+    const selected = ROOM_LANGUAGES.find((language) => language.value === languageFilter);
+    const filtered = selected && selected.value !== "all"
+      ? rooms.filter((room: any) => selected.countries.includes(room.country))
+      : rooms;
+    const preferred = ROOM_LANGUAGES.find((language) => language.value === currentLocale)?.countries ?? [];
+    return [...filtered].sort((a: any, b: any) => Number(preferred.includes(b.country)) - Number(preferred.includes(a.country)));
+  }, [rooms, languageFilter, currentLocale]);
 
   // User ranking query
   const { data: userRanking = [], isLoading: usersLoading } = useQuery({
@@ -208,19 +236,31 @@ export default function Explore() {
                     ))}
                   </SelectContent>
                 </Select>
+                <Select value={languageFilter} onValueChange={setLanguageFilter}>
+                  <SelectTrigger className="w-[180px] h-9">
+                    <SelectValue placeholder={t("explore.all_languages")} />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {ROOM_LANGUAGES.map((language) => (
+                      <SelectItem key={language.value} value={language.value}>
+                        {language.label ?? t(language.key ?? "explore.all_languages")}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             {roomsLoading ? (
               <div className="text-center py-12 text-muted-foreground">{t("common.loading")}</div>
-            ) : rooms.length === 0 ? (
+            ) : displayRooms.length === 0 ? (
               <div className="text-center py-16 space-y-3">
                 <Globe className="h-12 w-12 mx-auto text-muted-foreground/40" />
                 <p className="text-muted-foreground">{t("explore.no_public_rooms")}</p>
               </div>
             ) : (
               <div className="space-y-3">
-                {rooms.map((room: any, index: number) => {
+                {displayRooms.map((room: any, index: number) => {
                   const Icon = typeIcons[room.room_type] || Sparkles;
                   const isTop3 = index < 3;
                   const medals = ["🥇", "🥈", "🥉"];
