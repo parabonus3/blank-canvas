@@ -14,7 +14,7 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 
 const BodySchema = z.object({
   action: z.enum(["stats", "set_presence", "seed_users", "seed_rooms", "seed_history", "purge"]),
-  payload: z.object({ offset: z.number().int().min(0).max(500).optional(), enabled: z.boolean().optional() }).optional(),
+  payload: z.object({ offset: z.number().int().min(0).max(1000).optional(), enabled: z.boolean().optional() }).optional(),
 });
 
 const locales = [
@@ -44,19 +44,36 @@ const names: Record<string, string[]> = {
 const rooms = [
   ["pt-BR","BR","Reta Final ENEM 2027","Revisão diária, simulados e constância até a aprovação.","study"],["pt-BR","BR","OAB 1ª Fase — Foco Total","Questões, lei seca e revisão sem distrações.","study"],["pt-BR","BR","Concurso INSS 2027","Grupo focado em previdenciário, português e RLM.","study"],["pt-BR","BR","PF e PRF — Missão Aprovação","Ciclo de estudos para carreiras policiais.","study"],["pt-BR","BR","Banco do Brasil & Caixa","Conhecimentos bancários, vendas e tecnologia.","study"],["pt-BR","BR","Residência Médica — R1","Rotina de questões e revisão para residência.","study"],["pt-BR","BR","FUVEST • USP 2027","Leituras obrigatórias e preparação para a Fuvest.","reading"],["pt-BR","BR","TRT e Tribunais","Foco conjunto para concursos de tribunais.","study"],["pt-BR","BR","EsPCEx • AFA • ESA","Preparação militar com disciplina diária.","study"],["pt-BR","BR","Dev em Evolução","Algoritmos, projetos e entrevistas técnicas.","work"],["pt-BR","BR","Medicina — Ciclo Básico","Anatomia, fisiologia e constância no primeiro ano.","study"],["pt-BR","BR","Inglês Todos os Dias","Leitura e conversação com uma hora diária.","custom"],
   ["en-US","US","SAT 2027 Study Crew","Daily practice for Math, Reading and Writing.","study"],["en-US","US","MCAT Deep Focus","Focused blocks for Bio, Chem, CARS and review.","study"],["en-US","US","LSAT Logic Lab","Timed sections, review and consistent practice.","study"],["en-US","US","CPA Exam Candidates","Study sessions for all four CPA sections.","study"],["en-US","US","NCLEX Study Circle","Questions, rationales and calm daily progress.","study"],["en-US","US","Software Interview Prep","DSA practice, system design and mock interviews.","work"],["en-US","US","PhD Writing Room","Quiet accountability for papers and dissertations.","work"],
-  ["es-ES","ES","EBAU 2027 — Meta Universidad","Preparación constante para la selectividad.","study"],["es-ES","ES","Oposiciones Administración","Temario, test y repasos para conseguir la plaza.","study"],["es-ES","MX","UNAM • IPN Aspirantes","Estudio diario para el examen de admisión.","study"],["es-ES","AR","UBA — Finales sin Pausa","Comunidad para preparar finales y parciales.","study"],["es-ES","ES","MIR España","Preguntas, simulacros y repaso para el MIR.","study"],
-  ["fr-FR","FR","PASS/LAS Médecine","Travail régulier pour réussir la première année.","study"],["fr-FR","FR","Concours Fonction Publique","Préparation structurée aux concours administratifs.","study"],["fr-FR","FR","Bac 2027 — Objectif Mention","Révisions quotidiennes et entraide jusqu'au bac.","study"],["fr-FR","FR","Prépa Grandes Écoles","Blocs de travail intensif pour CPGE.","study"],
-  ["de-DE","DE","Abitur 2027 Lerngruppe","Gemeinsam strukturiert für das Abitur lernen.","study"],["de-DE","DE","Medizin Staatsexamen","Konzentrierte Lernblöcke für M1 und M2.","study"],["de-DE","DE","Jura Staatsexamen","Fälle, Karteikarten und konsequente Wiederholung.","study"],["de-DE","DE","Ausbildung & IHK Prüfung","Gemeinsam auf die Abschlussprüfung vorbereiten.","study"],
-  ["it-IT","IT","Maturità 2027","Studio quotidiano verso l'esame di maturità.","study"],["it-IT","IT","Test Medicina","Quiz, teoria e simulazioni per l'ammissione.","study"],["it-IT","IT","Concorsi Pubblici Italia","Preparazione costante per i concorsi pubblici.","study"],
-  ["ja-JP","JP","共通テスト2027 集中部屋","毎日の積み重ねで志望校合格を目指す。","study"],["ja-JP","JP","公務員試験 勉強会","過去問と復習を中心に集中する部屋。","study"],["ja-JP","JP","資格勉強・社会人集中室","仕事の後に静かに資格勉強を続ける。","work"],
-  ["ko-KR","KR","2027 수능 집중반","매일 꾸준히 공부하며 목표 대학에 도전해요.","study"],["ko-KR","KR","공무원 시험 스터디","기출 문제와 회독을 함께 관리하는 방.","study"],["ko-KR","KR","취업 코딩테스트 준비","알고리즘과 면접 준비에 집중합니다.","work"],
-  ["zh-CN","CN","2027高考自习室","每天专注学习，一起向理想大学前进。","study"],["zh-CN","CN","考研上岸计划","专业课、英语和政治的长期自习室。","study"],["zh-CN","CN","公务员考试备考","行测申论每日打卡与专注学习。","study"],
-  ["ru-RU","RU","ЕГЭ 2027 — Подготовка","Ежедневная подготовка и практика к ЕГЭ.","study"],["ru-RU","RU","Экзамены в университете","Тихая комната для сессии и зачётов.","study"],
-  ["ar-SA","SA","القدرات والتحصيلي 2027","مذاكرة يومية منظمة لاختبارات القبول.","study"],["ar-SA","SA","طلاب الطب — تركيز","جلسات هادئة لمراجعة مواد الطب.","study"],
-  ["id-ID","ID","UTBK SNBT 2027","Belajar konsisten dan latihan soal menuju kampus impian.","study"],["id-ID","ID","CPNS Pejuang NIP","Fokus belajar TIU, TWK, dan TKP bersama.","study"],
+  ["es-ES","ES","EBAU 2027 — Meta Universidad","Preparación constante para la selectividad.","study"],["es-ES","ES","Oposiciones Administración","Temario, test y repasos para conseguir la plaza.","study"],["es-ES","MX","UNAM • IPN Aspirantes","Estudio diario para el examen de admisión.","study"],["es-ES","AR","UBA — Finales sin Pausa","Comunidad para preparar finales y parciales.","study"],["es-ES","ES","MIR España","Preguntas, simulacros y repaso para el MIR.","study"],["es-ES","MX","Certificaciones Tech en Español","Cloud, datos y desarrollo con práctica constante.","work"],["es-ES","AR","Lectura y Escritura Académica","Un espacio tranquilo para leer y avanzar la tesis.","reading"],
+  ["fr-FR","FR","PASS/LAS Médecine","Travail régulier pour réussir la première année.","study"],["fr-FR","FR","Concours Fonction Publique","Préparation structurée aux concours administratifs.","study"],["fr-FR","FR","Bac 2027 — Objectif Mention","Révisions quotidiennes et entraide jusqu'au bac.","study"],["fr-FR","FR","Prépa Grandes Écoles","Blocs de travail intensif pour CPGE.","study"],["fr-FR","FR","CRPE • CAPES — Entraide","Révisions, annales et préparation des oraux.","study"],["fr-FR","FR","Lecture & Mémoire","Lire, rédiger et avancer chaque jour en silence.","reading"],
+  ["de-DE","DE","Abitur 2027 Lerngruppe","Gemeinsam strukturiert für das Abitur lernen.","study"],["de-DE","DE","Medizin Staatsexamen","Konzentrierte Lernblöcke für M1 und M2.","study"],["de-DE","DE","Jura Staatsexamen","Fälle, Karteikarten und konsequente Wiederholung.","study"],["de-DE","DE","Ausbildung & IHK Prüfung","Gemeinsam auf die Abschlussprüfung vorbereiten.","study"],["de-DE","DE","Meisterprüfung Fokusraum","Lernpläne und tägliche konzentrierte Einheiten.","work"],["de-DE","DE","Deutschprüfung C1/C2","Lesen, Schreiben und Prüfungstraining.","reading"],
+  ["it-IT","IT","Maturità 2027","Studio quotidiano verso l'esame di maturità.","study"],["it-IT","IT","Test Medicina","Quiz, teoria e simulazioni per l'ammissione.","study"],["it-IT","IT","Concorsi Pubblici Italia","Preparazione costante per i concorsi pubblici.","study"],["it-IT","IT","Esami Universitari","Sessioni concentrate per esami e appelli.","study"],["it-IT","IT","Abilitazione Professionale","Studio organizzato per l'esame di Stato.","work"],["it-IT","IT","Lettura Quotidiana","Un capitolo al giorno, senza distrazioni.","reading"],
+  ["ja-JP","JP","共通テスト2027 集中部屋","毎日の積み重ねで志望校合格を目指す。","study"],["ja-JP","JP","公務員試験 勉強会","過去問と復習を中心に集中する部屋。","study"],["ja-JP","JP","資格勉強・社会人集中室","仕事の後に静かに資格勉強を続ける。","work"],["ja-JP","JP","ITパスポート・基本情報","午前と午後の対策を毎日少しずつ進める。","work"],["ja-JP","JP","大学院入試・研究室","院試対策と研究計画を着実に進める。","study"],["ja-JP","JP","読書クラブ・静かな時間","毎日一章、落ち着いて読書を続ける。","reading"],
+  ["ko-KR","KR","2027 수능 집중반","매일 꾸준히 공부하며 목표 대학에 도전해요.","study"],["ko-KR","KR","공무원 시험 스터디","기출 문제와 회독을 함께 관리하는 방.","study"],["ko-KR","KR","취업 코딩테스트 준비","알고리즘과 면접 준비에 집중합니다.","work"],["ko-KR","KR","NCS 취업 준비방","직업기초능력과 전공 시험을 함께 준비해요.","work"],["ko-KR","KR","TOEIC 목표 달성","매일 듣기와 독해를 꾸준히 연습합니다.","study"],["ko-KR","KR","국가고시 집중 스터디","기출과 복습으로 합격까지 함께합니다.","study"],
+  ["zh-CN","CN","2027高考自习室","每天专注学习，一起向理想大学前进。","study"],["zh-CN","CN","考研上岸计划","专业课、英语和政治的长期自习室。","study"],["zh-CN","CN","公务员考试备考","行测申论每日打卡与专注学习。","study"],["zh-CN","CN","法考冲刺学习组","系统复习、真题训练和每日打卡。","study"],["zh-CN","CN","教师资格证备考","综合素质和教育知识一起稳步复习。","study"],["zh-CN","CN","编程学习与面试","算法、项目和技术面试专注空间。","work"],
+  ["ru-RU","RU","ЕГЭ 2027 — Подготовка","Ежедневная подготовка и практика к ЕГЭ.","study"],["ru-RU","RU","Экзамены в университете","Тихая комната для сессии и зачётов.","study"],["ru-RU","RU","ОГЭ — Уверенный результат","Практика заданий и спокойная подготовка каждый день.","study"],["ru-RU","RU","Программирование и алгоритмы","Задачи, проекты и подготовка к собеседованиям.","work"],["ru-RU","RU","Диплом и научная работа","Пишем понемногу каждый день без отвлечений.","work"],["ru-RU","RU","Читаем каждый день","Одна глава в день в тихой компании.","reading"],
+  ["ar-SA","SA","القدرات والتحصيلي 2027","مذاكرة يومية منظمة لاختبارات القبول.","study"],["ar-SA","SA","طلاب الطب — تركيز","جلسات هادئة لمراجعة مواد الطب.","study"],["ar-SA","SA","اختبارات الجامعة","مراجعة يومية واستعداد منظم للاختبارات.","study"],["ar-SA","SA","IELTS هدفنا","تدريب مستمر على القراءة والكتابة والاستماع.","study"],["ar-SA","SA","البرمجة والمقابلات التقنية","خوارزميات ومشاريع واستعداد للمقابلات.","work"],["ar-SA","SA","نادي القراءة اليومي","نقرأ كل يوم بهدوء ونشارك التقدم.","reading"],
+  ["id-ID","ID","UTBK SNBT 2027","Belajar konsisten dan latihan soal menuju kampus impian.","study"],["id-ID","ID","CPNS Pejuang NIP","Fokus belajar TIU, TWK, dan TKP bersama.","study"],["id-ID","ID","Ujian Kedokteran","Belajar terarah dan latihan soal kedokteran.","study"],["id-ID","ID","Skripsi Fokus Harian","Menulis sedikit demi sedikit sampai selesai.","work"],["id-ID","ID","TOEFL & IELTS Bersama","Latihan bahasa Inggris konsisten setiap hari.","study"],["id-ID","ID","Coding dan Interview","Algoritma, proyek, dan persiapan wawancara.","work"],
 ] as const;
 
 function tier(i: number) { return i % 29 === 0 ? "premium" : i % 11 === 0 ? "pro" : "free"; }
+
+const roomCopy: Record<string, { goal: string; status: string; messages: string[] }> = {
+  "pt-BR": { goal: "Meta semanal", status: "Focando", messages: ["Bom estudo, pessoal!", "Meta de hoje iniciada 💪", "Vamos manter a constância!"] },
+  "en-US": { goal: "Weekly goal", status: "Focusing", messages: ["Good focus, everyone!", "Starting today's goal 💪", "Let's stay consistent!"] },
+  "es-ES": { goal: "Meta semanal", status: "Enfocado", messages: ["¡Buen estudio a todos!", "Empiezo la meta de hoy 💪", "¡Mantengamos la constancia!"] },
+  "fr-FR": { goal: "Objectif hebdomadaire", status: "Concentré", messages: ["Bonne session à tous !", "Je commence mon objectif du jour 💪", "Gardons le rythme !"] },
+  "de-DE": { goal: "Wochenziel", status: "Im Fokus", messages: ["Gutes Lernen euch allen!", "Ich starte mein Tagesziel 💪", "Bleiben wir dran!"] },
+  "it-IT": { goal: "Obiettivo settimanale", status: "Concentrato", messages: ["Buono studio a tutti!", "Inizio l'obiettivo di oggi 💪", "Continuiamo con costanza!"] },
+  "ja-JP": { goal: "週間目標", status: "集中中", messages: ["今日も頑張りましょう！", "今日の目標を始めます 💪", "一緒に続けましょう！"] },
+  "ko-KR": { goal: "주간 목표", status: "집중 중", messages: ["오늘도 힘내서 공부해요!", "오늘 목표 시작합니다 💪", "꾸준히 함께해요!"] },
+  "zh-CN": { goal: "每周目标", status: "专注中", messages: ["大家一起加油！", "开始今天的目标 💪", "坚持就是进步！"] },
+  "ru-RU": { goal: "Цель на неделю", status: "В фокусе", messages: ["Всем продуктивной учёбы!", "Начинаю цель на сегодня 💪", "Продолжаем в том же духе!"] },
+  "ar-SA": { goal: "الهدف الأسبوعي", status: "في تركيز", messages: ["دراسة موفقة للجميع!", "بدأت هدف اليوم 💪", "لنستمر بثبات!"] },
+  "id-ID": { goal: "Target mingguan", status: "Sedang fokus", messages: ["Selamat belajar semuanya!", "Mulai target hari ini 💪", "Tetap konsisten bersama!"] },
+};
+
+const roomTargets = Object.fromEntries(locales.map(([locale]) => [locale, rooms.filter((room) => room[0] === locale).length]));
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -64,16 +81,13 @@ Deno.serve(async (req) => {
     const parsed = BodySchema.safeParse(await req.json());
     if (!parsed.success) return json({ error: parsed.error.flatten().fieldErrors }, 400);
     const admin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "", { auth: { persistSession: false } });
-    const bootstrap = req.headers.get("x-seed-bootstrap") === "timezoni-initial-seed-2026-09";
-    if (!bootstrap) {
-      const token = req.headers.get("Authorization")?.replace("Bearer ", "");
-      if (!token) return json({ error: "Unauthorized" }, 401);
-      const { data: authData } = await admin.auth.getUser(token);
-      const caller = authData.user?.id;
-      if (!caller) return json({ error: "Unauthorized" }, 401);
-      const { data: role } = await admin.from("user_roles").select("id").eq("user_id", caller).eq("role", "admin").maybeSingle();
-      if (!role) return json({ error: "Forbidden" }, 403);
-    }
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+    if (!token) return json({ error: "Unauthorized" }, 401);
+    const { data: authData } = await admin.auth.getUser(token);
+    const caller = authData.user?.id;
+    if (!caller) return json({ error: "Unauthorized" }, 401);
+    const { data: role } = await admin.from("user_roles").select("id").eq("user_id", caller).eq("role", "admin").maybeSingle();
+    if (!role) return json({ error: "Forbidden" }, 403);
     const { action, payload } = parsed.data;
 
     if (action === "stats") {
@@ -84,7 +98,29 @@ Deno.serve(async (req) => {
         userRows.length ? admin.from("time_entries").select("id", { count: "exact", head: true }).in("user_id", userRows.map((x) => x.entity_id)) : Promise.resolve({ count: 0 }),
         admin.from("seed_config").select("value").eq("key", "presence").single(),
       ]);
-      return json({ users: users ?? 0, rooms: seededRooms ?? 0, sessions: sessionResult.count ?? 0, presence_enabled: cfg?.value?.enabled ?? false });
+      const { data: entities } = await admin.from("seed_entities").select("kind,entity_id,locale");
+      const roomIds = (entities ?? []).filter((item) => item.kind === "room").map((item) => item.entity_id);
+      const userIds = (entities ?? []).filter((item) => item.kind === "user").map((item) => item.entity_id);
+      const [{ data: memberships }, { data: historyUsers }, { data: activeMembers }] = await Promise.all([
+        roomIds.length ? admin.from("room_members").select("room_id,user_id").in("room_id", roomIds) : Promise.resolve({ data: [] }),
+        userIds.length ? admin.from("time_entries").select("user_id").in("user_id", userIds).not("end_time", "is", null) : Promise.resolve({ data: [] }),
+        roomIds.length ? admin.from("room_members").select("room_id,user_id").in("room_id", roomIds).eq("is_online", true) : Promise.resolve({ data: [] }),
+      ]);
+      const historySet = new Set((historyUsers ?? []).map((row) => row.user_id));
+      const localeRows = locales.map(([locale]) => {
+        const localeUsers = new Set((entities ?? []).filter((item) => item.kind === "user" && item.locale === locale).map((item) => item.entity_id));
+        const localeRooms = new Set((entities ?? []).filter((item) => item.kind === "room" && item.locale === locale).map((item) => item.entity_id));
+        return {
+          locale,
+          users: localeUsers.size,
+          rooms: localeRooms.size,
+          target_rooms: roomTargets[locale],
+          members: new Set((memberships ?? []).filter((row) => localeRooms.has(row.room_id)).map((row) => row.user_id)).size,
+          with_history: [...localeUsers].filter((id) => historySet.has(id)).length,
+          online: (activeMembers ?? []).filter((row) => localeRooms.has(row.room_id)).length,
+        };
+      });
+      return json({ users: users ?? 0, rooms: seededRooms ?? 0, target_rooms: rooms.length, sessions: sessionResult.count ?? 0, presence_enabled: cfg?.value?.enabled ?? false, locales: localeRows });
     }
     if (action === "set_presence") {
       await admin.from("seed_config").upsert({ key: "presence", value: { enabled: payload?.enabled ?? false }, updated_at: new Date().toISOString() });
@@ -93,7 +129,7 @@ Deno.serve(async (req) => {
     }
     if (action === "seed_users") {
       const offset = payload?.offset ?? 0;
-      const total = 430;
+      const total = 796;
       const created: string[] = [];
       for (let i = offset; i < Math.min(offset + 5, total); i++) {
         const loc = locales[i % locales.length];
@@ -113,25 +149,23 @@ Deno.serve(async (req) => {
       const offset = payload?.offset ?? 0;
       const batchEnd = Math.min(offset + 5, rooms.length);
       const { data: users } = await admin.from("seed_entities").select("entity_id,locale").eq("kind", "user").order("created_at");
-      if (!users || users.length < 430) return json({ error: "Create all demo users first" }, 400);
+      if (!users?.length) return json({ error: "Create demo users first" }, 400);
       const { data: existingRooms } = await admin.from("study_rooms").select("name").eq("is_seed", true);
       const existingNames = new Set((existingRooms ?? []).map((room) => room.name));
-      // One inaccessible password per small batch keeps every room locked without
-      // exhausting the Edge worker with dozens of bcrypt calculations at once.
-      const passwordHash = await bcrypt.hash(crypto.randomUUID() + crypto.randomUUID(), 8);
       let created = 0;
       for (let r = offset; r < batchEnd; r++) {
         const spec = rooms[r];
         if (existingNames.has(spec[2])) continue;
         const candidates = users.filter((u) => u.locale === spec[0]);
+        if (!candidates.length) continue;
         const owner = candidates[r % candidates.length].entity_id;
         const memberCount = 7 + ((r * 11 + 3) % 28);
-        const { data: room, error } = await admin.from("study_rooms").insert({ name: spec[2], description: spec[3], room_type: spec[4], owner_id: owner, max_members: 50, is_active: true, is_public: true, country: spec[1], rules: spec[3], goal_hours: 12 + (r * 7) % 37, goal_label: spec[0] === "pt-BR" ? "Meta semanal" : "Weekly goal", chat_mode: "open", password_hash: passwordHash, is_seed: true }).select("id").single();
+        const { data: room, error } = await admin.from("study_rooms").insert({ name: spec[2], description: spec[3], room_type: spec[4], owner_id: owner, max_members: 50, is_active: true, is_public: true, country: spec[1], rules: spec[3], goal_hours: 12 + (r * 7) % 37, goal_label: roomCopy[spec[0]].goal, chat_mode: "open", password_hash: await bcrypt.hash(crypto.randomUUID() + crypto.randomUUID(), 8), is_seed: true }).select("id").single();
         if (error || !room) throw error ?? new Error("Room creation failed");
         await admin.from("seed_entities").insert({ kind: "room", entity_id: room.id, locale: spec[0] });
-        const members = Array.from({ length: memberCount }, (_, j) => candidates[(r * 5 + j) % candidates.length].entity_id);
+        const members = [...new Set([owner, ...Array.from({ length: memberCount - 1 }, (_, j) => candidates[(r * 7 + j + 1) % candidates.length].entity_id)])];
         await admin.from("room_members").insert(members.map((userId, j) => ({ room_id: room.id, user_id: userId, role: userId === owner ? "owner" : "member", joined_at: new Date(Date.now() - (4 + ((r * 17 + j * 5) % 82)) * 86400000).toISOString() })));
-        await admin.from("room_messages").insert(members.slice(0, 3).map((userId, j) => ({ room_id: room.id, user_id: userId, content: spec[0] === "pt-BR" ? ["Bom estudo, pessoal!", "Meta de hoje iniciada 💪", "Vamos manter a constância!"][j] : ["Good focus everyone!", "Starting today's goal 💪", "Let's stay consistent!"][j], created_at: new Date(Date.now() - (r + j + 1) * 3600000).toISOString() })));
+        await admin.from("room_messages").insert(members.slice(0, 3).map((userId, j) => ({ room_id: room.id, user_id: userId, content: roomCopy[spec[0]].messages[j], created_at: new Date(Date.now() - (r + j + 1) * 3600000).toISOString() })));
         await admin.from("room_activity_log").insert(members.slice(0, 5).map((userId, j) => ({ room_id: room.id, user_id: userId, action_type: j ? "member_joined" : "room_created", created_at: new Date(Date.now() - (r + j + 1) * 7200000).toISOString() })));
         created++;
       }
@@ -139,11 +173,15 @@ Deno.serve(async (req) => {
     }
     if (action === "seed_history") {
       const offset = payload?.offset ?? 0;
-      const { data: users } = await admin.from("seed_entities").select("entity_id").eq("kind", "user").order("created_at").range(offset, offset + 4);
+      const { data: users } = await admin.from("seed_entities").select("entity_id,locale").eq("kind", "user").order("created_at").range(offset, offset + 4);
+      const userIds = users?.map((user) => user.entity_id) ?? [];
+      const { data: existingHistory } = userIds.length ? await admin.from("time_entries").select("user_id").in("user_id", userIds) : { data: [] };
+      const usersWithHistory = new Set((existingHistory ?? []).map((row) => row.user_id));
       const { data: memberships } = await admin.from("room_members").select("user_id,room_id").in("user_id", users?.map((u) => u.entity_id) ?? []);
       const { data: projects } = await admin.from("projects").select("id,user_id").in("user_id", users?.map((u) => u.entity_id) ?? []);
       const rows: Record<string, unknown>[] = [];
       for (const [ui, u] of (users ?? []).entries()) {
+        if (usersWithHistory.has(u.entity_id)) continue;
         const project = projects?.find((p) => p.user_id === u.entity_id)?.id;
         const member = memberships?.find((m) => m.user_id === u.entity_id);
         if (!project || !member) continue;
@@ -153,14 +191,18 @@ Deno.serve(async (req) => {
           for (let s = 0; s < sessions; s++) {
             const mins = 18 + ((d * 17 + ui * 13 + s * 29 + offset) % 101);
             const hour = 6 + ((d * 5 + ui * 3 + s * 7) % 16);
-            const start = new Date(); start.setUTCDate(start.getUTCDate() - d); start.setUTCHours(hour, 3 + ((d * 19 + ui * 7) % 53), 0, 0);
+            const start = new Date();
+            start.setUTCDate(start.getUTCDate() - d);
+            const timezone = locales.find(([locale]) => locale === u.locale)?.[1] ?? "UTC";
+            const localHour = Number(new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "2-digit", hour12: false }).format(start));
+            start.setUTCHours((hour - localHour + start.getUTCHours() + 24) % 24, 3 + ((d * 19 + ui * 7) % 53), 0, 0);
             const end = new Date(start.getTime() + mins * 60000);
             rows.push({ user_id: u.entity_id, project_id: project, room_id: member.room_id, start_time: start.toISOString(), end_time: end.toISOString(), duration: mins * 60, notes: "Sessão de foco", paused_seconds: 0, confirmed_intervals: 0, last_heartbeat_at: end.toISOString() });
           }
         }
       }
       for (let i = 0; i < rows.length; i += 500) { const { error } = await admin.from("time_entries").insert(rows.slice(i, i + 500)); if (error) throw error; }
-      return json({ created: rows.length, next_offset: offset + (users?.length ?? 0), done: (users?.length ?? 0) < 5 || offset + (users?.length ?? 0) >= 430 });
+      return json({ created: rows.length, next_offset: offset + (users?.length ?? 0), done: (users?.length ?? 0) < 5 || offset + (users?.length ?? 0) >= 796 });
     }
     if (action === "purge") {
       const { data: demoUsers } = await admin.from("seed_entities").select("entity_id").eq("kind", "user");
