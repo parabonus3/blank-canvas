@@ -28,17 +28,18 @@ const sizeStyles: Record<NodeType, string> = {
   leaf: 'min-w-[70px] px-3 py-1.5 text-[11px] font-normal',
 };
 
-function MindMapNodeComponent({ data, selected }: NodeProps) {
+function MindMapNodeComponent({ id, data, selected }: NodeProps) {
   const { t } = useTranslation();
   const { setNodes } = useReactFlow();
   const nodeData = data as unknown as MindMapNodeData;
   const [editing, setEditing] = useState(false);
-  const [text, setText] = useState(nodeData.label);
+  const displayLabel = nodeData.labelKey ? t(nodeData.labelKey as string, nodeData.label) : nodeData.label;
+  const [text, setText] = useState(displayLabel);
   const inputRef = useRef<HTMLInputElement>(null);
   const shape: NodeShape = nodeData.shape || 'rounded';
   const nodeType: NodeType = nodeData.nodeType || 'leaf';
 
-  useEffect(() => { setText(nodeData.label); }, [nodeData.label]);
+  useEffect(() => { setText(displayLabel); }, [displayLabel]);
   useEffect(() => { if (editing) inputRef.current?.focus(); }, [editing]);
 
   const onDoubleClick = useCallback(() => setEditing(true), []);
@@ -48,14 +49,14 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
     const nextLabel = text.trim();
     if (nextLabel && nextLabel !== nodeData.label) {
       setNodes(nodes => nodes.map(node => (
-        node.id === (data as { id?: string }).id
-          ? { ...node, data: { ...node.data, label: nextLabel } }
+        node.id === id
+          ? { ...node, data: { ...node.data, label: nextLabel, labelKey: undefined } }
           : node
       )));
     } else {
       setText(nodeData.label);
     }
-  }, [text, nodeData, data, setNodes]);
+  }, [text, nodeData, id, setNodes]);
 
   const borderWidth = selected ? '3px' : nodeType === 'root' ? '3px' : '2px';
   const shadowBase = nodeType === 'root'
@@ -79,7 +80,7 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
       onDoubleClick={onDoubleClick}
       role="button"
       tabIndex={0}
-      aria-label={t('mindmaps.edit_node_label', { label: nodeData.label })}
+      aria-label={t('mindmaps.edit_node_label', { label: displayLabel })}
       onKeyDown={(event) => {
         if (!editing && (event.key === 'F2' || event.key === 'Enter')) {
           event.preventDefault();
@@ -101,7 +102,7 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
           style={{ fontSize: 'inherit', fontWeight: 'inherit' }}
         />
       ) : (
-        <span className="select-none whitespace-nowrap">{nodeData.label}</span>
+          <span className="select-none whitespace-nowrap">{displayLabel}</span>
       )}
 
       <Handle type="source" position={Position.Bottom} className="!w-2 !h-2 !bg-white/60 !border-none" />
