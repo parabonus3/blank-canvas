@@ -16,15 +16,16 @@ export default function MindMapEditor() {
   const { t } = useTranslation();
   const { data: map, isLoading } = useMindMap(id);
   const updateMap = useUpdateMindMap();
+  const saveMap = updateMap.mutateAsync;
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState('');
 
   const handleSave = useCallback(
     async (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => {
       if (!id) return;
-      await updateMap.mutateAsync({ id, nodes, edges, viewport });
+      await saveMap({ id, nodes, edges, viewport });
     },
-    [id, updateMap]
+    [id, saveMap]
   );
 
   const commitTitle = () => {

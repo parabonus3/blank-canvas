@@ -88,6 +88,12 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: 
     setRedoStack([]);
   }, []);
 
+  useEffect(() => {
+    const handler = () => remember();
+    window.addEventListener('mindmap:before-change', handler);
+    return () => window.removeEventListener('mindmap:before-change', handler);
+  }, [remember]);
+
   const initializedRef = useRef(false);
   useEffect(() => {
     if (!initializedRef.current && initialNodes.length > 0) {
@@ -305,6 +311,27 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: 
     setNodes(next.nodes);
     setEdges(next.edges);
   }, [redoStack, setNodes, setEdges]);
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) handleRedo(); else handleUndo();
+      } else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'y') {
+        event.preventDefault();
+        handleRedo();
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        if (selectedNodeId) {
+          event.preventDefault();
+          setDeleteOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleRedo, handleUndo, selectedNodeId]);
 
   // ── Export: fitView → delay → html2canvas with onclone to fix SVG edges ──
   const captureFullMap = useCallback(async (): Promise<HTMLCanvasElement> => {

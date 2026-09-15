@@ -48,6 +48,7 @@ function MindMapNodeComponent({ id, data, selected }: NodeProps) {
     setEditing(false);
     const nextLabel = text.trim();
     if (nextLabel && nextLabel !== displayLabel) {
+      window.dispatchEvent(new CustomEvent('mindmap:before-change'));
       setNodes(nodes => nodes.map(node => (
         node.id === id
           ? { ...node, data: { ...node.data, label: nextLabel, labelKey: undefined } }
