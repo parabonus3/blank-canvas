@@ -47,16 +47,16 @@ function MindMapNodeComponent({ id, data, selected }: NodeProps) {
   const commit = useCallback(() => {
     setEditing(false);
     const nextLabel = text.trim();
-    if (nextLabel && nextLabel !== nodeData.label) {
+    if (nextLabel && nextLabel !== displayLabel) {
       setNodes(nodes => nodes.map(node => (
         node.id === id
           ? { ...node, data: { ...node.data, label: nextLabel, labelKey: undefined } }
           : node
       )));
     } else {
-      setText(nodeData.label);
+      setText(displayLabel);
     }
-  }, [text, nodeData, id, setNodes]);
+  }, [text, displayLabel, id, setNodes]);
 
   const borderWidth = selected ? '3px' : nodeType === 'root' ? '3px' : '2px';
   const shadowBase = nodeType === 'root'
@@ -97,7 +97,7 @@ function MindMapNodeComponent({ id, data, selected }: NodeProps) {
           value={text}
           onChange={e => setText(e.target.value)}
           onBlur={commit}
-          onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setText(nodeData.label); setEditing(false); } }}
+          onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setText(displayLabel); setEditing(false); } }}
           className="bg-transparent text-white text-center outline-none w-full placeholder:text-white/50"
           style={{ fontSize: 'inherit', fontWeight: 'inherit' }}
         />

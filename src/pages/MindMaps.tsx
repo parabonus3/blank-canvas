@@ -1,25 +1,32 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Brain, Trash2, Clock } from 'lucide-react';
+import { Plus, Brain, Trash2, Clock, FolderOpen } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useMindMaps, useCreateMindMap, useDeleteMindMap } from '@/hooks/useMindMaps';
 import { NewMindMapDialog } from '@/components/mindmap/NewMindMapDialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import { format } from 'date-fns';
+import { useProjects } from '@/hooks/useProjects';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function MindMaps() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { data: maps, isLoading } = useMindMaps();
   const createMap = useCreateMindMap();
   const deleteMap = useDeleteMindMap();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [mapToDelete, setMapToDelete] = useState<{ id: string; title: string } | null>(null);
+  const { data: projects = [] } = useProjects();
+  const projectsById = new Map(projects.map(project => [project.id, project]));
 
-  const handleCreate = async (title: string, templateId: string) => {
-    const result = await createMap.mutateAsync({ title, templateId });
+  const handleCreate = async (title: string, templateId: string, projectId?: string) => {
+    const result = await createMap.mutateAsync({ title, templateId, projectId });
     setDialogOpen(false);
     navigate(`/mindmaps/${result.id}`);
   };
@@ -61,10 +68,10 @@ export default function MindMaps() {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="opacity-0 group-hover:opacity-100 shrink-0 h-7 w-7 text-destructive"
+                    className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 shrink-0 h-9 w-9 text-destructive"
                       onClick={e => {
                         e.stopPropagation();
-                        deleteMap.mutate(map.id);
+                        setMapToDelete({ id: map.id, title: map.title });
                       }}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -74,7 +81,7 @@ export default function MindMaps() {
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      {format(new Date(map.updated_at), 'dd/MM/yyyy HH:mm')}
+                      {new Intl.DateTimeFormat(i18n.language, { dateStyle: 'short', timeStyle: 'short' }).format(new Date(map.updated_at))}
                     </span>
                     <span className="bg-muted px-1.5 py-0.5 rounded text-[10px] uppercase">
                       {map.template}
@@ -84,6 +91,12 @@ export default function MindMaps() {
                   <p className="text-xs text-muted-foreground">
                     {(map.nodes?.length || 0)} {t('mindmaps.nodes')} · {(map.edges?.length || 0)} {t('mindmaps.connections')}
                   </p>
+                  {map.project_id && projectsById.get(map.project_id) && (
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <FolderOpen className="h-3 w-3" />
+                      <span className="truncate">{projectsById.get(map.project_id)?.name}</span>
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -106,6 +119,27 @@ export default function MindMaps() {
         onCreate={handleCreate}
         loading={createMap.isPending}
       />
+
+      <AlertDialog open={!!mapToDelete} onOpenChange={(open) => !open && setMapToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('mindmaps.delete_map_title')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('mindmaps.delete_map_desc', { title: mapToDelete?.title })}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                if (mapToDelete) deleteMap.mutate(mapToDelete.id);
+                setMapToDelete(null);
+              }}
+            >
+              {t('common.delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }
