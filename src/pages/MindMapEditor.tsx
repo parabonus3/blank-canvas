@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ReactFlowProvider } from '@xyflow/react';
-import { ArrowLeft, Pencil } from 'lucide-react';
+import { ArrowLeft, Check, CloudOff, Loader2, Pencil } from 'lucide-react';
 import { useMindMap, useUpdateMindMap } from '@/hooks/useMindMaps';
 import { MindMapCanvas } from '@/components/mindmap/MindMapCanvas';
 import { Button } from '@/components/ui/button';
@@ -20,9 +20,9 @@ export default function MindMapEditor() {
   const [titleValue, setTitleValue] = useState('');
 
   const handleSave = useCallback(
-    (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => {
+    async (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => {
       if (!id) return;
-      updateMap.mutate({ id, nodes, edges, viewport });
+      await updateMap.mutateAsync({ id, nodes, edges, viewport });
     },
     [id, updateMap]
   );
@@ -77,6 +77,16 @@ export default function MindMapEditor() {
             <Pencil className="h-3 w-3 shrink-0 text-muted-foreground" />
           </button>
         )}
+
+        <div className="ms-auto flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground" aria-live="polite">
+          {updateMap.isPending ? (
+            <><Loader2 className="h-3.5 w-3.5 animate-spin" /><span className="hidden sm:inline">{t('mindmaps.saving')}</span></>
+          ) : updateMap.isError ? (
+            <><CloudOff className="h-3.5 w-3.5 text-destructive" /><span className="hidden sm:inline text-destructive">{t('mindmaps.save_error')}</span></>
+          ) : (
+            <><Check className="h-3.5 w-3.5" /><span className="hidden sm:inline">{t('mindmaps.saved')}</span></>
+          )}
+        </div>
       </div>
 
       {/* Canvas */}
@@ -86,6 +96,7 @@ export default function MindMapEditor() {
             initialNodes={map.nodes}
             initialEdges={map.edges}
             onSave={handleSave}
+            mapTitle={map.title}
           />
         </ReactFlowProvider>
       </div>

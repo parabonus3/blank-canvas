@@ -91,7 +91,7 @@ export function useCreateMindMap() {
 export function useUpdateMindMap() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: { id: string; nodes?: Node[]; edges?: Edge[]; viewport?: Viewport; title?: string; description?: string }) => {
+    mutationFn: async ({ id, ...updates }: { id: string; nodes?: Node[]; edges?: Edge[]; viewport?: Viewport; title?: string; description?: string; project_id?: string | null }) => {
       const { error } = await supabase
         .from('mind_maps' as any)
         .update({ ...updates, updated_at: new Date().toISOString() } as any)

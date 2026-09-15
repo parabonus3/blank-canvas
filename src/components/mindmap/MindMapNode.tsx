@@ -1,5 +1,6 @@
 import { memo, useState, useCallback, useRef, useEffect } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { Handle, Position, useReactFlow, type NodeProps } from '@xyflow/react';
+import { useTranslation } from 'react-i18next';
 
 type NodeShape = 'rounded' | 'square' | 'pill' | 'circle';
 type NodeType = 'root' | 'branch' | 'sub-branch' | 'leaf';
@@ -28,6 +29,8 @@ const sizeStyles: Record<NodeType, string> = {
 };
 
 function MindMapNodeComponent({ data, selected }: NodeProps) {
+  const { t } = useTranslation();
+  const { setNodes } = useReactFlow();
   const nodeData = data as unknown as MindMapNodeData;
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(nodeData.label);
@@ -42,12 +45,17 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
 
   const commit = useCallback(() => {
     setEditing(false);
-    if (text.trim() && text !== nodeData.label) {
-      nodeData.label = text.trim();
+    const nextLabel = text.trim();
+    if (nextLabel && nextLabel !== nodeData.label) {
+      setNodes(nodes => nodes.map(node => (
+        node.id === (data as { id?: string }).id
+          ? { ...node, data: { ...node.data, label: nextLabel } }
+          : node
+      )));
     } else {
       setText(nodeData.label);
     }
-  }, [text, nodeData]);
+  }, [text, nodeData, data, setNodes]);
 
   const borderWidth = selected ? '3px' : nodeType === 'root' ? '3px' : '2px';
   const shadowBase = nodeType === 'root'
@@ -69,6 +77,16 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
         boxShadow: selected ? `0 0 0 2px ${nodeData.color}, ${shadowBase}` : shadowBase,
       }}
       onDoubleClick={onDoubleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={t('mindmaps.edit_node_label', { label: nodeData.label })}
+      onKeyDown={(event) => {
+        if (!editing && (event.key === 'F2' || event.key === 'Enter')) {
+          event.preventDefault();
+          event.stopPropagation();
+          setEditing(true);
+        }
+      }}
     >
       <Handle type="target" position={Position.Top} className="!w-2 !h-2 !bg-white/60 !border-none" />
 
