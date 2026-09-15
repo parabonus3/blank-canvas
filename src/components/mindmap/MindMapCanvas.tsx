@@ -1,4 +1,5 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ReactFlow,
   Background,
@@ -20,6 +21,10 @@ import { MindMapToolbar } from './MindMapToolbar';
 import { NODE_COLORS, type NodeShape } from './MindMapTemplates';
 import { useIsMobile } from '@/hooks/use-mobile';
 import jsPDF from 'jspdf';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const nodeTypes = { mindMapNode: MindMapNodeComponent };
 const edgeTypes = { mindMapEdge: MindMapEdgeComponent };
@@ -29,8 +34,11 @@ type NodeType = 'root' | 'branch' | 'sub-branch' | 'leaf';
 interface MindMapCanvasProps {
   initialNodes: Node[];
   initialEdges: Edge[];
-  onSave: (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => void;
+  onSave: (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => Promise<void> | void;
+  mapTitle: string;
 }
+
+interface MapSnapshot { nodes: Node[]; edges: Edge[] }
 
 /** Walk edges upward to find depth of a node in the tree */
 function getNodeDepth(nodeId: string, edges: Edge[]): number {
@@ -57,13 +65,34 @@ function nodeTypeFromDepth(depth: number): NodeType {
 
 const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCanvasProps) {
+export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: MindMapCanvasProps) {
+  const { t } = useTranslation();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const { fitView, zoomIn, zoomOut, getViewport, setViewport } = useReactFlow();
   const isMobile = useIsMobile();
   const saveTimer = useRef<ReturnType<typeof setTimeout>>();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [undoStack, setUndoStack] = useState<MapSnapshot[]>([]);
+  const [redoStack, setRedoStack] = useState<MapSnapshot[]>([]);
+  const latestRef = useRef({ nodes, edges });
+  const dirtyRef = useRef(false);
+  const retryTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => { latestRef.current = { nodes, edges }; }, [nodes, edges]);
+
+  const remember = useCallback(() => {
+    setUndoStack(stack => [...stack.slice(-39), structuredClone(latestRef.current)]);
+    setRedoStack([]);
+  }, []);
+
+  useEffect(() => {
+    const handler = () => remember();
+    window.addEventListener('mindmap:before-change', handler);
+    return () => window.removeEventListener('mindmap:before-change', handler);
+  }, [remember]);
 
   const initializedRef = useRef(false);
   useEffect(() => {
@@ -79,19 +108,38 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
   useEffect(() => {
     if (!initializedRef.current) return;
     clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      onSave(nodes, edges, getViewport());
+    dirtyRef.current = true;
+    saveTimer.current = setTimeout(async () => {
+      try {
+        await onSave(nodes, edges, getViewport());
+        dirtyRef.current = false;
+      } catch {
+        clearTimeout(retryTimer.current);
+        retryTimer.current = setTimeout(() => {
+          const latest = latestRef.current;
+          void onSave(latest.nodes, latest.edges, getViewport());
+        }, 5000);
+      }
     }, 2000);
     return () => clearTimeout(saveTimer.current);
   }, [nodes, edges, onSave, getViewport]);
 
+  useEffect(() => () => {
+    clearTimeout(retryTimer.current);
+    if (dirtyRef.current) {
+      const latest = latestRef.current;
+      void onSave(latest.nodes, latest.edges, getViewport());
+    }
+  }, [getViewport, onSave]);
+
   const onConnect = useCallback(
     (conn: Connection) => {
+      remember();
       const sourceNode = nodes.find(n => n.id === conn.source);
       const color = (sourceNode?.data as any)?.color || NODE_COLORS[0];
       setEdges(eds => addEdge({ ...conn, type: 'mindMapEdge', data: { color } }, eds));
     },
-    [setEdges, nodes]
+    [setEdges, nodes, remember]
   );
 
   const onSelectionChange = useCallback(({ nodes: sel }: { nodes: Node[] }) => {
@@ -104,6 +152,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
 
   // ── Add Child (creates a node one level deeper than selected) ──
   const handleAddChild = useCallback(() => {
+    remember();
     const parentId = selectedNodeId || nodes[0]?.id;
     const parent = nodes.find(n => n.id === parentId);
     const id = `node-${Date.now()}`;
@@ -124,7 +173,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         x: (parent?.position.x || 0) + (Math.random() - 0.5) * xSpread,
         y: (parent?.position.y || 0) + yOffset + Math.random() * 40,
       },
-      data: { label: 'Novo', color, nodeType: childNodeType, shape, notes: '' },
+      data: { label: t('mindmaps.new_node'), color, nodeType: childNodeType, shape, notes: '' },
     };
 
     setNodes(nds => [...nds, newNode]);
@@ -134,7 +183,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         { id: `edge-${Date.now()}`, source: parentId, target: id, type: 'mindMapEdge', data: { color } },
       ]);
     }
-  }, [nodes, edges, selectedNodeId, selectedColor, setNodes, setEdges]);
+  }, [nodes, edges, selectedNodeId, selectedColor, setNodes, setEdges, remember, t]);
 
   // ── Add Sibling (creates a node at the same level, sharing the same parent) ──
   const handleAddSibling = useCallback(() => {
@@ -148,6 +197,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
     }
 
     const parentId = parentEdge.source;
+    remember();
     const parent = nodes.find(n => n.id === parentId);
     const sibling = nodes.find(n => n.id === selectedNodeId);
     const id = `node-${Date.now()}`;
@@ -166,7 +216,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         x: (sibling?.position.x || 0) + xSpread * (Math.random() > 0.5 ? 1 : -1),
         y: (sibling?.position.y || 0) + (Math.random() - 0.5) * 80,
       },
-      data: { label: 'Novo', color, nodeType: siblingNodeType, shape, notes: '' },
+      data: { label: t('mindmaps.new_node'), color, nodeType: siblingNodeType, shape, notes: '' },
     };
 
     setNodes(nds => [...nds, newNode]);
@@ -174,7 +224,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
       ...eds,
       { id: `edge-${Date.now()}`, source: parentId, target: id, type: 'mindMapEdge', data: { color } },
     ]);
-  }, [nodes, edges, selectedNodeId, handleAddChild, setNodes, setEdges]);
+  }, [nodes, edges, selectedNodeId, handleAddChild, setNodes, setEdges, remember, t]);
 
   // ── Keyboard shortcuts: Tab = child, Enter = sibling ──
   useEffect(() => {
@@ -198,29 +248,90 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
     return () => window.removeEventListener('keydown', handler);
   }, [selectedNodeId, handleAddChild, handleAddSibling]);
 
-  const handleDeleteSelected = useCallback(() => {
+  const getDescendantIds = useCallback((rootId: string) => {
+    const descendants = new Set<string>();
+    const queue = [rootId];
+    while (queue.length) {
+      const current = queue.shift();
+      if (!current) continue;
+      edges.filter(edge => edge.source === current).forEach(edge => {
+        if (!descendants.has(edge.target)) {
+          descendants.add(edge.target);
+          queue.push(edge.target);
+        }
+      });
+    }
+    return descendants;
+  }, [edges]);
+
+  const handleDeleteSelected = useCallback((includeDescendants: boolean) => {
     if (!selectedNodeId) return;
-    setNodes(nds => nds.filter(n => n.id !== selectedNodeId));
-    setEdges(eds => eds.filter(e => e.source !== selectedNodeId && e.target !== selectedNodeId));
+    remember();
+    const removed = includeDescendants ? getDescendantIds(selectedNodeId) : new Set<string>();
+    removed.add(selectedNodeId);
+    setNodes(nds => nds.filter(n => !removed.has(n.id)));
+    setEdges(eds => eds.filter(e => !removed.has(e.source) && !removed.has(e.target)));
     setSelectedNodeId(null);
-  }, [selectedNodeId, setNodes, setEdges]);
+    setDeleteOpen(false);
+  }, [selectedNodeId, setNodes, setEdges, remember, getDescendantIds]);
 
   const handleChangeColor = useCallback(
     (color: string) => {
       if (!selectedNodeId) return;
+      remember();
       setNodes(nds => nds.map(n => n.id === selectedNodeId ? { ...n, data: { ...n.data, color } } : n));
       setEdges(eds => eds.map(e => e.source === selectedNodeId ? { ...e, data: { ...e.data, color } } : e));
     },
-    [selectedNodeId, setNodes, setEdges]
+    [selectedNodeId, setNodes, setEdges, remember]
   );
 
   const handleChangeShape = useCallback(
     (shape: NodeShape) => {
       if (!selectedNodeId) return;
+      remember();
       setNodes(nds => nds.map(n => n.id === selectedNodeId ? { ...n, data: { ...n.data, shape } } : n));
     },
-    [selectedNodeId, setNodes]
+    [selectedNodeId, setNodes, remember]
   );
+
+  const handleUndo = useCallback(() => {
+    const previous = undoStack[undoStack.length - 1];
+    if (!previous) return;
+    setRedoStack(stack => [...stack.slice(-39), structuredClone(latestRef.current)]);
+    setUndoStack(stack => stack.slice(0, -1));
+    setNodes(previous.nodes);
+    setEdges(previous.edges);
+  }, [undoStack, setNodes, setEdges]);
+
+  const handleRedo = useCallback(() => {
+    const next = redoStack[redoStack.length - 1];
+    if (!next) return;
+    setUndoStack(stack => [...stack.slice(-39), structuredClone(latestRef.current)]);
+    setRedoStack(stack => stack.slice(0, -1));
+    setNodes(next.nodes);
+    setEdges(next.edges);
+  }, [redoStack, setNodes, setEdges]);
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) handleRedo(); else handleUndo();
+      } else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'y') {
+        event.preventDefault();
+        handleRedo();
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        if (selectedNodeId) {
+          event.preventDefault();
+          setDeleteOpen(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleRedo, handleUndo, selectedNodeId]);
 
   // ── Export: fitView → delay → html2canvas with onclone to fix SVG edges ──
   const captureFullMap = useCallback(async (): Promise<HTMLCanvasElement> => {
@@ -271,18 +382,24 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
   }, [getViewport, setViewport, fitView]);
 
   const handleExportPng = useCallback(async () => {
+    if (isExporting) return;
+    setIsExporting(true);
     try {
       const canvas = await captureFullMap();
       const a = document.createElement('a');
       a.href = canvas.toDataURL('image/png');
-      a.download = 'mindmap.png';
+      a.download = `${mapTitle.replace(/[^\p{L}\p{N}-]+/gu, '-').replace(/^-|-$/g, '') || 'mindmap'}.png`;
       a.click();
     } catch (err) {
       console.error('Export PNG failed:', err);
+    } finally {
+      setIsExporting(false);
     }
-  }, [captureFullMap]);
+  }, [captureFullMap, isExporting, mapTitle]);
 
   const handleExportPdf = useCallback(async () => {
+    if (isExporting) return;
+    setIsExporting(true);
     try {
       const canvas = await captureFullMap();
       const imgData = canvas.toDataURL('image/png');
@@ -295,18 +412,20 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         format: [imgW + 40, imgH + 40],
       });
       pdf.addImage(imgData, 'PNG', 20, 20, imgW, imgH);
-      pdf.save('mindmap.pdf');
+      pdf.save(`${mapTitle.replace(/[^\p{L}\p{N}-]+/gu, '-').replace(/^-|-$/g, '') || 'mindmap'}.pdf`);
     } catch (err) {
       console.error('Export PDF failed:', err);
+    } finally {
+      setIsExporting(false);
     }
-  }, [captureFullMap]);
+  }, [captureFullMap, isExporting, mapTitle]);
 
   return (
     <div className="w-full h-full relative">
       <MindMapToolbar
         onAddChild={handleAddChild}
         onAddSibling={handleAddSibling}
-        onDeleteSelected={handleDeleteSelected}
+        onDeleteSelected={() => setDeleteOpen(true)}
         onZoomIn={() => zoomIn()}
         onZoomOut={() => zoomOut()}
         onFitView={() => fitView({ padding: 0.3 })}
@@ -317,6 +436,11 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         onChangeColor={handleChangeColor}
         onChangeShape={handleChangeShape}
         hasSelection={!!selectedNodeId}
+        onUndo={handleUndo}
+        onRedo={handleRedo}
+        canUndo={undoStack.length > 0}
+        canRedo={redoStack.length > 0}
+        isExporting={isExporting}
       />
 
       <ReactFlow
@@ -330,7 +454,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         edgeTypes={edgeTypes}
         fitView
         fitViewOptions={{ padding: 0.3 }}
-        deleteKeyCode="Delete"
+        deleteKeyCode={null}
         multiSelectionKeyCode="Shift"
         panOnScroll={!isMobile}
         zoomOnPinch
@@ -342,6 +466,22 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave }: MindMapCan
         {!isMobile && <MiniMap className="!bg-card !border-border" pannable zoomable />}
         {!isMobile && <Controls className="!bg-card !border-border !shadow-md [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-foreground" />}
       </ReactFlow>
+
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('mindmaps.delete_node_title')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('mindmaps.delete_node_desc')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => handleDeleteSelected(false)}>{t('mindmaps.keep_children')}</AlertDialogAction>
+            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => handleDeleteSelected(true)}>
+              {t('mindmaps.delete_branch')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

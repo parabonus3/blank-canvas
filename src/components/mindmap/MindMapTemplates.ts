@@ -55,7 +55,7 @@ function makeEdge(id: string, source: string, target: string, color: string): Ed
   return { id, source, target, type: 'mindMapEdge', data: { color } };
 }
 
-export const templates: MindMapTemplate[] = [
+const templateDefinitions: MindMapTemplate[] = [
   // Blank
   {
     id: 'blank',
@@ -286,6 +286,17 @@ export const templates: MindMapTemplate[] = [
     ],
   },
 ];
+
+export const templates: MindMapTemplate[] = templateDefinitions.map(template => ({
+  ...template,
+  nodes: template.nodes.map(node => ({
+    ...node,
+    data: {
+      ...node.data,
+      labelKey: `mindmaps.template_nodes.${template.id}.${node.id}`,
+    },
+  })),
+}));
 
 export function getTemplate(id: string): MindMapTemplate {
   return templates.find(t => t.id === id) || templates[0];

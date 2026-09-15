@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Plus, GitBranch, Trash2, ZoomIn, ZoomOut, Maximize, Download, Palette, Square, FileImage, FileText } from 'lucide-react';
+import { Plus, GitBranch, Trash2, ZoomIn, ZoomOut, Maximize, Download, Palette, Square, FileImage, FileText, Undo2, Redo2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -30,6 +30,11 @@ interface MindMapToolbarProps {
   onChangeColor: (color: string) => void;
   onChangeShape: (shape: NodeShape) => void;
   hasSelection: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  isExporting: boolean;
 }
 
 export function MindMapToolbar({
@@ -46,6 +51,11 @@ export function MindMapToolbar({
   onChangeColor,
   onChangeShape,
   hasSelection,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+  isExporting,
 }: MindMapToolbarProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
@@ -59,10 +69,17 @@ export function MindMapToolbar({
   return (
     <TooltipProvider delayDuration={300}>
       <div className={wrapperClass}>
+        <Button size="icon" variant="ghost" onClick={onUndo} disabled={!canUndo || isExporting} title={t('mindmaps.toolbar.undo')}>
+          <Undo2 className="h-4 w-4" />
+        </Button>
+        <Button size="icon" variant="ghost" onClick={onRedo} disabled={!canRedo || isExporting} title={t('mindmaps.toolbar.redo')}>
+          <Redo2 className="h-4 w-4" />
+        </Button>
+
         {/* Add Child */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button size="icon" variant="ghost" onClick={onAddChild} title={t('mindmaps.toolbar.add_child')}>
+            <Button size="icon" variant="ghost" onClick={onAddChild} disabled={isExporting} title={t('mindmaps.toolbar.add_child')}>
               <Plus className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
@@ -102,24 +119,27 @@ export function MindMapToolbar({
             </Popover>
             <Popover>
               <PopoverTrigger asChild>
-                <Button size="icon" variant="ghost" title="Shape">
+                <Button size="icon" variant="ghost" title={t('mindmaps.toolbar.shape')}>
                   <Square className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent side={isMobile ? 'top' : 'right'} className="w-auto p-2">
                 <div className="flex gap-1">
                   {SHAPES.map(s => (
-                    <button
+                    <Button
                       key={s}
+                      type="button"
+                      variant="ghost"
+                      size="icon"
                       onClick={() => onChangeShape(s)}
                       className={cn(
                         'w-8 h-8 flex items-center justify-center text-lg border-2 rounded-md transition-colors',
                         selectedNodeShape === s ? 'border-primary bg-primary/10' : 'border-transparent hover:bg-muted'
                       )}
-                      title={s}
+                      aria-label={t(`mindmaps.shapes.${s}`)}
                     >
                       {shapeIcons[s]}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </PopoverContent>
@@ -143,8 +163,8 @@ export function MindMapToolbar({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="icon" variant="ghost" title={t('mindmaps.toolbar.export')}>
-              <Download className="h-4 w-4" />
+            <Button size="icon" variant="ghost" disabled={isExporting} title={t('mindmaps.toolbar.export')}>
+              {isExporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side={isMobile ? 'top' : 'right'}>

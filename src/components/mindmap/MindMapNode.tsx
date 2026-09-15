@@ -1,5 +1,6 @@
 import { memo, useState, useCallback, useRef, useEffect } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { Handle, Position, useReactFlow, type NodeProps } from '@xyflow/react';
+import { useTranslation } from 'react-i18next';
 
 type NodeShape = 'rounded' | 'square' | 'pill' | 'circle';
 type NodeType = 'root' | 'branch' | 'sub-branch' | 'leaf';
@@ -27,27 +28,36 @@ const sizeStyles: Record<NodeType, string> = {
   leaf: 'min-w-[70px] px-3 py-1.5 text-[11px] font-normal',
 };
 
-function MindMapNodeComponent({ data, selected }: NodeProps) {
+function MindMapNodeComponent({ id, data, selected }: NodeProps) {
+  const { t } = useTranslation();
+  const { setNodes } = useReactFlow();
   const nodeData = data as unknown as MindMapNodeData;
   const [editing, setEditing] = useState(false);
-  const [text, setText] = useState(nodeData.label);
+  const displayLabel = nodeData.labelKey ? t(nodeData.labelKey as string, nodeData.label) : nodeData.label;
+  const [text, setText] = useState(displayLabel);
   const inputRef = useRef<HTMLInputElement>(null);
   const shape: NodeShape = nodeData.shape || 'rounded';
   const nodeType: NodeType = nodeData.nodeType || 'leaf';
 
-  useEffect(() => { setText(nodeData.label); }, [nodeData.label]);
+  useEffect(() => { setText(displayLabel); }, [displayLabel]);
   useEffect(() => { if (editing) inputRef.current?.focus(); }, [editing]);
 
   const onDoubleClick = useCallback(() => setEditing(true), []);
 
   const commit = useCallback(() => {
     setEditing(false);
-    if (text.trim() && text !== nodeData.label) {
-      nodeData.label = text.trim();
+    const nextLabel = text.trim();
+    if (nextLabel && nextLabel !== displayLabel) {
+      window.dispatchEvent(new CustomEvent('mindmap:before-change'));
+      setNodes(nodes => nodes.map(node => (
+        node.id === id
+          ? { ...node, data: { ...node.data, label: nextLabel, labelKey: undefined } }
+          : node
+      )));
     } else {
-      setText(nodeData.label);
+      setText(displayLabel);
     }
-  }, [text, nodeData]);
+  }, [text, displayLabel, id, setNodes]);
 
   const borderWidth = selected ? '3px' : nodeType === 'root' ? '3px' : '2px';
   const shadowBase = nodeType === 'root'
@@ -69,6 +79,16 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
         boxShadow: selected ? `0 0 0 2px ${nodeData.color}, ${shadowBase}` : shadowBase,
       }}
       onDoubleClick={onDoubleClick}
+      role="button"
+      tabIndex={0}
+      aria-label={t('mindmaps.edit_node_label', { label: displayLabel })}
+      onKeyDown={(event) => {
+        if (!editing && (event.key === 'F2' || event.key === 'Enter')) {
+          event.preventDefault();
+          event.stopPropagation();
+          setEditing(true);
+        }
+      }}
     >
       <Handle type="target" position={Position.Top} className="!w-2 !h-2 !bg-white/60 !border-none" />
 
@@ -78,12 +98,12 @@ function MindMapNodeComponent({ data, selected }: NodeProps) {
           value={text}
           onChange={e => setText(e.target.value)}
           onBlur={commit}
-          onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setText(nodeData.label); setEditing(false); } }}
+          onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setText(displayLabel); setEditing(false); } }}
           className="bg-transparent text-white text-center outline-none w-full placeholder:text-white/50"
           style={{ fontSize: 'inherit', fontWeight: 'inherit' }}
         />
       ) : (
-        <span className="select-none whitespace-nowrap">{nodeData.label}</span>
+          <span className="select-none whitespace-nowrap">{displayLabel}</span>
       )}
 
       <Handle type="source" position={Position.Bottom} className="!w-2 !h-2 !bg-white/60 !border-none" />
