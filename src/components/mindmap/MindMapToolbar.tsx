@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Plus, GitBranch, Trash2, ZoomIn, ZoomOut, Maximize, Download, Palette, Square, FileImage, FileText, Undo2, Redo2, Loader2 } from 'lucide-react';
+import { Plus, GitBranch, Trash2, ZoomIn, ZoomOut, Maximize, Download, Palette, Square, FileImage, FileText, Undo2, Redo2, Loader2, WandSparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -35,6 +35,7 @@ interface MindMapToolbarProps {
   canUndo: boolean;
   canRedo: boolean;
   isExporting: boolean;
+  onOpenActions: () => void;
 }
 
 export function MindMapToolbar({
@@ -56,6 +57,7 @@ export function MindMapToolbar({
   canUndo,
   canRedo,
   isExporting,
+  onOpenActions,
 }: MindMapToolbarProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
@@ -104,6 +106,9 @@ export function MindMapToolbar({
 
         {hasSelection && (
           <>
+            <Button size="icon" variant="ghost" onClick={onOpenActions} title={t('mindmaps.toolbar.actions')}>
+              <WandSparkles className="h-4 w-4 text-primary" />
+            </Button>
             <Button size="icon" variant="ghost" onClick={onDeleteSelected} title={t('mindmaps.toolbar.delete')}>
               <Trash2 className="h-4 w-4 text-destructive" />
             </Button>

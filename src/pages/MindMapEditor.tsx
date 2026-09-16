@@ -120,6 +120,7 @@ export default function MindMapEditor() {
             initialEdges={map.edges}
             onSave={handleSave}
             mapTitle={map.title}
+            projectId={map.project_id}
           />
         </ReactFlowProvider>
       </div>

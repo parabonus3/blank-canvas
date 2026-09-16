@@ -25,6 +25,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { MindMapNodeActions, type MindMapNodeLinks } from './MindMapNodeActions';
 
 const nodeTypes = { mindMapNode: MindMapNodeComponent };
 const edgeTypes = { mindMapEdge: MindMapEdgeComponent };
@@ -36,6 +37,7 @@ interface MindMapCanvasProps {
   initialEdges: Edge[];
   onSave: (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => Promise<void> | void;
   mapTitle: string;
+  projectId: string | null;
 }
 
 interface MapSnapshot { nodes: Node[]; edges: Edge[] }
@@ -65,7 +67,7 @@ function nodeTypeFromDepth(depth: number): NodeType {
 
 const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
 
-export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: MindMapCanvasProps) {
+export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle, projectId }: MindMapCanvasProps) {
   const { t } = useTranslation();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -75,6 +77,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const [undoStack, setUndoStack] = useState<MapSnapshot[]>([]);
   const [redoStack, setRedoStack] = useState<MapSnapshot[]>([]);
   const latestRef = useRef({ nodes, edges });
@@ -441,6 +444,7 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: 
         canUndo={undoStack.length > 0}
         canRedo={redoStack.length > 0}
         isExporting={isExporting}
+        onOpenActions={() => setActionsOpen(true)}
       />
 
       <ReactFlow
@@ -482,6 +486,20 @@ export function MindMapCanvas({ initialNodes, initialEdges, onSave, mapTitle }: 
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {selectedNode && (
+        <MindMapNodeActions
+          open={actionsOpen}
+          onOpenChange={setActionsOpen}
+          label={String(selectedNode.data.label || t('mindmaps.new_node'))}
+          projectId={projectId}
+          links={selectedNode.data as MindMapNodeLinks}
+          onLinked={(links) => {
+            remember();
+            setNodes(current => current.map(node => node.id === selectedNode.id ? { ...node, data: { ...node.data, ...links } } : node));
+          }}
+        />
+      )}
     </div>
   );
 }
