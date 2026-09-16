@@ -1639,7 +1639,123 @@
       "zoom_in": "تكبير",
       "zoom_out": "تصغير",
       "fit": "ملاءمة العرض",
-      "export": "تصدير كصورة"
+      "export": "تصدير كصورة",
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "shape": "تغيير الشكل"
+    },
+    "new_node": "جديد",
+    "project": "المشروع المرتبط",
+    "choose_project": "اختر مشروعًا",
+    "no_project": "بدون مشروع",
+    "saving": "جارٍ الحفظ",
+    "saved": "تم الحفظ",
+    "save_error": "فشل الحفظ",
+    "edit_node_label": "تعديل العقدة: {{label}}",
+    "select_color": "اختر اللون",
+    "custom_color": "لون مخصص",
+    "delete_map_title": "حذف الخريطة الذهنية؟",
+    "delete_map_desc": "سيتم حذف «{{title}}» نهائيًا.",
+    "delete_node_title": "حذف العقدة؟",
+    "delete_node_desc": "اختر ما إذا كنت تريد حذف العقد الموجودة أسفلها أيضًا.",
+    "keep_children": "الاحتفاظ بالفروع",
+    "delete_branch": "حذف الفرع",
+    "shapes": {
+      "rounded": "مستدير",
+      "square": "مربع",
+      "pill": "كبسولة",
+      "circle": "دائرة"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "الفكرة المركزية"
+      },
+      "classic": {
+        "root": "الموضوع الرئيسي",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "المشروع",
+        "b1": "المهام",
+        "b2": "المواعيد",
+        "b3": "الموارد",
+        "b4": "المخاطر",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "موضوع الدراسة",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "سير العمل",
+        "b1": "للعمل",
+        "b2": "قيد التنفيذ",
+        "b3": "مكتمل",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "قائمة",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "تفصيل",
+        "l2": "تفصيل",
+        "l3": "تفصيل",
+        "l4": "تفصيل"
+      }
     }
   },
   "support": {
@@ -2751,9 +2867,43 @@
     "result_tie": "تعادل!"
   },
   "seed_admin": {
-    "tab": "تجريبي", "title": "البيئة التجريبية", "description": "تستكمل الغرف متعددة اللغات المحمية بكلمة مرور والمستخدمين والسجل دون تغيير البيانات الحقيقية.",
-    "people": "الأشخاص", "rooms": "الغرف", "sessions": "الجلسات", "complete": "اكتمل العرض", "complete_missing": "إكمال البيانات الناقصة", "pause": "إيقاف النشاط", "activate": "تشغيل النشاط", "generating": "جارٍ الإنشاء بأمان… {{progress}}%", "by_language": "التغطية حسب اللغة", "rooms_short": "غرف", "people_short": "أشخاص", "members_short": "أعضاء", "history_short": "لديهم سجل", "remove_title": "إزالة العرض", "remove_desc": "اكتب REMOVER لحذف بيانات العرض فقط.", "remove_all": "إزالة الكل", "completed_title": "اكتمل العرض", "completed_desc": "تمت إضافة الغرف والسجلات الناقصة.", "removed_title": "تمت إزالة العرض", "removed_desc": "لم تتغير أي بيانات حقيقية.",
-    "languages": { "pt-BR": "البرتغالية", "en-US": "الإنجليزية", "es-ES": "الإسبانية", "fr-FR": "الفرنسية", "de-DE": "الألمانية", "it-IT": "الإيطالية", "ja-JP": "اليابانية", "ko-KR": "الكورية", "zh-CN": "الصينية", "ru-RU": "الروسية", "ar-SA": "العربية", "id-ID": "الإندونيسية" }
+    "tab": "تجريبي",
+    "title": "البيئة التجريبية",
+    "description": "تستكمل الغرف متعددة اللغات المحمية بكلمة مرور والمستخدمين والسجل دون تغيير البيانات الحقيقية.",
+    "people": "الأشخاص",
+    "rooms": "الغرف",
+    "sessions": "الجلسات",
+    "complete": "اكتمل العرض",
+    "complete_missing": "إكمال البيانات الناقصة",
+    "pause": "إيقاف النشاط",
+    "activate": "تشغيل النشاط",
+    "generating": "جارٍ الإنشاء بأمان… {{progress}}%",
+    "by_language": "التغطية حسب اللغة",
+    "rooms_short": "غرف",
+    "people_short": "أشخاص",
+    "members_short": "أعضاء",
+    "history_short": "لديهم سجل",
+    "remove_title": "إزالة العرض",
+    "remove_desc": "اكتب REMOVER لحذف بيانات العرض فقط.",
+    "remove_all": "إزالة الكل",
+    "completed_title": "اكتمل العرض",
+    "completed_desc": "تمت إضافة الغرف والسجلات الناقصة.",
+    "removed_title": "تمت إزالة العرض",
+    "removed_desc": "لم تتغير أي بيانات حقيقية.",
+    "languages": {
+      "pt-BR": "البرتغالية",
+      "en-US": "الإنجليزية",
+      "es-ES": "الإسبانية",
+      "fr-FR": "الفرنسية",
+      "de-DE": "الألمانية",
+      "it-IT": "الإيطالية",
+      "ja-JP": "اليابانية",
+      "ko-KR": "الكورية",
+      "zh-CN": "الصينية",
+      "ru-RU": "الروسية",
+      "ar-SA": "العربية",
+      "id-ID": "الإندونيسية"
+    }
   },
   "access_codes": {
     "title": "رمز الوصول",

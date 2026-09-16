@@ -1639,7 +1639,123 @@
       "zoom_in": "放大",
       "zoom_out": "缩小",
       "fit": "适应视图",
-      "export": "导出为图片"
+      "export": "导出为图片",
+      "undo": "撤销",
+      "redo": "重做",
+      "shape": "更改形状"
+    },
+    "new_node": "新节点",
+    "project": "关联项目",
+    "choose_project": "选择项目",
+    "no_project": "无项目",
+    "saving": "正在保存",
+    "saved": "已保存",
+    "save_error": "保存失败",
+    "edit_node_label": "编辑节点：{{label}}",
+    "select_color": "选择颜色",
+    "custom_color": "自定义颜色",
+    "delete_map_title": "删除思维导图？",
+    "delete_map_desc": "“{{title}}”将被永久删除。",
+    "delete_node_title": "删除节点？",
+    "delete_node_desc": "请选择是否同时删除其下方节点。",
+    "keep_children": "保留下级节点",
+    "delete_branch": "删除分支",
+    "shapes": {
+      "rounded": "圆角",
+      "square": "方形",
+      "pill": "胶囊形",
+      "circle": "圆形"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "中心想法"
+      },
+      "classic": {
+        "root": "主要主题",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "项目",
+        "b1": "任务",
+        "b2": "截止日期",
+        "b3": "资源",
+        "b4": "风险",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "学习主题",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "流程",
+        "b1": "待办",
+        "b2": "进行中",
+        "b3": "已完成",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "列表",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "详情",
+        "l2": "详情",
+        "l3": "详情",
+        "l4": "详情"
+      }
     }
   },
   "support": {
@@ -2765,9 +2881,43 @@
     "result_tie": "平局！"
   },
   "seed_admin": {
-    "tab": "演示", "title": "演示环境", "description": "在不改动真实数据的前提下，补齐受密码保护的多语言房间、用户与历史记录。",
-    "people": "用户", "rooms": "房间", "sessions": "专注记录", "complete": "演示已完成", "complete_missing": "补齐缺失数据", "pause": "暂停活动", "activate": "开启活动", "generating": "正在安全生成… {{progress}}%", "by_language": "各语言覆盖", "rooms_short": "房间", "people_short": "用户", "members_short": "成员", "history_short": "有记录", "remove_title": "删除演示", "remove_desc": "输入 REMOVER，仅删除演示数据。", "remove_all": "全部删除", "completed_title": "演示已完成", "completed_desc": "已补齐缺失的房间和历史。", "removed_title": "演示已删除", "removed_desc": "未改动任何真实数据。",
-    "languages": { "pt-BR": "葡萄牙语", "en-US": "英语", "es-ES": "西班牙语", "fr-FR": "法语", "de-DE": "德语", "it-IT": "意大利语", "ja-JP": "日语", "ko-KR": "韩语", "zh-CN": "中文", "ru-RU": "俄语", "ar-SA": "阿拉伯语", "id-ID": "印度尼西亚语" }
+    "tab": "演示",
+    "title": "演示环境",
+    "description": "在不改动真实数据的前提下，补齐受密码保护的多语言房间、用户与历史记录。",
+    "people": "用户",
+    "rooms": "房间",
+    "sessions": "专注记录",
+    "complete": "演示已完成",
+    "complete_missing": "补齐缺失数据",
+    "pause": "暂停活动",
+    "activate": "开启活动",
+    "generating": "正在安全生成… {{progress}}%",
+    "by_language": "各语言覆盖",
+    "rooms_short": "房间",
+    "people_short": "用户",
+    "members_short": "成员",
+    "history_short": "有记录",
+    "remove_title": "删除演示",
+    "remove_desc": "输入 REMOVER，仅删除演示数据。",
+    "remove_all": "全部删除",
+    "completed_title": "演示已完成",
+    "completed_desc": "已补齐缺失的房间和历史。",
+    "removed_title": "演示已删除",
+    "removed_desc": "未改动任何真实数据。",
+    "languages": {
+      "pt-BR": "葡萄牙语",
+      "en-US": "英语",
+      "es-ES": "西班牙语",
+      "fr-FR": "法语",
+      "de-DE": "德语",
+      "it-IT": "意大利语",
+      "ja-JP": "日语",
+      "ko-KR": "韩语",
+      "zh-CN": "中文",
+      "ru-RU": "俄语",
+      "ar-SA": "阿拉伯语",
+      "id-ID": "印度尼西亚语"
+    }
   },
   "access_codes": {
     "title": "访问码",

@@ -1639,7 +1639,123 @@
       "zoom_in": "Perbesar",
       "zoom_out": "Perkecil",
       "fit": "Sesuaikan tampilan",
-      "export": "Ekspor sebagai gambar"
+      "export": "Ekspor sebagai gambar",
+      "undo": "Urungkan",
+      "redo": "Ulangi",
+      "shape": "Ubah bentuk"
+    },
+    "new_node": "Baru",
+    "project": "Proyek terkait",
+    "choose_project": "Pilih proyek",
+    "no_project": "Tanpa proyek",
+    "saving": "Menyimpan",
+    "saved": "Tersimpan",
+    "save_error": "Gagal menyimpan",
+    "edit_node_label": "Edit simpul: {{label}}",
+    "select_color": "Pilih warna",
+    "custom_color": "Warna khusus",
+    "delete_map_title": "Hapus peta pikiran?",
+    "delete_map_desc": "“{{title}}” akan dihapus permanen.",
+    "delete_node_title": "Hapus simpul?",
+    "delete_node_desc": "Pilih apakah simpul di bawahnya juga akan dihapus.",
+    "keep_children": "Pertahankan turunan",
+    "delete_branch": "Hapus cabang",
+    "shapes": {
+      "rounded": "Membulat",
+      "square": "Persegi",
+      "pill": "Kapsul",
+      "circle": "Lingkaran"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "Ide utama"
+      },
+      "classic": {
+        "root": "Topik utama",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "Proyek",
+        "b1": "Tugas",
+        "b2": "Tenggat",
+        "b3": "Sumber daya",
+        "b4": "Risiko",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "Topik belajar",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "Alur",
+        "b1": "Akan dikerjakan",
+        "b2": "Dikerjakan",
+        "b3": "Selesai",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "Daftar",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "Detail",
+        "l2": "Detail",
+        "l3": "Detail",
+        "l4": "Detail"
+      }
     }
   },
   "support": {
@@ -2765,9 +2881,43 @@
     "result_tie": "Seri!"
   },
   "seed_admin": {
-    "tab": "Demo", "title": "Lingkungan demo", "description": "Melengkapi ruang multibahasa berpassword, pengguna, dan riwayat tanpa mengubah data asli.",
-    "people": "Pengguna", "rooms": "Ruang", "sessions": "Sesi", "complete": "Demo lengkap", "complete_missing": "Lengkapi data yang kurang", "pause": "Jeda aktivitas", "activate": "Aktifkan aktivitas", "generating": "Membuat dengan aman… {{progress}}%", "by_language": "Cakupan per bahasa", "rooms_short": "ruang", "people_short": "orang", "members_short": "anggota", "history_short": "punya riwayat", "remove_title": "Hapus demo", "remove_desc": "Ketik REMOVER untuk menghapus data demo saja.", "remove_all": "Hapus semua", "completed_title": "Demo lengkap", "completed_desc": "Ruang dan riwayat yang kurang telah ditambahkan.", "removed_title": "Demo dihapus", "removed_desc": "Tidak ada data asli yang diubah.",
-    "languages": { "pt-BR": "Portugis", "en-US": "Inggris", "es-ES": "Spanyol", "fr-FR": "Prancis", "de-DE": "Jerman", "it-IT": "Italia", "ja-JP": "Jepang", "ko-KR": "Korea", "zh-CN": "Tionghoa", "ru-RU": "Rusia", "ar-SA": "Arab", "id-ID": "Indonesia" }
+    "tab": "Demo",
+    "title": "Lingkungan demo",
+    "description": "Melengkapi ruang multibahasa berpassword, pengguna, dan riwayat tanpa mengubah data asli.",
+    "people": "Pengguna",
+    "rooms": "Ruang",
+    "sessions": "Sesi",
+    "complete": "Demo lengkap",
+    "complete_missing": "Lengkapi data yang kurang",
+    "pause": "Jeda aktivitas",
+    "activate": "Aktifkan aktivitas",
+    "generating": "Membuat dengan aman… {{progress}}%",
+    "by_language": "Cakupan per bahasa",
+    "rooms_short": "ruang",
+    "people_short": "orang",
+    "members_short": "anggota",
+    "history_short": "punya riwayat",
+    "remove_title": "Hapus demo",
+    "remove_desc": "Ketik REMOVER untuk menghapus data demo saja.",
+    "remove_all": "Hapus semua",
+    "completed_title": "Demo lengkap",
+    "completed_desc": "Ruang dan riwayat yang kurang telah ditambahkan.",
+    "removed_title": "Demo dihapus",
+    "removed_desc": "Tidak ada data asli yang diubah.",
+    "languages": {
+      "pt-BR": "Portugis",
+      "en-US": "Inggris",
+      "es-ES": "Spanyol",
+      "fr-FR": "Prancis",
+      "de-DE": "Jerman",
+      "it-IT": "Italia",
+      "ja-JP": "Jepang",
+      "ko-KR": "Korea",
+      "zh-CN": "Tionghoa",
+      "ru-RU": "Rusia",
+      "ar-SA": "Arab",
+      "id-ID": "Indonesia"
+    }
   },
   "access_codes": {
     "title": "Kode akses",

@@ -1639,7 +1639,123 @@
       "zoom_in": "Zoom avant",
       "zoom_out": "Zoom arrière",
       "fit": "Ajuster la vue",
-      "export": "Exporter en image"
+      "export": "Exporter en image",
+      "undo": "Annuler",
+      "redo": "Rétablir",
+      "shape": "Changer la forme"
+    },
+    "new_node": "Nouveau",
+    "project": "Projet associé",
+    "choose_project": "Choisir un projet",
+    "no_project": "Sans projet",
+    "saving": "Enregistrement",
+    "saved": "Enregistré",
+    "save_error": "Échec de l’enregistrement",
+    "edit_node_label": "Modifier le nœud : {{label}}",
+    "select_color": "Choisir la couleur",
+    "custom_color": "Couleur personnalisée",
+    "delete_map_title": "Supprimer la carte mentale ?",
+    "delete_map_desc": "« {{title}} » sera supprimée définitivement.",
+    "delete_node_title": "Supprimer le nœud ?",
+    "delete_node_desc": "Choisissez si les nœuds suivants doivent aussi être supprimés.",
+    "keep_children": "Garder les descendants",
+    "delete_branch": "Supprimer la branche",
+    "shapes": {
+      "rounded": "Arrondi",
+      "square": "Carré",
+      "pill": "Capsule",
+      "circle": "Cercle"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "Idée centrale"
+      },
+      "classic": {
+        "root": "Sujet principal",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "Projet",
+        "b1": "Tâches",
+        "b2": "Échéances",
+        "b3": "Ressources",
+        "b4": "Risques",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "Sujet d’étude",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "Flux",
+        "b1": "À faire",
+        "b2": "En cours",
+        "b3": "Terminé",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "Liste",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "Détail",
+        "l2": "Détail",
+        "l3": "Détail",
+        "l4": "Détail"
+      }
     }
   },
   "support": {
@@ -2765,9 +2881,43 @@
     "result_tie": "Égalité !"
   },
   "seed_admin": {
-    "tab": "Démo", "title": "Environnement de démonstration", "description": "Complète les salles multilingues protégées, les personnes et leur historique sans modifier les vraies données.",
-    "people": "Personnes", "rooms": "Salles", "sessions": "Sessions", "complete": "Démo complète", "complete_missing": "Compléter les données", "pause": "Suspendre l'activité", "activate": "Activer l'activité", "generating": "Génération sécurisée… {{progress}}%", "by_language": "Couverture par langue", "rooms_short": "salles", "people_short": "personnes", "members_short": "membres", "history_short": "avec historique", "remove_title": "Supprimer la démo", "remove_desc": "Saisissez REMOVER pour supprimer uniquement les données de démonstration.", "remove_all": "Tout supprimer", "completed_title": "Démo complète", "completed_desc": "Les salles et historiques manquants ont été ajoutés.", "removed_title": "Démo supprimée", "removed_desc": "Aucune donnée réelle n'a été modifiée.",
-    "languages": { "pt-BR": "Portugais", "en-US": "Anglais", "es-ES": "Espagnol", "fr-FR": "Français", "de-DE": "Allemand", "it-IT": "Italien", "ja-JP": "Japonais", "ko-KR": "Coréen", "zh-CN": "Chinois", "ru-RU": "Russe", "ar-SA": "Arabe", "id-ID": "Indonésien" }
+    "tab": "Démo",
+    "title": "Environnement de démonstration",
+    "description": "Complète les salles multilingues protégées, les personnes et leur historique sans modifier les vraies données.",
+    "people": "Personnes",
+    "rooms": "Salles",
+    "sessions": "Sessions",
+    "complete": "Démo complète",
+    "complete_missing": "Compléter les données",
+    "pause": "Suspendre l'activité",
+    "activate": "Activer l'activité",
+    "generating": "Génération sécurisée… {{progress}}%",
+    "by_language": "Couverture par langue",
+    "rooms_short": "salles",
+    "people_short": "personnes",
+    "members_short": "membres",
+    "history_short": "avec historique",
+    "remove_title": "Supprimer la démo",
+    "remove_desc": "Saisissez REMOVER pour supprimer uniquement les données de démonstration.",
+    "remove_all": "Tout supprimer",
+    "completed_title": "Démo complète",
+    "completed_desc": "Les salles et historiques manquants ont été ajoutés.",
+    "removed_title": "Démo supprimée",
+    "removed_desc": "Aucune donnée réelle n'a été modifiée.",
+    "languages": {
+      "pt-BR": "Portugais",
+      "en-US": "Anglais",
+      "es-ES": "Espagnol",
+      "fr-FR": "Français",
+      "de-DE": "Allemand",
+      "it-IT": "Italien",
+      "ja-JP": "Japonais",
+      "ko-KR": "Coréen",
+      "zh-CN": "Chinois",
+      "ru-RU": "Russe",
+      "ar-SA": "Arabe",
+      "id-ID": "Indonésien"
+    }
   },
   "access_codes": {
     "title": "Code d'accès",

@@ -1639,7 +1639,123 @@
       "zoom_in": "확대",
       "zoom_out": "축소",
       "fit": "뷰 맞추기",
-      "export": "이미지로 내보내기"
+      "export": "이미지로 내보내기",
+      "undo": "실행 취소",
+      "redo": "다시 실행",
+      "shape": "모양 변경"
+    },
+    "new_node": "새 항목",
+    "project": "연결된 프로젝트",
+    "choose_project": "프로젝트 선택",
+    "no_project": "프로젝트 없음",
+    "saving": "저장 중",
+    "saved": "저장됨",
+    "save_error": "저장 실패",
+    "edit_node_label": "노드 편집: {{label}}",
+    "select_color": "색상 선택",
+    "custom_color": "사용자 지정 색상",
+    "delete_map_title": "마인드맵을 삭제할까요?",
+    "delete_map_desc": "“{{title}}”이(가) 영구 삭제됩니다.",
+    "delete_node_title": "노드를 삭제할까요?",
+    "delete_node_desc": "아래 노드도 함께 삭제할지 선택하세요.",
+    "keep_children": "하위 노드 유지",
+    "delete_branch": "가지 삭제",
+    "shapes": {
+      "rounded": "둥근 사각형",
+      "square": "사각형",
+      "pill": "캡슐",
+      "circle": "원"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "중심 아이디어"
+      },
+      "classic": {
+        "root": "주요 주제",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "프로젝트",
+        "b1": "작업",
+        "b2": "마감일",
+        "b3": "리소스",
+        "b4": "위험",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "학습 주제",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "흐름",
+        "b1": "할 일",
+        "b2": "진행 중",
+        "b3": "완료",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "목록",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "세부 정보",
+        "l2": "세부 정보",
+        "l3": "세부 정보",
+        "l4": "세부 정보"
+      }
     }
   },
   "support": {
@@ -2751,9 +2867,43 @@
     "result_tie": "무승부!"
   },
   "seed_admin": {
-    "tab": "데모", "title": "데모 환경", "description": "실제 데이터는 건드리지 않고 비밀번호로 보호된 다국어 방, 사용자와 기록을 완성합니다.",
-    "people": "사용자", "rooms": "방", "sessions": "세션", "complete": "데모 완료", "complete_missing": "누락 데이터 채우기", "pause": "활동 일시정지", "activate": "활동 시작", "generating": "안전하게 생성 중… {{progress}}%", "by_language": "언어별 현황", "rooms_short": "방", "people_short": "명", "members_short": "멤버", "history_short": "기록 있음", "remove_title": "데모 삭제", "remove_desc": "데모 데이터만 삭제하려면 REMOVER를 입력하세요.", "remove_all": "모두 삭제", "completed_title": "데모 완료", "completed_desc": "누락된 방과 기록을 추가했습니다.", "removed_title": "데모 삭제됨", "removed_desc": "실제 데이터는 변경되지 않았습니다.",
-    "languages": { "pt-BR": "포르투갈어", "en-US": "영어", "es-ES": "스페인어", "fr-FR": "프랑스어", "de-DE": "독일어", "it-IT": "이탈리아어", "ja-JP": "일본어", "ko-KR": "한국어", "zh-CN": "중국어", "ru-RU": "러시아어", "ar-SA": "아랍어", "id-ID": "인도네시아어" }
+    "tab": "데모",
+    "title": "데모 환경",
+    "description": "실제 데이터는 건드리지 않고 비밀번호로 보호된 다국어 방, 사용자와 기록을 완성합니다.",
+    "people": "사용자",
+    "rooms": "방",
+    "sessions": "세션",
+    "complete": "데모 완료",
+    "complete_missing": "누락 데이터 채우기",
+    "pause": "활동 일시정지",
+    "activate": "활동 시작",
+    "generating": "안전하게 생성 중… {{progress}}%",
+    "by_language": "언어별 현황",
+    "rooms_short": "방",
+    "people_short": "명",
+    "members_short": "멤버",
+    "history_short": "기록 있음",
+    "remove_title": "데모 삭제",
+    "remove_desc": "데모 데이터만 삭제하려면 REMOVER를 입력하세요.",
+    "remove_all": "모두 삭제",
+    "completed_title": "데모 완료",
+    "completed_desc": "누락된 방과 기록을 추가했습니다.",
+    "removed_title": "데모 삭제됨",
+    "removed_desc": "실제 데이터는 변경되지 않았습니다.",
+    "languages": {
+      "pt-BR": "포르투갈어",
+      "en-US": "영어",
+      "es-ES": "스페인어",
+      "fr-FR": "프랑스어",
+      "de-DE": "독일어",
+      "it-IT": "이탈리아어",
+      "ja-JP": "일본어",
+      "ko-KR": "한국어",
+      "zh-CN": "중국어",
+      "ru-RU": "러시아어",
+      "ar-SA": "아랍어",
+      "id-ID": "인도네시아어"
+    }
   },
   "access_codes": {
     "title": "액세스 코드",

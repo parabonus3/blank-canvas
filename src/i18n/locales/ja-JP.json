@@ -1639,7 +1639,123 @@
       "zoom_in": "拡大",
       "zoom_out": "縮小",
       "fit": "ビューを調整",
-      "export": "画像としてエクスポート"
+      "export": "画像としてエクスポート",
+      "undo": "元に戻す",
+      "redo": "やり直す",
+      "shape": "形を変更"
+    },
+    "new_node": "新規",
+    "project": "関連プロジェクト",
+    "choose_project": "プロジェクトを選択",
+    "no_project": "プロジェクトなし",
+    "saving": "保存中",
+    "saved": "保存済み",
+    "save_error": "保存エラー",
+    "edit_node_label": "ノードを編集: {{label}}",
+    "select_color": "色を選択",
+    "custom_color": "カスタム色",
+    "delete_map_title": "マインドマップを削除しますか？",
+    "delete_map_desc": "「{{title}}」は完全に削除されます。",
+    "delete_node_title": "ノードを削除しますか？",
+    "delete_node_desc": "下位ノードも削除するか選択してください。",
+    "keep_children": "下位ノードを残す",
+    "delete_branch": "枝を削除",
+    "shapes": {
+      "rounded": "角丸",
+      "square": "四角",
+      "pill": "カプセル",
+      "circle": "円"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "中心アイデア"
+      },
+      "classic": {
+        "root": "メイントピック",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "プロジェクト",
+        "b1": "タスク",
+        "b2": "期限",
+        "b3": "リソース",
+        "b4": "リスク",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "学習テーマ",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "フロー",
+        "b1": "未着手",
+        "b2": "進行中",
+        "b3": "完了",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "リスト",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "詳細",
+        "l2": "詳細",
+        "l3": "詳細",
+        "l4": "詳細"
+      }
     }
   },
   "support": {
@@ -2765,9 +2881,43 @@
     "result_tie": "引き分け！"
   },
   "seed_admin": {
-    "tab": "デモ", "title": "デモ環境", "description": "実データを変更せず、パスワード付き多言語ルーム、ユーザー、履歴を補完します。",
-    "people": "ユーザー", "rooms": "ルーム", "sessions": "セッション", "complete": "デモ完成", "complete_missing": "不足データを補完", "pause": "活動を停止", "activate": "活動を開始", "generating": "安全に生成中… {{progress}}%", "by_language": "言語別の状況", "rooms_short": "ルーム", "people_short": "人", "members_short": "メンバー", "history_short": "履歴あり", "remove_title": "デモを削除", "remove_desc": "デモデータのみを削除するには REMOVER と入力してください。", "remove_all": "すべて削除", "completed_title": "デモ完成", "completed_desc": "不足していたルームと履歴を追加しました。", "removed_title": "デモを削除しました", "removed_desc": "実データは変更されていません。",
-    "languages": { "pt-BR": "ポルトガル語", "en-US": "英語", "es-ES": "スペイン語", "fr-FR": "フランス語", "de-DE": "ドイツ語", "it-IT": "イタリア語", "ja-JP": "日本語", "ko-KR": "韓国語", "zh-CN": "中国語", "ru-RU": "ロシア語", "ar-SA": "アラビア語", "id-ID": "インドネシア語" }
+    "tab": "デモ",
+    "title": "デモ環境",
+    "description": "実データを変更せず、パスワード付き多言語ルーム、ユーザー、履歴を補完します。",
+    "people": "ユーザー",
+    "rooms": "ルーム",
+    "sessions": "セッション",
+    "complete": "デモ完成",
+    "complete_missing": "不足データを補完",
+    "pause": "活動を停止",
+    "activate": "活動を開始",
+    "generating": "安全に生成中… {{progress}}%",
+    "by_language": "言語別の状況",
+    "rooms_short": "ルーム",
+    "people_short": "人",
+    "members_short": "メンバー",
+    "history_short": "履歴あり",
+    "remove_title": "デモを削除",
+    "remove_desc": "デモデータのみを削除するには REMOVER と入力してください。",
+    "remove_all": "すべて削除",
+    "completed_title": "デモ完成",
+    "completed_desc": "不足していたルームと履歴を追加しました。",
+    "removed_title": "デモを削除しました",
+    "removed_desc": "実データは変更されていません。",
+    "languages": {
+      "pt-BR": "ポルトガル語",
+      "en-US": "英語",
+      "es-ES": "スペイン語",
+      "fr-FR": "フランス語",
+      "de-DE": "ドイツ語",
+      "it-IT": "イタリア語",
+      "ja-JP": "日本語",
+      "ko-KR": "韓国語",
+      "zh-CN": "中国語",
+      "ru-RU": "ロシア語",
+      "ar-SA": "アラビア語",
+      "id-ID": "インドネシア語"
+    }
   },
   "access_codes": {
     "title": "アクセスコード",

@@ -1335,7 +1335,123 @@
       "zoom_in": "Aumentar zoom",
       "zoom_out": "Diminuir zoom",
       "fit": "Ajustar visualização",
-      "export": "Exportar como imagem"
+      "export": "Exportar como imagem",
+      "undo": "Desfazer",
+      "redo": "Refazer",
+      "shape": "Mudar forma"
+    },
+    "new_node": "Novo",
+    "project": "Projeto relacionado",
+    "choose_project": "Escolha um projeto",
+    "no_project": "Sem projeto",
+    "saving": "Salvando",
+    "saved": "Salvo",
+    "save_error": "Erro ao salvar",
+    "edit_node_label": "Editar nó: {{label}}",
+    "select_color": "Selecionar cor",
+    "custom_color": "Cor personalizada",
+    "delete_map_title": "Excluir mapa mental?",
+    "delete_map_desc": "“{{title}}” será excluído permanentemente.",
+    "delete_node_title": "Excluir nó?",
+    "delete_node_desc": "Escolha se os nós abaixo também devem ser excluídos.",
+    "keep_children": "Manter descendentes",
+    "delete_branch": "Excluir ramo",
+    "shapes": {
+      "rounded": "Arredondado",
+      "square": "Quadrado",
+      "pill": "Cápsula",
+      "circle": "Círculo"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "Ideia Central"
+      },
+      "classic": {
+        "root": "Tema Principal",
+        "b1": "Tópico 1",
+        "b2": "Tópico 2",
+        "b3": "Tópico 3",
+        "b4": "Tópico 4"
+      },
+      "project": {
+        "root": "Projeto",
+        "b1": "Tarefas",
+        "b2": "Prazos",
+        "b3": "Recursos",
+        "b4": "Riscos",
+        "l1": "Tarefa 1",
+        "l2": "Tarefa 2",
+        "l3": "Marco 1",
+        "l4": "Marco 2"
+      },
+      "study": {
+        "root": "Tema de Estudo",
+        "b1": "Conceito A",
+        "b2": "Conceito B",
+        "b3": "Conceito C",
+        "l1": "Detalhe 1",
+        "l2": "Detalhe 2",
+        "l3": "Detalhe 3",
+        "l4": "Detalhe 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Ideia 1",
+        "b2": "Ideia 2",
+        "b3": "Ideia 3",
+        "b4": "Ideia 4",
+        "b5": "Ideia 5",
+        "b6": "Ideia 6"
+      },
+      "kanban": {
+        "root": "Fluxo",
+        "b1": "A Fazer",
+        "b2": "Fazendo",
+        "b3": "Feito",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Diretor",
+        "b1": "Gerente A",
+        "b2": "Gerente B",
+        "s1": "Coord. 1",
+        "s2": "Coord. 2",
+        "s3": "Coord. 3",
+        "s4": "Coord. 4",
+        "l1": "Membro",
+        "l2": "Membro",
+        "l3": "Membro",
+        "l4": "Membro"
+      },
+      "smart": {
+        "root": "Meta SMART",
+        "b1": "Específica",
+        "b2": "Mensurável",
+        "b3": "Atingível",
+        "b4": "Relevante",
+        "b5": "Temporal",
+        "l1": "O quê?",
+        "l2": "Como medir?",
+        "l3": "É possível?",
+        "l4": "Por quê?",
+        "l5": "Quando?"
+      },
+      "list": {
+        "root": "Lista",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "Detalhe",
+        "l2": "Detalhe",
+        "l3": "Detalhe",
+        "l4": "Detalhe"
+      }
     }
   },
   "achievements": {
@@ -2915,9 +3031,43 @@
     "result_tie": "Empate!"
   },
   "seed_admin": {
-    "tab": "Demonstração", "title": "Ambiente de demonstração", "description": "Completa salas multilíngues protegidas por senha, pessoas e históricos sem alterar dados reais.",
-    "people": "Pessoas", "rooms": "Salas", "sessions": "Sessões", "complete": "Demonstração completa", "complete_missing": "Completar dados ausentes", "pause": "Pausar movimento", "activate": "Ativar movimento", "generating": "Gerando com segurança… {{progress}}%", "by_language": "Cobertura por idioma", "rooms_short": "salas", "people_short": "pessoas", "members_short": "membros", "history_short": "com histórico", "remove_title": "Remover demonstração", "remove_desc": "Digite REMOVER para apagar somente salas, pessoas e sessões de demonstração.", "remove_all": "Remover tudo", "completed_title": "Demonstração completa", "completed_desc": "As salas e os históricos ausentes foram adicionados.", "removed_title": "Demonstração removida", "removed_desc": "Nenhum dado real foi alterado.",
-    "languages": { "pt-BR": "Português", "en-US": "Inglês", "es-ES": "Espanhol", "fr-FR": "Francês", "de-DE": "Alemão", "it-IT": "Italiano", "ja-JP": "Japonês", "ko-KR": "Coreano", "zh-CN": "Chinês", "ru-RU": "Russo", "ar-SA": "Árabe", "id-ID": "Indonésio" }
+    "tab": "Demonstração",
+    "title": "Ambiente de demonstração",
+    "description": "Completa salas multilíngues protegidas por senha, pessoas e históricos sem alterar dados reais.",
+    "people": "Pessoas",
+    "rooms": "Salas",
+    "sessions": "Sessões",
+    "complete": "Demonstração completa",
+    "complete_missing": "Completar dados ausentes",
+    "pause": "Pausar movimento",
+    "activate": "Ativar movimento",
+    "generating": "Gerando com segurança… {{progress}}%",
+    "by_language": "Cobertura por idioma",
+    "rooms_short": "salas",
+    "people_short": "pessoas",
+    "members_short": "membros",
+    "history_short": "com histórico",
+    "remove_title": "Remover demonstração",
+    "remove_desc": "Digite REMOVER para apagar somente salas, pessoas e sessões de demonstração.",
+    "remove_all": "Remover tudo",
+    "completed_title": "Demonstração completa",
+    "completed_desc": "As salas e os históricos ausentes foram adicionados.",
+    "removed_title": "Demonstração removida",
+    "removed_desc": "Nenhum dado real foi alterado.",
+    "languages": {
+      "pt-BR": "Português",
+      "en-US": "Inglês",
+      "es-ES": "Espanhol",
+      "fr-FR": "Francês",
+      "de-DE": "Alemão",
+      "it-IT": "Italiano",
+      "ja-JP": "Japonês",
+      "ko-KR": "Coreano",
+      "zh-CN": "Chinês",
+      "ru-RU": "Russo",
+      "ar-SA": "Árabe",
+      "id-ID": "Indonésio"
+    }
   },
   "access_codes": {
     "title": "Código de acesso",
