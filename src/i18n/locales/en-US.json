@@ -1336,7 +1336,8 @@
       "export": "Export as image",
       "undo": "Undo",
       "redo": "Redo",
-      "shape": "Change shape"
+      "shape": "Change shape",
+      "label": "Mind map tools"
     },
     "new_node": "New",
     "project": "Related project",

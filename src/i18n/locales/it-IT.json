@@ -1642,7 +1642,8 @@
       "export": "Esporta come immagine",
       "undo": "Annulla",
       "redo": "Ripeti",
-      "shape": "Cambia forma"
+      "shape": "Cambia forma",
+      "label": "Strumenti mappa mentale"
     },
     "new_node": "Nuovo",
     "project": "Progetto collegato",

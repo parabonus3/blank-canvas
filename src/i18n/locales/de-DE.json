@@ -1642,7 +1642,8 @@
       "export": "Als Bild exportieren",
       "undo": "Rückgängig",
       "redo": "Wiederholen",
-      "shape": "Form ändern"
+      "shape": "Form ändern",
+      "label": "Mindmap-Werkzeuge"
     },
     "new_node": "Neu",
     "project": "Verknüpftes Projekt",

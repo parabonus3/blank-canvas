@@ -1642,7 +1642,8 @@
       "export": "Ekspor sebagai gambar",
       "undo": "Urungkan",
       "redo": "Ulangi",
-      "shape": "Ubah bentuk"
+      "shape": "Ubah bentuk",
+      "label": "Alat peta pikiran"
     },
     "new_node": "Baru",
     "project": "Proyek terkait",

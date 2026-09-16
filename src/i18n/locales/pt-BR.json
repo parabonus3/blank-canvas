@@ -1338,7 +1338,8 @@
       "export": "Exportar como imagem",
       "undo": "Desfazer",
       "redo": "Refazer",
-      "shape": "Mudar forma"
+      "shape": "Mudar forma",
+      "label": "Ferramentas do mapa mental"
     },
     "new_node": "Novo",
     "project": "Projeto relacionado",

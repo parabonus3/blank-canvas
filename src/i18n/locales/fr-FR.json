@@ -1642,7 +1642,8 @@
       "export": "Exporter en image",
       "undo": "Annuler",
       "redo": "Rétablir",
-      "shape": "Changer la forme"
+      "shape": "Changer la forme",
+      "label": "Outils de carte mentale"
     },
     "new_node": "Nouveau",
     "project": "Projet associé",
