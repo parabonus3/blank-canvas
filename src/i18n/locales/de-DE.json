@@ -1639,7 +1639,124 @@
       "zoom_in": "Vergrößern",
       "zoom_out": "Verkleinern",
       "fit": "Ansicht anpassen",
-      "export": "Als Bild exportieren"
+      "export": "Als Bild exportieren",
+      "undo": "Rückgängig",
+      "redo": "Wiederholen",
+      "shape": "Form ändern",
+      "label": "Mindmap-Werkzeuge"
+    },
+    "new_node": "Neu",
+    "project": "Verknüpftes Projekt",
+    "choose_project": "Projekt auswählen",
+    "no_project": "Kein Projekt",
+    "saving": "Speichern",
+    "saved": "Gespeichert",
+    "save_error": "Speichern fehlgeschlagen",
+    "edit_node_label": "Knoten bearbeiten: {{label}}",
+    "select_color": "Farbe auswählen",
+    "custom_color": "Eigene Farbe",
+    "delete_map_title": "Mindmap löschen?",
+    "delete_map_desc": "„{{title}}“ wird dauerhaft gelöscht.",
+    "delete_node_title": "Knoten löschen?",
+    "delete_node_desc": "Wähle, ob untergeordnete Knoten ebenfalls gelöscht werden.",
+    "keep_children": "Unterknoten behalten",
+    "delete_branch": "Zweig löschen",
+    "shapes": {
+      "rounded": "Abgerundet",
+      "square": "Quadrat",
+      "pill": "Kapsel",
+      "circle": "Kreis"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "Zentrale Idee"
+      },
+      "classic": {
+        "root": "Hauptthema",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "Projekt",
+        "b1": "Aufgaben",
+        "b2": "Fristen",
+        "b3": "Ressourcen",
+        "b4": "Risiken",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "Lernthema",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "Ablauf",
+        "b1": "Offen",
+        "b2": "In Arbeit",
+        "b3": "Erledigt",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "Liste",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "Detail",
+        "l2": "Detail",
+        "l3": "Detail",
+        "l4": "Detail"
+      }
     }
   },
   "support": {
@@ -2765,9 +2882,43 @@
     "result_tie": "Unentschieden!"
   },
   "seed_admin": {
-    "tab": "Demo", "title": "Demo-Umgebung", "description": "Vervollständigt passwortgeschützte mehrsprachige Räume, Personen und Verläufe, ohne echte Daten zu ändern.",
-    "people": "Personen", "rooms": "Räume", "sessions": "Sitzungen", "complete": "Demo vollständig", "complete_missing": "Fehlende Daten ergänzen", "pause": "Aktivität pausieren", "activate": "Aktivität starten", "generating": "Sichere Erstellung… {{progress}}%", "by_language": "Abdeckung nach Sprache", "rooms_short": "Räume", "people_short": "Personen", "members_short": "Mitglieder", "history_short": "mit Verlauf", "remove_title": "Demo entfernen", "remove_desc": "Gib REMOVER ein, um nur Demo-Daten zu löschen.", "remove_all": "Alles entfernen", "completed_title": "Demo vollständig", "completed_desc": "Fehlende Räume und Verläufe wurden ergänzt.", "removed_title": "Demo entfernt", "removed_desc": "Echte Daten wurden nicht verändert.",
-    "languages": { "pt-BR": "Portugiesisch", "en-US": "Englisch", "es-ES": "Spanisch", "fr-FR": "Französisch", "de-DE": "Deutsch", "it-IT": "Italienisch", "ja-JP": "Japanisch", "ko-KR": "Koreanisch", "zh-CN": "Chinesisch", "ru-RU": "Russisch", "ar-SA": "Arabisch", "id-ID": "Indonesisch" }
+    "tab": "Demo",
+    "title": "Demo-Umgebung",
+    "description": "Vervollständigt passwortgeschützte mehrsprachige Räume, Personen und Verläufe, ohne echte Daten zu ändern.",
+    "people": "Personen",
+    "rooms": "Räume",
+    "sessions": "Sitzungen",
+    "complete": "Demo vollständig",
+    "complete_missing": "Fehlende Daten ergänzen",
+    "pause": "Aktivität pausieren",
+    "activate": "Aktivität starten",
+    "generating": "Sichere Erstellung… {{progress}}%",
+    "by_language": "Abdeckung nach Sprache",
+    "rooms_short": "Räume",
+    "people_short": "Personen",
+    "members_short": "Mitglieder",
+    "history_short": "mit Verlauf",
+    "remove_title": "Demo entfernen",
+    "remove_desc": "Gib REMOVER ein, um nur Demo-Daten zu löschen.",
+    "remove_all": "Alles entfernen",
+    "completed_title": "Demo vollständig",
+    "completed_desc": "Fehlende Räume und Verläufe wurden ergänzt.",
+    "removed_title": "Demo entfernt",
+    "removed_desc": "Echte Daten wurden nicht verändert.",
+    "languages": {
+      "pt-BR": "Portugiesisch",
+      "en-US": "Englisch",
+      "es-ES": "Spanisch",
+      "fr-FR": "Französisch",
+      "de-DE": "Deutsch",
+      "it-IT": "Italienisch",
+      "ja-JP": "Japanisch",
+      "ko-KR": "Koreanisch",
+      "zh-CN": "Chinesisch",
+      "ru-RU": "Russisch",
+      "ar-SA": "Arabisch",
+      "id-ID": "Indonesisch"
+    }
   },
   "access_codes": {
     "title": "Zugangscode",

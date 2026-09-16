@@ -1639,7 +1639,124 @@
       "zoom_in": "Приблизить",
       "zoom_out": "Отдалить",
       "fit": "Подогнать вид",
-      "export": "Экспорт как изображение"
+      "export": "Экспорт как изображение",
+      "undo": "Отменить",
+      "redo": "Повторить",
+      "shape": "Изменить форму",
+      "label": "Инструменты интеллект-карты"
+    },
+    "new_node": "Новый",
+    "project": "Связанный проект",
+    "choose_project": "Выберите проект",
+    "no_project": "Без проекта",
+    "saving": "Сохранение",
+    "saved": "Сохранено",
+    "save_error": "Ошибка сохранения",
+    "edit_node_label": "Изменить узел: {{label}}",
+    "select_color": "Выбрать цвет",
+    "custom_color": "Свой цвет",
+    "delete_map_title": "Удалить интеллект-карту?",
+    "delete_map_desc": "«{{title}}» будет удалена навсегда.",
+    "delete_node_title": "Удалить узел?",
+    "delete_node_desc": "Выберите, удалять ли также дочерние узлы.",
+    "keep_children": "Оставить потомков",
+    "delete_branch": "Удалить ветку",
+    "shapes": {
+      "rounded": "Скруглённый",
+      "square": "Квадрат",
+      "pill": "Капсула",
+      "circle": "Круг"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "Центральная идея"
+      },
+      "classic": {
+        "root": "Главная тема",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "Проект",
+        "b1": "Задачи",
+        "b2": "Сроки",
+        "b3": "Ресурсы",
+        "b4": "Риски",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "Тема обучения",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "Поток",
+        "b1": "Сделать",
+        "b2": "В работе",
+        "b3": "Готово",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "Список",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "Деталь",
+        "l2": "Деталь",
+        "l3": "Деталь",
+        "l4": "Деталь"
+      }
     }
   },
   "support": {
@@ -2751,9 +2868,43 @@
     "result_tie": "Ничья!"
   },
   "seed_admin": {
-    "tab": "Демо", "title": "Демонстрационная среда", "description": "Дополняет защищённые паролем многоязычные комнаты, участников и историю, не меняя реальные данные.",
-    "people": "Люди", "rooms": "Комнаты", "sessions": "Сессии", "complete": "Демо готово", "complete_missing": "Дополнить данные", "pause": "Приостановить активность", "activate": "Включить активность", "generating": "Безопасное создание… {{progress}}%", "by_language": "Покрытие по языкам", "rooms_short": "комнат", "people_short": "людей", "members_short": "участников", "history_short": "с историей", "remove_title": "Удалить демо", "remove_desc": "Введите REMOVER, чтобы удалить только демонстрационные данные.", "remove_all": "Удалить всё", "completed_title": "Демо готово", "completed_desc": "Недостающие комнаты и история добавлены.", "removed_title": "Демо удалено", "removed_desc": "Реальные данные не изменены.",
-    "languages": { "pt-BR": "Португальский", "en-US": "Английский", "es-ES": "Испанский", "fr-FR": "Французский", "de-DE": "Немецкий", "it-IT": "Итальянский", "ja-JP": "Японский", "ko-KR": "Корейский", "zh-CN": "Китайский", "ru-RU": "Русский", "ar-SA": "Арабский", "id-ID": "Индонезийский" }
+    "tab": "Демо",
+    "title": "Демонстрационная среда",
+    "description": "Дополняет защищённые паролем многоязычные комнаты, участников и историю, не меняя реальные данные.",
+    "people": "Люди",
+    "rooms": "Комнаты",
+    "sessions": "Сессии",
+    "complete": "Демо готово",
+    "complete_missing": "Дополнить данные",
+    "pause": "Приостановить активность",
+    "activate": "Включить активность",
+    "generating": "Безопасное создание… {{progress}}%",
+    "by_language": "Покрытие по языкам",
+    "rooms_short": "комнат",
+    "people_short": "людей",
+    "members_short": "участников",
+    "history_short": "с историей",
+    "remove_title": "Удалить демо",
+    "remove_desc": "Введите REMOVER, чтобы удалить только демонстрационные данные.",
+    "remove_all": "Удалить всё",
+    "completed_title": "Демо готово",
+    "completed_desc": "Недостающие комнаты и история добавлены.",
+    "removed_title": "Демо удалено",
+    "removed_desc": "Реальные данные не изменены.",
+    "languages": {
+      "pt-BR": "Португальский",
+      "en-US": "Английский",
+      "es-ES": "Испанский",
+      "fr-FR": "Французский",
+      "de-DE": "Немецкий",
+      "it-IT": "Итальянский",
+      "ja-JP": "Японский",
+      "ko-KR": "Корейский",
+      "zh-CN": "Китайский",
+      "ru-RU": "Русский",
+      "ar-SA": "Арабский",
+      "id-ID": "Индонезийский"
+    }
   },
   "access_codes": {
     "title": "Код доступа",

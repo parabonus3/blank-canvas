@@ -1639,7 +1639,124 @@
       "zoom_in": "Acercar",
       "zoom_out": "Alejar",
       "fit": "Ajustar vista",
-      "export": "Exportar como imagen"
+      "export": "Exportar como imagen",
+      "undo": "Deshacer",
+      "redo": "Rehacer",
+      "shape": "Cambiar forma",
+      "label": "Herramientas del mapa mental"
+    },
+    "new_node": "Nuevo",
+    "project": "Proyecto relacionado",
+    "choose_project": "Elige un proyecto",
+    "no_project": "Sin proyecto",
+    "saving": "Guardando",
+    "saved": "Guardado",
+    "save_error": "Error al guardar",
+    "edit_node_label": "Editar nodo: {{label}}",
+    "select_color": "Seleccionar color",
+    "custom_color": "Color personalizado",
+    "delete_map_title": "¿Eliminar mapa mental?",
+    "delete_map_desc": "“{{title}}” se eliminará permanentemente.",
+    "delete_node_title": "¿Eliminar nodo?",
+    "delete_node_desc": "Elige si también se eliminan los nodos inferiores.",
+    "keep_children": "Conservar descendientes",
+    "delete_branch": "Eliminar rama",
+    "shapes": {
+      "rounded": "Redondeado",
+      "square": "Cuadrado",
+      "pill": "Cápsula",
+      "circle": "Círculo"
+    },
+    "template_nodes": {
+      "blank": {
+        "root": "Idea central"
+      },
+      "classic": {
+        "root": "Tema principal",
+        "b1": "Topic 1",
+        "b2": "Topic 2",
+        "b3": "Topic 3",
+        "b4": "Topic 4"
+      },
+      "project": {
+        "root": "Proyecto",
+        "b1": "Tareas",
+        "b2": "Plazos",
+        "b3": "Recursos",
+        "b4": "Riesgos",
+        "l1": "Task 1",
+        "l2": "Task 2",
+        "l3": "Milestone 1",
+        "l4": "Milestone 2"
+      },
+      "study": {
+        "root": "Tema de estudio",
+        "b1": "Concept A",
+        "b2": "Concept B",
+        "b3": "Concept C",
+        "l1": "Detail 1",
+        "l2": "Detail 2",
+        "l3": "Detail 3",
+        "l4": "Detail 4"
+      },
+      "brainstorm": {
+        "root": "Brainstorm",
+        "b1": "Idea 1",
+        "b2": "Idea 2",
+        "b3": "Idea 3",
+        "b4": "Idea 4",
+        "b5": "Idea 5",
+        "b6": "Idea 6"
+      },
+      "kanban": {
+        "root": "Flujo",
+        "b1": "Por hacer",
+        "b2": "En curso",
+        "b3": "Hecho",
+        "l1": "Item 1",
+        "l2": "Item 2",
+        "l3": "Item 3",
+        "l4": "Item 4",
+        "l5": "Item 5",
+        "l6": "Item 6"
+      },
+      "organogram": {
+        "root": "Director",
+        "b1": "Manager A",
+        "b2": "Manager B",
+        "s1": "Coordinator 1",
+        "s2": "Coordinator 2",
+        "s3": "Coordinator 3",
+        "s4": "Coordinator 4",
+        "l1": "Member",
+        "l2": "Member",
+        "l3": "Member",
+        "l4": "Member"
+      },
+      "smart": {
+        "root": "SMART Goal",
+        "b1": "Specific",
+        "b2": "Measurable",
+        "b3": "Achievable",
+        "b4": "Relevant",
+        "b5": "Time-bound",
+        "l1": "What?",
+        "l2": "How to measure?",
+        "l3": "Is it possible?",
+        "l4": "Why?",
+        "l5": "When?"
+      },
+      "list": {
+        "root": "Lista",
+        "b1": "Item 1",
+        "b2": "Item 2",
+        "b3": "Item 3",
+        "b4": "Item 4",
+        "l1": "Detalle",
+        "l2": "Detalle",
+        "l3": "Detalle",
+        "l4": "Detalle"
+      }
     }
   },
   "support": {
@@ -2772,9 +2889,43 @@
     "result_tie": "¡Empate!"
   },
   "seed_admin": {
-    "tab": "Demostración", "title": "Entorno de demostración", "description": "Completa salas multilingües con contraseña, personas e historiales sin cambiar datos reales.",
-    "people": "Personas", "rooms": "Salas", "sessions": "Sesiones", "complete": "Demostración completa", "complete_missing": "Completar datos pendientes", "pause": "Pausar actividad", "activate": "Activar actividad", "generating": "Generando de forma segura… {{progress}}%", "by_language": "Cobertura por idioma", "rooms_short": "salas", "people_short": "personas", "members_short": "miembros", "history_short": "con historial", "remove_title": "Eliminar demostración", "remove_desc": "Escribe REMOVER para borrar solo los datos de demostración.", "remove_all": "Eliminar todo", "completed_title": "Demostración completa", "completed_desc": "Se añadieron las salas y los historiales pendientes.", "removed_title": "Demostración eliminada", "removed_desc": "No se modificaron datos reales.",
-    "languages": { "pt-BR": "Portugués", "en-US": "Inglés", "es-ES": "Español", "fr-FR": "Francés", "de-DE": "Alemán", "it-IT": "Italiano", "ja-JP": "Japonés", "ko-KR": "Coreano", "zh-CN": "Chino", "ru-RU": "Ruso", "ar-SA": "Árabe", "id-ID": "Indonesio" }
+    "tab": "Demostración",
+    "title": "Entorno de demostración",
+    "description": "Completa salas multilingües con contraseña, personas e historiales sin cambiar datos reales.",
+    "people": "Personas",
+    "rooms": "Salas",
+    "sessions": "Sesiones",
+    "complete": "Demostración completa",
+    "complete_missing": "Completar datos pendientes",
+    "pause": "Pausar actividad",
+    "activate": "Activar actividad",
+    "generating": "Generando de forma segura… {{progress}}%",
+    "by_language": "Cobertura por idioma",
+    "rooms_short": "salas",
+    "people_short": "personas",
+    "members_short": "miembros",
+    "history_short": "con historial",
+    "remove_title": "Eliminar demostración",
+    "remove_desc": "Escribe REMOVER para borrar solo los datos de demostración.",
+    "remove_all": "Eliminar todo",
+    "completed_title": "Demostración completa",
+    "completed_desc": "Se añadieron las salas y los historiales pendientes.",
+    "removed_title": "Demostración eliminada",
+    "removed_desc": "No se modificaron datos reales.",
+    "languages": {
+      "pt-BR": "Portugués",
+      "en-US": "Inglés",
+      "es-ES": "Español",
+      "fr-FR": "Francés",
+      "de-DE": "Alemán",
+      "it-IT": "Italiano",
+      "ja-JP": "Japonés",
+      "ko-KR": "Coreano",
+      "zh-CN": "Chino",
+      "ru-RU": "Ruso",
+      "ar-SA": "Árabe",
+      "id-ID": "Indonesio"
+    }
   },
   "access_codes": {
     "title": "Código de acceso",
