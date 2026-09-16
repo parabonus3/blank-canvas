@@ -61,14 +61,14 @@ export function MindMapToolbar({
   const isMobile = useIsMobile();
 
   const wrapperClass = isMobile
-    ? 'absolute bottom-3 start-1/2 -translate-x-1/2 z-10 flex flex-row gap-1 bg-card/90 backdrop-blur-sm border border-border rounded-xl p-1.5 shadow-lg'
+    ? 'absolute bottom-3 inset-x-2 z-10 flex flex-row gap-1 overflow-x-auto scrollbar-none bg-card/90 backdrop-blur-sm border border-border rounded-xl p-1.5 shadow-lg'
     : 'absolute top-3 start-3 z-10 flex flex-col gap-1.5 bg-card/90 backdrop-blur-sm border border-border rounded-xl p-1.5 shadow-lg';
 
   const separatorClass = isMobile ? 'h-6 w-px bg-border' : 'w-full h-px bg-border';
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div className={wrapperClass}>
+      <div className={wrapperClass} role="toolbar" aria-label={t('mindmaps.toolbar.label')}>
         <Button size="icon" variant="ghost" onClick={onUndo} disabled={!canUndo || isExporting} title={t('mindmaps.toolbar.undo')}>
           <Undo2 className="h-4 w-4" />
         </Button>

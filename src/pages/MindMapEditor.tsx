@@ -2,13 +2,15 @@ import { useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ReactFlowProvider } from '@xyflow/react';
-import { ArrowLeft, Check, CloudOff, Loader2, Pencil } from 'lucide-react';
+import { ArrowLeft, Check, CloudOff, FolderOpen, Loader2, Pencil } from 'lucide-react';
 import { useMindMap, useUpdateMindMap } from '@/hooks/useMindMaps';
 import { MindMapCanvas } from '@/components/mindmap/MindMapCanvas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Node, Edge } from '@xyflow/react';
+import { useProjects } from '@/hooks/useProjects';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function MindMapEditor() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +21,7 @@ export default function MindMapEditor() {
   const saveMap = updateMap.mutateAsync;
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState('');
+  const { data: projects = [] } = useProjects();
 
   const handleSave = useCallback(
     async (nodes: Node[], edges: Edge[], viewport: { x: number; y: number; zoom: number }) => {
@@ -78,6 +81,25 @@ export default function MindMapEditor() {
             <Pencil className="h-3 w-3 shrink-0 text-muted-foreground" />
           </button>
         )}
+
+        <Select
+          value={map.project_id || 'none'}
+          onValueChange={(value) => {
+            if (!id) return;
+            updateMap.mutate({ id, project_id: value === 'none' ? null : value });
+          }}
+        >
+          <SelectTrigger className="hidden h-8 w-40 md:flex" aria-label={t('mindmaps.project')}>
+            <FolderOpen className="me-1.5 h-3.5 w-3.5" />
+            <SelectValue placeholder={t('mindmaps.choose_project')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">{t('mindmaps.no_project')}</SelectItem>
+            {projects.filter(project => project.is_active).map(project => (
+              <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <div className="ms-auto flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground" aria-live="polite">
           {updateMap.isPending ? (
