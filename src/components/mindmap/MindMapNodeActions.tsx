@@ -151,14 +151,14 @@ export function MindMapNodeActions({ open, onOpenChange, label, projectId, links
               <div className="space-y-1"><Label>{t('mindmaps.actions.period')}</Label><Select value={goalType} onValueChange={value => setGoalType(value as 'daily' | 'weekly')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="daily">{t('goals.daily')}</SelectItem><SelectItem value="weekly">{t('goals.weekly')}</SelectItem></SelectContent></Select></div>
               <div className="space-y-1"><Label>{t('mindmaps.actions.minutes')}</Label><Select value={goalMinutes} onValueChange={setGoalMinutes}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{['15','30','45','60','90','120'].map(value => <SelectItem key={value} value={value}>{value} min</SelectItem>)}</SelectContent></Select></div>
             </div>}
-            <Button variant="outline" className="w-full" disabled={needsProject || createGoal.isPending} onClick={handleCreateGoal}>
+            <Button variant="outline" className="w-full" disabled={!links.linkedGoalId && (needsProject || createGoal.isPending)} onClick={handleCreateGoal}>
               {links.linkedGoalId ? <><ExternalLink className="me-2 h-4 w-4" />{t('mindmaps.actions.open_goal')}</> : <><CalendarCheck className="me-2 h-4 w-4" />{t('mindmaps.actions.create_goal')}</>}
             </Button>
           </section>
 
           <section className="space-y-2 border-t border-border pt-4">
             <h3 className="flex items-center gap-2 text-sm font-semibold"><FileText className="h-4 w-4 text-primary" />{t('mindmaps.actions.note')}</h3>
-            <Button variant="outline" className="w-full" disabled={needsProject || createNote.isPending} onClick={handleCreateNote}>
+            <Button variant="outline" className="w-full" disabled={!links.linkedNoteId && (needsProject || createNote.isPending)} onClick={handleCreateNote}>
               {links.linkedNoteId ? <><ExternalLink className="me-2 h-4 w-4" />{t('mindmaps.actions.open_note')}</> : t('mindmaps.actions.create_note')}
             </Button>
           </section>
