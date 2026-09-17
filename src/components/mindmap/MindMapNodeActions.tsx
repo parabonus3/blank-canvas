@@ -79,7 +79,8 @@ export function MindMapNodeActions({ open, onOpenChange, label, projectId, links
     if (links.linkedNoteId) return openLinked('note');
     if (!projectId) return;
     const note = await createNote.mutateAsync({ project_id: projectId, title: label, content: '' });
-    onLinked({ linkedNoteId: (note as { id: string }).id });
+    const createdNote = note as unknown as { id?: string };
+    if (createdNote.id) onLinked({ linkedNoteId: createdNote.id });
   };
 
   const handleCreateGoal = async () => {
@@ -96,7 +97,8 @@ export function MindMapNodeActions({ open, onOpenChange, label, projectId, links
       start_date: start,
       end_date: endDate.toISOString().slice(0, 10),
     });
-    onLinked({ linkedGoalId: (goal as { id: string }).id });
+    const createdGoal = goal as unknown as { id?: string };
+    if (createdGoal.id) onLinked({ linkedGoalId: createdGoal.id });
   };
 
   const handleStartFocus = async () => {
