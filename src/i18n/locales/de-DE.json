@@ -1643,7 +1643,8 @@
       "undo": "Rückgängig",
       "redo": "Wiederholen",
       "shape": "Form ändern",
-      "label": "Mindmap-Werkzeuge"
+      "label": "Mindmap-Werkzeuge",
+      "actions": "Notizen öffnen"
     },
     "new_node": "Neu",
     "project": "Verknüpftes Projekt",
@@ -1757,6 +1758,26 @@
         "l3": "Detail",
         "l4": "Detail"
       }
+    },
+    "actions": {
+      "description": "Knotenaktionen",
+      "project_required": "Setze diese Idee um, ohne deinen Ablauf zu verlassen.",
+      "focus": "Verknüpfe diese Mindmap mit einem Projekt, um Ziele, Notizen und Fokus zu nutzen.",
+      "start_focus": "Fokus",
+      "timer_active": "Fokus für diesen Knoten starten",
+      "task": "Ein Timer ist bereits aktiv",
+      "choose_board": "Aufgabe",
+      "create_task": "Board auswählen",
+      "open_task": "Aufgabe erstellen",
+      "goal": "Aufgabe öffnen",
+      "period": "Ziel",
+      "minutes": "Zeitraum",
+      "create_goal": "Minuten",
+      "open_goal": "Ziel erstellen",
+      "note": "Ziele öffnen",
+      "create_note": "Notiz",
+      "open_note": "Notiz erstellen",
+      "toolbar_action": "Notizen öffnen"
     }
   },
   "support": {

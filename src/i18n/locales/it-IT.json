@@ -1643,7 +1643,8 @@
       "undo": "Annulla",
       "redo": "Ripeti",
       "shape": "Cambia forma",
-      "label": "Strumenti mappa mentale"
+      "label": "Strumenti mappa mentale",
+      "actions": "Apri note"
     },
     "new_node": "Nuovo",
     "project": "Progetto collegato",
@@ -1757,6 +1758,26 @@
         "l3": "Dettaglio",
         "l4": "Dettaglio"
       }
+    },
+    "actions": {
+      "description": "Azioni del nodo",
+      "project_required": "Trasforma questa idea in azione senza uscire dal flusso.",
+      "focus": "Collega la mappa a un progetto per creare obiettivi, note e avviare la concentrazione.",
+      "start_focus": "Concentrazione",
+      "timer_active": "Avvia concentrazione su questo nodo",
+      "task": "Un timer è già attivo",
+      "choose_board": "Attività",
+      "create_task": "Scegli una bacheca",
+      "open_task": "Crea attività",
+      "goal": "Apri attività",
+      "period": "Obiettivo",
+      "minutes": "Periodo",
+      "create_goal": "Minuti",
+      "open_goal": "Crea obiettivo",
+      "note": "Apri obiettivi",
+      "create_note": "Nota",
+      "open_note": "Crea nota",
+      "toolbar_action": "Apri note"
     }
   },
   "support": {

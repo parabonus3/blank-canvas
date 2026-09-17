@@ -1337,7 +1337,8 @@
       "undo": "Undo",
       "redo": "Redo",
       "shape": "Change shape",
-      "label": "Mind map tools"
+      "label": "Mind map tools",
+      "actions": "Open notes"
     },
     "new_node": "New",
     "project": "Related project",
@@ -1451,6 +1452,26 @@
         "l3": "Detail",
         "l4": "Detail"
       }
+    },
+    "actions": {
+      "description": "Node actions",
+      "project_required": "Turn this idea into action without leaving your flow.",
+      "focus": "Link this map to a project to create goals, notes and start focusing.",
+      "start_focus": "Focus",
+      "timer_active": "Start focus on this node",
+      "task": "A timer is already active",
+      "choose_board": "Task",
+      "create_task": "Choose a board",
+      "open_task": "Create task",
+      "goal": "Open task",
+      "period": "Goal",
+      "minutes": "Period",
+      "create_goal": "Minutes",
+      "open_goal": "Create goal",
+      "note": "Open goals",
+      "create_note": "Note",
+      "open_note": "Create note",
+      "toolbar_action": "Open notes"
     }
   },
   "achievements": {

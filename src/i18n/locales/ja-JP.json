@@ -1643,7 +1643,8 @@
       "undo": "元に戻す",
       "redo": "やり直す",
       "shape": "形を変更",
-      "label": "マインドマップツール"
+      "label": "マインドマップツール",
+      "actions": "ノートを開く"
     },
     "new_node": "新規",
     "project": "関連プロジェクト",
@@ -1757,6 +1758,26 @@
         "l3": "詳細",
         "l4": "詳細"
       }
+    },
+    "actions": {
+      "description": "ノードのアクション",
+      "project_required": "流れを中断せずに、このアイデアを行動へ移します。",
+      "focus": "目標やノートの作成、集中開始には、このマップをプロジェクトに関連付けてください。",
+      "start_focus": "集中",
+      "timer_active": "このノードで集中を開始",
+      "task": "タイマーがすでに実行中です",
+      "choose_board": "タスク",
+      "create_task": "ボードを選択",
+      "open_task": "タスクを作成",
+      "goal": "タスクを開く",
+      "period": "目標",
+      "minutes": "期間",
+      "create_goal": "分",
+      "open_goal": "目標を作成",
+      "note": "目標を開く",
+      "create_note": "ノート",
+      "open_note": "ノートを作成",
+      "toolbar_action": "ノートを開く"
     }
   },
   "support": {

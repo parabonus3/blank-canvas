@@ -1643,7 +1643,8 @@
       "undo": "Deshacer",
       "redo": "Rehacer",
       "shape": "Cambiar forma",
-      "label": "Herramientas del mapa mental"
+      "label": "Herramientas del mapa mental",
+      "actions": "Abrir notas"
     },
     "new_node": "Nuevo",
     "project": "Proyecto relacionado",
@@ -1757,6 +1758,26 @@
         "l3": "Detalle",
         "l4": "Detalle"
       }
+    },
+    "actions": {
+      "description": "Acciones del nodo",
+      "project_required": "Convierte esta idea en acción sin salir del flujo.",
+      "focus": "Vincula este mapa a un proyecto para crear metas, notas e iniciar el enfoque.",
+      "start_focus": "Enfoque",
+      "timer_active": "Iniciar enfoque en este nodo",
+      "task": "Ya hay un cronómetro activo",
+      "choose_board": "Tarea",
+      "create_task": "Elige un tablero",
+      "open_task": "Crear tarea",
+      "goal": "Abrir tarea",
+      "period": "Meta",
+      "minutes": "Período",
+      "create_goal": "Minutos",
+      "open_goal": "Crear meta",
+      "note": "Abrir metas",
+      "create_note": "Nota",
+      "open_note": "Crear nota",
+      "toolbar_action": "Abrir notas"
     }
   },
   "support": {

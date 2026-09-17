@@ -1643,7 +1643,8 @@
       "undo": "실행 취소",
       "redo": "다시 실행",
       "shape": "모양 변경",
-      "label": "마인드맵 도구"
+      "label": "마인드맵 도구",
+      "actions": "노트 열기"
     },
     "new_node": "새 항목",
     "project": "연결된 프로젝트",
@@ -1757,6 +1758,26 @@
         "l3": "세부 정보",
         "l4": "세부 정보"
       }
+    },
+    "actions": {
+      "description": "노드 작업",
+      "project_required": "흐름을 벗어나지 않고 이 아이디어를 실행으로 옮기세요.",
+      "focus": "목표와 노트를 만들고 집중을 시작하려면 지도를 프로젝트에 연결하세요.",
+      "start_focus": "집중",
+      "timer_active": "이 노드로 집중 시작",
+      "task": "이미 실행 중인 타이머가 있습니다",
+      "choose_board": "작업",
+      "create_task": "보드 선택",
+      "open_task": "작업 만들기",
+      "goal": "작업 열기",
+      "period": "목표",
+      "minutes": "기간",
+      "create_goal": "분",
+      "open_goal": "목표 만들기",
+      "note": "목표 열기",
+      "create_note": "노트",
+      "open_note": "노트 만들기",
+      "toolbar_action": "노트 열기"
     }
   },
   "support": {
