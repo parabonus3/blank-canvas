@@ -1643,7 +1643,8 @@
       "undo": "Annuler",
       "redo": "Rétablir",
       "shape": "Changer la forme",
-      "label": "Outils de carte mentale"
+      "label": "Outils de carte mentale",
+      "actions": "Ouvrir les notes"
     },
     "new_node": "Nouveau",
     "project": "Projet associé",
@@ -1757,6 +1758,26 @@
         "l3": "Détail",
         "l4": "Détail"
       }
+    },
+    "actions": {
+      "description": "Actions du nœud",
+      "project_required": "Transformez cette idée en action sans quitter votre flux.",
+      "focus": "Associez cette carte à un projet pour créer des objectifs, des notes et démarrer une session.",
+      "start_focus": "Concentration",
+      "timer_active": "Se concentrer sur ce nœud",
+      "task": "Un chronomètre est déjà actif",
+      "choose_board": "Tâche",
+      "create_task": "Choisir un tableau",
+      "open_task": "Créer une tâche",
+      "goal": "Ouvrir la tâche",
+      "period": "Objectif",
+      "minutes": "Période",
+      "create_goal": "Minutes",
+      "open_goal": "Créer un objectif",
+      "note": "Ouvrir les objectifs",
+      "create_note": "Note",
+      "open_note": "Créer une note",
+      "toolbar_action": "Ouvrir les notes"
     }
   },
   "support": {

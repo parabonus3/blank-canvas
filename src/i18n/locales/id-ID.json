@@ -1643,7 +1643,8 @@
       "undo": "Urungkan",
       "redo": "Ulangi",
       "shape": "Ubah bentuk",
-      "label": "Alat peta pikiran"
+      "label": "Alat peta pikiran",
+      "actions": "Buka catatan"
     },
     "new_node": "Baru",
     "project": "Proyek terkait",
@@ -1757,6 +1758,26 @@
         "l3": "Detail",
         "l4": "Detail"
       }
+    },
+    "actions": {
+      "description": "Tindakan simpul",
+      "project_required": "Ubah ide ini menjadi tindakan tanpa meninggalkan alur.",
+      "focus": "Hubungkan peta ini ke proyek untuk membuat sasaran, catatan, dan memulai fokus.",
+      "start_focus": "Fokus",
+      "timer_active": "Mulai fokus pada simpul ini",
+      "task": "Timer sedang aktif",
+      "choose_board": "Tugas",
+      "create_task": "Pilih papan",
+      "open_task": "Buat tugas",
+      "goal": "Buka tugas",
+      "period": "Sasaran",
+      "minutes": "Periode",
+      "create_goal": "Menit",
+      "open_goal": "Buat sasaran",
+      "note": "Buka sasaran",
+      "create_note": "Catatan",
+      "open_note": "Buat catatan",
+      "toolbar_action": "Buka catatan"
     }
   },
   "support": {

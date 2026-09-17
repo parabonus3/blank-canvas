@@ -1643,7 +1643,8 @@
       "undo": "撤销",
       "redo": "重做",
       "shape": "更改形状",
-      "label": "思维导图工具"
+      "label": "思维导图工具",
+      "actions": "打开笔记"
     },
     "new_node": "新节点",
     "project": "关联项目",
@@ -1757,6 +1758,26 @@
         "l3": "详情",
         "l4": "详情"
       }
+    },
+    "actions": {
+      "description": "节点操作",
+      "project_required": "无需离开当前流程，即可将想法付诸行动。",
+      "focus": "将此导图关联到项目，即可创建目标、笔记并开始专注。",
+      "start_focus": "专注",
+      "timer_active": "从此节点开始专注",
+      "task": "已有计时器正在运行",
+      "choose_board": "任务",
+      "create_task": "选择看板",
+      "open_task": "创建任务",
+      "goal": "打开任务",
+      "period": "目标",
+      "minutes": "周期",
+      "create_goal": "分钟",
+      "open_goal": "创建目标",
+      "note": "打开目标",
+      "create_note": "笔记",
+      "open_note": "创建笔记",
+      "toolbar_action": "打开笔记"
     }
   },
   "support": {

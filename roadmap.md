@@ -8,8 +8,8 @@
 
 ## Evolução integrada e mobile-first
 
-- [ ] Estabilizar o mapa mental: salvamento confiável, desfazer/refazer, exclusão segura, i18n e acessibilidade
-- [ ] Conectar mapas mentais a projetos, tarefas, metas, notas e cronômetro
+- [x] Estabilizar o mapa mental: salvamento confiável, desfazer/refazer, exclusão segura, i18n e acessibilidade
+- [x] Conectar mapas mentais a projetos, tarefas, metas, notas e cronômetro
 - [ ] Criar a base móvel: navegação inferior, visão Hoje e cronômetro simplificado
 - [ ] Unificar fontes de progresso sem misturar minutos, tarefas e distância
 - [ ] Organizar telas densas de salas, painel e notas
