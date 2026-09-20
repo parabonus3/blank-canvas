@@ -6,6 +6,7 @@ import { useSoundEffects } from "@/hooks/useSoundEffects";
 import { useStreakRescue } from "@/hooks/useStreakRescue";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar, SidebarToggle } from "./Sidebar";
+import { MobileBottomNav } from "./MobileBottomNav";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             <InstallBanner />
             <header className="h-14 border-b border-border/50 flex items-center justify-between px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
               <div className="flex items-center gap-4">
-                <SidebarToggle />
+                <div className="hidden md:block"><SidebarToggle /></div>
               </div>
               <div className="flex items-center gap-2">
                 <LanguageSwitcher variant="ghost" />
@@ -77,9 +78,10 @@ export function MainLayout({ children }: MainLayoutProps) {
                 </Button>
               </div>
             </header>
-            <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-x-hidden overflow-y-auto scrollbar-thin">
+            <main className="flex-1 overflow-x-hidden overflow-y-auto p-3 pb-[calc(5rem+env(safe-area-inset-bottom))] sm:p-4 sm:pb-[calc(5rem+env(safe-area-inset-bottom))] md:p-6 md:pb-6 scrollbar-thin">
               {children}
             </main>
+            <MobileBottomNav />
           </div>
         </div>
       </SidebarProvider>
