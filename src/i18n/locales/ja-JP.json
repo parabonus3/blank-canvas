@@ -178,7 +178,8 @@
     "pause_warning_ok": "了解",
     "pause_data_loss_recovered": "サーバーから時間を自動的に復元しました。",
     "pause": "一時停止",
-    "resume": "再開"
+    "resume": "再開",
+    "session_options": "セッション設定"
   },
   "pomodoro": {
     "focus": "集中",
@@ -3003,5 +3004,43 @@
     "stat_active": "有効なコード",
     "stat_redemptions": "引き換え数",
     "stat_week": "引き換え（7日）"
+  },
+  "mobile_nav": {
+    "label": "メインナビゲーション",
+    "timer": "タイマー",
+    "today": "今日",
+    "tasks": "タスク",
+    "rooms": "ルーム",
+    "more": "その他",
+    "groups": {
+      "plan": "計画",
+      "record": "記録",
+      "social": "交流",
+      "account": "アカウント"
+    }
+  },
+  "today": {
+    "seo_title": "今日 — Timezoni",
+    "title": "今日",
+    "subtitle": "今日の計画と進捗をまとめて確認できます。",
+    "load_error": "今日の情報を読み込めませんでした。もう一度お試しください。",
+    "active_focus": "集中中",
+    "open_timer": "開く",
+    "focused": "集中時間",
+    "completed": "完了",
+    "next_tasks": "次のタスク",
+    "view_all": "すべて表示",
+    "start_task": "タスクを開始",
+    "no_tasks": "保留中のタスクはありません。",
+    "current_goal": "進行中の目標",
+    "continue_goal": "目標を続ける",
+    "routine": "おすすめルーティン",
+    "open": "開く",
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "緊急"
+    }
   }
 }

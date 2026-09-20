@@ -121,6 +121,16 @@ export default function Index() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const handleStartRoutine = useCallback((routine: FocusRoutine) => {
+    routineRun.start(routine);
+    const first = routine.steps[0];
+    if (first) {
+      if (first.kind === "focus" && first.projectId) setSelectedProject(first.projectId);
+      setFocusTarget(first.kind === "focus" ? first.minutes : null);
+    }
+    toast({ title: t("routines.started_title", "Rotina iniciada"), description: routine.title });
+  }, [routineRun, toast, t]);
+
   useEffect(() => {
     if (activeEntry) return;
     const params = new URLSearchParams(location.search);
@@ -133,16 +143,6 @@ export default function Index() {
       if (requestedRoutine) handleStartRoutine(requestedRoutine);
     }
   }, [activeEntry, focusRoutines, handleStartRoutine, location.search, routineRun.run]);
-
-  const handleStartRoutine = useCallback((routine: FocusRoutine) => {
-    routineRun.start(routine);
-    const first = routine.steps[0];
-    if (first) {
-      if (first.kind === "focus" && first.projectId) setSelectedProject(first.projectId);
-      setFocusTarget(first.kind === "focus" ? first.minutes : null);
-    }
-    toast({ title: t("routines.started_title", "Rotina iniciada"), description: routine.title });
-  }, [routineRun, toast, t]);
 
   // Rotina: avança para a próxima etapa e aplica projeto/meta do passo.
   const advanceRoutineStep = useCallback(() => {

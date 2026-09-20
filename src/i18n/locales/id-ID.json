@@ -178,7 +178,8 @@
     "pause_warning_ok": "Mengerti",
     "pause_data_loss_recovered": "Waktu otomatis dipulihkan dari server.",
     "pause": "Jeda",
-    "resume": "Lanjutkan"
+    "resume": "Lanjutkan",
+    "session_options": "Opsi sesi"
   },
   "pomodoro": {
     "focus": "Fokus",
@@ -3003,5 +3004,43 @@
     "stat_active": "Kode aktif",
     "stat_redemptions": "Penukaran",
     "stat_week": "Penukaran (7 hari)"
+  },
+  "mobile_nav": {
+    "label": "Navigasi utama",
+    "timer": "Timer",
+    "today": "Hari ini",
+    "tasks": "Tugas",
+    "rooms": "Ruang",
+    "more": "Lainnya",
+    "groups": {
+      "plan": "Rencana",
+      "record": "Catat",
+      "social": "Sosial",
+      "account": "Akun"
+    }
+  },
+  "today": {
+    "seo_title": "Hari ini — Timezoni",
+    "title": "Hari ini",
+    "subtitle": "Rencana dan progres Anda dalam satu tempat.",
+    "load_error": "Hari Anda tidak dapat dimuat. Coba lagi.",
+    "active_focus": "Fokus berlangsung",
+    "open_timer": "Buka",
+    "focused": "Waktu fokus",
+    "completed": "Selesai",
+    "next_tasks": "Tugas berikutnya",
+    "view_all": "Lihat semua",
+    "start_task": "Mulai tugas",
+    "no_tasks": "Tidak ada tugas tertunda.",
+    "current_goal": "Target berjalan",
+    "continue_goal": "Lanjutkan target",
+    "routine": "Rutinitas disarankan",
+    "open": "Buka",
+    "priority": {
+      "low": "Rendah",
+      "medium": "Sedang",
+      "high": "Tinggi",
+      "urgent": "Mendesak"
+    }
   }
 }

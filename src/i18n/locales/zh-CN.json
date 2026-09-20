@@ -178,7 +178,8 @@
     "pause_warning_ok": "知道了",
     "pause_data_loss_recovered": "已自动从服务器恢复时间。",
     "pause": "暂停",
-    "resume": "继续"
+    "resume": "继续",
+    "session_options": "会话选项"
   },
   "pomodoro": {
     "focus": "专注",
@@ -3003,5 +3004,43 @@
     "stat_active": "生效兑换码",
     "stat_redemptions": "兑换次数",
     "stat_week": "兑换（7 天）"
+  },
+  "mobile_nav": {
+    "label": "主导航",
+    "timer": "计时器",
+    "today": "今天",
+    "tasks": "任务",
+    "rooms": "房间",
+    "more": "更多",
+    "groups": {
+      "plan": "规划",
+      "record": "记录",
+      "social": "社交",
+      "account": "账户"
+    }
+  },
+  "today": {
+    "seo_title": "今天 — Timezoni",
+    "title": "今天",
+    "subtitle": "在一处查看今天的计划和进度。",
+    "load_error": "无法加载今天的信息，请重试。",
+    "active_focus": "专注进行中",
+    "open_timer": "打开",
+    "focused": "专注时间",
+    "completed": "已完成",
+    "next_tasks": "接下来的任务",
+    "view_all": "查看全部",
+    "start_task": "开始任务",
+    "no_tasks": "没有待办任务。",
+    "current_goal": "当前目标",
+    "continue_goal": "继续目标",
+    "routine": "推荐例程",
+    "open": "打开",
+    "priority": {
+      "low": "低",
+      "medium": "中",
+      "high": "高",
+      "urgent": "紧急"
+    }
   }
 }
