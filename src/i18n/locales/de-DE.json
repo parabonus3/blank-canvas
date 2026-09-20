@@ -178,7 +178,8 @@
     "pause_warning_ok": "Verstanden",
     "pause_data_loss_recovered": "Zeit automatisch vom Server wiederhergestellt.",
     "pause": "Pause",
-    "resume": "Fortsetzen"
+    "resume": "Fortsetzen",
+    "session_options": "Sitzungsoptionen"
   },
   "pomodoro": {
     "focus": "Fokus",
@@ -3003,5 +3004,43 @@
     "stat_active": "Aktive Codes",
     "stat_redemptions": "Einlösungen",
     "stat_week": "Einlösungen (7 Tage)"
+  },
+  "mobile_nav": {
+    "label": "Hauptnavigation",
+    "timer": "Timer",
+    "today": "Heute",
+    "tasks": "Aufgaben",
+    "rooms": "Räume",
+    "more": "Mehr",
+    "groups": {
+      "plan": "Planen",
+      "record": "Erfassen",
+      "social": "Sozial",
+      "account": "Konto"
+    }
+  },
+  "today": {
+    "seo_title": "Heute — Timezoni",
+    "title": "Heute",
+    "subtitle": "Dein Plan und Fortschritt an einem Ort.",
+    "load_error": "Dein Tag konnte nicht geladen werden. Versuche es erneut.",
+    "active_focus": "Fokus läuft",
+    "open_timer": "Öffnen",
+    "focused": "Fokuszeit",
+    "completed": "Erledigt",
+    "next_tasks": "Nächste Aufgaben",
+    "view_all": "Alle ansehen",
+    "start_task": "Aufgabe starten",
+    "no_tasks": "Keine offenen Aufgaben.",
+    "current_goal": "Aktuelles Ziel",
+    "continue_goal": "Ziel fortsetzen",
+    "routine": "Empfohlene Routine",
+    "open": "Öffnen",
+    "priority": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch",
+      "urgent": "Dringend"
+    }
   }
 }

@@ -178,7 +178,8 @@
     "pause_warning_ok": "Ho capito",
     "pause_data_loss_recovered": "Tempo recuperato automaticamente dal server.",
     "pause": "Pausa",
-    "resume": "Riprendi"
+    "resume": "Riprendi",
+    "session_options": "Opzioni della sessione"
   },
   "pomodoro": {
     "focus": "Focus",
@@ -2989,5 +2990,43 @@
     "stat_active": "Codici attivi",
     "stat_redemptions": "Riscatti",
     "stat_week": "Riscatti (7 giorni)"
+  },
+  "mobile_nav": {
+    "label": "Navigazione principale",
+    "timer": "Timer",
+    "today": "Oggi",
+    "tasks": "Attività",
+    "rooms": "Stanze",
+    "more": "Altro",
+    "groups": {
+      "plan": "Pianifica",
+      "record": "Registra",
+      "social": "Social",
+      "account": "Account"
+    }
+  },
+  "today": {
+    "seo_title": "Oggi — Timezoni",
+    "title": "Oggi",
+    "subtitle": "Piano e progressi in un unico posto.",
+    "load_error": "Impossibile caricare la giornata. Riprova.",
+    "active_focus": "Focus in corso",
+    "open_timer": "Apri",
+    "focused": "Tempo concentrato",
+    "completed": "Completate",
+    "next_tasks": "Prossime attività",
+    "view_all": "Vedi tutte",
+    "start_task": "Avvia attività",
+    "no_tasks": "Nessuna attività in sospeso.",
+    "current_goal": "Obiettivo in corso",
+    "continue_goal": "Continua obiettivo",
+    "routine": "Routine suggerita",
+    "open": "Apri",
+    "priority": {
+      "low": "Bassa",
+      "medium": "Media",
+      "high": "Alta",
+      "urgent": "Urgente"
+    }
   }
 }

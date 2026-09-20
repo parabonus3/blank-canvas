@@ -180,7 +180,8 @@
     "pause_warning_ok": "Got it",
     "pause_data_loss_recovered": "Time automatically recovered from the server.",
     "pause": "Pause",
-    "resume": "Resume"
+    "resume": "Resume",
+    "session_options": "Session options"
   },
   "pomodoro": {
     "focus": "Focus",
@@ -3098,5 +3099,43 @@
     "stat_active": "Active codes",
     "stat_redemptions": "Redemptions",
     "stat_week": "Redemptions (7d)"
+  },
+  "mobile_nav": {
+    "label": "Primary navigation",
+    "timer": "Timer",
+    "today": "Today",
+    "tasks": "Tasks",
+    "rooms": "Rooms",
+    "more": "More",
+    "groups": {
+      "plan": "Plan",
+      "record": "Track",
+      "social": "Social",
+      "account": "Account"
+    }
+  },
+  "today": {
+    "seo_title": "Today — Timezoni",
+    "title": "Today",
+    "subtitle": "Your plan and progress in one place.",
+    "load_error": "We could not load your day. Try again.",
+    "active_focus": "Focus in progress",
+    "open_timer": "Open",
+    "focused": "Focused time",
+    "completed": "Completed",
+    "next_tasks": "Next tasks",
+    "view_all": "View all",
+    "start_task": "Start task",
+    "no_tasks": "No pending tasks.",
+    "current_goal": "Current goal",
+    "continue_goal": "Continue goal",
+    "routine": "Suggested routine",
+    "open": "Open",
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    }
   }
 }

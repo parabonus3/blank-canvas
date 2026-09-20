@@ -21,10 +21,10 @@ import { playPageStart, playPauseSound, playStopSound } from "@/lib/uiSounds";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProjectPicker } from "@/components/ProjectPicker";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AmbientSoundPlayer } from "@/components/AmbientSoundPlayer";
 import { PomodoroTimer } from "@/components/PomodoroTimer";
-import { Play, Square, Clock, Timer, Pause, Flame, Shield, Maximize2, Footprints } from "lucide-react";
+import { Play, Square, Clock, Timer, Pause, Flame, Shield, Maximize2, Footprints, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { FullscreenTimer } from "@/components/FullscreenTimer";
 import { cn } from "@/lib/utils";
 import { StopTimerDialog } from "@/components/StopTimerDialog";
@@ -45,7 +45,7 @@ import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
 import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
 import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
 import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
-import { useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
+import { useFocusRoutines, useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
 
 const ACTIVE_FOCUS_KEY = "timezoni.activeFocusTarget";
 
@@ -101,8 +101,10 @@ export default function Index() {
     }
   });
   const [activeFocusTarget, setActiveFocusTarget] = useState<number | null>(() => readActiveFocusTarget());
+  const [optionsOpen, setOptionsOpen] = useState(() => new URLSearchParams(window.location.search).get("options") === "1");
   const saveFocusCommitment = useSaveFocusCommitment();
   const routineRun = useRoutineRun();
+  const { data: focusRoutines = [] } = useFocusRoutines();
 
 
   const gps = useGpsTracker();
@@ -128,6 +130,19 @@ export default function Index() {
     }
     toast({ title: t("routines.started_title", "Rotina iniciada"), description: routine.title });
   }, [routineRun, toast, t]);
+
+  useEffect(() => {
+    if (activeEntry) return;
+    const params = new URLSearchParams(location.search);
+    const requestedProject = params.get("project");
+    if (requestedProject) setSelectedProject(requestedProject);
+    if (params.get("options") === "1") setOptionsOpen(true);
+    const routineId = params.get("routine");
+    if (routineId && !routineRun.run) {
+      const requestedRoutine = focusRoutines.find((routine) => routine.id === routineId);
+      if (requestedRoutine) handleStartRoutine(requestedRoutine);
+    }
+  }, [activeEntry, focusRoutines, handleStartRoutine, location.search, routineRun.run]);
 
   // Rotina: avança para a próxima etapa e aplica projeto/meta do passo.
   const advanceRoutineStep = useCallback(() => {
@@ -678,10 +693,12 @@ export default function Index() {
 
         {/* Timer Mode Selection */}
         <div className="grid grid-cols-2 gap-3">
-          <button
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => setTimerMode("normal")}
             className={cn(
-              "flex flex-col items-center gap-2 p-4 sm:p-6 rounded-xl border-2 transition-all",
+              "h-auto flex-col gap-2 p-3 sm:p-5 border-2",
               timerMode === "normal"
                 ? "border-primary bg-primary/10 shadow-sm"
                 : "border-border hover:border-primary/40"
@@ -689,11 +706,13 @@ export default function Index() {
           >
             <Clock className="h-7 w-7 sm:h-8 sm:w-8" />
             <span className="text-sm font-medium">{t('timer.normal')}</span>
-          </button>
-          <button
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => setTimerMode("pomodoro")}
             className={cn(
-              "flex flex-col items-center gap-2 p-4 sm:p-6 rounded-xl border-2 transition-all",
+              "h-auto flex-col gap-2 p-3 sm:p-5 border-2",
               timerMode === "pomodoro"
                 ? "border-primary bg-primary/10 shadow-sm"
                 : "border-border hover:border-primary/40"
@@ -701,7 +720,7 @@ export default function Index() {
           >
             <Timer className="h-7 w-7 sm:h-8 sm:w-8" />
             <span className="text-sm font-medium">🍅 {t('timer.pomodoro')}</span>
-          </button>
+          </Button>
         </div>
 
         {/* Timer Content */}
@@ -768,36 +787,42 @@ export default function Index() {
                     onValueChange={setSelectedProject}
                     projects={activeProjects}
                   />
-                  <RoomPicker
-                    value={selectedRoom}
-                    onValueChange={setSelectedRoom}
-                  />
-                  <RoomChallengePicker
-                    roomId={selectedRoom}
-                    value={selectedChallenge}
-                    onChange={setSelectedChallenge}
-                  />
-                  <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
-                  <RunModeToggle
-                    enabled={runMode}
-                    onChange={setRunMode}
-                    supported={gps.supported}
-                    activityType={runActivityType}
-                    onActivityTypeChange={setRunActivityType}
-                  />
-                  <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
-                  {routineRun.run && routineRun.currentStep ? (
-                    <RoutineRunBar
-                      run={routineRun.run}
-                      currentStep={routineRun.currentStep}
-                      isRunning={isRunning}
-                      onComplete={routineRun.completeCurrent}
-                      onSkip={routineRun.skipCurrent}
-                      onStop={routineRun.stop}
-                    />
-                  ) : (
-                    <FocusRoutinesCard onStart={handleStartRoutine} />
-                  )}
+                   <Collapsible open={optionsOpen} onOpenChange={setOptionsOpen}>
+                     <CollapsibleTrigger asChild>
+                       <Button variant="outline" className="h-11 w-full justify-between gap-3">
+                         <span className="flex min-w-0 items-center gap-2">
+                           <SlidersHorizontal className="h-4 w-4 shrink-0" />
+                           <span className="truncate">{t("timer.session_options")}</span>
+                         </span>
+                         <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", optionsOpen && "rotate-180")} />
+                       </Button>
+                     </CollapsibleTrigger>
+                     <CollapsibleContent className="space-y-3 pt-3">
+                       <RoomPicker value={selectedRoom} onValueChange={setSelectedRoom} />
+                       <RoomChallengePicker roomId={selectedRoom} value={selectedChallenge} onChange={setSelectedChallenge} />
+                       <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
+                       <RunModeToggle
+                         enabled={runMode}
+                         onChange={setRunMode}
+                         supported={gps.supported}
+                         activityType={runActivityType}
+                         onActivityTypeChange={setRunActivityType}
+                       />
+                       <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
+                       {routineRun.run && routineRun.currentStep ? (
+                         <RoutineRunBar
+                           run={routineRun.run}
+                           currentStep={routineRun.currentStep}
+                           isRunning={isRunning}
+                           onComplete={routineRun.completeCurrent}
+                           onSkip={routineRun.skipCurrent}
+                           onStop={routineRun.stop}
+                         />
+                       ) : (
+                         <FocusRoutinesCard onStart={handleStartRoutine} />
+                       )}
+                     </CollapsibleContent>
+                   </Collapsible>
 
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">

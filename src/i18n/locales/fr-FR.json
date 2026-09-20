@@ -178,7 +178,8 @@
     "pause_warning_ok": "Compris",
     "pause_data_loss_recovered": "Temps récupéré automatiquement depuis le serveur.",
     "pause": "Pause",
-    "resume": "Reprendre"
+    "resume": "Reprendre",
+    "session_options": "Options de la session"
   },
   "pomodoro": {
     "focus": "Concentration",
@@ -3003,5 +3004,43 @@
     "stat_active": "Codes actifs",
     "stat_redemptions": "Utilisations",
     "stat_week": "Utilisations (7 j)"
+  },
+  "mobile_nav": {
+    "label": "Navigation principale",
+    "timer": "Minuteur",
+    "today": "Aujourd’hui",
+    "tasks": "Tâches",
+    "rooms": "Salles",
+    "more": "Plus",
+    "groups": {
+      "plan": "Planifier",
+      "record": "Enregistrer",
+      "social": "Social",
+      "account": "Compte"
+    }
+  },
+  "today": {
+    "seo_title": "Aujourd’hui — Timezoni",
+    "title": "Aujourd’hui",
+    "subtitle": "Votre programme et vos progrès au même endroit.",
+    "load_error": "Impossible de charger votre journée. Réessayez.",
+    "active_focus": "Concentration en cours",
+    "open_timer": "Ouvrir",
+    "focused": "Temps concentré",
+    "completed": "Terminées",
+    "next_tasks": "Prochaines tâches",
+    "view_all": "Tout voir",
+    "start_task": "Démarrer la tâche",
+    "no_tasks": "Aucune tâche en attente.",
+    "current_goal": "Objectif en cours",
+    "continue_goal": "Continuer",
+    "routine": "Routine suggérée",
+    "open": "Ouvrir",
+    "priority": {
+      "low": "Faible",
+      "medium": "Moyenne",
+      "high": "Haute",
+      "urgent": "Urgente"
+    }
   }
 }

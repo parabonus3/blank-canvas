@@ -26,11 +26,16 @@ export default function Today() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { timezone, formatInTz } = useTimezone();
-  const { data: tasks = [] } = useAllUserTasks();
-  const { data: entries = [] } = useTimeEntries();
-  const { data: activeEntry } = useActiveTimeEntry();
-  const { data: goals = [] } = useGoalsWithProgress();
-  const { data: routines = [] } = useFocusRoutines();
+  const tasksQuery = useAllUserTasks();
+  const entriesQuery = useTimeEntries();
+  const activeEntryQuery = useActiveTimeEntry();
+  const goalsQuery = useGoalsWithProgress();
+  const routinesQuery = useFocusRoutines();
+  const tasks = tasksQuery.data ?? [];
+  const entries = entriesQuery.data ?? [];
+  const activeEntry = activeEntryQuery.data;
+  const goals = goalsQuery.data ?? [];
+  const routines = routinesQuery.data ?? [];
   const startTimer = useStartTimer();
 
   const todayStart = startOfDayInTz(new Date(), timezone);
@@ -51,6 +56,8 @@ export default function Today() {
 
   const activeGoal = [...goals].filter(goal => goal.status !== "completed").sort((a, b) => b.progress - a.progress)[0];
   const firstRoutine = routines[0];
+  const isLoading = tasksQuery.isLoading || entriesQuery.isLoading || goalsQuery.isLoading || routinesQuery.isLoading;
+  const hasError = tasksQuery.isError || entriesQuery.isError || goalsQuery.isError || routinesQuery.isError;
 
   const startTask = async (task: (typeof nextTasks)[number]) => {
     if (!task.project_id) {
@@ -70,6 +77,9 @@ export default function Today() {
           <h1 className="text-2xl font-bold">{t("today.title")}</h1>
           <p className="text-sm text-muted-foreground">{t("today.subtitle")}</p>
         </header>
+
+        {isLoading && <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{t("common.loading")}</p>}
+        {hasError && <p role="alert" className="rounded-md border border-destructive/40 p-4 text-sm text-destructive">{t("today.load_error")}</p>}
 
         {activeEntry && (
           <Card className="border-primary/40 bg-primary/5">
@@ -143,7 +153,7 @@ export default function Today() {
               <p className="text-xs text-muted-foreground">{t("today.routine")}</p>
               <p className="truncate text-sm font-semibold">{firstRoutine.title}</p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => navigate("/timer?options=1")}>{t("today.open")}</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate(`/timer?options=1&routine=${firstRoutine.id}`)}>{t("today.open")}</Button>
           </section>
         )}
 

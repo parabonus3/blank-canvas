@@ -85,11 +85,17 @@ export function DayAgendaCard({ className }: { className?: string }) {
 
   const handleStart = async (b: TimeBlock) => {
     if (!b.project_id) {
-      navigate("/");
+      if (b.task_id) {
+        const task = tasks.find((item) => item.id === b.task_id);
+        if (task) navigate(`/tasks/board/${task.board_id}`);
+        else navigate("/tasks");
+      } else {
+        navigate("/projects");
+      }
       return;
     }
     await startTimer.mutateAsync({ projectId: b.project_id, taskId: b.task_id });
-    navigate("/");
+    navigate("/timer");
   };
 
   return (

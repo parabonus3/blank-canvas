@@ -182,7 +182,8 @@
     "pause_warning_ok": "Entendi",
     "pause_data_loss_recovered": "Tempo recuperado automaticamente a partir do servidor.",
     "pause": "Pausar",
-    "resume": "Retomar"
+    "resume": "Retomar",
+    "session_options": "Opções da sessão"
   },
   "pomodoro": {
     "focus": "Foco",
@@ -3153,5 +3154,43 @@
     "stat_active": "Códigos ativos",
     "stat_redemptions": "Resgates",
     "stat_week": "Resgates (7 dias)"
+  },
+  "mobile_nav": {
+    "label": "Navegação principal",
+    "timer": "Cronômetro",
+    "today": "Hoje",
+    "tasks": "Tarefas",
+    "rooms": "Salas",
+    "more": "Mais",
+    "groups": {
+      "plan": "Planejar",
+      "record": "Registrar",
+      "social": "Social",
+      "account": "Conta"
+    }
+  },
+  "today": {
+    "seo_title": "Hoje — Timezoni",
+    "title": "Hoje",
+    "subtitle": "Seu plano e progresso em um só lugar.",
+    "load_error": "Não foi possível carregar seu dia. Tente novamente.",
+    "active_focus": "Foco em andamento",
+    "open_timer": "Abrir",
+    "focused": "Tempo focado",
+    "completed": "Concluídas",
+    "next_tasks": "Próximas tarefas",
+    "view_all": "Ver todas",
+    "start_task": "Iniciar tarefa",
+    "no_tasks": "Nenhuma tarefa pendente.",
+    "current_goal": "Meta em andamento",
+    "continue_goal": "Continuar meta",
+    "routine": "Rotina sugerida",
+    "open": "Abrir",
+    "priority": {
+      "low": "Baixa",
+      "medium": "Média",
+      "high": "Alta",
+      "urgent": "Urgente"
+    }
   }
 }

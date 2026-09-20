@@ -178,7 +178,8 @@
     "pause_warning_ok": "فهمت",
     "pause_data_loss_recovered": "تم استرداد الوقت تلقائيًا من الخادم.",
     "pause": "إيقاف مؤقّت",
-    "resume": "استئناف"
+    "resume": "استئناف",
+    "session_options": "خيارات الجلسة"
   },
   "pomodoro": {
     "focus": "تركيز",
@@ -2989,5 +2990,43 @@
     "stat_active": "رموز نشطة",
     "stat_redemptions": "الاستبدالات",
     "stat_week": "الاستبدالات (7 أيام)"
+  },
+  "mobile_nav": {
+    "label": "التنقل الرئيسي",
+    "timer": "المؤقت",
+    "today": "اليوم",
+    "tasks": "المهام",
+    "rooms": "الغرف",
+    "more": "المزيد",
+    "groups": {
+      "plan": "التخطيط",
+      "record": "التسجيل",
+      "social": "اجتماعي",
+      "account": "الحساب"
+    }
+  },
+  "today": {
+    "seo_title": "اليوم — Timezoni",
+    "title": "اليوم",
+    "subtitle": "خطتك وتقدمك في مكان واحد.",
+    "load_error": "تعذر تحميل يومك. حاول مرة أخرى.",
+    "active_focus": "التركيز جارٍ",
+    "open_timer": "فتح",
+    "focused": "وقت التركيز",
+    "completed": "مكتملة",
+    "next_tasks": "المهام التالية",
+    "view_all": "عرض الكل",
+    "start_task": "بدء المهمة",
+    "no_tasks": "لا توجد مهام معلقة.",
+    "current_goal": "الهدف الحالي",
+    "continue_goal": "متابعة الهدف",
+    "routine": "الروتين المقترح",
+    "open": "فتح",
+    "priority": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية",
+      "urgent": "عاجلة"
+    }
   }
 }

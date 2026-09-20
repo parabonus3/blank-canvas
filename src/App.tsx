@@ -38,6 +38,7 @@ import MindMapEditor from "./pages/MindMapEditor";
 import Friends from "./pages/Friends";
 import Tasks from "./pages/Tasks";
 import Runs from "./pages/Runs";
+import Today from "./pages/Today";
 import BoardDetail from "./pages/BoardDetail";
 import SacIndex from "./pages/sac/SacIndex";
 import NewTicket from "./pages/sac/NewTicket";
@@ -99,6 +100,7 @@ const App = () => (
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/timer" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                  <Route path="/today" element={<ProtectedRoute><Today /></ProtectedRoute>} />
                   <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                   <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
                   <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
