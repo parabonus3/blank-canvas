@@ -3136,6 +3136,8 @@
       "medium": "Medium",
       "high": "High",
       "urgent": "Urgent"
-    }
+    },
+    "hour_short": "h",
+    "minute_short": "m"
   }
 }

@@ -3027,6 +3027,8 @@
       "medium": "Media",
       "high": "Alta",
       "urgent": "Urgente"
-    }
+    },
+    "hour_short": "h",
+    "minute_short": "min"
   }
 }

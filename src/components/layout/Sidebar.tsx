@@ -20,6 +20,7 @@ import {
   Headset,
   KanbanSquare,
   Footprints,
+  CalendarDays,
 } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useIsSupportAgent } from "@/hooks/useSupportAgents";
@@ -73,6 +74,7 @@ export function AppSidebar() {
 
   const navItems = [
     { title: t('sidebar.timer'), url: "/timer", icon: Timer },
+    { title: t('mobile_nav.today'), url: "/today", icon: CalendarDays },
     { title: t('sidebar.dashboard'), url: "/dashboard", icon: LayoutDashboard },
     { title: t('sidebar.projects'), url: "/projects", icon: FolderOpen },
     { title: t('sidebar.goals'), url: "/goals", icon: Target },

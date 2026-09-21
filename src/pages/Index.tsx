@@ -104,7 +104,7 @@ export default function Index() {
   const [optionsOpen, setOptionsOpen] = useState(() => new URLSearchParams(window.location.search).get("options") === "1");
   const saveFocusCommitment = useSaveFocusCommitment();
   const routineRun = useRoutineRun();
-  const { data: focusRoutines = [] } = useFocusRoutines();
+  const { data: focusRoutines = [], isLoading: focusRoutinesLoading } = useFocusRoutines();
 
 
   const gps = useGpsTracker();
@@ -135,14 +135,16 @@ export default function Index() {
     if (activeEntry) return;
     const params = new URLSearchParams(location.search);
     const requestedProject = params.get("project");
+    const routineId = params.get("routine");
+    if (routineId && focusRoutinesLoading) return;
     if (requestedProject) setSelectedProject(requestedProject);
     if (params.get("options") === "1") setOptionsOpen(true);
-    const routineId = params.get("routine");
     if (routineId && !routineRun.run) {
       const requestedRoutine = focusRoutines.find((routine) => routine.id === routineId);
       if (requestedRoutine) handleStartRoutine(requestedRoutine);
     }
-  }, [activeEntry, focusRoutines, handleStartRoutine, location.search, routineRun.run]);
+    if (location.search) navigate("/timer", { replace: true });
+  }, [activeEntry, focusRoutines, focusRoutinesLoading, handleStartRoutine, location.search, navigate, routineRun.run]);
 
   // Rotina: avança para a próxima etapa e aplica projeto/meta do passo.
   const advanceRoutineStep = useCallback(() => {

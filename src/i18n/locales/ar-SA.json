@@ -3027,6 +3027,8 @@
       "medium": "متوسطة",
       "high": "عالية",
       "urgent": "عاجلة"
-    }
+    },
+    "hour_short": "س",
+    "minute_short": "د"
   }
 }
