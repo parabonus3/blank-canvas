@@ -3041,6 +3041,8 @@
       "medium": "中",
       "high": "高",
       "urgent": "緊急"
-    }
+    },
+    "hour_short": "時間",
+    "minute_short": "分"
   }
 }

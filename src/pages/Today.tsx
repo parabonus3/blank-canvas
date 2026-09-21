@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CalendarDays, CheckCircle2, Clock3, Play, Target, Timer, Zap } from "lucide-react";
+import { CheckCircle2, Clock3, Play, Target, Timer, Zap } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
@@ -16,10 +16,10 @@ import { useFocusRoutines } from "@/hooks/useFocusRoutines";
 import { useTimezone } from "@/hooks/useTimezone";
 import { startOfDayInTz } from "@/lib/timezone";
 
-function formatMinutes(minutes: number) {
+function formatMinutes(minutes: number, hourLabel: string, minuteLabel: string) {
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
-  return hours > 0 ? `${hours}h ${rest}m` : `${rest}m`;
+  return hours > 0 ? `${hours}${hourLabel} ${rest}${minuteLabel}` : `${rest}${minuteLabel}`;
 }
 
 export default function Today() {
@@ -99,7 +99,7 @@ export default function Today() {
         {!isLoading && <div className="grid grid-cols-2 gap-3">
           <div className="border-s-2 border-primary px-3 py-1">
             <div className="flex items-center gap-2 text-xs text-muted-foreground"><Clock3 className="h-4 w-4" />{t("today.focused")}</div>
-            <p className="mt-1 text-xl font-bold">{formatMinutes(focusedMinutes)}</p>
+            <p className="mt-1 text-xl font-bold">{formatMinutes(focusedMinutes, t("today.hour_short"), t("today.minute_short"))}</p>
           </div>
           <div className="border-s-2 border-success px-3 py-1">
             <div className="flex items-center gap-2 text-xs text-muted-foreground"><CheckCircle2 className="h-4 w-4" />{t("today.completed")}</div>

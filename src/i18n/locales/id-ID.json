@@ -3041,6 +3041,8 @@
       "medium": "Sedang",
       "high": "Tinggi",
       "urgent": "Mendesak"
-    }
+    },
+    "hour_short": "j",
+    "minute_short": "mnt"
   }
 }
