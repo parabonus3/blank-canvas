@@ -81,7 +81,7 @@ export default function Today() {
         {isLoading && <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{t("common.loading")}</p>}
         {hasError && <p role="alert" className="rounded-md border border-destructive/40 p-4 text-sm text-destructive">{t("today.load_error")}</p>}
 
-        {activeEntry && (
+        {!isLoading && activeEntry && (
           <Card className="border-primary/40 bg-primary/5">
             <CardContent className="flex items-center gap-3 p-4">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -96,7 +96,7 @@ export default function Today() {
           </Card>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
+        {!isLoading && <div className="grid grid-cols-2 gap-3">
           <div className="border-s-2 border-primary px-3 py-1">
             <div className="flex items-center gap-2 text-xs text-muted-foreground"><Clock3 className="h-4 w-4" />{t("today.focused")}</div>
             <p className="mt-1 text-xl font-bold">{formatMinutes(focusedMinutes)}</p>
@@ -105,11 +105,11 @@ export default function Today() {
             <div className="flex items-center gap-2 text-xs text-muted-foreground"><CheckCircle2 className="h-4 w-4" />{t("today.completed")}</div>
             <p className="mt-1 text-xl font-bold">{completedToday}</p>
           </div>
-        </div>
+        </div>}
 
-        <DayAgendaCard />
+        {!isLoading && <DayAgendaCard />}
 
-        <section className="space-y-2">
+        {!isLoading && <section className="space-y-2">
           <div className="flex items-center justify-between">
             <h2 className="flex items-center gap-2 font-semibold"><Zap className="h-4 w-4 text-primary" />{t("today.next_tasks")}</h2>
             <Button variant="ghost" size="sm" onClick={() => navigate("/tasks")}>{t("today.view_all")}</Button>
@@ -132,9 +132,9 @@ export default function Today() {
               ))}
             </div>
           ) : <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{t("today.no_tasks")}</p>}
-        </section>
+        </section>}
 
-        {activeGoal && (
+        {!isLoading && activeGoal && (
           <section className="space-y-2 rounded-md border p-4">
             <div className="flex items-center justify-between gap-3">
               <h2 className="flex items-center gap-2 text-sm font-semibold"><Target className="h-4 w-4 text-primary" />{t("today.current_goal")}</h2>
@@ -146,7 +146,7 @@ export default function Today() {
           </section>
         )}
 
-        {firstRoutine && (
+        {!isLoading && firstRoutine && (
           <section className="flex items-center gap-3 rounded-md border p-4">
             <span className="text-2xl">{firstRoutine.emoji || "▶"}</span>
             <div className="min-w-0 flex-1">
@@ -157,7 +157,7 @@ export default function Today() {
           </section>
         )}
 
-        <ActiveGoalsStrip />
+        {!isLoading && <ActiveGoalsStrip />}
       </div>
     </MainLayout>
   );
