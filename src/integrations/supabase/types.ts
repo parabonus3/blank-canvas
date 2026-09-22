@@ -3236,6 +3236,16 @@ export type Database = {
           slug: string
         }[]
       }
+      get_my_streak_status: {
+        Args: never
+        Returns: {
+          best_streak: number
+          current_streak: number
+          local_today: string
+          studied_today: boolean
+          timezone: string
+        }[]
+      }
       get_public_rooms_ranking: {
         Args: { _category?: string; _country?: string; _search?: string }
         Returns: {
