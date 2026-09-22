@@ -2947,6 +2947,10 @@ export type Database = {
         Args: { _bg: string; _tier: string }
         Returns: boolean
       }
+      calculate_user_streak: {
+        Args: { _as_of?: string; _user_id: string }
+        Returns: number
+      }
       can_access_task: {
         Args: { _task_id: string; _user_id: string }
         Returns: boolean
@@ -3416,6 +3420,12 @@ export type Database = {
           meta: Json
           task_id: string
           user_id: string
+        }[]
+      }
+      get_user_streak_days: {
+        Args: { _user_id: string }
+        Returns: {
+          day: string
         }[]
       }
       has_role: {
