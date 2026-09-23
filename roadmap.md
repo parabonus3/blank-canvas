@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Corrigir sequências pelo fuso local, resgate após retomada e recuperação do Miguel
+
 - [x] Expandir o catálogo de salas de demonstração para os 12 idiomas
 - [x] Tornar a geração retomável, sem duplicar salas ou históricos
 - [x] Corrigir presença dinâmica pelo fuso local de cada pessoa

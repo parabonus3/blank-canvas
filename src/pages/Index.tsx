@@ -46,6 +46,7 @@ import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocu
 import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
 import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
 import { useFocusRoutines, useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
+import { usePersonalStreak } from "@/hooks/usePersonalStreak";
 
 const ACTIVE_FOCUS_KEY = "timezoni.activeFocusTarget";
 
@@ -325,28 +326,7 @@ export default function Index() {
   }, [user]);
 
   
-  // Streak query
-  const { data: streakRaw } = useQuery({
-    queryKey: ["personalStreak", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data: streak, error } = await supabase.rpc("get_member_room_streak", { _user_id: user.id });
-      if (error) throw error;
-
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const { count } = await supabase
-        .from("time_entries")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .not("end_time", "is", null)
-        .gte("start_time", todayStart.toISOString());
-
-      return { streak: (streak || 0) as number, studiedToday: (count || 0) > 0 };
-    },
-    enabled: !!user,
-    staleTime: 60000,
-  });
+  const { data: streakRaw } = usePersonalStreak();
   const streakData = streakRaw?.streak ?? null;
   
   // Hook de som ambiente
