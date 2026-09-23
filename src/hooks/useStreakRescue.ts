@@ -34,6 +34,8 @@ export function useStreakRescue() {
           // Refetch streak-related queries
           queryClient.invalidateQueries({ queryKey: ["personalStreak"] });
           queryClient.invalidateQueries({ queryKey: ["streakFreeze"] });
+          queryClient.invalidateQueries({ queryKey: ["streakShield"] });
+          queryClient.invalidateQueries({ queryKey: ["streakStudiedDates"] });
 
           playSuccess();
           toast({

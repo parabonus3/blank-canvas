@@ -4,30 +4,32 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { STREAK_FREEZE_LIMITS } from "@/lib/stripePlans";
 import { useEffect, useRef } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from "react-i18next";
-import { playSuccess } from "@/lib/soundEffects";
+import { useTimezone } from "@/hooks/useTimezone";
 
-function getCurrentMonthYear() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+function localDateString(date: Date, timezone: string): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
 }
 
-function getYesterday(): string {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split("T")[0];
+function addDays(isoDate: string, delta: number): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + delta));
+  return date.toISOString().slice(0, 10);
 }
 
 export function useStreakFreeze() {
   const { user } = useAuth();
   const { tier } = useSubscription();
-  const { toast } = useToast();
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const autoUsedRef = useRef(false);
+  const { timezone } = useTimezone();
 
-  const monthYear = getCurrentMonthYear();
+  const today = localDateString(new Date(), timezone);
+  const monthYear = today.slice(0, 7);
 
   // Limite mensal calculado no servidor: plano + bônus por recorde de sequência
   const { data: allowance } = useQuery({
@@ -124,7 +126,7 @@ export function useStreakFreeze() {
     if (!user || autoUsedRef.current) return;
     if (totalAvailable <= 0) return;
 
-    const yesterday = getYesterday();
+    const yesterday = addDays(today, -1);
     if (autoUsedDates.includes(yesterday)) return;
 
     // Guard global por dia via localStorage para evitar disparos paralelos
@@ -135,37 +137,20 @@ export function useStreakFreeze() {
     const checkAndAutoUse = async () => {
       if (typeof window !== "undefined") localStorage.setItem(guardKey, "1");
       autoUsedRef.current = true;
-      const yesterdayStart = new Date(yesterday + "T00:00:00");
-      const yesterdayEnd = new Date(yesterday + "T23:59:59");
-
-      const { count } = await supabase
-        .from("time_entries")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .not("end_time", "is", null)
-        .gte("start_time", yesterdayStart.toISOString())
-        .lte("start_time", yesterdayEnd.toISOString());
-
-      if ((count ?? 0) === 0) {
-        autoUsedRef.current = true;
-        const { data, error } = await supabase.rpc("consume_streak_freeze", {
-          _date: yesterday,
-        });
-        if (!error && data && data[0]?.source && data[0].source !== "none" && data[0].source !== "already_used") {
-          queryClient.invalidateQueries({ queryKey: ["streakFreeze"] });
-          queryClient.invalidateQueries({ queryKey: ["purchasedFreezes"] });
-          queryClient.invalidateQueries({ queryKey: ["personalStreak"] });
-          playSuccess();
-          toast({
-            title: `🛡️ ${t("streak.freeze_used_title")}`,
-            description: t("streak.freeze_used_desc"),
-          });
-        }
+      const { data, error } = await (supabase as any).rpc("auto_consume_pending_freezes", {
+        _user_id: user.id,
+      });
+      if (!error) {
+        queryClient.invalidateQueries({ queryKey: ["streakFreeze"] });
+        queryClient.invalidateQueries({ queryKey: ["purchasedFreezes"] });
+        queryClient.invalidateQueries({ queryKey: ["personalStreak"] });
+        queryClient.invalidateQueries({ queryKey: ["streakShield"] });
+        queryClient.invalidateQueries({ queryKey: ["streakStudiedDates"] });
       }
     };
 
     checkAndAutoUse();
-  }, [user, freezeData, purchasedRow, totalAvailable, autoUsedDates]);
+  }, [user, freezeData, purchasedRow, totalAvailable, autoUsedDates, today, queryClient]);
 
   return {
     remaining,

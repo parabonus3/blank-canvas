@@ -285,6 +285,8 @@ export function useStopTimer() {
       queryClient.invalidateQueries({ queryKey: ["timeEntries"] });
       queryClient.invalidateQueries({ queryKey: ["personalStreak"] });
       queryClient.invalidateQueries({ queryKey: ["streakFreeze"] });
+      queryClient.invalidateQueries({ queryKey: ["streakShield"] });
+      queryClient.invalidateQueries({ queryKey: ["streakStudiedDates"] });
       
       const duration = data.duration || 0;
       const hours = Math.floor(duration / 3600);

@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useStreakFreeze } from "@/hooks/useStreakFreeze";
 import { useActiveTimeEntry } from "@/hooks/useTimeEntries";
 import { Flame, AlertTriangle, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StreakDetailModal } from "@/components/StreakDetailModal";
+import { usePersonalStreak } from "@/hooks/usePersonalStreak";
 
 function useStreakColors(studiedToday: boolean, isTimerRunning: boolean) {
   if (studiedToday) {
@@ -43,7 +41,6 @@ function useStreakColors(studiedToday: boolean, isTimerRunning: boolean) {
 
 export function SidebarStreakWidget() {
   const { t } = useTranslation();
-  const { user } = useAuth();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const { remaining, hasFreezes, autoUsedDates, purchasedBalance, total } = useStreakFreeze();
@@ -51,34 +48,9 @@ export function SidebarStreakWidget() {
   const { data: activeEntry } = useActiveTimeEntry();
   const isTimerRunning = !!activeEntry;
 
-  const { data } = useQuery({
-    queryKey: ["personalStreak", user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data: streak, error } = await supabase.rpc("get_member_room_streak", {
-        _user_id: user.id,
-      });
-      if (error) throw error;
+  const { data } = usePersonalStreak();
 
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      // Consider a session as "studied today" if it ended today (covers sessions
-      // that started yesterday and crossed midnight).
-      const { count } = await supabase
-        .from("time_entries")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .not("end_time", "is", null)
-        .gte("end_time", todayStart.toISOString());
-
-      return { streak: (streak || 0) as number, studiedToday: (count || 0) > 0 };
-    },
-    enabled: !!user,
-    staleTime: 60000,
-    refetchInterval: 120000,
-  });
-
-  if (!data || data.streak === 0) return null;
+  if (!data) return null;
 
   const studiedToday = data.studiedToday;
   const atRisk = data.streak >= 2 && !studiedToday && !isTimerRunning;
