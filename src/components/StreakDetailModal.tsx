@@ -100,10 +100,8 @@ export function StreakDetailModal({
 
       const dates = new Set<string>();
       data?.forEach((entry) => {
-        // Mark BOTH the day the session started AND the day it ended (in user TZ),
-        // so sessions crossing midnight count for the day they finished.
+        // A streak day is defined by the session start in the profile timezone.
         if (entry.start_time) dates.add(tzDateString(new Date(entry.start_time), timezone));
-        if (entry.end_time) dates.add(tzDateString(new Date(entry.end_time), timezone));
       });
       return dates;
     },

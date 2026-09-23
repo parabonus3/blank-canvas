@@ -4,9 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { STREAK_FREEZE_LIMITS } from "@/lib/stripePlans";
 import { useEffect, useRef } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from "react-i18next";
-import { playSuccess } from "@/lib/soundEffects";
 import { useTimezone } from "@/hooks/useTimezone";
 
 function localDateString(date: Date, timezone: string): string {
@@ -27,8 +24,6 @@ function addDays(isoDate: string, delta: number): string {
 export function useStreakFreeze() {
   const { user } = useAuth();
   const { tier } = useSubscription();
-  const { toast } = useToast();
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const autoUsedRef = useRef(false);
   const { timezone } = useTimezone();
