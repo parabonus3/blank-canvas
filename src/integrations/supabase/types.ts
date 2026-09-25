@@ -202,6 +202,9 @@ export type Database = {
           id: string
           is_completed: boolean
           position: number
+          progress_source: string
+          source_activity_type: string | null
+          source_project_id: string | null
           target_value: number
           title: string
           unit: string | null
@@ -221,6 +224,9 @@ export type Database = {
           id?: string
           is_completed?: boolean
           position?: number
+          progress_source?: string
+          source_activity_type?: string | null
+          source_project_id?: string | null
           target_value?: number
           title: string
           unit?: string | null
@@ -240,6 +246,9 @@ export type Database = {
           id?: string
           is_completed?: boolean
           position?: number
+          progress_source?: string
+          source_activity_type?: string | null
+          source_project_id?: string | null
           target_value?: number
           title?: string
           unit?: string | null
@@ -253,6 +262,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "life_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "annual_goals_source_project_id_fkey"
+            columns: ["source_project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -3539,6 +3555,10 @@ export type Database = {
       }
       redeem_access_code: { Args: { _code: string }; Returns: Json }
       refresh_last_known_streak: { Args: never; Returns: number }
+      refresh_my_automatic_annual_goals: {
+        Args: { _year?: number }
+        Returns: number
+      }
       reject_board_invitation: {
         Args: { _invitation_id: string }
         Returns: undefined
