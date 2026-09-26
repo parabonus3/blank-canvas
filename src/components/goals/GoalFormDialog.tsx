@@ -16,7 +16,10 @@ import {
   FrequencyPeriod,
   LifeCategory,
   AnnualGoal,
+  GoalProgressSource,
 } from "@/hooks/useAnnualGoals";
+import { useProjects } from "@/hooks/useProjects";
+import { ACTIVITY_TYPES, activityLabelKey } from "@/lib/activityTypes";
 import { GoalTemplate, CURRENCIES } from "@/lib/goalTemplates";
 import { GoalTemplatePicker } from "./GoalTemplatePicker";
 import { BookPicker } from "./BookPicker";
@@ -46,6 +49,7 @@ export function GoalFormDialog(props: Props) {
 
   const create = useCreateAnnualGoal();
   const update = useUpdateAnnualGoal();
+  const { data: projects = [] } = useProjects();
 
   const [step, setStep] = useState<Step>(isEdit ? "form" : "templates");
   const [categoryId, setCategoryId] = useState<string>(
@@ -60,6 +64,9 @@ export function GoalFormDialog(props: Props) {
     isEdit ? (props.goal.frequency_period || "weekly") : "weekly"
   );
   const [currentValue, setCurrentValue] = useState(isEdit ? String(props.goal.current_value) : "0");
+  const [progressSource, setProgressSource] = useState<GoalProgressSource>(isEdit ? props.goal.progress_source : "manual");
+  const [sourceProjectId, setSourceProjectId] = useState(isEdit ? (props.goal.source_project_id || "all") : "all");
+  const [sourceActivityType, setSourceActivityType] = useState(isEdit ? (props.goal.source_activity_type || "run") : "run");
 
   // Reset when reopening (create mode)
   useEffect(() => {
@@ -70,6 +77,9 @@ export function GoalFormDialog(props: Props) {
     setTarget("1");
     setUnit("");
     setType("simple");
+    setProgressSource("manual");
+    setSourceProjectId("all");
+    setSourceActivityType("run");
     setFrequency("weekly");
     setCategoryId((props as CreateProps).defaultCategoryId || "none");
   }, [open, isEdit]);
@@ -102,19 +112,23 @@ export function GoalFormDialog(props: Props) {
 
   const handleSubmit = async () => {
     if (!title.trim()) return;
+    if (progressSource === "time" && sourceProjectId === "all") return;
     const payload = {
       category_id: categoryId === "none" ? null : categoryId,
       title: title.trim(),
       description: description.trim() || undefined,
       target_value: type === "simple" ? 1 : Math.max(1, Number(target) || 1),
-      unit: unit.trim() || undefined,
+      unit: progressSource === "time" ? t("annual_goals.templates.units.hours") : progressSource === "distance" ? "km" : progressSource === "tasks" ? t("weekly_review.tasks") : unit.trim() || undefined,
       frequency_period: type === "habit" ? frequency : undefined,
+      progress_source: type === "progress" ? progressSource : "manual",
+      source_project_id: type === "progress" && (progressSource === "time" || progressSource === "tasks") && sourceProjectId !== "all" ? sourceProjectId : null,
+      source_activity_type: type === "progress" && progressSource === "distance" ? (sourceActivityType === "ride" ? "bike" : sourceActivityType) : null,
     };
     if (isEdit) {
       await update.mutateAsync({
         id: props.goal.id,
         ...payload,
-        current_value: Math.max(0, Number(currentValue) || 0),
+        ...(progressSource === "manual" ? { current_value: Math.max(0, Number(currentValue) || 0) } : {}),
       } as any);
     } else {
       await create.mutateAsync({
@@ -236,6 +250,42 @@ export function GoalFormDialog(props: Props) {
             </div>
           )}
 
+          {type === "progress" && (
+            <div className="space-y-3 border-t pt-3">
+              <FieldLabel label={t("annual_goals.progress_source")} />
+              <Select value={progressSource} onValueChange={(value) => setProgressSource(value as GoalProgressSource)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {(["manual", "time", "tasks", "distance"] as const).map(source => (
+                    <SelectItem key={source} value={source}>{t(`annual_goals.sources.${source}`)}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {(progressSource === "time" || progressSource === "tasks") && (
+                <div>
+                  <FieldLabel label={t("annual_goals.source_project")} />
+                  <Select value={sourceProjectId} onValueChange={setSourceProjectId}>
+                    <SelectTrigger><SelectValue placeholder={t("annual_goals.select_project")} /></SelectTrigger>
+                    <SelectContent>
+                      {progressSource === "tasks" && <SelectItem value="all">{t("annual_goals.all_projects")}</SelectItem>}
+                      {projects.map(project => <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              {progressSource === "distance" && (
+                <div>
+                  <FieldLabel label={t("annual_goals.source_activity")} />
+                  <Select value={sourceActivityType} onValueChange={setSourceActivityType}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>{ACTIVITY_TYPES.map(activity => <SelectItem key={activity} value={activity}>{t(activityLabelKey(activity))}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+              )}
+              {progressSource !== "manual" && <p className="text-xs text-muted-foreground">{t("annual_goals.automatic_hint")}</p>}
+            </div>
+          )}
+
           {type === "habit" && (
             <div>
               <FieldLabel label={t("annual_goals.frequency")} tooltip={t("annual_goals.tooltips.frequency")} />
@@ -249,7 +299,7 @@ export function GoalFormDialog(props: Props) {
             </div>
           )}
 
-          {isEdit && type !== "simple" && (
+           {isEdit && type !== "simple" && progressSource === "manual" && (
             <div>
               <FieldLabel label={t("annual_goals.adjust_current_value")} tooltip={t("annual_goals.tooltips.current_value")} />
               <Input type="number" min="0" value={currentValue} onChange={(e) => setCurrentValue(e.target.value)} />
@@ -266,7 +316,7 @@ export function GoalFormDialog(props: Props) {
   );
 
   const footer = (isEdit || step === "form") && (
-    <Button onClick={handleSubmit} disabled={!title.trim() || create.isPending || update.isPending} className="w-full sm:w-auto">
+     <Button onClick={handleSubmit} disabled={!title.trim() || (type === "progress" && progressSource === "time" && sourceProjectId === "all") || create.isPending || update.isPending} className="w-full sm:w-auto">
       {isEdit ? t("common.save") : t("annual_goals.create")}
     </Button>
   );
