@@ -2452,7 +2452,20 @@
         "pages": 528,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Sumber kemajuan",
+    "sources": {
+      "manual": "Manual",
+      "time": "Waktu proyek",
+      "tasks": "Tugas selesai",
+      "distance": "Jarak GPS"
+    },
+    "automatic": "Otomatis",
+    "source_project": "Proyek",
+    "select_project": "Pilih proyek",
+    "all_projects": "Semua proyek",
+    "source_activity": "Aktivitas",
+    "automatic_hint": "Diperbarui dari catatan tahun ini berdasarkan zona waktu profil. Catatan manual sebelumnya tetap tersimpan."
   },
   "pwa": {
     "install_button": "Pasang aplikasi",
@@ -3044,5 +3057,28 @@
     },
     "hour_short": "j",
     "minute_short": "mnt"
+  },
+  "weekly_review": {
+    "title": "Tinjauan mingguan",
+    "subtitle": "Senin–Minggu · zona waktu profil · dibandingkan minggu lalu",
+    "focus": "Waktu fokus",
+    "tasks": "Tugas selesai",
+    "planned": "Waktu terencana",
+    "distance": "Jarak GPS",
+    "project_goals": "Target proyek tercapai",
+    "details": "Lihat detail",
+    "empty": "Belum ada aktivitas tercatat minggu ini.",
+    "load_error": "Tinjauan mingguan tidak dapat dimuat.",
+    "next_action": "Langkah berikutnya",
+    "actions": {
+      "goal": "Lanjutkan target proyek",
+      "budget": "Tinjau anggaran waktu",
+      "task": "Pilih tugas berikutnya",
+      "plan": "Rencanakan minggu ini",
+      "review": "Buka dasbor"
+    },
+    "source": "Sumber data",
+    "budget": "Anggaran mingguan",
+    "distance_types": "Jarak per aktivitas"
   }
 }

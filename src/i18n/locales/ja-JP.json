@@ -2452,7 +2452,20 @@
         "pages": 600,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "進捗の記録元",
+    "sources": {
+      "manual": "手動",
+      "time": "プロジェクト時間",
+      "tasks": "完了したタスク",
+      "distance": "GPS距離"
+    },
+    "automatic": "自動",
+    "source_project": "プロジェクト",
+    "select_project": "プロジェクトを選択",
+    "all_projects": "すべてのプロジェクト",
+    "source_activity": "種目",
+    "automatic_hint": "プロフィールのタイムゾーンで今年の記録から更新します。以前の手動記録は保持されます。"
   },
   "pwa": {
     "install_button": "アプリをインストール",
@@ -3044,5 +3057,28 @@
     },
     "hour_short": "時間",
     "minute_short": "分"
+  },
+  "weekly_review": {
+    "title": "週間レビュー",
+    "subtitle": "月曜〜日曜 · プロフィールのタイムゾーン · 前週との比較",
+    "focus": "集中時間",
+    "tasks": "完了したタスク",
+    "planned": "予定時間",
+    "distance": "GPS距離",
+    "project_goals": "達成したプロジェクト目標",
+    "details": "詳細を見る",
+    "empty": "今週の記録はまだありません。",
+    "load_error": "週間レビューを読み込めませんでした。",
+    "next_action": "次のステップ",
+    "actions": {
+      "goal": "プロジェクト目標を続ける",
+      "budget": "時間配分を見直す",
+      "task": "次のタスクを選ぶ",
+      "plan": "今週の予定を立てる",
+      "review": "ダッシュボードを見る"
+    },
+    "source": "データの出典",
+    "budget": "週の時間配分",
+    "distance_types": "種目別距離"
   }
 }

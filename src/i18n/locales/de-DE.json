@@ -2452,7 +2452,20 @@
         "pages": 528,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Fortschrittsquelle",
+    "sources": {
+      "manual": "Manuell",
+      "time": "Projektzeit",
+      "tasks": "Erledigte Aufgaben",
+      "distance": "GPS-Distanz"
+    },
+    "automatic": "Automatisch",
+    "source_project": "Projekt",
+    "select_project": "Projekt auswählen",
+    "all_projects": "Alle Projekte",
+    "source_activity": "Aktivität",
+    "automatic_hint": "Wird anhand der Jahresdaten in der Profilzeitzone aktualisiert. Frühere manuelle Einträge bleiben erhalten."
   },
   "pwa": {
     "install_button": "App installieren",
@@ -3044,5 +3057,28 @@
     },
     "hour_short": "Std.",
     "minute_short": "Min."
+  },
+  "weekly_review": {
+    "title": "Wochenrückblick",
+    "subtitle": "Montag bis Sonntag · Profilzeitzone · Vergleich zur Vorwoche",
+    "focus": "Fokuszeit",
+    "tasks": "Erledigte Aufgaben",
+    "planned": "Geplante Zeit",
+    "distance": "GPS-Distanz",
+    "project_goals": "Erreichte Projektziele",
+    "details": "Details ansehen",
+    "empty": "Diese Woche wurden noch keine Aktivitäten erfasst.",
+    "load_error": "Der Wochenrückblick konnte nicht geladen werden.",
+    "next_action": "Nächster Schritt",
+    "actions": {
+      "goal": "Projektziel fortsetzen",
+      "budget": "Zeitbudget prüfen",
+      "task": "Nächste Aufgabe wählen",
+      "plan": "Woche planen",
+      "review": "Dashboard öffnen"
+    },
+    "source": "Datenquelle",
+    "budget": "Wochenbudget",
+    "distance_types": "Distanz nach Aktivität"
   }
 }

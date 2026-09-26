@@ -2459,7 +2459,20 @@
         "pages": 496,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Origen del progreso",
+    "sources": {
+      "manual": "Manual",
+      "time": "Tiempo del proyecto",
+      "tasks": "Tareas completadas",
+      "distance": "Distancia GPS"
+    },
+    "automatic": "Automática",
+    "source_project": "Proyecto",
+    "select_project": "Elige un proyecto",
+    "all_projects": "Todos los proyectos",
+    "source_activity": "Actividad",
+    "automatic_hint": "Se actualiza con los registros del año en la zona horaria del perfil. Se conservan las entradas manuales."
   },
   "pwa": {
     "install_button": "Instalar app",
@@ -3051,5 +3064,28 @@
     },
     "hour_short": "h",
     "minute_short": "min"
+  },
+  "weekly_review": {
+    "title": "Resumen semanal",
+    "subtitle": "Lunes a domingo · zona horaria del perfil · frente a la semana anterior",
+    "focus": "Tiempo de concentración",
+    "tasks": "Tareas completadas",
+    "planned": "Tiempo planificado",
+    "distance": "Distancia GPS",
+    "project_goals": "Metas de proyecto alcanzadas",
+    "details": "Ver detalles",
+    "empty": "Aún no hay registros esta semana.",
+    "load_error": "No se pudo cargar el resumen semanal.",
+    "next_action": "Siguiente paso",
+    "actions": {
+      "goal": "Continuar una meta de proyecto",
+      "budget": "Revisar el presupuesto de tiempo",
+      "task": "Elegir la próxima tarea",
+      "plan": "Planificar la semana",
+      "review": "Abrir el panel"
+    },
+    "source": "Origen de datos",
+    "budget": "Presupuesto semanal",
+    "distance_types": "Distancia por actividad"
   }
 }

@@ -2452,7 +2452,20 @@
         "pages": 464,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Source de progression",
+    "sources": {
+      "manual": "Manuelle",
+      "time": "Temps du projet",
+      "tasks": "Tâches terminées",
+      "distance": "Distance GPS"
+    },
+    "automatic": "Automatique",
+    "source_project": "Projet",
+    "select_project": "Choisir un projet",
+    "all_projects": "Tous les projets",
+    "source_activity": "Activité",
+    "automatic_hint": "Mis à jour avec les enregistrements de l’année dans le fuseau du profil. Les saisies manuelles restent conservées."
   },
   "pwa": {
     "install_button": "Installer l'app",
@@ -3044,5 +3057,28 @@
     },
     "hour_short": "h",
     "minute_short": "min"
+  },
+  "weekly_review": {
+    "title": "Bilan de la semaine",
+    "subtitle": "Lundi à dimanche · fuseau du profil · comparé à la semaine précédente",
+    "focus": "Temps concentré",
+    "tasks": "Tâches terminées",
+    "planned": "Temps planifié",
+    "distance": "Distance GPS",
+    "project_goals": "Objectifs de projet atteints",
+    "details": "Voir les détails",
+    "empty": "Aucune activité enregistrée cette semaine.",
+    "load_error": "Impossible de charger le bilan hebdomadaire.",
+    "next_action": "Prochaine étape",
+    "actions": {
+      "goal": "Poursuivre un objectif de projet",
+      "budget": "Revoir votre budget temps",
+      "task": "Choisir la prochaine tâche",
+      "plan": "Planifier la semaine",
+      "review": "Ouvrir le tableau de bord"
+    },
+    "source": "Source des données",
+    "budget": "Budget hebdomadaire",
+    "distance_types": "Distance par activité"
   }
 }
