@@ -990,7 +990,20 @@
         "pages": 220,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Origem do progresso",
+    "sources": {
+      "manual": "Manual",
+      "time": "Tempo do projeto",
+      "tasks": "Tarefas concluídas",
+      "distance": "Distância GPS"
+    },
+    "automatic": "Automática",
+    "source_project": "Projeto",
+    "select_project": "Escolha um projeto",
+    "all_projects": "Todos os projetos",
+    "source_activity": "Modalidade",
+    "automatic_hint": "Atualiza pelos registros do ano no fuso do perfil. Valores manuais anteriores são preservados."
   },
   "history": {
     "title": "Histórico",
@@ -3194,5 +3207,28 @@
     },
     "hour_short": "h",
     "minute_short": "min"
+  },
+  "weekly_review": {
+    "title": "Revisão da semana",
+    "subtitle": "Segunda a domingo · fuso do perfil · comparado à semana anterior",
+    "focus": "Tempo focado",
+    "tasks": "Tarefas concluídas",
+    "planned": "Tempo planejado",
+    "distance": "Distância GPS",
+    "project_goals": "Metas de projeto atingidas",
+    "details": "Ver detalhes",
+    "empty": "Ainda não há registros nesta semana.",
+    "load_error": "Não foi possível carregar a revisão semanal.",
+    "next_action": "Próximo passo",
+    "actions": {
+      "goal": "Continuar uma meta de projeto",
+      "budget": "Revisar o orçamento de tempo",
+      "task": "Escolher a próxima tarefa",
+      "plan": "Planejar a semana",
+      "review": "Ver o painel"
+    },
+    "source": "Origem dos dados",
+    "budget": "Orçamento semanal",
+    "distance_types": "Distância por modalidade"
   }
 }

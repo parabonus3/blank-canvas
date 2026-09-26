@@ -112,6 +112,9 @@ export function useSaveGpsActivity() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gpsActivities"] });
       queryClient.invalidateQueries({ queryKey: ["gpsRecords"] });
+      queryClient.invalidateQueries({ queryKey: ["weeklyReview"] });
+      queryClient.invalidateQueries({ queryKey: ["annualGoals"] });
+      queryClient.invalidateQueries({ queryKey: ["annualGoalsStats"] });
     },
   });
 }
@@ -127,6 +130,9 @@ export function useDeleteGpsActivity() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gpsActivities"] });
       queryClient.invalidateQueries({ queryKey: ["gpsRecords"] });
+      queryClient.invalidateQueries({ queryKey: ["weeklyReview"] });
+      queryClient.invalidateQueries({ queryKey: ["annualGoals"] });
+      queryClient.invalidateQueries({ queryKey: ["annualGoalsStats"] });
     },
   });
 }

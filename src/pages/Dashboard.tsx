@@ -12,6 +12,7 @@ import { FocusReportCard } from "@/components/timer/FocusReportCard";
 import { HourHeatmapCard } from "@/components/timer/HourHeatmapCard";
 import { CategoryBudgetCard } from "@/components/timer/CategoryBudgetCard";
 import { DayTimelineCard } from "@/components/timer/DayTimelineCard";
+import { WeeklyReviewCard } from "@/components/timer/WeeklyReviewCard";
 
 
 import { useProjects, useCategories } from "@/hooks/useProjects";
@@ -455,6 +456,7 @@ export default function Dashboard() {
           </Card>
         </div>
 
+         <WeeklyReviewCard />
          <FocusReportCard />
          <DayTimelineCard />
 

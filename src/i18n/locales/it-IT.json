@@ -2438,7 +2438,20 @@
         "pages": 544,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Fonte dei progressi",
+    "sources": {
+      "manual": "Manuale",
+      "time": "Tempo del progetto",
+      "tasks": "Attività completate",
+      "distance": "Distanza GPS"
+    },
+    "automatic": "Automatica",
+    "source_project": "Progetto",
+    "select_project": "Scegli un progetto",
+    "all_projects": "Tutti i progetti",
+    "source_activity": "Attività",
+    "automatic_hint": "Si aggiorna dai registri dell’anno nel fuso orario del profilo. Le registrazioni manuali restano conservate."
   },
   "pwa": {
     "install_button": "Installa app",
@@ -3030,5 +3043,28 @@
     },
     "hour_short": "h",
     "minute_short": "min"
+  },
+  "weekly_review": {
+    "title": "Riepilogo settimanale",
+    "subtitle": "Lunedì–domenica · fuso orario del profilo · confronto con la settimana scorsa",
+    "focus": "Tempo di concentrazione",
+    "tasks": "Attività completate",
+    "planned": "Tempo pianificato",
+    "distance": "Distanza GPS",
+    "project_goals": "Obiettivi di progetto raggiunti",
+    "details": "Vedi dettagli",
+    "empty": "Nessuna attività registrata questa settimana.",
+    "load_error": "Impossibile caricare il riepilogo settimanale.",
+    "next_action": "Prossimo passo",
+    "actions": {
+      "goal": "Continua un obiettivo di progetto",
+      "budget": "Rivedi il budget di tempo",
+      "task": "Scegli la prossima attività",
+      "plan": "Pianifica la settimana",
+      "review": "Apri la dashboard"
+    },
+    "source": "Origine dati",
+    "budget": "Budget settimanale",
+    "distance_types": "Distanza per attività"
   }
 }

@@ -988,7 +988,20 @@
         "pages": 499,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "Progress source",
+    "sources": {
+      "manual": "Manual",
+      "time": "Project time",
+      "tasks": "Completed tasks",
+      "distance": "GPS distance"
+    },
+    "automatic": "Automatic",
+    "source_project": "Project",
+    "select_project": "Choose a project",
+    "all_projects": "All projects",
+    "source_activity": "Activity",
+    "automatic_hint": "Updates from this year’s records in your profile timezone. Previous manual entries are preserved."
   },
   "history": {
     "title": "History",
@@ -3139,5 +3152,28 @@
     },
     "hour_short": "h",
     "minute_short": "m"
+  },
+  "weekly_review": {
+    "title": "Weekly review",
+    "subtitle": "Monday to Sunday · profile timezone · compared with last week",
+    "focus": "Focus time",
+    "tasks": "Tasks completed",
+    "planned": "Time planned",
+    "distance": "GPS distance",
+    "project_goals": "Project goals reached",
+    "details": "See details",
+    "empty": "No activity recorded this week yet.",
+    "load_error": "Could not load the weekly review.",
+    "next_action": "Next step",
+    "actions": {
+      "goal": "Continue a project goal",
+      "budget": "Review your time budget",
+      "task": "Choose your next task",
+      "plan": "Plan your week",
+      "review": "Open dashboard"
+    },
+    "source": "Data source",
+    "budget": "Weekly budget",
+    "distance_types": "Distance by activity"
   }
 }

@@ -2452,7 +2452,20 @@
         "pages": 2400,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "进度来源",
+    "sources": {
+      "manual": "手动",
+      "time": "项目时间",
+      "tasks": "已完成任务",
+      "distance": "GPS 距离"
+    },
+    "automatic": "自动",
+    "source_project": "项目",
+    "select_project": "选择项目",
+    "all_projects": "所有项目",
+    "source_activity": "活动",
+    "automatic_hint": "按个人资料时区使用本年度记录更新。此前手动记录仍会保留。"
   },
   "pwa": {
     "install_button": "安装应用",
@@ -3044,5 +3057,28 @@
     },
     "hour_short": "小时",
     "minute_short": "分钟"
+  },
+  "weekly_review": {
+    "title": "每周回顾",
+    "subtitle": "周一至周日 · 个人资料时区 · 与上周比较",
+    "focus": "专注时间",
+    "tasks": "已完成任务",
+    "planned": "计划时间",
+    "distance": "GPS 距离",
+    "project_goals": "已达成项目目标",
+    "details": "查看详情",
+    "empty": "本周暂无记录。",
+    "load_error": "无法加载每周回顾。",
+    "next_action": "下一步",
+    "actions": {
+      "goal": "继续项目目标",
+      "budget": "检查时间预算",
+      "task": "选择下一项任务",
+      "plan": "安排本周计划",
+      "review": "查看仪表板"
+    },
+    "source": "数据来源",
+    "budget": "每周预算",
+    "distance_types": "各项活动距离"
   }
 }

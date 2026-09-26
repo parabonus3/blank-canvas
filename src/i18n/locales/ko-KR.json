@@ -2438,7 +2438,20 @@
         "pages": 632,
         "genre": "history"
       }
-    ]
+    ],
+    "progress_source": "진행 상황 출처",
+    "sources": {
+      "manual": "수동",
+      "time": "프로젝트 시간",
+      "tasks": "완료한 작업",
+      "distance": "GPS 거리"
+    },
+    "automatic": "자동",
+    "source_project": "프로젝트",
+    "select_project": "프로젝트 선택",
+    "all_projects": "모든 프로젝트",
+    "source_activity": "활동",
+    "automatic_hint": "프로필 시간대의 올해 기록으로 업데이트됩니다. 이전 수동 기록은 보존됩니다."
   },
   "pwa": {
     "install_button": "앱 설치",
@@ -3030,5 +3043,28 @@
     },
     "hour_short": "시간",
     "minute_short": "분"
+  },
+  "weekly_review": {
+    "title": "주간 돌아보기",
+    "subtitle": "월요일~일요일 · 프로필 시간대 · 지난주와 비교",
+    "focus": "집중 시간",
+    "tasks": "완료한 작업",
+    "planned": "계획한 시간",
+    "distance": "GPS 거리",
+    "project_goals": "달성한 프로젝트 목표",
+    "details": "자세히 보기",
+    "empty": "이번 주 기록이 아직 없습니다.",
+    "load_error": "주간 돌아보기를 불러올 수 없습니다.",
+    "next_action": "다음 단계",
+    "actions": {
+      "goal": "프로젝트 목표 이어가기",
+      "budget": "시간 예산 검토하기",
+      "task": "다음 작업 선택하기",
+      "plan": "이번 주 계획하기",
+      "review": "대시보드 보기"
+    },
+    "source": "데이터 출처",
+    "budget": "주간 시간 예산",
+    "distance_types": "활동별 거리"
   }
 }
