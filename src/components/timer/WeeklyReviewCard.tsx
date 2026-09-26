@@ -14,7 +14,7 @@ function formatMinutes(seconds: number) {
 }
 
 function change(current: number, previous: number) {
-  if (previous <= 0) return current > 0 ? 100 : 0;
+  if (previous <= 0) return null;
   return Math.round(((current - previous) / previous) * 100);
 }
 

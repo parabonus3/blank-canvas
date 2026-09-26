@@ -14,5 +14,6 @@
 - [x] Conectar mapas mentais a projetos, tarefas, metas, notas e cronômetro
 - [ ] Criar a base móvel: implementação concluída; validação autenticada aguarda sessão disponível no ambiente
 - [ ] Unificar fontes de progresso sem misturar minutos, tarefas e distância
+- [x] Base de revisão semanal em Hoje e Painel, com metas anuais opcionais ligadas a tempo, tarefas e GPS
 - [ ] Organizar telas densas de salas, painel e notas
 - [ ] Concluir avisos de duelos, sessões agendadas, timesheet e início rápido de corrida

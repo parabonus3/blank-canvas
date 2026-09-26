@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useTimezone } from "@/hooks/useTimezone";
-import { toTimezone } from "@/lib/timezone";
 
 export type GoalType = "simple" | "progress" | "habit";
 export type FrequencyPeriod = "weekly" | "monthly";
@@ -144,6 +143,8 @@ export function useAnnualGoalsStats(year: number = CURRENT_YEAR) {
     queryKey: ["annualGoalsStats", user?.id, year],
     queryFn: async () => {
       if (!user) return null;
+      const { error: refreshError } = await supabase.rpc("refresh_my_automatic_annual_goals", { _year: year });
+      if (refreshError) throw refreshError;
       const { data, error } = await (supabase.rpc as any)("get_annual_goals_stats", { _year: year });
       if (error) throw error;
       const row = data?.[0] || data;
