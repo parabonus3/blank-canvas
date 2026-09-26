@@ -74,6 +74,7 @@ export function GoalCard({ goal, categoryColor, categories = [] }: Props) {
                 {goal.title}
               </h4>
               {goal.description && <p className="text-xs text-muted-foreground line-clamp-2">{goal.description}</p>}
+              {goal.progress_source !== "manual" && <span className="mt-1 inline-block text-[11px] text-primary">{t(`annual_goals.sources.${goal.progress_source}`)} · {t("annual_goals.automatic")}</span>}
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -114,7 +115,7 @@ export function GoalCard({ goal, categoryColor, categories = [] }: Props) {
               </span>
               <span className="text-muted-foreground">{progressPct.toFixed(0)}%</span>
             </div>
-            {!goal.is_completed && (
+            {!goal.is_completed && goal.progress_source === "manual" && (
               <TooltipProvider delayDuration={300}>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {[1, 5, 10].map((n) => (

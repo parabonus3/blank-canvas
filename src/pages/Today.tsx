@@ -6,6 +6,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
 import { ActiveGoalsStrip } from "@/components/timer/ActiveGoalsStrip";
+import { WeeklyReviewCard } from "@/components/timer/WeeklyReviewCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -108,6 +109,7 @@ export default function Today() {
         </div>}
 
         {!isLoading && <DayAgendaCard />}
+        <WeeklyReviewCard compact />
 
         {!isLoading && <section className="space-y-2">
           <div className="flex items-center justify-between">

@@ -2,9 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useTimezone } from "@/hooks/useTimezone";
+import { toTimezone } from "@/lib/timezone";
 
 export type GoalType = "simple" | "progress" | "habit";
 export type FrequencyPeriod = "weekly" | "monthly";
+export type GoalProgressSource = "manual" | "time" | "tasks" | "distance";
 
 export interface LifeCategory {
   id: string;
@@ -25,6 +28,9 @@ export interface AnnualGoal {
   goal_type: GoalType;
   target_value: number;
   current_value: number;
+  progress_source: GoalProgressSource;
+  source_project_id: string | null;
+  source_activity_type: string | null;
   unit: string | null;
   frequency_period: FrequencyPeriod | null;
   is_completed: boolean;
@@ -110,10 +116,14 @@ export function useDeleteCategory() {
 // ===== Goals =====
 export function useAnnualGoals(year: number = CURRENT_YEAR) {
   const { user } = useAuth();
+  const { timezone } = useTimezone();
   return useQuery({
-    queryKey: ["annualGoals", user?.id, year],
+    queryKey: ["annualGoals", user?.id, year, timezone],
     queryFn: async () => {
       if (!user) return [];
+      // Refresh only automatic goals; existing manually entered values stay untouched.
+      const { error: refreshError } = await supabase.rpc("refresh_my_automatic_annual_goals", { _year: year });
+      if (refreshError) throw refreshError;
       const { data, error } = await supabase
         .from("annual_goals")
         .select("*")
@@ -162,6 +172,9 @@ export function useCreateAnnualGoal() {
       target_value: number;
       unit?: string;
       frequency_period?: FrequencyPeriod;
+      progress_source?: GoalProgressSource;
+      source_project_id?: string | null;
+      source_activity_type?: string | null;
     }) => {
       if (!user) throw new Error("Not authenticated");
       const { data, error } = await supabase
@@ -175,6 +188,7 @@ export function useCreateAnnualGoal() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["annualGoals"] });
       qc.invalidateQueries({ queryKey: ["annualGoalsStats"] });
+      qc.invalidateQueries({ queryKey: ["weeklyReview"] });
       toast({ title: "Meta criada" });
     },
     onError: (e: Error) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
@@ -192,6 +206,7 @@ export function useUpdateAnnualGoal() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["annualGoals"] });
       qc.invalidateQueries({ queryKey: ["annualGoalsStats"] });
+      qc.invalidateQueries({ queryKey: ["weeklyReview"] });
     },
   });
 }
