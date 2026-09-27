@@ -17,6 +17,8 @@ export interface WeeklyReviewData {
   current: WeekSnapshot;
   previous: WeekSnapshot;
   categoryMinutes: Record<string, number>;
+  budgetUsedMinutes: number;
+  budgetTargetMinutes: number;
   nextAction: "goal" | "budget" | "task" | "plan" | "review";
   suggestedProjectId: string | null;
   hasData: boolean;
@@ -39,7 +41,7 @@ export function useWeeklyReview() {
     queryKey: ["weeklyReview", user?.id, timezone],
     queryFn: async (): Promise<WeeklyReviewData> => {
       if (!user) {
-        return { current: emptyWeek(), previous: emptyWeek(), categoryMinutes: {}, nextAction: "review", suggestedProjectId: null, hasData: false };
+        return { current: emptyWeek(), previous: emptyWeek(), categoryMinutes: {}, budgetUsedMinutes: 0, budgetTargetMinutes: 0, nextAction: "review", suggestedProjectId: null, hasData: false };
       }
 
       const currentStart = startOfWeekInTz(new Date(), timezone);
@@ -152,6 +154,8 @@ export function useWeeklyReview() {
       }
 
       const overBudget = budgets.find((budget) => (categoryMinutes[budget.category_id] || 0) > budget.weekly_minutes);
+      const budgetTargetMinutes = budgets.reduce((sum, budget) => sum + Number(budget.weekly_minutes || 0), 0);
+      const budgetUsedMinutes = budgets.reduce((sum, budget) => sum + (categoryMinutes[budget.category_id] || 0), 0);
       const behindGoal = goals.find((goal) => goal.start_date <= dateKey(currentStart) && goal.end_date >= dateKey(currentStart) && (projectSeconds[goal.project_id] || 0) < goal.target_minutes * 60);
 
       let nextAction: WeeklyReviewData["nextAction"] = "review";
@@ -165,6 +169,8 @@ export function useWeeklyReview() {
         current,
         previous,
         categoryMinutes,
+        budgetUsedMinutes,
+        budgetTargetMinutes,
         nextAction,
         suggestedProjectId: behindGoal?.project_id || null,
         hasData,
