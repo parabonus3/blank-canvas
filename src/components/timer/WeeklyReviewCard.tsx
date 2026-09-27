@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWeeklyReview } from "@/hooks/useWeeklyReview";
 import { cn } from "@/lib/utils";
+import { activityLabelKey } from "@/lib/activityTypes";
 
 function formatMinutes(seconds: number) {
   const minutes = Math.round(seconds / 60);
@@ -79,13 +80,33 @@ export function WeeklyReviewCard({ compact = false }: { compact?: boolean }) {
           </div>
         )}
 
-        <button type="button" onClick={() => navigate(actionRoutes[review.data.nextAction])} className="flex w-full items-center gap-3 rounded-md border bg-muted/30 p-3 text-start transition-colors hover:bg-muted">
+        {!compact && Object.keys(current.distanceByType).length > 0 && (
+          <div className="space-y-2 border-t pt-3">
+            <p className="text-xs font-semibold text-muted-foreground">{t("weekly_review.distance_types")}</p>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(current.distanceByType).map(([type, kilometers]) => (
+                <span key={type} className="rounded-md bg-muted px-2 py-1 text-xs">
+                  {t(activityLabelKey(type === "bike" ? "ride" : type))}: <strong>{kilometers.toFixed(1)} km</strong>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!compact && review.data.budgetTargetMinutes > 0 && (
+          <div className="flex items-center justify-between border-t pt-3 text-sm">
+            <span className="text-muted-foreground">{t("weekly_review.budget")}</span>
+            <strong>{review.data.budgetUsedMinutes}m / {review.data.budgetTargetMinutes}m</strong>
+          </div>
+        )}
+
+        <Button type="button" variant="outline" onClick={() => navigate(actionRoutes[review.data.nextAction])} className="h-auto w-full justify-start gap-3 bg-muted/30 p-3 text-start hover:bg-muted">
           <span className="min-w-0 flex-1">
             <span className="block text-[10px] font-semibold uppercase text-muted-foreground">{t("weekly_review.next_action")}</span>
             <span className="block text-sm font-medium">{t(`weekly_review.actions.${review.data.nextAction}`)}</span>
           </span>
           <ArrowRight className="h-4 w-4 shrink-0" />
-        </button>
+        </Button>
       </CardContent>
     </Card>
   );
