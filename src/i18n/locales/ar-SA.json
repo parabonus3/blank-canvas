@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "تم تحقيق الهدف الجماعي! 🎉",
     "activity_milestone": "{{name}} وصل إلى {{hours}} ساعة في الغرفة! 🔥",
     "tab_overview": "نظرة عامة",
+    "tab_progress": "التقدم",
     "tab_chat": "الدردشة",
     "tab_settings": "الإعدادات",
     "focus_session": "جلسة تركيز",
@@ -3045,6 +3046,11 @@
     "minute_short": "د"
   },
   "weekly_review": {
+    "suggestion_title": "اقتراحات الأهداف",
+    "suggestion_hint": "بناءً على آخر أربعة أسابيع مكتملة. أنت من يقرر إنشاء الهدف.",
+    "suggestion_reason": "المتوسط الأخير: {{value}} {{unit}} أسبوعيًا",
+    "suggestion_edit": "تعديل الهدف",
+    "suggestions": {"time": "ساعات التركيز", "tasks": "المهام المكتملة", "run": "مسافة الجري", "walk": "مسافة المشي", "bike": "مسافة ركوب الدراجة", "hike": "مسافة التنزه"},
     "title": "مراجعة الأسبوع",
     "subtitle": "من الاثنين إلى الأحد · المنطقة الزمنية للملف الشخصي · مقارنة بالأسبوع الماضي",
     "focus": "وقت التركيز",

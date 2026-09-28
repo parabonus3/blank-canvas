@@ -24,6 +24,7 @@ import { GoalTemplate, CURRENCIES } from "@/lib/goalTemplates";
 import { GoalTemplatePicker } from "./GoalTemplatePicker";
 import { BookPicker } from "./BookPicker";
 import { FieldLabel } from "./FieldLabel";
+import type { WeeklySuggestion } from "@/lib/weeklySuggestions";
 
 interface BaseProps {
   trigger: ReactNode;
@@ -32,7 +33,7 @@ interface BaseProps {
   onOpenChange?: (o: boolean) => void;
 }
 
-interface CreateProps extends BaseProps { mode?: "create"; year: number; defaultCategoryId?: string | null; goal?: never }
+interface CreateProps extends BaseProps { mode?: "create"; year: number; defaultCategoryId?: string | null; suggestion?: WeeklySuggestion | null; goal?: never }
 interface EditProps extends BaseProps { mode: "edit"; year?: never; defaultCategoryId?: never; goal: AnnualGoal }
 
 type Props = CreateProps | EditProps;
@@ -82,7 +83,17 @@ export function GoalFormDialog(props: Props) {
     setSourceActivityType("run");
     setFrequency("weekly");
     setCategoryId((props as CreateProps).defaultCategoryId || "none");
-  }, [open, isEdit]);
+    const suggestion = (props as CreateProps).suggestion;
+    if (suggestion) {
+      setStep("form");
+      setType("progress");
+      setProgressSource(suggestion.source);
+      setSourceActivityType(suggestion.activityType === "bike" ? "ride" : (suggestion.activityType || "run"));
+      setTitle(t(`weekly_review.suggestions.${suggestion.source === "distance" ? suggestion.activityType : suggestion.source}`));
+      setTarget(String(suggestion.annualTarget));
+      setUnit(suggestion.source === "distance" ? "km" : suggestion.source === "time" ? t("annual_goals.templates.units.hours") : t("weekly_review.tasks"));
+    }
+  }, [open, isEdit, (props as CreateProps).suggestion, t]);
 
   const applyTemplate = (tpl: GoalTemplate) => {
     if (tpl.bookPicker) {
@@ -128,7 +139,7 @@ export function GoalFormDialog(props: Props) {
       await update.mutateAsync({
         id: props.goal.id,
         ...payload,
-        ...(progressSource === "manual" ? { current_value: Math.max(0, Number(currentValue) || 0) } : {}),
+        ...(type === "progress" && progressSource === "manual" ? { current_value: Math.max(0, Number(currentValue) || 0) } : {}),
       } as any);
     } else {
       await create.mutateAsync({

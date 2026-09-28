@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "Kollektives Ziel erreicht! 🎉",
     "activity_milestone": "{{name}} hat {{hours}}h im Raum erreicht! 🔥",
     "tab_overview": "Übersicht",
+    "tab_progress": "Fortschritt",
     "tab_chat": "Chat",
     "tab_settings": "Einstellungen",
     "focus_session": "Fokussitzung",
@@ -3059,6 +3060,11 @@
     "minute_short": "Min."
   },
   "weekly_review": {
+    "suggestion_title": "Zielvorschläge",
+    "suggestion_hint": "Basierend auf den letzten vier vollständigen Wochen. Du entscheidest über die Erstellung.",
+    "suggestion_reason": "Durchschnitt: {{value}} {{unit}} pro Woche",
+    "suggestion_edit": "Ziel bearbeiten",
+    "suggestions": {"time": "Fokusstunden", "tasks": "Erledigte Aufgaben", "run": "Laufstrecke", "walk": "Gehstrecke", "bike": "Radstrecke", "hike": "Wanderstrecke"},
     "title": "Wochenrückblick",
     "subtitle": "Montag bis Sonntag · Profilzeitzone · Vergleich zur Vorwoche",
     "focus": "Fokuszeit",

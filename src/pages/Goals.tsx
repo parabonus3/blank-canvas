@@ -14,6 +14,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useAnnualGoals, useAnnualGoalsStats, useLifeCategories, useDeleteCategory, useDuplicateGoalsToYear } from "@/hooks/useAnnualGoals";
 import { CreateCategoryDialog } from "@/components/goals/CreateCategoryDialog";
 import { CreateGoalDialog } from "@/components/goals/CreateGoalDialog";
+import { GoalFormDialog } from "@/components/goals/GoalFormDialog";
+import { useWeeklySuggestions } from "@/hooks/useWeeklySuggestions";
+import type { WeeklySuggestion } from "@/lib/weeklySuggestions";
+import { activityLabelKey } from "@/lib/activityTypes";
 import { GoalCard } from "@/components/goals/GoalCard";
 import { ChecklistList } from "@/components/checklist/ChecklistList";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -99,6 +103,9 @@ export default function Goals() {
   const { tier, getMaxAnnualGoals, getMaxLifeCategories } = useSubscription();
   const [year, setYear] = useState(CURRENT_YEAR);
   const [activeTab, setActiveTab] = useState("annual");
+  const [selectedSuggestion, setSelectedSuggestion] = useState<WeeklySuggestion | null>(null);
+  const [suggestionOpen, setSuggestionOpen] = useState(false);
+  const { data: suggestions = [] } = useWeeklySuggestions();
   const { data: categories = [] } = useLifeCategories();
   const { data: goals = [] } = useAnnualGoals(year);
   const { data: stats } = useAnnualGoalsStats(year);
@@ -172,6 +179,25 @@ export default function Goals() {
           </div>
         </div>
 
+
+        {year === CURRENT_YEAR && activeTab === "annual" && suggestions.length > 0 && !goalsLimitReached && (
+          <section className="space-y-2" aria-label={t("weekly_review.suggestion_title")}>
+            <h2 className="text-base font-semibold">{t("weekly_review.suggestion_title")}</h2>
+            <p className="text-xs text-muted-foreground">{t("weekly_review.suggestion_hint")}</p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {suggestions.filter(suggestion => !goals.some(goal => goal.progress_source === suggestion.source && (suggestion.source !== "distance" || goal.source_activity_type === suggestion.activityType))).map(suggestion => (
+                <div key={`${suggestion.source}-${suggestion.activityType || "all"}`} className="flex items-center justify-between gap-2 rounded-md border p-3">
+                  <div className="min-w-0 text-sm">
+                    <p className="font-medium">{suggestion.source === "distance" ? t(activityLabelKey(suggestion.activityType === "bike" ? "ride" : suggestion.activityType)) : t(`weekly_review.suggestions.${suggestion.source}`)}</p>
+                    <p className="text-xs text-muted-foreground">{t("weekly_review.suggestion_reason", { value: suggestion.weeklyValue, unit: suggestion.source === "distance" ? "km" : suggestion.source === "time" ? "h" : t("weekly_review.tasks") })}</p>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => { setSelectedSuggestion(suggestion); setSuggestionOpen(true); }}>{t("weekly_review.suggestion_edit")}</Button>
+                </div>
+              ))}
+            </div>
+            <GoalFormDialog year={year} categories={categories} suggestion={selectedSuggestion} open={suggestionOpen} onOpenChange={setSuggestionOpen} trigger={<span className="hidden" />} />
+          </section>
+        )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <GridNav

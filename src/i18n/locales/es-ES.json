@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "¡Meta colectiva alcanzada! 🎉",
     "activity_milestone": "{{name}} alcanzó {{hours}}h en la sala! 🔥",
     "tab_overview": "Resumen",
+    "tab_progress": "Progreso",
     "tab_chat": "Chat",
     "tab_settings": "Configuración",
     "focus_session": "Sesión de Enfoque",
@@ -3066,6 +3067,11 @@
     "minute_short": "min"
   },
   "weekly_review": {
+    "suggestion_title": "Sugerencias de metas",
+    "suggestion_hint": "Basadas en las últimas cuatro semanas completas. Tú decides si crear la meta.",
+    "suggestion_reason": "Promedio reciente: {{value}} {{unit}} por semana",
+    "suggestion_edit": "Editar meta",
+    "suggestions": {"time": "Horas de concentración", "tasks": "Tareas completadas", "run": "Distancia de carrera", "walk": "Distancia caminada", "bike": "Distancia en bicicleta", "hike": "Distancia de senderismo"},
     "title": "Resumen semanal",
     "subtitle": "Lunes a domingo · zona horaria del perfil · frente a la semana anterior",
     "focus": "Tiempo de concentración",

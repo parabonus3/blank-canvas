@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "集体目标已达成！🎉",
     "activity_milestone": "{{name}}在房间达到了{{hours}}小时！🔥",
     "tab_overview": "概览",
+    "tab_progress": "进展",
     "tab_chat": "聊天",
     "tab_settings": "设置",
     "focus_session": "专注会话",
@@ -3059,6 +3060,11 @@
     "minute_short": "分钟"
   },
   "weekly_review": {
+    "suggestion_title": "目标建议",
+    "suggestion_hint": "根据最近四个完整周的数据生成。是否创建由您决定。",
+    "suggestion_reason": "近期平均：每周 {{value}} {{unit}}",
+    "suggestion_edit": "编辑目标",
+    "suggestions": {"time": "专注时长", "tasks": "已完成任务", "run": "跑步距离", "walk": "步行距离", "bike": "骑行距离", "hike": "徒步距离"},
     "title": "每周回顾",
     "subtitle": "周一至周日 · 个人资料时区 · 与上周比较",
     "focus": "专注时间",

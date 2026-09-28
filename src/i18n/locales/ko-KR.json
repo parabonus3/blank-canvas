@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "공동 목표 달성! 🎉",
     "activity_milestone": "{{name}}님이 방에서 {{hours}}시간에 도달! 🔥",
     "tab_overview": "개요",
+    "tab_progress": "진행 상황",
     "tab_chat": "채팅",
     "tab_settings": "설정",
     "focus_session": "집중 세션",
@@ -3045,6 +3046,11 @@
     "minute_short": "분"
   },
   "weekly_review": {
+    "suggestion_title": "목표 제안",
+    "suggestion_hint": "최근 완료된 4주를 기준으로 합니다. 목표 생성 여부는 직접 결정하세요.",
+    "suggestion_reason": "최근 평균: 주당 {{value}} {{unit}}",
+    "suggestion_edit": "목표 편집",
+    "suggestions": {"time": "집중 시간", "tasks": "완료한 작업", "run": "달리기 거리", "walk": "걷기 거리", "bike": "자전거 거리", "hike": "등산 거리"},
     "title": "주간 돌아보기",
     "subtitle": "월요일~일요일 · 프로필 시간대 · 지난주와 비교",
     "focus": "집중 시간",

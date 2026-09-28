@@ -5,6 +5,7 @@ import { Users, Wifi, Clock, BookOpen, Target, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
+import { useRoomDailyTotal } from "@/hooks/useRoomDailyTotal";
 
 function formatHours(seconds: number) {
   const h = Math.floor(seconds / 3600);
@@ -58,22 +59,7 @@ export function RoomStatsHeader({ roomId, members, roomType, goalHours, goalLabe
     refetchInterval: 60000,
   });
 
-  // Real today seconds (for goal progress)
-  const { data: totalToday } = useQuery({
-    queryKey: ["roomTotalToday", roomId],
-    queryFn: async () => {
-      if (!roomId) return 0;
-      const { data, error } = await (supabase.rpc as any)("get_room_daily_progress", {
-        _room_id: roomId,
-        _period: "today",
-      });
-      if (error) throw error;
-      const row = Array.isArray(data) ? data[0] : data;
-      return Number(row?.total_seconds_today || 0);
-    },
-    enabled: !!roomId,
-    refetchInterval: 30000,
-  });
+  const { data: totalToday } = useRoomDailyTotal(roomId);
 
   const totalSeconds = totalAll ?? 0;
   const goalSeconds = totalToday ?? 0;
