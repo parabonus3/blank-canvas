@@ -3046,6 +3046,11 @@
     "minute_short": "min"
   },
   "weekly_review": {
+    "suggestion_title": "Obiettivi suggeriti",
+    "suggestion_hint": "Basati sulle ultime quattro settimane complete. Decidi tu se creare l’obiettivo.",
+    "suggestion_reason": "Media recente: {{value}} {{unit}} a settimana",
+    "suggestion_edit": "Modifica obiettivo",
+    "suggestions": {"time": "Ore di concentrazione", "tasks": "Attività completate", "run": "Distanza di corsa", "walk": "Distanza a piedi", "bike": "Distanza in bici", "hike": "Distanza escursionistica"},
     "title": "Riepilogo settimanale",
     "subtitle": "Lunedì–domenica · fuso orario del profilo · confronto con la settimana scorsa",
     "focus": "Tempo di concentrazione",

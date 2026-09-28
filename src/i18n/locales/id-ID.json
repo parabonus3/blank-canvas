@@ -3060,6 +3060,11 @@
     "minute_short": "mnt"
   },
   "weekly_review": {
+    "suggestion_title": "Saran target",
+    "suggestion_hint": "Berdasarkan empat minggu penuh terakhir. Anda yang memutuskan apakah akan membuat target.",
+    "suggestion_reason": "Rata-rata terbaru: {{value}} {{unit}} per minggu",
+    "suggestion_edit": "Ubah target",
+    "suggestions": {"time": "Jam fokus", "tasks": "Tugas selesai", "run": "Jarak lari", "walk": "Jarak jalan kaki", "bike": "Jarak bersepeda", "hike": "Jarak mendaki"},
     "title": "Tinjauan mingguan",
     "subtitle": "Senin–Minggu · zona waktu profil · dibandingkan minggu lalu",
     "focus": "Waktu fokus",

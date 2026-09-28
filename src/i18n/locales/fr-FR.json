@@ -3060,6 +3060,11 @@
     "minute_short": "min"
   },
   "weekly_review": {
+    "suggestion_title": "Suggestions d’objectifs",
+    "suggestion_hint": "Basées sur les quatre dernières semaines complètes. La création reste votre choix.",
+    "suggestion_reason": "Moyenne récente : {{value}} {{unit}} par semaine",
+    "suggestion_edit": "Modifier l’objectif",
+    "suggestions": {"time": "Heures de concentration", "tasks": "Tâches terminées", "run": "Distance de course", "walk": "Distance de marche", "bike": "Distance à vélo", "hike": "Distance de randonnée"},
     "title": "Bilan de la semaine",
     "subtitle": "Lundi à dimanche · fuseau du profil · comparé à la semaine précédente",
     "focus": "Temps concentré",

@@ -3210,6 +3210,11 @@
     "minute_short": "min"
   },
   "weekly_review": {
+    "suggestion_title": "Sugestões para suas metas",
+    "suggestion_hint": "Com base nas últimas quatro semanas completas. Você decide se deseja criar a meta.",
+    "suggestion_reason": "Nas últimas semanas: {{value}} {{unit}} por semana",
+    "suggestion_edit": "Editar meta",
+    "suggestions": {"time": "Horas de foco", "tasks": "Tarefas concluídas", "run": "Distância de corrida", "walk": "Distância de caminhada", "bike": "Distância de pedal", "hike": "Distância de trilha"},
     "title": "Revisão da semana",
     "subtitle": "Segunda a domingo · fuso do perfil · comparado à semana anterior",
     "focus": "Tempo focado",

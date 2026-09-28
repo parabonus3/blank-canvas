@@ -3060,6 +3060,11 @@
     "minute_short": "分"
   },
   "weekly_review": {
+    "suggestion_title": "目標の提案",
+    "suggestion_hint": "直近の完了した4週間をもとにしています。作成するかどうかは自分で選べます。",
+    "suggestion_reason": "最近の平均：週あたり {{value}} {{unit}}",
+    "suggestion_edit": "目標を編集",
+    "suggestions": {"time": "集中時間", "tasks": "完了したタスク", "run": "ランニング距離", "walk": "ウォーキング距離", "bike": "サイクリング距離", "hike": "ハイキング距離"},
     "title": "週間レビュー",
     "subtitle": "月曜〜日曜 · プロフィールのタイムゾーン · 前週との比較",
     "focus": "集中時間",

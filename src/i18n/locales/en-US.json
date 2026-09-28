@@ -3155,6 +3155,11 @@
     "minute_short": "m"
   },
   "weekly_review": {
+    "suggestion_title": "Goal suggestions",
+    "suggestion_hint": "Based on your last four complete weeks. You decide whether to create a goal.",
+    "suggestion_reason": "Recent average: {{value}} {{unit}} per week",
+    "suggestion_edit": "Edit goal",
+    "suggestions": {"time": "Focus hours", "tasks": "Completed tasks", "run": "Running distance", "walk": "Walking distance", "bike": "Cycling distance", "hike": "Hiking distance"},
     "title": "Weekly review",
     "subtitle": "Monday to Sunday · profile timezone · compared with last week",
     "focus": "Focus time",
