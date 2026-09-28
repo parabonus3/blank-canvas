@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "¡Meta colectiva alcanzada! 🎉",
     "activity_milestone": "{{name}} alcanzó {{hours}}h en la sala! 🔥",
     "tab_overview": "Resumen",
+    "tab_progress": "Progreso",
     "tab_chat": "Chat",
     "tab_settings": "Configuración",
     "focus_session": "Sesión de Enfoque",

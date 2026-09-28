@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "集体目标已达成！🎉",
     "activity_milestone": "{{name}}在房间达到了{{hours}}小时！🔥",
     "tab_overview": "概览",
+    "tab_progress": "进展",
     "tab_chat": "聊天",
     "tab_settings": "设置",
     "focus_session": "专注会话",

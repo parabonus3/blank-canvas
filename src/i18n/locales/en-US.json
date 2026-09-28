@@ -1897,6 +1897,7 @@
     "activity_goal_reached": "Collective goal achieved! 🎉",
     "activity_milestone": "{{name}} reached {{hours}}h in the room! 🔥",
     "tab_overview": "Overview",
+    "tab_progress": "Progress",
     "tab_chat": "Chat",
     "tab_settings": "Settings",
     "focus_session": "Focus Session",

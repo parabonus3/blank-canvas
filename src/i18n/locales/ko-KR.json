@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "공동 목표 달성! 🎉",
     "activity_milestone": "{{name}}님이 방에서 {{hours}}시간에 도달! 🔥",
     "tab_overview": "개요",
+    "tab_progress": "진행 상황",
     "tab_chat": "채팅",
     "tab_settings": "설정",
     "focus_session": "집중 세션",

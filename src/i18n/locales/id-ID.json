@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "Target kolektif tercapai! 🎉",
     "activity_milestone": "{{name}} mencapai {{hours}}j di ruangan! 🔥",
     "tab_overview": "Ikhtisar",
+    "tab_progress": "Kemajuan",
     "tab_chat": "Obrolan",
     "tab_settings": "Pengaturan",
     "focus_session": "Sesi Fokus",

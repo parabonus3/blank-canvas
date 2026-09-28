@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "目標達成！🎉",
     "activity_milestone": "{{name}}がルームで{{hours}}時間に到達！🔥",
     "tab_overview": "概要",
+    "tab_progress": "進捗",
     "tab_chat": "チャット",
     "tab_settings": "設定",
     "focus_session": "集中セッション",

@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "Коллективная цель достигнута! 🎉",
     "activity_milestone": "{{name}} достиг {{hours}}ч в комнате! 🔥",
     "tab_overview": "Обзор",
+    "tab_progress": "Прогресс",
     "tab_chat": "Чат",
     "tab_settings": "Настройки",
     "focus_session": "Сессия Фокуса",

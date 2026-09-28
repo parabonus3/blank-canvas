@@ -5,7 +5,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GridNav, GridNavItem } from "@/components/ui/grid-nav";
-import { ArrowLeft, UserPlus, Copy, Link, LogOut, LayoutDashboard, MessageCircle, Settings2, Bell, BellOff, Shield } from "lucide-react";
+import { ArrowLeft, UserPlus, Copy, Link, LogOut, LayoutDashboard, ChartNoAxesCombined, MessageCircle, Settings2, Bell, BellOff, Shield } from "lucide-react";
 import { playMemberJoined, playMemberLeft } from "@/lib/soundEffects";
 import { playLiveChat } from "@/lib/uiSounds";
 import { useRooms } from "@/hooks/useRooms";
@@ -270,12 +270,13 @@ export default function RoomDetail() {
           <GridNav
             items={[
               { value: "overview", label: t("rooms.tab_overview"), icon: LayoutDashboard },
+              { value: "progress", label: t("rooms.tab_progress"), icon: ChartNoAxesCombined },
               { value: "chat", label: t("rooms.tab_chat"), icon: MessageCircle, badge: unreadCount > 0 ? unreadCount : undefined },
               ...(isOwnerOrMod ? [{ value: "settings", label: t("rooms.tab_settings"), icon: Settings2 }] as GridNavItem[] : []),
             ]}
             value={activeTab}
             onChange={handleTabChange}
-            columns="grid-cols-2 sm:grid-cols-3"
+            columns={isOwnerOrMod ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}
           />
 
           <TabsContent value="overview" className="mt-4">
@@ -285,70 +286,50 @@ export default function RoomDetail() {
               hasFocusSession={!!(room as any)?.focus_session_end_at && new Date((room as any).focus_session_end_at) > new Date()}
             />
 
-            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 mt-4">
-              {/* Main classroom area */}
-              <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
-                {/* Stats */}
-                <RoomStatsHeader
-                  roomId={id}
-                  members={members}
-                  roomType={room?.room_type || "study"}
-                  goalHours={room?.goal_hours}
-                  goalLabel={room?.goal_label}
-                  roomStreak={roomStreak}
-                />
-
-                {/* Room timer — destacado, antes do desafio */}
-                {room && <RoomTimerCard roomId={room.id} />}
-
-                {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
-
-                {/* Chalkboard section: only rendered when there is real content
-                    (pinned message or an active room goal). The old "Em foco agora"
-                    fallback was removed — focus session feature is descontinuada. */}
-                {(room?.goal_hours || (room && !isOwner && room.pinned_message)) && (
-                  <div className="classroom-chalkboard p-5 space-y-4">
-                    {room && !isOwner && room.pinned_message && (
-                      <div className="chalk-text text-sm opacity-90 border-b border-white/10 pb-3">
-                        📌 {room.pinned_message}
-                      </div>
-                    )}
-
-                    {room?.goal_hours && (
-                      <RoomGoalProgress
-                        goalHours={room.goal_hours}
-                        goalLabel={room.goal_label}
-                        members={members}
-                        isChalkboard
-                        roomId={room.id}
-                      />
-                    )}
-                  </div>
-                )}
-
-
-                {/* Floor + Desks area — hidden when active challenges exist (avoids duplicating members). */}
-                {!hasActiveChallenges && (
-                  <div className="classroom-floor rounded-b-xl p-5 pt-8">
-                    <div className="classroom-wall rounded-xl p-3 sm:p-5">
-                      <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
+            <div className="space-y-4 sm:space-y-5 mt-4">
+              <RoomStatsHeader
+                roomId={id}
+                members={members}
+                roomType={room?.room_type || "study"}
+                goalHours={room?.goal_hours}
+                goalLabel={room?.goal_label}
+                roomStreak={roomStreak}
+              />
+              {room && <RoomTimerCard roomId={room.id} />}
+              {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
+              {(room?.goal_hours || (room && !isOwner && room.pinned_message)) && (
+                <div className="classroom-chalkboard p-5 space-y-4">
+                  {room && !isOwner && room.pinned_message && (
+                    <div className="chalk-text text-sm opacity-90 border-b border-white/10 pb-3">
+                      📌 {room.pinned_message}
                     </div>
+                  )}
+                  {room?.goal_hours && (
+                    <RoomGoalProgress goalHours={room.goal_hours} goalLabel={room.goal_label} members={members} isChalkboard roomId={room.id} />
+                  )}
+                </div>
+              )}
+              {!hasActiveChallenges && (
+                <div className="classroom-floor rounded-b-xl p-5 pt-8">
+                  <div className="classroom-wall rounded-xl p-3 sm:p-5">
+                    <RoomMemberGrid members={members} roomId={id!} isOwnerOrMod={isOwnerOrMod} />
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+            </div>
+          </TabsContent>
 
-              {/* Sidebar */}
-              <div className="w-full lg:w-80 shrink-0 space-y-4 sm:space-y-6">
-                <RoomRankingSidebar members={members} roomId={id} />
-                <RoomAchievements roomId={id!} members={members} />
-                <RoomHeatmap roomId={id!} />
-                <RoomActivityFeed roomId={id!} memberProfiles={memberProfiles} />
-              </div>
+          <TabsContent value="progress" className="mt-4">
+            <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+              <RoomRankingSidebar members={members} roomId={id} />
+              <RoomAchievements roomId={id!} members={members} />
+              <RoomHeatmap roomId={id!} />
+              <RoomActivityFeed roomId={id!} memberProfiles={memberProfiles} />
             </div>
           </TabsContent>
 
           <TabsContent value="chat" className="mt-4">
-            <div className="h-[600px]">
+            <div className="h-[clamp(20rem,calc(100dvh-15rem),48rem)] min-h-0">
               <RoomChat
                 roomId={id!}
                 memberProfiles={memberProfiles}

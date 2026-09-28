@@ -1017,6 +1017,7 @@
     "activity_goal_reached": "تم تحقيق الهدف الجماعي! 🎉",
     "activity_milestone": "{{name}} وصل إلى {{hours}} ساعة في الغرفة! 🔥",
     "tab_overview": "نظرة عامة",
+    "tab_progress": "التقدم",
     "tab_chat": "الدردشة",
     "tab_settings": "الإعدادات",
     "focus_session": "جلسة تركيز",
