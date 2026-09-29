@@ -28,7 +28,7 @@ function fireConfetti() {
 export function RoomGoalProgress({ goalHours, goalLabel, members, isChalkboard = false, roomId }: Props) {
   const { t } = useTranslation();
   const [showCelebration, setShowCelebration] = useState(false);
-  const [prevPercent, setPrevPercent] = useState(0);
+  const [prevPercent, setPrevPercent] = useState<number | null>(null);
   const firedRef = useRef(false);
 
   const { data: dailySeconds = 0 } = useRoomDailyTotal(roomId);
@@ -39,7 +39,7 @@ export function RoomGoalProgress({ goalHours, goalLabel, members, isChalkboard =
   const percent = Math.min(100, (totalHours / goalHours) * 100);
 
   useEffect(() => {
-    if (percent >= 100 && prevPercent < 100 && !firedRef.current) {
+    if (prevPercent !== null && percent >= 100 && prevPercent < 100 && !firedRef.current) {
       setShowCelebration(true);
       firedRef.current = true;
       fireConfetti();

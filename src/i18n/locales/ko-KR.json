@@ -213,6 +213,7 @@
     "lofi_3": "로파이 3"
   },
   "dashboard": {
+    "advanced_filters": "고급 필터",
     "title": "대시보드",
     "today": "오늘",
     "this_week": "이번 주",

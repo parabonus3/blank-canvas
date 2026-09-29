@@ -213,6 +213,7 @@
     "lofi_3": "Lo-fi 3"
   },
   "dashboard": {
+    "advanced_filters": "Erweiterte Filter",
     "title": "Dashboard",
     "today": "Heute",
     "this_week": "Diese Woche",

@@ -213,6 +213,7 @@
     "lofi_3": "Lo-fi 3"
   },
   "dashboard": {
+    "advanced_filters": "高级筛选",
     "title": "仪表盘",
     "today": "今天",
     "this_week": "本周",

@@ -213,6 +213,7 @@
     "lofi_3": "Lo-fi 3"
   },
   "dashboard": {
+    "advanced_filters": "詳細フィルター",
     "title": "ダッシュボード",
     "today": "今日",
     "this_week": "今週",

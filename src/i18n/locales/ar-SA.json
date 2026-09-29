@@ -213,6 +213,7 @@
     "lofi_3": "لو-فاي 3"
   },
   "dashboard": {
+    "advanced_filters": "عوامل تصفية متقدمة",
     "title": "لوحة التحكم",
     "today": "اليوم",
     "this_week": "هذا الأسبوع",

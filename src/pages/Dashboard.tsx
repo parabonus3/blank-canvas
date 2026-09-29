@@ -52,6 +52,7 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedProjectId, setSelectedProjectId] = useState<string>("all");
   const [dateRange, setDateRange] = useState<DateRange>("today");
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
   const [customStartDate, setCustomStartDate] = useState<Date | undefined>(undefined);
   const [customEndDate, setCustomEndDate] = useState<Date | undefined>(undefined);
   const { data: allEntries, isLoading: entriesLoading } = useTimeEntries();
@@ -331,11 +332,13 @@ export default function Dashboard() {
             </Select>
           </div>
 
+          <Button type="button" variant="outline" className="w-full sm:hidden" aria-expanded={advancedFiltersOpen} onClick={() => setAdvancedFiltersOpen(value => !value)}><Filter className="h-4 w-4 me-2" />{t("dashboard.advanced_filters")}{(selectedCategory !== "all" || selectedProjectId !== "all" || filter !== "all") && " •"}</Button>
+          <div className={cn("w-full flex-wrap items-center gap-3 sm:contents", advancedFiltersOpen ? "flex" : "hidden sm:contents")}>
           {dateRange === "custom" && (
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="grid grid-cols-2 gap-2 w-full sm:flex sm:w-auto min-w-0">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className={cn("w-[140px] justify-start text-left font-normal", !customStartDate && "text-muted-foreground")}>
+                  <Button variant="outline" className={cn("w-full min-w-0 sm:w-[140px] justify-start text-left font-normal", !customStartDate && "text-muted-foreground")}>
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {customStartDate ? formatInTz(customStartDate, "dd/MM/yyyy") : t('dashboard.from')}
                   </Button>
@@ -346,7 +349,7 @@ export default function Dashboard() {
               </Popover>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className={cn("w-[140px] justify-start text-left font-normal", !customEndDate && "text-muted-foreground")}>
+                  <Button variant="outline" className={cn("w-full min-w-0 sm:w-[140px] justify-start text-left font-normal", !customEndDate && "text-muted-foreground")}>
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {customEndDate ? formatInTz(customEndDate, "dd/MM/yyyy") : t('dashboard.to')}
                   </Button>
@@ -415,6 +418,7 @@ export default function Dashboard() {
                 {opt.label}
               </button>
             ))}
+          </div>
           </div>
         </div>
 

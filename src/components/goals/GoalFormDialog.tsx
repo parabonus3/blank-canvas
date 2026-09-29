@@ -93,7 +93,7 @@ export function GoalFormDialog(props: Props) {
       setTarget(String(suggestion.annualTarget));
       setUnit(suggestion.source === "distance" ? "km" : suggestion.source === "time" ? t("annual_goals.templates.units.hours") : t("weekly_review.tasks"));
     }
-  }, [open, isEdit, (props as CreateProps).suggestion, t]);
+  }, [open, isEdit, (props as CreateProps).suggestion]);
 
   const applyTemplate = (tpl: GoalTemplate) => {
     if (tpl.bookPicker) {
@@ -123,7 +123,7 @@ export function GoalFormDialog(props: Props) {
 
   const handleSubmit = async () => {
     if (!title.trim()) return;
-    if (progressSource === "time" && sourceProjectId === "all") return;
+    if (type === "progress" && progressSource === "time" && sourceProjectId === "all") return;
     const payload = {
       category_id: categoryId === "none" ? null : categoryId,
       title: title.trim(),

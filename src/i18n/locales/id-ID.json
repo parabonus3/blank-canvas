@@ -213,6 +213,7 @@
     "lofi_3": "Lo-fi 3"
   },
   "dashboard": {
+    "advanced_filters": "Filter lanjutan",
     "title": "Dasbor",
     "today": "Hari Ini",
     "this_week": "Minggu Ini",

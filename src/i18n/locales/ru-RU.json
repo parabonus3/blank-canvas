@@ -213,6 +213,7 @@
     "lofi_3": "Lo-fi 3"
   },
   "dashboard": {
+    "advanced_filters": "Дополнительные фильтры",
     "title": "Панель управления",
     "today": "Сегодня",
     "this_week": "На этой неделе",
