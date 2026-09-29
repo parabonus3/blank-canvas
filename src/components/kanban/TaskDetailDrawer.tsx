@@ -18,7 +18,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Trash2, Plus, Play, X, Clock, MessageSquare, CheckSquare, Tag as TagIcon,
-  Users, FileText, ChevronLeft, Paperclip, History, FileDown,
+  Users, FileText, Paperclip, History, FileDown,
 } from "lucide-react";
 import { PriorityBadge } from "./PriorityBadge";
 import { TaskMemberAssigner } from "./TaskMemberAssigner";
@@ -214,7 +214,7 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
   };
 
   const renderTiles = () => (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+    <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-3 sm:gap-2.5">
       {tiles.map(({ id, label, icon: Icon, badge }) => {
         const active = section === id;
         return (
@@ -223,7 +223,7 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
             type="button"
             onClick={() => setSection(id)}
             className={cn(
-              "relative flex flex-col items-center justify-center gap-2 rounded-xl border p-4 text-center transition-all",
+              "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-md border p-1.5 text-center transition-all sm:gap-2 sm:p-4",
               "hover:border-primary/50 hover:shadow-sm active:scale-[0.98]",
               active
                 ? "border-primary bg-primary text-primary-foreground shadow"
@@ -238,8 +238,8 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
                 {badge}
               </span>
             )}
-            <Icon className="h-6 w-6" />
-            <span className="text-xs font-medium leading-tight">{label}</span>
+            <Icon className="h-4 w-4 sm:h-6 sm:w-6" />
+            <span className="w-full break-words text-[10px] font-medium leading-tight sm:text-xs">{label}</span>
           </button>
         );
       })}
@@ -250,15 +250,6 @@ export function TaskDetailDrawer({ task, onClose, onStartTimer, hasActiveTimer, 
     if (!section) return null;
     return (
       <div className="mt-4 space-y-3">
-        <button
-          type="button"
-          onClick={() => setSection(null)}
-          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ChevronLeft className="h-3.5 w-3.5" />
-          {t("kanban.back_to_shortcuts", "Voltar aos atalhos")}
-        </button>
-
         {section === "details" && (
           <div className="space-y-4">
             <div className="space-y-2">
