@@ -186,12 +186,12 @@ export default function Goals() {
             <p className="text-xs text-muted-foreground">{t("weekly_review.suggestion_hint")}</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {suggestions.filter(suggestion => !goals.some(goal => goal.progress_source === suggestion.source && (suggestion.source !== "distance" || goal.source_activity_type === suggestion.activityType))).map(suggestion => (
-                <div key={`${suggestion.source}-${suggestion.activityType || "all"}`} className="flex items-center justify-between gap-2 rounded-md border p-3">
+                <div key={`${suggestion.source}-${suggestion.activityType || "all"}`} className="flex flex-col items-start gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0 text-sm">
                     <p className="font-medium">{suggestion.source === "distance" ? t(activityLabelKey(suggestion.activityType === "bike" ? "ride" : suggestion.activityType)) : t(`weekly_review.suggestions.${suggestion.source}`)}</p>
                     <p className="text-xs text-muted-foreground">{t("weekly_review.suggestion_reason", { value: suggestion.weeklyValue, unit: suggestion.source === "distance" ? "km" : suggestion.source === "time" ? "h" : t("weekly_review.tasks") })}</p>
                   </div>
-                  <Button size="sm" variant="outline" onClick={() => { setSelectedSuggestion(suggestion); setSuggestionOpen(true); }}>{t("weekly_review.suggestion_edit")}</Button>
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto" onClick={() => { setSelectedSuggestion(suggestion); setSuggestionOpen(true); }}>{t("weekly_review.suggestion_edit")}</Button>
                 </div>
               ))}
             </div>

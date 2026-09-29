@@ -83,6 +83,7 @@ import {
 const EmojiPicker = lazy(() => import("emoji-picker-react"));
 import { startOfDay, startOfWeek, startOfMonth, isAfter, isBefore, endOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { exportNoteToPDF } from "@/lib/pdfExport";
 
 export default function Notes() {
@@ -731,7 +732,7 @@ export default function Notes() {
                 </button>
 
                 {/* Action buttons on hover */}
-                <div className="absolute top-1 right-1 hidden group-hover:flex gap-0.5">
+                <div className="absolute top-1 right-1 flex gap-0.5 sm:hidden sm:group-hover:flex">
                   <button
                     onClick={(e) => { e.stopPropagation(); openEditFolder(folder); }}
                     className="h-6 w-6 flex items-center justify-center rounded-full bg-muted hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
@@ -998,15 +999,15 @@ export default function Notes() {
         )}
       </div>
 
-      {/* Create/Edit Note Dialog */}
+      {/* List stays behind the full-screen mobile editor; existing save flow is shared. */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="inset-0 left-0 top-0 h-[100dvh] w-full max-w-none translate-x-0 translate-y-0 flex flex-col gap-3 overflow-hidden rounded-none p-4 pb-[env(safe-area-inset-bottom)] sm:left-[50%] sm:top-[50%] sm:h-auto sm:w-full sm:max-w-lg sm:max-h-[90vh] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:overflow-y-auto sm:rounded-lg sm:p-6">
           <DialogHeader>
             <DialogTitle>{editingNote ? t("notes.edit_note") : t("notes.new_note")}</DialogTitle>
             <DialogDescription>{editingNote ? t("notes.edit_note_desc") : t("notes.new_note_desc")}</DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-2">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto py-2 sm:overflow-visible">
             <div className="space-y-2">
               <Label>{t("history.project")}</Label>
               <ProjectPicker value={formProjectId} onValueChange={setFormProjectId} projects={activeProjects} />
@@ -1126,7 +1127,7 @@ export default function Notes() {
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="shrink-0 border-t pt-3 sm:border-0 sm:pt-0">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>{t("common.cancel")}</Button>
             <Button onClick={handleSave} disabled={!formProjectId || !formTitle.trim() || createNote.isPending || updateNote.isPending}>
               {editingNote ? t("notes.update_note") : t("notes.save_note")}

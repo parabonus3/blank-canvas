@@ -223,6 +223,7 @@
     "category_music": "🎵 Music"
   },
   "dashboard": {
+    "advanced_filters": "Advanced filters",
     "title": "Dashboard",
     "today": "Today",
     "this_week": "This Week",
