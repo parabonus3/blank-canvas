@@ -185,8 +185,8 @@ export default function Goals() {
             <h2 className="text-base font-semibold">{t("weekly_review.suggestion_title")}</h2>
             <p className="text-xs text-muted-foreground">{t("weekly_review.suggestion_hint")}</p>
             <div className="grid gap-2 sm:grid-cols-3">
-              {suggestions.filter(suggestion => !goals.some(goal => goal.progress_source === suggestion.source && (suggestion.source !== "distance" || goal.source_activity_type === suggestion.activityType))).map(suggestion => (
-                <div key={`${suggestion.source}-${suggestion.activityType || "all"}`} className="flex flex-col items-start gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between">
+              {suggestions.filter(suggestion => !goals.some(goal => goal.progress_source === suggestion.source && (suggestion.source === "time" ? goal.source_project_id === suggestion.sourceProjectId : suggestion.source !== "distance" || goal.source_activity_type === suggestion.activityType))).map(suggestion => (
+                <div key={`${suggestion.source}-${suggestion.sourceProjectId || suggestion.activityType || "all"}`} className="flex flex-col items-start gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0 text-sm">
                     <p className="font-medium">{suggestion.source === "distance" ? t(activityLabelKey(suggestion.activityType === "bike" ? "ride" : suggestion.activityType)) : t(`weekly_review.suggestions.${suggestion.source}`)}</p>
                     <p className="text-xs text-muted-foreground">{t("weekly_review.suggestion_reason", { value: suggestion.weeklyValue, unit: suggestion.source === "distance" ? "km" : suggestion.source === "time" ? "h" : t("weekly_review.tasks") })}</p>
