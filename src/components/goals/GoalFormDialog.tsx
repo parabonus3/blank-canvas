@@ -88,6 +88,7 @@ export function GoalFormDialog(props: Props) {
       setStep("form");
       setType("progress");
       setProgressSource(suggestion.source);
+      setSourceProjectId(suggestion.sourceProjectId || "all");
       setSourceActivityType(suggestion.activityType === "bike" ? "ride" : (suggestion.activityType || "run"));
       setTitle(t(`weekly_review.suggestions.${suggestion.source === "distance" ? suggestion.activityType : suggestion.source}`));
       setTarget(String(suggestion.annualTarget));

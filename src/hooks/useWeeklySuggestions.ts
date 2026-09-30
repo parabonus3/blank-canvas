@@ -18,7 +18,7 @@ export function useWeeklySuggestions() {
       const wall = toTimezone(current, timezone);
       const boundary = (offset: number) => startOfWeekInTz(new Date(Date.UTC(wall.getFullYear(), wall.getMonth(), wall.getDate() + offset * 7, 12)), timezone);
       const start = boundary(-4);
-      const weeks: CompleteWeek[] = Array.from({ length: 4 }, () => ({ focusSeconds: 0, completedTasks: 0, distanceByType: {} }));
+      const weeks: CompleteWeek[] = Array.from({ length: 4 }, () => ({ focusSecondsByProject: {}, completedTasks: 0, distanceByType: {} }));
       const weekIndex = (value: string) => {
         const ms = new Date(value).getTime();
         if (ms < start.getTime() || ms >= current.getTime()) return -1;
@@ -38,11 +38,14 @@ export function useWeeklySuggestions() {
         }
       };
       const [entries, tasks, gps] = await Promise.all([
-        pages<{ start_time: string; duration: number | null }>(() => supabase.from("time_entries").select("start_time,duration").eq("user_id", user.id).not("end_time", "is", null).gte("start_time", start.toISOString()).lt("start_time", current.toISOString()).order("start_time").order("id")),
+        pages<{ project_id: string; start_time: string; duration: number | null }>(() => supabase.from("time_entries").select("project_id,start_time,duration").eq("user_id", user.id).not("end_time", "is", null).gte("start_time", start.toISOString()).lt("start_time", current.toISOString()).order("start_time").order("id")),
         pages<{ completed_at: string | null }>(() => supabase.from("tasks").select("completed_at").eq("user_id", user.id).eq("is_completed", true).gte("completed_at", start.toISOString()).lt("completed_at", current.toISOString()).order("completed_at").order("id")),
         pages<{ started_at: string; distance_meters: number; activity_type: string }>(() => (supabase as any).from("gps_activities").select("started_at,distance_meters,activity_type").eq("user_id", user.id).gte("started_at", start.toISOString()).lt("started_at", current.toISOString()).order("started_at").order("id")),
       ]);
-      for (const entry of entries) { const i = weekIndex(entry.start_time); if (i >= 0) weeks[i].focusSeconds += Number(entry.duration || 0); }
+      for (const entry of entries) {
+        const i = weekIndex(entry.start_time);
+        if (i >= 0) weeks[i].focusSecondsByProject[entry.project_id] = (weeks[i].focusSecondsByProject[entry.project_id] || 0) + Number(entry.duration || 0);
+      }
       for (const task of tasks) { const i = task.completed_at ? weekIndex(task.completed_at) : -1; if (i >= 0) weeks[i].completedTasks++; }
       for (const activity of gps) {
         const i = weekIndex(activity.started_at);
