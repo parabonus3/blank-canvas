@@ -2983,6 +2983,7 @@ export type Database = {
         Args: { _invitation_id: string }
         Returns: undefined
       }
+      cancel_duel: { Args: { _duel_id: string }; Returns: undefined }
       check_and_grant_freeze_missions: {
         Args: never
         Returns: {
@@ -3076,6 +3077,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      finish_duel: { Args: { _duel_id: string }; Returns: undefined }
       generate_friend_code: { Args: never; Returns: string }
       get_annual_goals_stats: {
         Args: { _year: number }
@@ -3478,6 +3480,10 @@ export type Database = {
         Args: { _board_id: string; _user_id: string }
         Returns: boolean
       }
+      is_room_manager: {
+        Args: { _room_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_room_member: {
         Args: { _room_id: string; _user_id: string }
         Returns: boolean
@@ -3571,6 +3577,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      respond_to_duel: {
+        Args: { _accept: boolean; _duel_id: string }
+        Returns: undefined
+      }
       resume_time_entry: {
         Args: { _entry_id: string }
         Returns: {
@@ -3605,6 +3615,10 @@ export type Database = {
       seed_presence_tick: { Args: never; Returns: undefined }
       set_member_role: {
         Args: { _member_user_id: string; _role: string; _room_id: string }
+        Returns: undefined
+      }
+      set_room_session_attendance: {
+        Args: { _confirmed: boolean; _session_id: string }
         Returns: undefined
       }
       start_of_day_in_tz: { Args: { _tz: string }; Returns: string }
