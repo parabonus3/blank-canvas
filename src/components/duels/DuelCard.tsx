@@ -39,9 +39,7 @@ export function DuelCard({ duel }: { duel: Duel }) {
   useEffect(() => {
     if (duel.status !== "active" || !isDuelOver(duel) || !isChallenger) return;
     if (scores.length < 2 || finish.isPending) return;
-    const [a, b] = scores;
-    const winnerId = a.seconds === b.seconds ? null : a.seconds > b.seconds ? a.user_id : b.user_id;
-    finish.mutate({ duelId: duel.id, winnerId });
+    finish.mutate({ duelId: duel.id });
   }, [duel, isChallenger, scores, finish]);
 
   const daysLeft = duelDaysLeft(duel);

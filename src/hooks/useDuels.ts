@@ -103,10 +103,7 @@ export function useRespondDuel() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ duelId, accept }: { duelId: string; accept: boolean }) => {
-      const { error } = await (supabase as any)
-        .from("duels")
-        .update({ status: accept ? "active" : "declined", updated_at: new Date().toISOString() })
-        .eq("id", duelId);
+      const { error } = await supabase.rpc("respond_to_duel", { _duel_id: duelId, _accept: accept });
       if (error) throw error;
       return duelId;
     },
@@ -120,7 +117,7 @@ export function useCancelDuel() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (duelId: string) => {
-      const { error } = await (supabase as any).from("duels").delete().eq("id", duelId);
+      const { error } = await supabase.rpc("cancel_duel", { _duel_id: duelId });
       if (error) throw error;
       return duelId;
     },
@@ -132,12 +129,8 @@ export function useCancelDuel() {
 export function useFinishDuel() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ duelId, winnerId }: { duelId: string; winnerId: string | null }) => {
-      const { error } = await (supabase as any)
-        .from("duels")
-        .update({ status: "finished", winner_id: winnerId, updated_at: new Date().toISOString() })
-        .eq("id", duelId)
-        .eq("status", "active");
+    mutationFn: async ({ duelId }: { duelId: string }) => {
+      const { error } = await supabase.rpc("finish_duel", { _duel_id: duelId });
       if (error) throw error;
       return duelId;
     },

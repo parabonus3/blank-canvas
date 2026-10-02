@@ -17,3 +17,6 @@
 - [x] Base de revisão semanal em Hoje e Painel, com metas anuais opcionais ligadas a tempo, tarefas e GPS
 - [x] Organizar telas densas de salas, painel, notas e detalhes de tarefas para uso móvel
 - [ ] Concluir avisos de duelos, sessões agendadas, timesheet e início rápido de corrida
+  - [x] Proteger respostas e encerramento de duelos
+  - [x] Criar, listar, cancelar e confirmar presença em sessões agendadas
+  - [ ] Concluir avisos push e lembretes de duelos/sessões
