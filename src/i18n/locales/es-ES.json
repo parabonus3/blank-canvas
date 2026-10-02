@@ -3072,7 +3072,14 @@
     "suggestion_hint": "Basadas en las últimas cuatro semanas completas. Tú decides si crear la meta.",
     "suggestion_reason": "Promedio reciente: {{value}} {{unit}} por semana",
     "suggestion_edit": "Editar meta",
-    "suggestions": {"time": "Horas de concentración", "tasks": "Tareas completadas", "run": "Distancia de carrera", "walk": "Distancia caminada", "bike": "Distancia en bicicleta", "hike": "Distancia de senderismo"},
+    "suggestions": {
+      "time": "Horas de concentración",
+      "tasks": "Tareas completadas",
+      "run": "Distancia de carrera",
+      "walk": "Distancia caminada",
+      "bike": "Distancia en bicicleta",
+      "hike": "Distancia de senderismo"
+    },
     "title": "Resumen semanal",
     "subtitle": "Lunes a domingo · zona horaria del perfil · frente a la semana anterior",
     "focus": "Tiempo de concentración",
@@ -3094,5 +3101,28 @@
     "source": "Origen de datos",
     "budget": "Presupuesto semanal",
     "distance_types": "Distancia por actividad"
+  },
+  "room_sessions": {
+    "title": "Sesiones programadas",
+    "new": "Nueva",
+    "empty": "No hay sesiones programadas.",
+    "load_error": "No se pudieron cargar las sesiones.",
+    "create_title": "Crear sesión",
+    "name": "Nombre",
+    "description": "Descripción (opcional)",
+    "start": "Inicio",
+    "end": "Fin",
+    "created": "¡Sesión creada!",
+    "validation": "Indica un nombre y un período válido.",
+    "save_error": "No se pudo guardar.",
+    "status_scheduled": "Programada",
+    "status_live": "En curso",
+    "status_ended": "Finalizada",
+    "status_cancelled": "Cancelada",
+    "attendees": "{{count}} participante(s)",
+    "join": "Confirmar asistencia",
+    "leave": "Retirar asistencia",
+    "open_timer": "Abrir cronómetro",
+    "cancel": "Cancelar"
   }
 }

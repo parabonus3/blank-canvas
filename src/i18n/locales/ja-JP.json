@@ -3065,7 +3065,14 @@
     "suggestion_hint": "直近の完了した4週間をもとにしています。作成するかどうかは自分で選べます。",
     "suggestion_reason": "最近の平均：週あたり {{value}} {{unit}}",
     "suggestion_edit": "目標を編集",
-    "suggestions": {"time": "集中時間", "tasks": "完了したタスク", "run": "ランニング距離", "walk": "ウォーキング距離", "bike": "サイクリング距離", "hike": "ハイキング距離"},
+    "suggestions": {
+      "time": "集中時間",
+      "tasks": "完了したタスク",
+      "run": "ランニング距離",
+      "walk": "ウォーキング距離",
+      "bike": "サイクリング距離",
+      "hike": "ハイキング距離"
+    },
     "title": "週間レビュー",
     "subtitle": "月曜〜日曜 · プロフィールのタイムゾーン · 前週との比較",
     "focus": "集中時間",
@@ -3087,5 +3094,28 @@
     "source": "データの出典",
     "budget": "週の時間配分",
     "distance_types": "種目別距離"
+  },
+  "room_sessions": {
+    "title": "予定セッション",
+    "new": "新規",
+    "empty": "予定されたセッションはありません。",
+    "load_error": "セッションを読み込めません。",
+    "create_title": "セッションを作成",
+    "name": "名前",
+    "description": "説明（任意）",
+    "start": "開始",
+    "end": "終了",
+    "created": "セッションを作成しました！",
+    "validation": "名前と有効な時間を入力してください。",
+    "save_error": "保存できませんでした。",
+    "status_scheduled": "予定",
+    "status_live": "進行中",
+    "status_ended": "終了",
+    "status_cancelled": "キャンセル",
+    "attendees": "参加者 {{count}}人",
+    "join": "参加する",
+    "leave": "参加を取り消す",
+    "open_timer": "タイマーを開く",
+    "cancel": "キャンセル"
   }
 }

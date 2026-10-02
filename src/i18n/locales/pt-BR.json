@@ -3215,7 +3215,14 @@
     "suggestion_hint": "Com base nas últimas quatro semanas completas. Você decide se deseja criar a meta.",
     "suggestion_reason": "Nas últimas semanas: {{value}} {{unit}} por semana",
     "suggestion_edit": "Editar meta",
-    "suggestions": {"time": "Horas de foco", "tasks": "Tarefas concluídas", "run": "Distância de corrida", "walk": "Distância de caminhada", "bike": "Distância de pedal", "hike": "Distância de trilha"},
+    "suggestions": {
+      "time": "Horas de foco",
+      "tasks": "Tarefas concluídas",
+      "run": "Distância de corrida",
+      "walk": "Distância de caminhada",
+      "bike": "Distância de pedal",
+      "hike": "Distância de trilha"
+    },
     "title": "Revisão da semana",
     "subtitle": "Segunda a domingo · fuso do perfil · comparado à semana anterior",
     "focus": "Tempo focado",
@@ -3237,5 +3244,28 @@
     "source": "Origem dos dados",
     "budget": "Orçamento semanal",
     "distance_types": "Distância por modalidade"
+  },
+  "room_sessions": {
+    "title": "Sessões agendadas",
+    "new": "Nova",
+    "empty": "Nenhuma sessão agendada.",
+    "load_error": "Não foi possível carregar as sessões.",
+    "create_title": "Criar sessão",
+    "name": "Nome",
+    "description": "Descrição (opcional)",
+    "start": "Início",
+    "end": "Fim",
+    "created": "Sessão criada!",
+    "validation": "Informe nome e um período válido.",
+    "save_error": "Não foi possível salvar a sessão.",
+    "status_scheduled": "Agendada",
+    "status_live": "Em andamento",
+    "status_ended": "Encerrada",
+    "status_cancelled": "Cancelada",
+    "attendees": "{{count}} participante(s)",
+    "join": "Confirmar presença",
+    "leave": "Retirar presença",
+    "open_timer": "Abrir cronômetro",
+    "cancel": "Cancelar"
   }
 }

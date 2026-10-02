@@ -3160,7 +3160,14 @@
     "suggestion_hint": "Based on your last four complete weeks. You decide whether to create a goal.",
     "suggestion_reason": "Recent average: {{value}} {{unit}} per week",
     "suggestion_edit": "Edit goal",
-    "suggestions": {"time": "Focus hours", "tasks": "Completed tasks", "run": "Running distance", "walk": "Walking distance", "bike": "Cycling distance", "hike": "Hiking distance"},
+    "suggestions": {
+      "time": "Focus hours",
+      "tasks": "Completed tasks",
+      "run": "Running distance",
+      "walk": "Walking distance",
+      "bike": "Cycling distance",
+      "hike": "Hiking distance"
+    },
     "title": "Weekly review",
     "subtitle": "Monday to Sunday · profile timezone · compared with last week",
     "focus": "Focus time",
@@ -3182,5 +3189,28 @@
     "source": "Data source",
     "budget": "Weekly budget",
     "distance_types": "Distance by activity"
+  },
+  "room_sessions": {
+    "title": "Scheduled sessions",
+    "new": "New",
+    "empty": "No sessions scheduled.",
+    "load_error": "Could not load sessions.",
+    "create_title": "Create session",
+    "name": "Name",
+    "description": "Description (optional)",
+    "start": "Start",
+    "end": "End",
+    "created": "Session created!",
+    "validation": "Enter a name and a valid time range.",
+    "save_error": "Could not save the session.",
+    "status_scheduled": "Scheduled",
+    "status_live": "Live",
+    "status_ended": "Ended",
+    "status_cancelled": "Cancelled",
+    "attendees": "{{count}} participant(s)",
+    "join": "Join",
+    "leave": "Leave",
+    "open_timer": "Open timer",
+    "cancel": "Cancel"
   }
 }
