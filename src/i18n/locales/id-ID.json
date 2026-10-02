@@ -3065,7 +3065,14 @@
     "suggestion_hint": "Berdasarkan empat minggu penuh terakhir. Anda yang memutuskan apakah akan membuat target.",
     "suggestion_reason": "Rata-rata terbaru: {{value}} {{unit}} per minggu",
     "suggestion_edit": "Ubah target",
-    "suggestions": {"time": "Jam fokus", "tasks": "Tugas selesai", "run": "Jarak lari", "walk": "Jarak jalan kaki", "bike": "Jarak bersepeda", "hike": "Jarak mendaki"},
+    "suggestions": {
+      "time": "Jam fokus",
+      "tasks": "Tugas selesai",
+      "run": "Jarak lari",
+      "walk": "Jarak jalan kaki",
+      "bike": "Jarak bersepeda",
+      "hike": "Jarak mendaki"
+    },
     "title": "Tinjauan mingguan",
     "subtitle": "Senin–Minggu · zona waktu profil · dibandingkan minggu lalu",
     "focus": "Waktu fokus",
@@ -3087,5 +3094,28 @@
     "source": "Sumber data",
     "budget": "Anggaran mingguan",
     "distance_types": "Jarak per aktivitas"
+  },
+  "room_sessions": {
+    "title": "Sesi terjadwal",
+    "new": "Baru",
+    "empty": "Belum ada sesi terjadwal.",
+    "load_error": "Sesi tidak dapat dimuat.",
+    "create_title": "Buat sesi",
+    "name": "Nama",
+    "description": "Deskripsi (opsional)",
+    "start": "Mulai",
+    "end": "Selesai",
+    "created": "Sesi dibuat!",
+    "validation": "Masukkan nama dan rentang waktu yang valid.",
+    "save_error": "Tidak dapat menyimpan.",
+    "status_scheduled": "Terjadwal",
+    "status_live": "Berlangsung",
+    "status_ended": "Selesai",
+    "status_cancelled": "Dibatalkan",
+    "attendees": "{{count}} peserta",
+    "join": "Ikut",
+    "leave": "Batal ikut",
+    "open_timer": "Buka timer",
+    "cancel": "Batalkan"
   }
 }

@@ -29,6 +29,7 @@ import { RoomFrame } from "@/components/RoomFrame";
 import { RoomStreakBadge } from "@/components/rooms/RoomStreakBadge";
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { RoomAchievements } from "@/components/rooms/RoomAchievements";
+import { RoomSessionsCard } from "@/components/rooms/RoomSessionsCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,6 +53,7 @@ export default function RoomDetail() {
     });
   }, [id]);
   const { data: members = [], isLoading } = useRoomMembers(id);
+  const { data: challengesData = [] } = useRoomChallenges(id);
   const leaveRoom = useLeaveRoom();
   const [inviteOpen, setInviteOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
@@ -172,7 +174,6 @@ export default function RoomDetail() {
 
   const isOwner = room?.owner_id === user?.id;
   const isOwnerOrMod = isOwner || myMember?.role === "moderator";
-  const { data: challengesData = [] } = useRoomChallenges(id);
   const hasActiveChallenges = challengesData.some((c) => c.is_active && !c.is_ended);
 
   const handleLeave = async () => {
@@ -295,6 +296,7 @@ export default function RoomDetail() {
                 goalLabel={room?.goal_label}
                 roomStreak={roomStreak}
               />
+              <RoomSessionsCard roomId={id!} roomTimezone={(room as any)?.room_day_tz} canManage={isOwnerOrMod} />
               {room && <RoomTimerCard roomId={room.id} />}
               {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
               {(room?.goal_hours || (room && !isOwner && room.pinned_message)) && (

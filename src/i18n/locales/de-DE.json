@@ -3065,7 +3065,14 @@
     "suggestion_hint": "Basierend auf den letzten vier vollständigen Wochen. Du entscheidest über die Erstellung.",
     "suggestion_reason": "Durchschnitt: {{value}} {{unit}} pro Woche",
     "suggestion_edit": "Ziel bearbeiten",
-    "suggestions": {"time": "Fokusstunden", "tasks": "Erledigte Aufgaben", "run": "Laufstrecke", "walk": "Gehstrecke", "bike": "Radstrecke", "hike": "Wanderstrecke"},
+    "suggestions": {
+      "time": "Fokusstunden",
+      "tasks": "Erledigte Aufgaben",
+      "run": "Laufstrecke",
+      "walk": "Gehstrecke",
+      "bike": "Radstrecke",
+      "hike": "Wanderstrecke"
+    },
     "title": "Wochenrückblick",
     "subtitle": "Montag bis Sonntag · Profilzeitzone · Vergleich zur Vorwoche",
     "focus": "Fokuszeit",
@@ -3087,5 +3094,28 @@
     "source": "Datenquelle",
     "budget": "Wochenbudget",
     "distance_types": "Distanz nach Aktivität"
+  },
+  "room_sessions": {
+    "title": "Geplante Sessions",
+    "new": "Neu",
+    "empty": "Keine Sessions geplant.",
+    "load_error": "Sessions konnten nicht geladen werden.",
+    "create_title": "Session erstellen",
+    "name": "Name",
+    "description": "Beschreibung (optional)",
+    "start": "Beginn",
+    "end": "Ende",
+    "created": "Session erstellt!",
+    "validation": "Name und gültigen Zeitraum eingeben.",
+    "save_error": "Speichern fehlgeschlagen.",
+    "status_scheduled": "Geplant",
+    "status_live": "Läuft",
+    "status_ended": "Beendet",
+    "status_cancelled": "Abgesagt",
+    "attendees": "{{count}} Teilnehmer",
+    "join": "Teilnehmen",
+    "leave": "Verlassen",
+    "open_timer": "Timer öffnen",
+    "cancel": "Absagen"
   }
 }
