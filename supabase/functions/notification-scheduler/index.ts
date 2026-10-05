@@ -336,6 +336,32 @@ async function processTaskDueToday(users: { user_id: string; tz: string }[]) {
   }
 }
 
+async function processRoomSessionReminders(users: { user_id: string; tz: string }[]) {
+  const from = new Date(Date.now() + 20 * 60_000).toISOString();
+  const to = new Date(Date.now() + 40 * 60_000).toISOString();
+  for (const u of users) {
+    const { data: attendance } = await admin
+      .from("room_session_attendees")
+      .select("room_sessions!inner(id,title,start_at,room_id,is_cancelled,study_rooms!inner(name))")
+      .eq("user_id", u.user_id)
+      .eq("confirmed", true)
+      .eq("room_sessions.is_cancelled", false)
+      .gte("room_sessions.start_at", from)
+      .lt("room_sessions.start_at", to)
+      .limit(5);
+    for (const row of (attendance || []) as any[]) {
+      const session = row.room_sessions;
+      if (!session) continue;
+      await sendPushToUser({
+        userId: u.user_id,
+        kind: "room_session_reminder",
+        vars: { session_title: session.title, room_name: session.study_rooms?.name || "—", session_id: session.id },
+        url: `/rooms/${session.room_id}`,
+      });
+    }
+  }
+}
+
 async function cleanupDeadSubscriptions(): Promise<number> {
   const cutoff = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
   const { data, error } = await admin
@@ -377,6 +403,7 @@ Deno.serve(async (_req) => {
       runSafe("friend_activity", () => processFriendActivity(users)),
       runSafe("morning_kickoff", () => processMorningKickoff(users)),
       runSafe("task_due_today", () => processTaskDueToday(users)),
+      runSafe("room_session_reminders", () => processRoomSessionReminders(users)),
     ]);
     const cleaned = await cleanupDeadSubscriptions().catch(() => 0);
     return new Response(
