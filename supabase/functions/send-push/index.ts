@@ -70,6 +70,9 @@ const INSTANT_KINDS = new Set([
   "task_assigned",
   "task_comment",
   "chat_mentions",
+  "duel_invite",
+  "duel_accepted",
+  "room_session_created",
 ]);
 
 function hashPayload(kind: string, vars: Record<string, string | number>): string {
@@ -109,6 +112,10 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
       chat_mentions: "chat_mentions",
       friend_request: "social_invites",
       friend_accepted: "social_invites",
+      duel_invite: "social_invites",
+      duel_accepted: "social_invites",
+      room_session_created: "social_invites",
+      room_session_reminder: "social_invites",
       board_invite: "social_invites",
       task_assigned: "task_updates",
       task_comment: "task_updates",

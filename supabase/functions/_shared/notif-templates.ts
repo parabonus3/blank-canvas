@@ -18,7 +18,11 @@ export type NotifKind =
   | "task_assigned"
   | "task_comment"
   | "morning_kickoff"
-  | "task_due_today";
+  | "task_due_today"
+  | "duel_invite"
+  | "duel_accepted"
+  | "room_session_created"
+  | "room_session_reminder";
 
 type LangPack = Partial<Record<NotifKind, { title: string; body: string }[]>>;
 
@@ -834,6 +838,81 @@ const S: Record<string, LangPack> = {
   },
 };
 
+const D: Record<string, LangPack> = {
+  "pt-BR": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} te desafiou", body: "{{duel_title}} · meta de {{target_hours}}h." }],
+    duel_accepted: [{ title: "✅ Desafio aceito", body: "{{friend_name}} aceitou {{duel_title}}." }],
+    room_session_created: [{ title: "📅 Nova sessão em {{room_name}}", body: "{{session_title}} foi agendada para {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Começa em breve", body: "{{session_title}} começa em 30 minutos em {{room_name}}." }],
+  },
+  "en-US": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} challenged you", body: "{{duel_title}} · {{target_hours}}h target." }],
+    duel_accepted: [{ title: "✅ Challenge accepted", body: "{{friend_name}} accepted {{duel_title}}." }],
+    room_session_created: [{ title: "📅 New session in {{room_name}}", body: "{{session_title}} is scheduled for {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Starting soon", body: "{{session_title}} starts in 30 minutes in {{room_name}}." }],
+  },
+  "es-ES": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} te desafió", body: "{{duel_title}} · meta de {{target_hours}}h." }],
+    duel_accepted: [{ title: "✅ Desafío aceptado", body: "{{friend_name}} aceptó {{duel_title}}." }],
+    room_session_created: [{ title: "📅 Nueva sesión en {{room_name}}", body: "{{session_title}} fue programada para {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Empieza pronto", body: "{{session_title}} empieza en 30 minutos en {{room_name}}." }],
+  },
+  "fr-FR": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} vous défie", body: "{{duel_title}} · objectif {{target_hours}}h." }],
+    duel_accepted: [{ title: "✅ Défi accepté", body: "{{friend_name}} a accepté {{duel_title}}." }],
+    room_session_created: [{ title: "📅 Nouvelle session dans {{room_name}}", body: "{{session_title}} est prévue à {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Bientôt", body: "{{session_title}} commence dans 30 minutes dans {{room_name}}." }],
+  },
+  "de-DE": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} fordert dich heraus", body: "{{duel_title}} · Ziel {{target_hours}} Std." }],
+    duel_accepted: [{ title: "✅ Herausforderung angenommen", body: "{{friend_name}} hat {{duel_title}} angenommen." }],
+    room_session_created: [{ title: "📅 Neue Session in {{room_name}}", body: "{{session_title}} ist für {{session_time}} geplant." }],
+    room_session_reminder: [{ title: "⏰ Beginnt bald", body: "{{session_title}} beginnt in 30 Minuten in {{room_name}}." }],
+  },
+  "it-IT": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} ti ha sfidato", body: "{{duel_title}} · obiettivo {{target_hours}}h." }],
+    duel_accepted: [{ title: "✅ Sfida accettata", body: "{{friend_name}} ha accettato {{duel_title}}." }],
+    room_session_created: [{ title: "📅 Nuova sessione in {{room_name}}", body: "{{session_title}} è prevista alle {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Inizia presto", body: "{{session_title}} inizia tra 30 minuti in {{room_name}}." }],
+  },
+  "ja-JP": {
+    duel_invite: [{ title: "⚔️ {{friend_name}}から挑戦", body: "{{duel_title}}・目標{{target_hours}}時間。" }],
+    duel_accepted: [{ title: "✅ 挑戦を承認", body: "{{friend_name}}が{{duel_title}}を承認しました。" }],
+    room_session_created: [{ title: "📅 {{room_name}}の新しいセッション", body: "{{session_title}}は{{session_time}}に予定されています。" }],
+    room_session_reminder: [{ title: "⏰ まもなく開始", body: "{{room_name}}の{{session_title}}は30分後に始まります。" }],
+  },
+  "ko-KR": {
+    duel_invite: [{ title: "⚔️ {{friend_name}}님의 도전", body: "{{duel_title}} · 목표 {{target_hours}}시간." }],
+    duel_accepted: [{ title: "✅ 도전 수락", body: "{{friend_name}}님이 {{duel_title}}을 수락했습니다." }],
+    room_session_created: [{ title: "📅 {{room_name}}의 새 세션", body: "{{session_title}} 세션이 {{session_time}}에 예약되었습니다." }],
+    room_session_reminder: [{ title: "⏰ 곧 시작", body: "{{room_name}}의 {{session_title}} 세션이 30분 후 시작됩니다." }],
+  },
+  "zh-CN": {
+    duel_invite: [{ title: "⚔️ {{friend_name}}向你发起挑战", body: "{{duel_title}} · 目标{{target_hours}}小时。" }],
+    duel_accepted: [{ title: "✅ 挑战已接受", body: "{{friend_name}}接受了{{duel_title}}。" }],
+    room_session_created: [{ title: "📅 {{room_name}}的新时段", body: "{{session_title}}已安排在{{session_time}}。" }],
+    room_session_reminder: [{ title: "⏰ 即将开始", body: "{{room_name}}的{{session_title}}将在30分钟后开始。" }],
+  },
+  "ru-RU": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} бросает вам вызов", body: "{{duel_title}} · цель {{target_hours}} ч." }],
+    duel_accepted: [{ title: "✅ Вызов принят", body: "{{friend_name}} принял(а) {{duel_title}}." }],
+    room_session_created: [{ title: "📅 Новая сессия в {{room_name}}", body: "{{session_title}} назначена на {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Скоро начало", body: "{{session_title}} начнётся через 30 минут в {{room_name}}." }],
+  },
+  "ar-SA": {
+    duel_invite: [{ title: "⚔️ تحداك {{friend_name}}", body: "{{duel_title}} · الهدف {{target_hours}} ساعة." }],
+    duel_accepted: [{ title: "✅ تم قبول التحدي", body: "قبل {{friend_name}} تحدي {{duel_title}}." }],
+    room_session_created: [{ title: "📅 جلسة جديدة في {{room_name}}", body: "تمت جدولة {{session_title}} في {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ تبدأ قريبًا", body: "تبدأ {{session_title}} خلال 30 دقيقة في {{room_name}}." }],
+  },
+  "id-ID": {
+    duel_invite: [{ title: "⚔️ {{friend_name}} menantangmu", body: "{{duel_title}} · target {{target_hours}} jam." }],
+    duel_accepted: [{ title: "✅ Tantangan diterima", body: "{{friend_name}} menerima {{duel_title}}." }],
+    room_session_created: [{ title: "📅 Sesi baru di {{room_name}}", body: "{{session_title}} dijadwalkan pukul {{session_time}}." }],
+    room_session_reminder: [{ title: "⏰ Segera dimulai", body: "{{session_title}} dimulai 30 menit lagi di {{room_name}}." }],
+  },
+};
+
 function render(tpl: string, vars: Record<string, string | number>): string {
   return tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? ""));
 }
@@ -848,10 +927,13 @@ export function pickTemplate(
   const list =
     T[normalized]?.[kind] ||
     S[normalized]?.[kind] ||
+    D[normalized]?.[kind] ||
     T[short]?.[kind] ||
     S[short]?.[kind] ||
+    D[short]?.[kind] ||
     T["en-US"][kind] ||
     S["en-US"][kind] ||
+    D["en-US"][kind] ||
     T["en-US"]["test"]!;
   const choice = list[Math.floor(Math.random() * list.length)];
   return { title: render(choice.title, vars), body: render(choice.body, vars) };
