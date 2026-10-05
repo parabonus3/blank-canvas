@@ -77,6 +77,20 @@ export function useRoomSessions(roomId?: string) {
   return query;
 }
 
+export function useRoomTimezone(roomId?: string) {
+  return useQuery({
+    queryKey: ["roomTimezone", roomId],
+    queryFn: async () => {
+      if (!roomId) return undefined;
+      const { data, error } = await supabase.rpc("get_room_timezone", { _room_id: roomId });
+      if (error) throw error;
+      return data || undefined;
+    },
+    enabled: !!roomId,
+    staleTime: 5 * 60_000,
+  });
+}
+
 export function useCreateRoomSession() {
   const { user } = useAuth();
   const queryClient = useQueryClient();

@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { useCancelRoomSession, useCreateRoomSession, useRoomSessions, useSetRoomSessionAttendance } from "@/hooks/useRoomSessions";
+import { useCancelRoomSession, useCreateRoomSession, useRoomSessions, useRoomTimezone, useSetRoomSessionAttendance } from "@/hooks/useRoomSessions";
 import { cn } from "@/lib/utils";
 
 function localInputValue(date: Date) {
@@ -19,12 +19,13 @@ function localInputValue(date: Date) {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 }
 
-export function RoomSessionsCard({ roomId, roomTimezone, canManage }: { roomId: string; roomTimezone?: string; canManage: boolean }) {
+export function RoomSessionsCard({ roomId, canManage }: { roomId: string; canManage: boolean }) {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useRoomSessions(roomId);
+  const { data: roomTimezone } = useRoomTimezone(roomId);
   const create = useCreateRoomSession();
   const cancel = useCancelRoomSession();
   const attendance = useSetRoomSessionAttendance();
