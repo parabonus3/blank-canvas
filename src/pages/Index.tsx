@@ -136,9 +136,11 @@ export default function Index() {
     if (activeEntry) return;
     const params = new URLSearchParams(location.search);
     const requestedProject = params.get("project");
+    const requestedRoom = params.get("room");
     const routineId = params.get("routine");
     if (routineId && focusRoutinesLoading) return;
     if (requestedProject) setSelectedProject(requestedProject);
+    if (requestedRoom) setSelectedRoom(requestedRoom);
     if (params.get("options") === "1") setOptionsOpen(true);
     if (routineId && !routineRun.run) {
       const requestedRoutine = focusRoutines.find((routine) => routine.id === routineId);
