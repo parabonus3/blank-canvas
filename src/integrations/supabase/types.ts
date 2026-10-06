@@ -3077,6 +3077,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      finish_due_duels: { Args: never; Returns: number }
       finish_duel: { Args: { _duel_id: string }; Returns: undefined }
       generate_friend_code: { Args: never; Returns: string }
       get_annual_goals_stats: {
