@@ -29,7 +29,7 @@ export function useRoomSessions(roomId?: string) {
     queryKey: ["roomSessions", roomId],
     queryFn: async () => {
       if (!roomId) return { sessions: [] as RoomSession[], attendees: [] as RoomSessionAttendee[] };
-      const from = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const from = new Date().toISOString();
       const { data: sessions, error } = await supabase
         .from("room_sessions")
         .select("id,room_id,created_by,title,description,start_at,end_at,is_cancelled,created_at,updated_at")
@@ -108,6 +108,40 @@ export function useCreateRoomSession() {
       if (error) throw error;
     },
     onSuccess: (_, input) => queryClient.invalidateQueries({ queryKey: ["roomSessions", input.roomId] }),
+  });
+}
+
+export function useUpdateRoomSession() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { id: string; roomId: string; title: string; description?: string; startAt: string; endAt: string }) => {
+      const { error } = await supabase
+        .from("room_sessions")
+        .update({ title: input.title, description: input.description?.trim() || null, start_at: input.startAt, end_at: input.endAt })
+        .eq("id", input.id)
+        .eq("room_id", input.roomId);
+      if (error) throw error;
+    },
+    onSuccess: (_, input) => queryClient.invalidateQueries({ queryKey: ["roomSessions", input.roomId] }),
+  });
+}
+
+export function usePastRoomSessions(roomId?: string, enabled = false) {
+  return useQuery({
+    queryKey: ["roomSessions", roomId, "past"],
+    queryFn: async () => {
+      if (!roomId) return [] as RoomSession[];
+      const { data, error } = await supabase
+        .from("room_sessions")
+        .select("id,room_id,created_by,title,description,start_at,end_at,is_cancelled,created_at,updated_at")
+        .eq("room_id", roomId)
+        .lt("end_at", new Date().toISOString())
+        .order("start_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return (data || []) as RoomSession[];
+    },
+    enabled: !!roomId && enabled,
   });
 }
 

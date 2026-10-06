@@ -392,6 +392,7 @@ async function runSafe(name: string, fn: () => Promise<unknown>): Promise<string
 
 Deno.serve(async (_req) => {
   try {
+    await runSafe("finish_due_duels", async () => { const { error } = await admin.rpc("finish_due_duels"); if (error) throw error; });
     const users = await eligibleUsers();
     console.info("[scheduler] tick", { users: users.length, utcHour: new Date().getUTCHours() });
     const results = await Promise.all([
