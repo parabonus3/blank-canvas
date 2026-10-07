@@ -3211,6 +3211,14 @@
     "join": "Join",
     "leave": "Leave",
     "open_timer": "Open timer",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "updated": "Session updated!",
+    "tab_upcoming": "Upcoming",
+    "tab_past": "Past",
+    "empty_past": "No past sessions.",
+    "edit": "Edit",
+    "edit_title": "Edit session",
+    "new_activity": "New activity",
+    "next_title": "Your next session"
   }
 }

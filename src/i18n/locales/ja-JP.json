@@ -3116,6 +3116,14 @@
     "join": "参加する",
     "leave": "参加を取り消す",
     "open_timer": "タイマーを開く",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "updated": "セッションを更新しました！",
+    "tab_upcoming": "今後",
+    "tab_past": "過去",
+    "empty_past": "過去のセッションはありません。",
+    "edit": "編集",
+    "edit_title": "セッションを編集",
+    "new_activity": "新しいアクティビティ",
+    "next_title": "次のセッション"
   }
 }

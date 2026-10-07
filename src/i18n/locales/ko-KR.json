@@ -3102,6 +3102,14 @@
     "join": "참가",
     "leave": "참가 취소",
     "open_timer": "타이머 열기",
-    "cancel": "취소"
+    "cancel": "취소",
+    "updated": "세션이 수정되었습니다!",
+    "tab_upcoming": "예정",
+    "tab_past": "지난",
+    "empty_past": "지난 세션이 없습니다.",
+    "edit": "편집",
+    "edit_title": "세션 편집",
+    "new_activity": "새 활동",
+    "next_title": "다음 세션"
   }
 }

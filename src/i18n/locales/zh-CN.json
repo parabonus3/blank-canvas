@@ -3116,6 +3116,14 @@
     "join": "参加",
     "leave": "退出",
     "open_timer": "打开计时器",
-    "cancel": "取消"
+    "cancel": "取消",
+    "updated": "时段已更新！",
+    "tab_upcoming": "即将开始",
+    "tab_past": "已结束",
+    "empty_past": "暂无过往时段。",
+    "edit": "编辑",
+    "edit_title": "编辑时段",
+    "new_activity": "新活动",
+    "next_title": "你的下一个时段"
   }
 }

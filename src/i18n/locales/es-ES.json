@@ -3123,6 +3123,14 @@
     "join": "Confirmar asistencia",
     "leave": "Retirar asistencia",
     "open_timer": "Abrir cronómetro",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "updated": "¡Sesión actualizada!",
+    "tab_upcoming": "Próximas",
+    "tab_past": "Anteriores",
+    "empty_past": "No hay sesiones anteriores.",
+    "edit": "Editar",
+    "edit_title": "Editar sesión",
+    "new_activity": "Nueva actividad",
+    "next_title": "Tu próxima sesión"
   }
 }

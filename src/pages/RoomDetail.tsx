@@ -296,7 +296,7 @@ export default function RoomDetail() {
                 goalLabel={room?.goal_label}
                 roomStreak={roomStreak}
               />
-              <RoomSessionsCard roomId={id!} canManage={isOwnerOrMod} />
+              <RoomSessionsCard roomId={id!} canManage={isOwnerOrMod} members={members} />
               {room && <RoomTimerCard roomId={room.id} />}
               {id && <RoomChallengesCard roomId={id} isOwner={isOwner} members={members} />}
               {(room?.goal_hours || (room && !isOwner && room.pinned_message)) && (
