@@ -110,7 +110,7 @@ export default function Today() {
                 <p className="truncate font-semibold">{nextSession.title}</p>
                 <p className="text-xs text-muted-foreground">{formatInTz(new Date(nextSession.start_at), "EEE dd/MM HH:mm")}</p>
               </div>
-              <Button size="sm" variant="outline" onClick={() => navigate(`/rooms/${nextSession.room_id}`)}>{t("common.open", "Abrir")}</Button>
+              <Button size="sm" variant="outline" onClick={() => navigate(`/rooms/${nextSession.room_id}`)}>{t("today.open")}</Button>
             </CardContent>
           </Card>
         )}

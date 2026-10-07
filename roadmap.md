@@ -17,6 +17,11 @@
 - [x] Base de revisão semanal em Hoje e Painel, com metas anuais opcionais ligadas a tempo, tarefas e GPS
 - [x] Organizar telas densas de salas, painel, notas e detalhes de tarefas para uso móvel
 - [ ] Concluir avisos de duelos, sessões agendadas, timesheet e início rápido de corrida
+  - [x] Encerrar duelos vencidos automaticamente e avisar resultado/recusa
+  - [x] Editar sessões, histórico, avatares, avisos de alteração/cancelamento e próxima sessão em Hoje
+  - [x] Início rápido de nova atividade no histórico de corridas
+  - [ ] Relatório mensal de horas (Fase 7)
+  - [ ] Qualidade: alertas de segurança antigos e textos de reserva (Fase 8)
   - [x] Proteger respostas e encerramento de duelos
   - [x] Criar, listar, cancelar e confirmar presença em sessões agendadas
   - [x] Concluir avisos push e lembretes de duelos/sessões
