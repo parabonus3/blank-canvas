@@ -3116,6 +3116,14 @@
     "join": "Teilnehmen",
     "leave": "Verlassen",
     "open_timer": "Timer öffnen",
-    "cancel": "Absagen"
+    "cancel": "Absagen",
+    "updated": "Session aktualisiert!",
+    "tab_upcoming": "Kommend",
+    "tab_past": "Vergangen",
+    "empty_past": "Keine vergangenen Sessions.",
+    "edit": "Bearbeiten",
+    "edit_title": "Session bearbeiten",
+    "new_activity": "Neue Aktivität",
+    "next_title": "Deine nächste Session"
   }
 }

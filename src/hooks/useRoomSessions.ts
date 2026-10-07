@@ -166,3 +166,26 @@ export function useSetRoomSessionAttendance() {
     onSuccess: (_, input) => queryClient.invalidateQueries({ queryKey: ["roomSessions", input.roomId] }),
   });
 }
+export function useMyNextRoomSession() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["myNextRoomSession", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase
+        .from("room_session_attendees")
+        .select("session_id, room_sessions!inner(id,room_id,title,start_at,end_at,is_cancelled)")
+        .eq("user_id", user.id)
+        .eq("confirmed", true)
+        .eq("room_sessions.is_cancelled", false)
+        .gte("room_sessions.end_at", new Date().toISOString())
+        .limit(20);
+      if (error) throw error;
+      const sessions = (data || []).map((row: any) => row.room_sessions as RoomSession).filter(Boolean);
+      sessions.sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
+      return sessions[0] || null;
+    },
+    enabled: !!user,
+    staleTime: 60_000,
+  });
+}

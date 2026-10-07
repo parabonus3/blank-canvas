@@ -3116,6 +3116,14 @@
     "join": "Ikut",
     "leave": "Batal ikut",
     "open_timer": "Buka timer",
-    "cancel": "Batalkan"
+    "cancel": "Batalkan",
+    "updated": "Sesi diperbarui!",
+    "tab_upcoming": "Mendatang",
+    "tab_past": "Sebelumnya",
+    "empty_past": "Belum ada sesi sebelumnya.",
+    "edit": "Edit",
+    "edit_title": "Edit sesi",
+    "new_activity": "Aktivitas baru",
+    "next_title": "Sesi berikutnya"
   }
 }

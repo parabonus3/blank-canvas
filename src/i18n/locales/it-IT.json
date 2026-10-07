@@ -3102,6 +3102,14 @@
     "join": "Partecipa",
     "leave": "Ritira presenza",
     "open_timer": "Apri timer",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "updated": "Sessione aggiornata!",
+    "tab_upcoming": "Prossime",
+    "tab_past": "Passate",
+    "empty_past": "Nessuna sessione passata.",
+    "edit": "Modifica",
+    "edit_title": "Modifica sessione",
+    "new_activity": "Nuova attività",
+    "next_title": "La tua prossima sessione"
   }
 }

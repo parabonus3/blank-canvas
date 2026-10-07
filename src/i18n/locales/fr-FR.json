@@ -3116,6 +3116,14 @@
     "join": "Participer",
     "leave": "Se retirer",
     "open_timer": "Ouvrir le chrono",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "updated": "Session mise à jour !",
+    "tab_upcoming": "À venir",
+    "tab_past": "Passées",
+    "empty_past": "Aucune session passée.",
+    "edit": "Modifier",
+    "edit_title": "Modifier la session",
+    "new_activity": "Nouvelle activité",
+    "next_title": "Votre prochaine session"
   }
 }

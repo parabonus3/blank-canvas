@@ -3266,6 +3266,14 @@
     "join": "Confirmar presença",
     "leave": "Retirar presença",
     "open_timer": "Abrir cronômetro",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "updated": "Sessão atualizada!",
+    "tab_upcoming": "Próximas",
+    "tab_past": "Anteriores",
+    "empty_past": "Nenhuma sessão anterior.",
+    "edit": "Editar",
+    "edit_title": "Editar sessão",
+    "new_activity": "Nova atividade",
+    "next_title": "Sua próxima sessão"
   }
 }
