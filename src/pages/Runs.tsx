@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { Footprints, Medal, Mountain, Route as RouteIcon, Timer, TrendingUp } from "lucide-react";
+import { Play, Footprints, Medal, Mountain, Route as RouteIcon, Timer, TrendingUp } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,6 +34,15 @@ export default function Runs() {
   const del = useDeleteGpsActivity();
   const [selected, setSelected] = useState<GpsActivity | null>(null);
   const [filter, setFilter] = useState<ActivityType | "all">("all");
+  const navigate = useNavigate();
+  const startNewActivity = () => {
+    const type = filter !== "all" ? filter : activities[0] ? normalizeActivityType(activities[0].activity_type) : null;
+    try {
+      localStorage.setItem("timezoni.runMode", "1");
+      if (type) localStorage.setItem("timezoni.runActivityType", type);
+    } catch {}
+    navigate("/timer?options=1");
+  };
 
   const availableTypes = useMemo(() => {
     const set = new Set<ActivityType>();
@@ -59,6 +70,7 @@ export default function Runs() {
             {t("runs.title")}
           </h1>
           <p className="text-sm text-muted-foreground">{t("runs.subtitle")}</p>
+          <Button className="mt-2 w-full sm:w-auto" onClick={startNewActivity}><Play className="h-4 w-4" />{t("room_sessions.new_activity")}</Button>
         </div>
 
         {/* Filtro por modalidade */}

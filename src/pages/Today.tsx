@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CheckCircle2, Clock3, Play, Target, Timer, Zap } from "lucide-react";
+import { CalendarClock, CheckCircle2, Clock3, Play, Target, Timer, Zap } from "lucide-react";
+import { useMyNextRoomSession } from "@/hooks/useRoomSessions";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
@@ -38,6 +39,7 @@ export default function Today() {
   const goals = goalsQuery.data ?? [];
   const routines = routinesQuery.data ?? [];
   const startTimer = useStartTimer();
+  const { data: nextSession } = useMyNextRoomSession();
 
   const todayStart = startOfDayInTz(new Date(), timezone);
   const todayEntries = entries.filter(entry => new Date(entry.start_time) >= todayStart && entry.duration);
@@ -93,6 +95,22 @@ export default function Today() {
                 <p className="truncate font-semibold">{activeEntry.project?.name}</p>
               </div>
               <Button size="sm" onClick={() => navigate("/timer")}>{t("today.open_timer")}</Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {nextSession && (
+          <Card>
+            <CardContent className="flex items-center gap-3 p-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                <CalendarClock className="h-5 w-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-primary">{t("room_sessions.next_title")}</p>
+                <p className="truncate font-semibold">{nextSession.title}</p>
+                <p className="text-xs text-muted-foreground">{formatInTz(new Date(nextSession.start_at), "EEE dd/MM HH:mm")}</p>
+              </div>
+              <Button size="sm" variant="outline" onClick={() => navigate(`/rooms/${nextSession.room_id}`)}>{t("common.open", "Abrir")}</Button>
             </CardContent>
           </Card>
         )}
