@@ -3125,5 +3125,26 @@
     "edit_title": "Modifier la session",
     "new_activity": "Nouvelle activité",
     "next_title": "Votre prochaine session"
+  },
+  "timesheet": {
+    "title": "Rapport mensuel",
+    "category": "Catégorie",
+    "project": "Projet",
+    "actual": "Réalisé (h:mm)",
+    "estimated": "Estimé (h:mm)",
+    "days": "Jours enregistrés",
+    "uncategorized": "Sans catégorie",
+    "subtotal": "Sous-total",
+    "total": "Total",
+    "start": "Début",
+    "end": "Fin",
+    "invalid": "Choisissez une période valide.",
+    "error": "Impossible de charger le rapport.",
+    "empty": "Aucune session terminée sur cette période.",
+    "estimate_note": "Estimations complètes des tâches enregistrées sur la période ; sessions en cours exclues.",
+    "paid": "CSV : Pro ou Premium · PDF : Premium",
+    "blocks": "Agenda du jour : {{count}} créneaux",
+    "over": "Estimation dépassée de {{time}}",
+    "month": "Mois"
   }
 }

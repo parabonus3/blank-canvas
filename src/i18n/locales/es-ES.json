@@ -3132,5 +3132,26 @@
     "edit_title": "Editar sesión",
     "new_activity": "Nueva actividad",
     "next_title": "Tu próxima sesión"
+  },
+  "timesheet": {
+    "title": "Informe mensual",
+    "category": "Categoría",
+    "project": "Proyecto",
+    "actual": "Realizado (h:mm)",
+    "estimated": "Estimado (h:mm)",
+    "days": "Días registrados",
+    "uncategorized": "Sin categoría",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "start": "Inicio",
+    "end": "Fin",
+    "invalid": "Elige un período válido.",
+    "error": "No se pudo cargar el informe.",
+    "empty": "No hay registros finalizados en este período.",
+    "estimate_note": "Estimaciones completas de tareas registradas en el período; sesiones en curso excluidas.",
+    "paid": "CSV: Pro o Premium · PDF: Premium",
+    "blocks": "Agenda de hoy: {{count}} bloques",
+    "over": "Estimación superada en {{time}}",
+    "month": "Mes"
   }
 }
