@@ -22,6 +22,7 @@ import { exportHistoryToPDF } from "@/lib/pdfExport";
 import { toast } from "sonner";
 import { useTimezone } from "@/hooks/useTimezone";
 import { ManualTimeEntryDialog } from "@/components/ManualTimeEntryDialog";
+import { TimesheetDialog } from "@/components/timer/TimesheetDialog";
 
 function formatDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600);
@@ -181,6 +182,7 @@ export default function History() {
             <p className="text-muted-foreground">{t('history.subtitle')}</p>
           </div>
           <div className="flex gap-2 flex-wrap">
+            <TimesheetDialog />
             <Button onClick={() => setShowManualEntry(true)} variant="outline" size="sm">
               <Plus className="h-4 w-4 sm:me-2" />
               <span className="hidden sm:inline">{t('history.add_manual_entry')}</span>

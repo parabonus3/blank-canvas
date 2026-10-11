@@ -33,7 +33,7 @@ function plannedMinutes(b: TimeBlock) {
 }
 
 /** Agenda do dia: blocos de horário com planejado vs. real e start do cronômetro. */
-export function DayAgendaCard({ className }: { className?: string }) {
+export function DayAgendaCard({ className, compact = false }: { className?: string; compact?: boolean }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const today = useMemo(() => new Date(), []);
@@ -97,6 +97,8 @@ export function DayAgendaCard({ className }: { className?: string }) {
     await startTimer.mutateAsync({ projectId: b.project_id, taskId: b.task_id });
     navigate("/timer");
   };
+
+  if (compact) return <div className={cn("flex items-center justify-between gap-3 border-y py-3", className)}><span className="text-sm">{t("timesheet.blocks", { count: blocks.length })}</span><Button variant="outline" size="sm" onClick={() => navigate("/today")}><CalendarClock className="h-4 w-4" />{t("today.title")}</Button></div>;
 
   return (
     <Card className={className}>
