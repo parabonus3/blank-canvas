@@ -55,6 +55,7 @@ export function EstimateBar({ trackedSeconds, estimatedMinutes, compact, classNa
         title={t("kanban.estimate_vs_real", "Estimado vs. real")}
       >
         {fmtHM(trackedSeconds)}/{fmtHM(estSec)}
+        {state === "over" && <span>{t("timesheet.over", { time: fmtHM(overSec) })}</span>}
       </span>
     );
   }
