@@ -8,6 +8,7 @@ import { useSaveTimeEntryTags } from "@/hooks/useTags";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { ActiveGoalsStrip } from "@/components/timer/ActiveGoalsStrip";
+import { TaskEstimateNotice } from "@/components/timer/TaskEstimateNotice";
 import { useProjects } from "@/hooks/useProjects";
 import { useActiveTimeEntry, useStartTimer, useStopTimer } from "@/hooks/useTimeEntries";
 import { useProfile } from "@/hooks/useProfile";
@@ -718,6 +719,7 @@ export default function Index() {
               )}
             </CardHeader>
             <CardContent className="space-y-6">
+              <TaskEstimateNotice taskId={activeEntry?.task_id} elapsed={elapsed} />
               {/* Timer Display */}
               <div className="text-center">
                 <div 

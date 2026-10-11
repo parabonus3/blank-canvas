@@ -3220,5 +3220,26 @@
     "edit_title": "Edit session",
     "new_activity": "New activity",
     "next_title": "Your next session"
+  },
+  "timesheet": {
+    "title": "Monthly report",
+    "category": "Category",
+    "project": "Project",
+    "actual": "Actual (h:mm)",
+    "estimated": "Estimated (h:mm)",
+    "days": "Days logged",
+    "uncategorized": "Uncategorized",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "start": "Start",
+    "end": "End",
+    "invalid": "Choose a valid period.",
+    "error": "Unable to load the report.",
+    "empty": "No completed entries in this period.",
+    "estimate_note": "Full estimates of tasks logged in the period; ongoing sessions excluded.",
+    "paid": "CSV: Pro or Premium · PDF: Premium",
+    "blocks": "Today’s agenda: {{count}} blocks",
+    "over": "Estimate exceeded by {{time}}",
+    "month": "Month"
   }
 }

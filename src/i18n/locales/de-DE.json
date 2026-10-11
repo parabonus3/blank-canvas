@@ -3125,5 +3125,26 @@
     "edit_title": "Session bearbeiten",
     "new_activity": "Neue Aktivität",
     "next_title": "Deine nächste Session"
+  },
+  "timesheet": {
+    "title": "Monatsbericht",
+    "category": "Kategorie",
+    "project": "Projekt",
+    "actual": "Ist (h:mm)",
+    "estimated": "Geschätzt (h:mm)",
+    "days": "Erfasste Tage",
+    "uncategorized": "Ohne Kategorie",
+    "subtotal": "Zwischensumme",
+    "total": "Gesamt",
+    "start": "Beginn",
+    "end": "Ende",
+    "invalid": "Wähle einen gültigen Zeitraum.",
+    "error": "Bericht konnte nicht geladen werden.",
+    "empty": "Keine abgeschlossenen Einträge in diesem Zeitraum.",
+    "estimate_note": "Vollständige Schätzungen der im Zeitraum erfassten Aufgaben; laufende Sitzungen ausgeschlossen.",
+    "paid": "CSV: Pro oder Premium · PDF: Premium",
+    "blocks": "Heutiger Zeitplan: {{count}} Blöcke",
+    "over": "Schätzung um {{time}} überschritten",
+    "month": "Monat"
   }
 }

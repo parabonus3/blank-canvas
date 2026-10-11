@@ -3111,5 +3111,26 @@
     "edit_title": "세션 편집",
     "new_activity": "새 활동",
     "next_title": "다음 세션"
+  },
+  "timesheet": {
+    "title": "월간 보고서",
+    "category": "카테고리",
+    "project": "프로젝트",
+    "actual": "실제 (시간:분)",
+    "estimated": "예상 (시간:분)",
+    "days": "기록된 일수",
+    "uncategorized": "미분류",
+    "subtotal": "소계",
+    "total": "합계",
+    "start": "시작",
+    "end": "종료",
+    "invalid": "유효한 기간을 선택하세요.",
+    "error": "보고서를 불러올 수 없습니다.",
+    "empty": "이 기간에 완료된 기록이 없습니다.",
+    "estimate_note": "기간 내 기록된 작업의 전체 예상 시간이며 진행 중인 세션은 제외됩니다.",
+    "paid": "CSV: Pro 또는 Premium · PDF: Premium",
+    "blocks": "오늘 일정: {{count}} 블록",
+    "over": "예상 시간 {{time}} 초과",
+    "month": "월"
   }
 }

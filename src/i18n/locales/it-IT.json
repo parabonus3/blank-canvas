@@ -3111,5 +3111,26 @@
     "edit_title": "Modifica sessione",
     "new_activity": "Nuova attività",
     "next_title": "La tua prossima sessione"
+  },
+  "timesheet": {
+    "title": "Report mensile",
+    "category": "Categoria",
+    "project": "Progetto",
+    "actual": "Effettivo (h:mm)",
+    "estimated": "Stimato (h:mm)",
+    "days": "Giorni registrati",
+    "uncategorized": "Senza categoria",
+    "subtotal": "Subtotale",
+    "total": "Totale",
+    "start": "Inizio",
+    "end": "Fine",
+    "invalid": "Scegli un periodo valido.",
+    "error": "Impossibile caricare il report.",
+    "empty": "Nessuna sessione conclusa nel periodo.",
+    "estimate_note": "Stime complete delle attività registrate nel periodo; sessioni in corso escluse.",
+    "paid": "CSV: Pro o Premium · PDF: Premium",
+    "blocks": "Agenda di oggi: {{count}} blocchi",
+    "over": "Stima superata di {{time}}",
+    "month": "Mese"
   }
 }

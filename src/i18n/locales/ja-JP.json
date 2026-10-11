@@ -3125,5 +3125,26 @@
     "edit_title": "セッションを編集",
     "new_activity": "新しいアクティビティ",
     "next_title": "次のセッション"
+  },
+  "timesheet": {
+    "title": "月次レポート",
+    "category": "カテゴリー",
+    "project": "プロジェクト",
+    "actual": "実績（時間:分）",
+    "estimated": "見積もり（時間:分）",
+    "days": "記録日数",
+    "uncategorized": "未分類",
+    "subtotal": "小計",
+    "total": "合計",
+    "start": "開始",
+    "end": "終了",
+    "invalid": "有効な期間を選択してください。",
+    "error": "レポートを読み込めませんでした。",
+    "empty": "この期間に完了した記録はありません。",
+    "estimate_note": "期間内に記録のあるタスクの全見積もり。進行中のセッションは含みません。",
+    "paid": "CSV：Pro または Premium · PDF：Premium",
+    "blocks": "今日の予定：{{count}} ブロック",
+    "over": "見積もりを {{time}} 超過",
+    "month": "月"
   }
 }

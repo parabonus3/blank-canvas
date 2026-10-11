@@ -3125,5 +3125,26 @@
     "edit_title": "编辑时段",
     "new_activity": "新活动",
     "next_title": "你的下一个时段"
+  },
+  "timesheet": {
+    "title": "月度报告",
+    "category": "类别",
+    "project": "项目",
+    "actual": "实际（小时:分钟）",
+    "estimated": "预计（小时:分钟）",
+    "days": "记录天数",
+    "uncategorized": "未分类",
+    "subtotal": "小计",
+    "total": "总计",
+    "start": "开始",
+    "end": "结束",
+    "invalid": "请选择有效时间段。",
+    "error": "无法加载报告。",
+    "empty": "此期间没有已完成的记录。",
+    "estimate_note": "期间内有记录的任务的完整预计时间；不包含进行中的会话。",
+    "paid": "CSV：Pro 或 Premium · PDF：Premium",
+    "blocks": "今日日程：{{count}} 个时间块",
+    "over": "超出预计 {{time}}",
+    "month": "月份"
   }
 }

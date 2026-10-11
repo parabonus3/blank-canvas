@@ -140,7 +140,7 @@ export default function Tasks() {
 
         <BoardInvitationsBanner />
 
-        <DayAgendaCard />
+        <DayAgendaCard compact />
 
 
         {isLoading ? (

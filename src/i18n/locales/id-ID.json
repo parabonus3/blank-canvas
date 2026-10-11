@@ -3125,5 +3125,26 @@
     "edit_title": "Edit sesi",
     "new_activity": "Aktivitas baru",
     "next_title": "Sesi berikutnya"
+  },
+  "timesheet": {
+    "title": "Laporan bulanan",
+    "category": "Kategori",
+    "project": "Proyek",
+    "actual": "Aktual (j:mm)",
+    "estimated": "Perkiraan (j:mm)",
+    "days": "Hari tercatat",
+    "uncategorized": "Tanpa kategori",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "start": "Mulai",
+    "end": "Selesai",
+    "invalid": "Pilih periode yang valid.",
+    "error": "Laporan tidak dapat dimuat.",
+    "empty": "Tidak ada catatan selesai pada periode ini.",
+    "estimate_note": "Perkiraan penuh tugas yang dicatat pada periode ini; sesi berjalan tidak disertakan.",
+    "paid": "CSV: Pro atau Premium · PDF: Premium",
+    "blocks": "Agenda hari ini: {{count}} blok",
+    "over": "Perkiraan terlampaui {{time}}",
+    "month": "Bulan"
   }
 }
