@@ -32,12 +32,12 @@ export function TimesheetDialog() {
     { header: t("timesheet.project"), accessor: (r: typeof rows[number]) => r.project || "—" },
     { header: t("timesheet.actual"), accessor: (r: typeof rows[number]) => sheetDuration(r.seconds) },
     { header: t("timesheet.estimated"), accessor: (r: typeof rows[number]) => r.estimatedMinutes ? sheetDuration(r.estimatedMinutes*60) : "—" },
-    { header: t("timesheet.days"), accessor: (r: typeof rows[number]) => r.days },
+    { header: t("timesheet.days"), accessor: (r: typeof rows[number]) => r.days || "—" },
   ];
   const categories = [...new Set(rows.map(r => r.category))];
   const exportRows = categories.flatMap(category => {
     const items = rows.filter(r => r.category === category);
-    return [...items, { projectId: "", category, project: t("timesheet.subtotal"), seconds: items.reduce((s,r) => s+r.seconds,0), estimatedMinutes: items.reduce((s,r) => s+r.estimatedMinutes,0), sessions: 0, days: null, tasks: new Map<string,number>() }];
+    return [...items, { projectId: "", category, project: t("timesheet.subtotal"), seconds: items.reduce((s,r) => s+r.seconds,0), estimatedMinutes: items.reduce((s,r) => s+r.estimatedMinutes,0), sessions: 0, days: 0, tasks: new Map<string,number>() }];
   });
   const csv = () => exportToCSV([...exportRows, { projectId: "", category: "", project: t("timesheet.total"), seconds: data?.seconds || 0, estimatedMinutes: 0, sessions: 0, days: data?.days || 0, tasks: new Map<string,number>() }], columns, `Timezoni-${start}-${end}`);
   const print = () => {
