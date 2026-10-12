@@ -7,6 +7,7 @@ import { useRef } from "react";
 export interface TimeEntry {
   id: string;
   project_id: string;
+  task_id: string | null;
   start_time: string;
   end_time: string | null;
   duration: number | null;
