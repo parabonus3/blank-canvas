@@ -6,3 +6,4 @@
 - Scheduled room sessions use room-member RLS, manager-only writes, self-only attendance RPCs, room-timezone display, and uniquely named realtime channels; this prevents forged attendance and channel reuse.
 - Timesheets paginate completed entries and group by profile-local start date; each linked task estimate is counted once per project, and exports follow existing subscription feature gates.
 - Task estimate notices add the active timer to stored completed time without stopping or altering the session; this avoids double counting and preserves timer behavior.
+- Monthly PDF exports render paginated browser-shaped text into jsPDF, while spreadsheets reuse the CSV exporter; this preserves non-Latin scripts without changing existing export modules.

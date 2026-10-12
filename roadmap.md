@@ -20,7 +20,8 @@
   - [x] Encerrar duelos vencidos automaticamente e avisar resultado/recusa
   - [x] Editar sessões, histórico, avatares, avisos de alteração/cancelamento e próxima sessão em Hoje
   - [x] Início rápido de nova atividade no histórico de corridas
-  - [ ] Relatório mensal de horas, agenda compacta e alerta de estimativa (Fase 7 em implementação)
+  - [x] Relatório mensal de horas, agenda compacta e alerta de estimativa (Fase 7): implementação e testes de cálculo concluídos
+  - [ ] Validar a Fase 7 com conta real no celular — acesso autenticado indisponível neste ambiente Supabase externo
   - [ ] Qualidade: alertas de segurança antigos e textos de reserva (Fase 8)
   - [x] Proteger respostas e encerramento de duelos
   - [x] Criar, listar, cancelar e confirmar presença em sessões agendadas
