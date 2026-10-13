@@ -10,6 +10,8 @@
 
 ## Evolução integrada e mobile-first
 
+- [ ] Melhorar Conquistas: sequência realista contínua, imagens leves, leitura anual compartilhada e validação móvel
+
 - [x] Estabilizar o mapa mental: salvamento confiável, desfazer/refazer, exclusão segura, i18n e acessibilidade
 - [x] Conectar mapas mentais a projetos, tarefas, metas, notas e cronômetro
 - [ ] Criar a base móvel: implementação concluída; validação autenticada aguarda sessão disponível no ambiente
