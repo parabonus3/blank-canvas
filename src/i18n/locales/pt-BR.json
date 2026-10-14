@@ -15,7 +15,8 @@
     "back": "Voltar",
     "next": "Próximo",
     "just_now": "agora",
-    "someone": "Alguém"
+    "someone": "Alguém",
+    "retry": "Tentar novamente"
   },
   "landing": {
     "tagline_1": "Seu tempo",
