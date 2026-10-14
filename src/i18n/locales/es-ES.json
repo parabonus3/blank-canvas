@@ -13,7 +13,8 @@
     "back": "Atrás",
     "next": "Siguiente",
     "just_now": "ahora",
-    "someone": "Alguien"
+    "someone": "Alguien",
+    "retry": "Reintentar"
   },
   "landing": {
     "tagline_1": "Tu tiempo",

@@ -30,7 +30,7 @@ import { Link } from "react-router-dom";
 export default function Achievements() {
   const { t } = useTranslation();
    const { hasFeature } = useSubscription();
-   const { data: progress, isLoading } = useEnhancedAnnualProgress();
+   const { data: progress, isLoading, isError, refetch } = useEnhancedAnnualProgress();
    const { data: todayHours = 0 } = useTodayHours();
    const { data: monthlyData } = useEnhancedMonthlyBreakdown();
    const { data: dailyData = [] } = useDailyData();
@@ -80,9 +80,17 @@ export default function Achievements() {
     );
   }
 
-  // Calculate stats
-  const currentDate = new Date();
-  const dayOfYear = Math.floor((currentDate.getTime() - new Date(currentDate.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+  if (isError) {
+    return <MainLayout><div className="flex flex-col items-center gap-4 py-20">
+      <h1 className="text-xl font-semibold">{t('achievements.title')}</h1>
+      <p className="text-muted-foreground">{t('common.error')}</p>
+      <Button onClick={() => void refetch()}>{t('common.retry')}</Button>
+    </div></MainLayout>;
+  }
+
+  // Count calendar dates, not 24-hour periods, in the profile-local year.
+  const localToday = progress?.localToday || new Date().toISOString().slice(0, 10);
+  const dayOfYear = Math.floor((Date.parse(`${localToday}T00:00:00Z`) - Date.UTC(Number(localToday.slice(0, 4)), 0, 1)) / 86400000) + 1;
   const avgHoursPerDay = progress?.totalHours && dayOfYear > 0 ? progress.totalHours / dayOfYear : 0;
   const hoursRemaining = (progress?.yearlyGoal || 1100) - (progress?.totalHours || 0);
   const daysToComplete = avgHoursPerDay > 0 ? Math.ceil(hoursRemaining / avgHoursPerDay) : null;
@@ -195,8 +203,8 @@ export default function Achievements() {
           <Card className="overflow-hidden">
             <CardContent className="p-4 sm:p-6 flex flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30 overflow-hidden min-w-0">
               {isViewing && (
-                <div className="w-full flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="w-full flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
                     <Eye className="h-4 w-4" />
                     <span>
                       {t('achievements.viewing')}: {viewingMilestone 

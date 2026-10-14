@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
 import { useTimezone } from "@/hooks/useTimezone";
 
 interface DayData {
@@ -40,8 +40,9 @@ function getLevelLabelKey(hours: number): string {
 
 export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
   const { t } = useTranslation();
-  const { formatInTz } = useTimezone();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const { nowTz, locale, formatInTz } = useTimezone();
+  const [currentDate, setCurrentDate] = useState(() => nowTz());
+  const todayKey = formatInTz(new Date(), 'yyyy-MM-dd');
   
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -88,7 +89,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
     t('achievements.day_fri'),
     t('achievements.day_sat')
   ];
-  const dayNamesShort = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+  const dayNamesShort = dayNamesFull.map(day => day.slice(0, 1));
   
   return (
     <Card className="w-full overflow-hidden">
@@ -103,7 +104,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <span className="text-xs sm:text-sm font-medium text-center whitespace-nowrap px-1">
-              {formatInTz(currentDate, 'MMM yyyy')}
+              {format(currentDate, 'MMM yyyy', { locale })}
             </span>
             <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-9 sm:w-9" onClick={nextMonth}>
               <ChevronRight className="h-4 w-4" />
@@ -141,7 +142,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
                       className={cn(
                         "aspect-square rounded-md flex items-center justify-center text-[10px] sm:text-xs font-medium cursor-pointer transition-all hover:ring-2 hover:ring-primary/50",
                         getColorClass(hours),
-                        isToday(day) && "ring-2 ring-primary",
+                        dateStr === todayKey && "ring-2 ring-primary",
                         hours >= 3 && "text-primary-foreground"
                       )}
                     >
@@ -150,7 +151,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
                   </TooltipTrigger>
                   <TooltipContent>
                     <div className="text-sm">
-                      <p className="font-bold">{formatInTz(day, 'd MMMM')}</p>
+                      <p className="font-bold">{format(day, 'd MMMM', { locale })}</p>
                       <p className="text-muted-foreground">{hours.toFixed(1)} {t('achievements.hours')}</p>
                       <p className="text-primary text-xs mt-1">{t(getLevelLabelKey(hours))}</p>
                     </div>

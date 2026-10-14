@@ -13,7 +13,8 @@
     "back": "戻る",
     "next": "次へ",
     "just_now": "たった今",
-    "someone": "誰か"
+    "someone": "誰か",
+    "retry": "再試行"
   },
   "landing": {
     "tagline_1": "あなたの時間",

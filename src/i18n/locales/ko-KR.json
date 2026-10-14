@@ -13,7 +13,8 @@
     "back": "뒤로",
     "next": "다음",
     "just_now": "방금",
-    "someone": "누군가"
+    "someone": "누군가",
+    "retry": "다시 시도"
   },
   "landing": {
     "tagline_1": "당신의 시간",
