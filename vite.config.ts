@@ -42,6 +42,7 @@ export default defineConfig(({ mode }) => ({
           /\/functions\/v1\//,
         ],
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
+        globIgnores: ["**/level-*.webp", "**/level-*.jpg"],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
 
         runtimeCaching: [

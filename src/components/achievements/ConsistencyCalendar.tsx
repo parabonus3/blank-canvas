@@ -104,7 +104,7 @@ export function ConsistencyCalendar({ dailyData }: ConsistencyCalendarProps) {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <span className="text-xs sm:text-sm font-medium text-center whitespace-nowrap px-1">
-              {formatInTz(currentDate, 'MMM yyyy')}
+              {format(currentDate, 'MMM yyyy', { locale })}
             </span>
             <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-9 sm:w-9" onClick={nextMonth}>
               <ChevronRight className="h-4 w-4" />
