@@ -10,7 +10,9 @@
 
 ## Evolução integrada e mobile-first
 
-- [ ] Melhorar Conquistas: sequência realista contínua, imagens leves, leitura anual compartilhada e validação móvel
+- [x] Conquistas: catálogo realista em todos os marcos, imagens leves e leitura anual compartilhada no fuso do perfil
+- [ ] Conquistas: validar prévias e atualização após salvar tempo com conta real no celular — acesso autenticado indisponível no Supabase externo
+- [ ] Decidir diferença entre nível final em 1.098h e meta anual de 1.100h — critérios atuais preservados até decisão do usuário
 
 - [x] Estabilizar o mapa mental: salvamento confiável, desfazer/refazer, exclusão segura, i18n e acessibilidade
 - [x] Conectar mapas mentais a projetos, tarefas, metas, notas e cronômetro
