@@ -366,7 +366,7 @@ export default function Achievements() {
 
         {/* Unlocked Achievements Section */}
         <UnlockedAchievements 
-          currentLevel={currentLevel} 
+          currentLevel={isAdmin ? 366 : currentLevel} 
           onMilestoneClick={handleMilestoneClick}
           activeMilestoneLevel={viewingMilestoneLevel}
         />
