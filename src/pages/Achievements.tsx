@@ -26,6 +26,9 @@ import { cn } from "@/lib/utils";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { getTreeImageUrl } from "@/lib/treeImages";
+import { getTreeVisualLevel } from "@/lib/treeVisual";
 
 export default function Achievements() {
   const { t } = useTranslation();
@@ -37,12 +40,13 @@ export default function Achievements() {
    const [viewingPhase, setViewingPhase] = useState<string | null>(null);
    const [viewingMilestoneLevel, setViewingMilestoneLevel] = useState<number | null>(null);
    const { remaining, used, total, hasFreezes } = useStreakFreeze();
-   const currentLevel = progress?.level || 0;
+    const currentLevel = progress?.level || 0;
+   const { isAdmin } = useIsAdmin();
 
-   // Navigation through unlocked milestones (must be before early return)
+   // Admins can inspect every milestone; everyone else only unlocked ones.
    const unlockedMilestones = useMemo(() => 
-     LEVEL_MILESTONES.filter(m => m.level <= currentLevel), 
-     [currentLevel]
+     isAdmin ? LEVEL_MILESTONES : LEVEL_MILESTONES.filter(m => m.level <= currentLevel), 
+     [currentLevel, isAdmin]
    );
 
   if (!hasFeature("achievements")) {
