@@ -5,7 +5,13 @@ import { getTreeVisualLevel } from './treeVisual';
 import { calculateTreeLevel, YEARLY_GOAL_HOURS } from './treeConfig';
 
 describe('achievement visuals preserve earned milestones', () => {
-  it.each([[0,0],[1,1],[10,10],[11,10],[30,30],[31,30],[34,30],[35,35],[357,353],[358,358],[366,366]])('level %i uses milestone %i', (level, expected) => {
+  it.each([
+    [0, 0], [1, 1], [10, 10], [11, 10], [30, 30], [31, 30], [34, 30], [35, 35],
+    [199, 180], [200, 200], [266, 260], [267, 267], [274, 267], [275, 275],
+    [332, 325], [333, 333], [337, 333], [338, 338], [347, 343], [348, 348],
+    [352, 348], [353, 353], [357, 353], [358, 358], [362, 358], [363, 363],
+    [365, 363], [366, 366],
+  ])('level %i uses milestone %i', (level, expected) => {
     expect(getTreeVisualLevel(level)).toBe(expected);
   });
   it('preserves the existing 1098-hour final level and separate 1100-hour goal', () => {
