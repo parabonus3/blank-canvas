@@ -26,6 +26,8 @@ import { cn } from "@/lib/utils";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { TREE_VISUAL_LEVELS } from "@/lib/treeVisual";
 
 export default function Achievements() {
   const { t } = useTranslation();
@@ -37,12 +39,13 @@ export default function Achievements() {
    const [viewingPhase, setViewingPhase] = useState<string | null>(null);
    const [viewingMilestoneLevel, setViewingMilestoneLevel] = useState<number | null>(null);
    const { remaining, used, total, hasFreezes } = useStreakFreeze();
-   const currentLevel = progress?.level || 0;
+    const currentLevel = progress?.level || 0;
+   const { isAdmin } = useIsAdmin();
 
-   // Navigation through unlocked milestones (must be before early return)
+   // Admins can inspect every milestone; everyone else only unlocked ones.
    const unlockedMilestones = useMemo(() => 
-     LEVEL_MILESTONES.filter(m => m.level <= currentLevel), 
-     [currentLevel]
+     isAdmin ? LEVEL_MILESTONES : LEVEL_MILESTONES.filter(m => m.level <= currentLevel), 
+     [currentLevel, isAdmin]
    );
 
   if (!hasFeature("achievements")) {
@@ -202,6 +205,31 @@ export default function Achievements() {
           {/* Tree Section */}
           <Card className="overflow-hidden">
             <CardContent className="p-4 sm:p-6 flex flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30 overflow-hidden min-w-0">
+              {isAdmin && (
+                <div className="w-full mb-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 p-2">
+                  <p className="text-xs font-medium text-primary mb-2">
+                    {t('achievements.admin_inspect', { defaultValue: 'Admin: all stages unlocked' })}
+                  </p>
+                  <div className="grid grid-cols-6 sm:grid-cols-10 gap-1 max-h-40 overflow-y-auto">
+                    {TREE_VISUAL_LEVELS.map(lv => {
+                      const active = (viewLevel ?? currentLevel) === lv;
+                      return (
+                        <button
+                          key={lv}
+                          type="button"
+                          onClick={() => { setViewingMilestoneLevel(lv); setViewingPhase(null); }}
+                          className={cn(
+                            "rounded px-1 py-1 text-xs tabular-nums border transition-colors",
+                            active ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted"
+                          )}
+                        >
+                          {lv}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               {isViewing && (
                 <div className="w-full flex flex-wrap items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
@@ -338,7 +366,7 @@ export default function Achievements() {
 
         {/* Unlocked Achievements Section */}
         <UnlockedAchievements 
-          currentLevel={currentLevel} 
+          currentLevel={isAdmin ? 366 : currentLevel} 
           onMilestoneClick={handleMilestoneClick}
           activeMilestoneLevel={viewingMilestoneLevel}
         />
