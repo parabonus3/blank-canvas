@@ -205,6 +205,31 @@ export default function Achievements() {
           {/* Tree Section */}
           <Card className="overflow-hidden">
             <CardContent className="p-4 sm:p-6 flex flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30 overflow-hidden min-w-0">
+              {isAdmin && (
+                <div className="w-full mb-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 p-2">
+                  <p className="text-xs font-medium text-primary mb-2">
+                    {t('achievements.admin_inspect', { defaultValue: 'Admin: all stages unlocked' })}
+                  </p>
+                  <div className="grid grid-cols-6 sm:grid-cols-10 gap-1 max-h-40 overflow-y-auto">
+                    {TREE_VISUAL_LEVELS.map(lv => {
+                      const active = (viewLevel ?? currentLevel) === lv;
+                      return (
+                        <button
+                          key={lv}
+                          type="button"
+                          onClick={() => { setViewingMilestoneLevel(lv); setViewingPhase(null); }}
+                          className={cn(
+                            "rounded px-1 py-1 text-xs tabular-nums border transition-colors",
+                            active ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted"
+                          )}
+                        >
+                          {lv}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               {isViewing && (
                 <div className="w-full flex flex-wrap items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
