@@ -27,8 +27,7 @@ import { useSubscription } from "@/contexts/SubscriptionContext";
 import { Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { getTreeImageUrl } from "@/lib/treeImages";
-import { getTreeVisualLevel } from "@/lib/treeVisual";
+import { TREE_VISUAL_LEVELS } from "@/lib/treeVisual";
 
 export default function Achievements() {
   const { t } = useTranslation();
