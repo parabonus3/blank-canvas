@@ -34,7 +34,6 @@ export function EnhancedGrowthTree({ level, size = 'lg', viewLevel }: EnhancedGr
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const visualLevel = getTreeVisualLevel(viewLevel ?? level);
-  const src = getTreeImage(visualLevel);
   const [shown, setShown] = useState<{ src: string; level: number }>();
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -54,17 +53,19 @@ export function EnhancedGrowthTree({ level, size = 'lg', viewLevel }: EnhancedGr
   useEffect(() => {
     let cancelled = false;
     setFailed(false);
-    if (!src) { setFailed(true); return; }
-    prepareImage(src).then(() => {
+    const imageRequest = getTreeImage(visualLevel);
+    if (!imageRequest) { setFailed(true); return; }
+    imageRequest.then(async src => {
+      await prepareImage(src);
       if (cancelled) return;
       setShown({ src, level: visualLevel });
       for (const neighbor of getTreeVisualNeighbors(visualLevel)) {
-        const next = getTreeImage(neighbor);
-        if (next && next !== src) void prepareImage(next).catch(() => {});
+        const nextRequest = getTreeImage(neighbor);
+        if (nextRequest) void nextRequest.then(prepareImage).catch(() => {});
       }
     }).catch(() => { if (!cancelled) setFailed(true); });
     return () => { cancelled = true; };
-  }, [src, visualLevel, attempt]);
+  }, [visualLevel, attempt]);
 
   return (
     <div className={`relative w-full aspect-[3/4] ${size === 'sm' ? 'max-w-[150px]' : size === 'md' ? 'max-w-[220px]' : 'max-w-[280px]'}`} aria-busy={!shown && !failed}>
