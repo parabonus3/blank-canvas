@@ -11,6 +11,8 @@
 ## Evolução integrada e mobile-first
 
 - [x] Conquistas: catálogo realista em todos os marcos, imagens leves e leitura anual compartilhada no fuso do perfil
+- [x] Conquistas Parte A: aplicar as 23 imagens aprovadas dos níveis 200–366 sem alterar progresso
+- [ ] Conquistas Partes B/C: revisar crescimento 120–200 e regressões 22–110; substituir somente após aprovação visual do usuário
 - [ ] Conquistas: validar prévias e atualização após salvar tempo com conta real no celular — acesso autenticado indisponível no Supabase externo
 - [ ] Decidir diferença entre nível final em 1.098h e meta anual de 1.100h — critérios atuais preservados até decisão do usuário
 
