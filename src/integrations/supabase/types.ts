@@ -734,38 +734,108 @@ export type Database = {
           },
         ]
       }
-      focus_routines: {
+      focus_routine_runs: {
         Row: {
           created_at: string
+          ended_at: string | null
+          id: string
+          local_date: string
+          routine_id: string
+          started_at: string
+          status: string
+          steps_done: number
+          steps_skipped: number
+          steps_total: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          local_date: string
+          routine_id: string
+          started_at?: string
+          status?: string
+          steps_done?: number
+          steps_skipped?: number
+          steps_total?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          local_date?: string
+          routine_id?: string
+          started_at?: string
+          status?: string
+          steps_done?: number
+          steps_skipped?: number
+          steps_total?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_routine_runs_routine_id_fkey"
+            columns: ["routine_id"]
+            isOneToOne: false
+            referencedRelation: "focus_routines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      focus_routines: {
+        Row: {
+          color: string | null
+          created_at: string
           emoji: string | null
+          goal_id: string | null
           id: string
           position: number
           steps: Json
           title: string
           updated_at: string
           user_id: string
+          weekdays: number[]
         }
         Insert: {
+          color?: string | null
           created_at?: string
           emoji?: string | null
+          goal_id?: string | null
           id?: string
           position?: number
           steps?: Json
           title: string
           updated_at?: string
           user_id: string
+          weekdays?: number[]
         }
         Update: {
+          color?: string | null
           created_at?: string
           emoji?: string | null
+          goal_id?: string | null
           id?: string
           position?: number
           steps?: Json
           title?: string
           updated_at?: string
           user_id?: string
+          weekdays?: number[]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "focus_routines_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       freeze_missions: {
         Row: {
