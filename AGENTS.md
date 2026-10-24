@@ -8,4 +8,4 @@
 - Task estimate notices add the active timer to stored completed time without stopping or altering the session; this avoids double counting and preserves timer behavior.
 - Monthly PDF exports render paginated browser-shaped text into jsPDF, while spreadsheets reuse the CSV exporter; this preserves non-Latin scripts without changing existing export modules.
 - Achievement totals, days and months derive from one paginated profile-local annual read under the timeEntries cache prefix; this keeps existing session mutations consistent without changing the timer.
-- Achievement visuals map to earned milestones, use build-converted images and decode before replacing the displayed image; this avoids empty intermediate levels and eager collection downloads.
+- Achievement visuals map to earned milestones, use build-converted images and decode before replacing the displayed image; this avoids empty intermediate levels and eager collection downloads.- Focus routine day status comes from focus_routine_runs keyed by profile-local date through one pure helper; routines never alter time entries or streaks, and linked checklist items are only marked after user confirmation.
