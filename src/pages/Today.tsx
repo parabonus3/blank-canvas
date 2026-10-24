@@ -18,7 +18,6 @@ import { useFocusRoutines, useRoutineRuns } from "@/hooks/useFocusRoutines";
 import { routineDayStatus, todayKeyFor, weekdayOfKey } from "@/lib/routineStatus";
 import { STATUS_STYLES } from "@/lib/routineAppearance";
 import { useTimezone } from "@/hooks/useTimezone";
-import { useTimezone } from "@/hooks/useTimezone";
 import { startOfDayInTz } from "@/lib/timezone";
 
 function formatMinutes(minutes: number, hourLabel: string, minuteLabel: string) {
@@ -61,7 +60,7 @@ export default function Today() {
     .slice(0, 3), [tasks]);
 
   const activeGoal = [...goals].filter(goal => goal.status !== "completed").sort((a, b) => b.progress - a.progress)[0];
-  const { timezone: routineTz } = useTimezone();
+  const routineTz = timezone;
   const { data: routineRuns = [] } = useRoutineRuns(7);
   const routineToday = todayKeyFor(routineTz);
   const firstRoutine =
