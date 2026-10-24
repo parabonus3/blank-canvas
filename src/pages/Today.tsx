@@ -14,7 +14,10 @@ import { Progress } from "@/components/ui/progress";
 import { useAllUserTasks } from "@/hooks/useTasks";
 import { useActiveTimeEntry, useStartTimer, useTimeEntries } from "@/hooks/useTimeEntries";
 import { useGoalsWithProgress } from "@/hooks/useGoals";
-import { useFocusRoutines } from "@/hooks/useFocusRoutines";
+import { useFocusRoutines, useRoutineRuns } from "@/hooks/useFocusRoutines";
+import { routineDayStatus, todayKeyFor, weekdayOfKey } from "@/lib/routineStatus";
+import { STATUS_STYLES } from "@/lib/routineAppearance";
+import { useTimezone } from "@/hooks/useTimezone";
 import { useTimezone } from "@/hooks/useTimezone";
 import { startOfDayInTz } from "@/lib/timezone";
 
@@ -58,7 +61,14 @@ export default function Today() {
     .slice(0, 3), [tasks]);
 
   const activeGoal = [...goals].filter(goal => goal.status !== "completed").sort((a, b) => b.progress - a.progress)[0];
-  const firstRoutine = routines[0];
+  const { timezone: routineTz } = useTimezone();
+  const { data: routineRuns = [] } = useRoutineRuns(7);
+  const routineToday = todayKeyFor(routineTz);
+  const firstRoutine =
+    routines.find((r) => r.weekdays.includes(weekdayOfKey(routineToday))) ?? routines[0];
+  const firstRoutineStatus = firstRoutine
+    ? routineDayStatus(routineRuns.filter((x) => x.routine_id === firstRoutine.id), firstRoutine.weekdays, routineToday, routineToday)
+    : "none";
   const isLoading = tasksQuery.isLoading || entriesQuery.isLoading || goalsQuery.isLoading || routinesQuery.isLoading;
   const hasError = tasksQuery.isError || entriesQuery.isError || goalsQuery.isError || routinesQuery.isError;
 
@@ -167,13 +177,14 @@ export default function Today() {
         )}
 
         {!isLoading && firstRoutine && (
-          <section className="flex items-center gap-3 rounded-md border p-4">
+          <section className={`flex items-center gap-3 rounded-md border-2 p-4 ${STATUS_STYLES[firstRoutineStatus].card}`}>
             <span className="text-2xl">{firstRoutine.emoji || "▶"}</span>
             <div className="min-w-0 flex-1">
               <p className="text-xs text-muted-foreground">{t("today.routine")}</p>
               <p className="truncate text-sm font-semibold">{firstRoutine.title}</p>
+              <p className="text-[11px] text-muted-foreground">{t(`routines.status_${firstRoutineStatus}`)}</p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => navigate(`/timer?options=1&routine=${firstRoutine.id}`)}>{t("today.open")}</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate(`/timer?routine=${firstRoutine.id}`)}>{t("today.open")}</Button>
           </section>
         )}
 
