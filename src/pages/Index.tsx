@@ -795,20 +795,21 @@ export default function Index() {
                          onActivityTypeChange={setRunActivityType}
                        />
                        <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
-                       {routineRun.run && routineRun.currentStep ? (
-                         <RoutineRunBar
-                           run={routineRun.run}
-                           currentStep={routineRun.currentStep}
-                           isRunning={isRunning}
-                           onComplete={routineRun.completeCurrent}
-                           onSkip={routineRun.skipCurrent}
-                           onStop={routineRun.stop}
-                         />
-                       ) : (
-                         <FocusRoutinesCard onStart={handleStartRoutine} />
-                       )}
                      </CollapsibleContent>
                    </Collapsible>
+
+                  {routineRun.run && routineRun.currentStep ? (
+                    <RoutineRunBar
+                      run={routineRun.run}
+                      currentStep={routineRun.currentStep}
+                      isRunning={isRunning}
+                      onComplete={routineRun.completeCurrent}
+                      onSkip={routineRun.skipCurrent}
+                      onStop={routineRun.stop}
+                    />
+                  ) : (
+                    <FocusRoutinesCard onStart={handleStartRoutine} />
+                  )}
 
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">
