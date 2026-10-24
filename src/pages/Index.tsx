@@ -44,6 +44,8 @@ import { RunLivePanel } from "@/components/gps/RunLivePanel";
 import { DeepWorkPicker } from "@/components/timer/DeepWorkPicker";
 import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
 import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
+import { ToastAction } from "@/components/ui/toast";
+import { useToggleChecklist } from "@/hooks/useChecklists";
 import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
 import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
 import { useFocusRoutines, useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
@@ -106,6 +108,7 @@ export default function Index() {
   const [optionsOpen, setOptionsOpen] = useState(() => new URLSearchParams(window.location.search).get("options") === "1");
   const saveFocusCommitment = useSaveFocusCommitment();
   const routineRun = useRoutineRun();
+  const toggleChecklist = useToggleChecklist();
   const { data: focusRoutines = [], isLoading: focusRoutinesLoading } = useFocusRoutines();
 
 
@@ -155,6 +158,21 @@ export default function Index() {
     const run = routineRun.run;
     if (!run) return;
     routineRun.completeCurrent();
+    const finished = run.steps[run.index];
+    if (finished?.kind === "focus" && finished.checklistId) {
+      const checklistId = finished.checklistId;
+      toast({
+        title: t("routines.checklist_prompt", "Marcar o item do checklist como feito?"),
+        action: (
+          <ToastAction
+            altText={t("routines.checklist_mark", "Marcar feito")}
+            onClick={() => toggleChecklist.mutate({ id: checklistId, is_completed: true })}
+          >
+            {t("routines.checklist_mark", "Marcar feito")}
+          </ToastAction>
+        ),
+      });
+    }
     const next = run.steps[run.index + 1];
     if (next) {
       if (next.kind === "focus") {
@@ -168,7 +186,7 @@ export default function Index() {
     } else {
       toast({ title: t("routines.finished", "Rotina concluída! 🎉") });
     }
-  }, [routineRun, toast, t]);
+  }, [routineRun, toast, t, toggleChecklist]);
 
   // Quando uma sessão termina com uma etapa de foco ativa, avança a rotina.
   useEffect(() => {
@@ -795,20 +813,21 @@ export default function Index() {
                          onActivityTypeChange={setRunActivityType}
                        />
                        <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
-                       {routineRun.run && routineRun.currentStep ? (
-                         <RoutineRunBar
-                           run={routineRun.run}
-                           currentStep={routineRun.currentStep}
-                           isRunning={isRunning}
-                           onComplete={routineRun.completeCurrent}
-                           onSkip={routineRun.skipCurrent}
-                           onStop={routineRun.stop}
-                         />
-                       ) : (
-                         <FocusRoutinesCard onStart={handleStartRoutine} />
-                       )}
                      </CollapsibleContent>
                    </Collapsible>
+
+                  {routineRun.run && routineRun.currentStep ? (
+                    <RoutineRunBar
+                      run={routineRun.run}
+                      currentStep={routineRun.currentStep}
+                      isRunning={isRunning}
+                      onComplete={routineRun.completeCurrent}
+                      onSkip={routineRun.skipCurrent}
+                      onStop={routineRun.stop}
+                    />
+                  ) : (
+                    <FocusRoutinesCard onStart={handleStartRoutine} />
+                  )}
 
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">

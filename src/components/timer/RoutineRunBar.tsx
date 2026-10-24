@@ -35,13 +35,12 @@ export function RoutineRunBar({ run, currentStep, isRunning, onComplete, onSkip,
     return () => clearInterval(id);
   }, [currentStep.id, currentStep.kind, currentStep.minutes]);
 
-  const progress = Math.round((run.index / run.steps.length) * 100);
 
   return (
     <div
       className={cn(
         "rounded-xl border p-3 space-y-2",
-        isBreak ? "border-amber-500/40 bg-amber-500/5" : "border-primary/40 bg-primary/5",
+        isBreak ? "border-warning/40 bg-warning/5" : "border-primary/40 bg-primary/5",
         className,
       )}
     >
@@ -60,15 +59,28 @@ export function RoutineRunBar({ run, currentStep, isRunning, onComplete, onSkip,
         </div>
       </div>
 
-      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-        <div
-          className={cn("h-full rounded-full transition-all", isBreak ? "bg-amber-500" : "bg-primary")}
-          style={{ width: `${progress}%` }}
-        />
-      </div>
+      <ol className="flex items-center gap-1" aria-label={t("routines.steps", "Etapas")}>
+        {run.steps.map((s, i) => {
+          const done = run.done.includes(s.id);
+          const skipped = run.skipped?.includes(s.id);
+          return (
+            <li
+              key={s.id}
+              title={`${s.title || (s.kind === "break" ? t("routines.kind_break") : t("routines.kind_focus"))} · ${s.minutes} min`}
+              className={cn(
+                "h-2 rounded-full transition-all",
+                i === run.index ? "flex-[2] bg-primary animate-pulse" : "flex-1",
+                done && "bg-success",
+                skipped && "bg-warning",
+                !done && !skipped && i !== run.index && "bg-muted",
+              )}
+            />
+          );
+        })}
+      </ol>
 
       <div className="flex items-center gap-2">
-        {isBreak ? <Coffee className="h-4 w-4 text-amber-500 shrink-0" /> : <Target className="h-4 w-4 text-primary shrink-0" />}
+        {isBreak ? <Coffee className="h-4 w-4 text-warning shrink-0" /> : <Target className="h-4 w-4 text-primary shrink-0" />}
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium truncate">
             {currentStep.title || (isBreak ? t("routines.kind_break", "Pausa") : t("routines.kind_focus", "Foco"))}

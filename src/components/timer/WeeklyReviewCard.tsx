@@ -7,6 +7,33 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useWeeklyReview } from "@/hooks/useWeeklyReview";
 import { cn } from "@/lib/utils";
 import { activityLabelKey } from "@/lib/activityTypes";
+import { useFocusRoutines, useRoutineRuns } from "@/hooks/useFocusRoutines";
+import { useTimezone } from "@/hooks/useTimezone";
+import { routineDayStatus, shiftKey, todayKeyFor, weekdayOfKey, weeklyRoutineSummary } from "@/lib/routineStatus";
+
+/** Routines done / stopped / missed this Monday-based week, in the profile timezone. */
+function RoutineWeekLine() {
+  const { t } = useTranslation();
+  const { timezone } = useTimezone();
+  const { data: routines = [] } = useFocusRoutines();
+  const { data: runs = [] } = useRoutineRuns(7);
+  if (!routines.length) return null;
+  const today = todayKeyFor(timezone);
+  const mondayOffset = (weekdayOfKey(today) + 6) % 7;
+  const days = Array.from({ length: mondayOffset + 1 }, (_, i) => shiftKey(today, i - mondayOffset));
+  const statuses = routines.flatMap((r) =>
+    days.map((d) => routineDayStatus(runs.filter((x) => x.routine_id === r.id), r.weekdays, d, today)),
+  );
+  const sum = weeklyRoutineSummary(statuses);
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border p-3 text-xs">
+      <span className="font-medium">{t("routines.title")}</span>
+      <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-success" />{t("routines.week_done", { count: sum.done })}</span>
+      <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-warning" />{t("routines.week_partial", { count: sum.partial })}</span>
+      <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-destructive" />{t("routines.week_missed", { count: sum.missed })}</span>
+    </div>
+  );
+}
 
 function formatMinutes(seconds: number) {
   const minutes = Math.round(seconds / 60);
@@ -99,6 +126,8 @@ export function WeeklyReviewCard({ compact = false }: { compact?: boolean }) {
             <strong>{review.data.budgetUsedMinutes}m / {review.data.budgetTargetMinutes}m</strong>
           </div>
         )}
+
+        <RoutineWeekLine />
 
         <Button type="button" variant="outline" onClick={() => navigate(actionRoutes[review.data.nextAction])} className="h-auto w-full justify-start gap-3 bg-muted/30 p-3 text-start hover:bg-muted">
           <span className="min-w-0 flex-1">
