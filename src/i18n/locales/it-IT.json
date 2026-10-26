@@ -3070,7 +3070,11 @@
       "urgent": "Urgente"
     },
     "hour_short": "h",
-    "minute_short": "min"
+    "minute_short": "min",
+    "continue_last": "Riprendi da dove avevo lasciato",
+    "streak_safe": "Serie di {{count}} giorni assicurata oggi",
+    "streak_at_risk": "Fai una sessione oggi per mantenere la serie di {{count}} giorni",
+    "streak_start": "Inizia oggi una nuova serie"
   },
   "weekly_review": {
     "suggestion_title": "Obiettivi suggeriti",

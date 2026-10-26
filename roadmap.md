@@ -34,3 +34,8 @@
   - [x] Proteger respostas e encerramento de duelos
   - [x] Criar, listar, cancelar e confirmar presença em sessões agendadas
   - [x] Concluir avisos push e lembretes de duelos/sessões
+
+## Análise geral (2026-10-26)
+- [x] Hoje: aviso de sequência do dia e botão "Continuar onde parei"
+- [ ] Fase 8: alertas de segurança antigos, textos de reserva e revisão 320/360/390 px — próxima rodada
+- [ ] Lembrete inteligente, rotina na agenda, planejar a semana, sessão ao vivo, conquistas sociais

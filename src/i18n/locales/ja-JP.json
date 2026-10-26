@@ -3084,7 +3084,11 @@
       "urgent": "緊急"
     },
     "hour_short": "時間",
-    "minute_short": "分"
+    "minute_short": "分",
+    "continue_last": "前回の続きから",
+    "streak_safe": "{{count}}日連続を今日も達成",
+    "streak_at_risk": "今日1回セッションして{{count}}日連続を維持しよう",
+    "streak_start": "今日から新しい連続記録を始めよう"
   },
   "weekly_review": {
     "suggestion_title": "目標の提案",

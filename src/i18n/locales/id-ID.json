@@ -3084,7 +3084,11 @@
       "urgent": "Mendesak"
     },
     "hour_short": "j",
-    "minute_short": "mnt"
+    "minute_short": "mnt",
+    "continue_last": "Lanjutkan dari terakhir",
+    "streak_safe": "Rentetan {{count}} hari aman hari ini",
+    "streak_at_risk": "Lakukan satu sesi hari ini untuk menjaga rentetan {{count}} hari",
+    "streak_start": "Mulai rentetan baru hari ini"
   },
   "weekly_review": {
     "suggestion_title": "Saran target",

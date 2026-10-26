@@ -3070,7 +3070,11 @@
       "urgent": "عاجلة"
     },
     "hour_short": "س",
-    "minute_short": "د"
+    "minute_short": "د",
+    "continue_last": "المتابعة من حيث توقفت",
+    "streak_safe": "تم تأمين سلسلة {{count}} يومًا اليوم",
+    "streak_at_risk": "أكمل جلسة اليوم للحفاظ على سلسلة {{count}} يومًا",
+    "streak_start": "ابدأ سلسلة جديدة اليوم"
   },
   "weekly_review": {
     "suggestion_title": "اقتراحات الأهداف",
