@@ -791,6 +791,13 @@ export default function Index() {
                     onValueChange={setSelectedProject}
                     projects={activeProjects}
                   />
+                   <RoomPicker value={selectedRoom} onValueChange={setSelectedRoom} />
+                   {selectedRoom && selectedRoom !== "none" && (
+                     <>
+                       <RoomChallengePicker roomId={selectedRoom} value={selectedChallenge} onChange={setSelectedChallenge} />
+                       <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
+                     </>
+                   )}
                    <Collapsible open={optionsOpen} onOpenChange={setOptionsOpen}>
                      <CollapsibleTrigger asChild>
                        <Button variant="outline" className="h-11 w-full justify-between gap-3">
@@ -798,13 +805,15 @@ export default function Index() {
                            <SlidersHorizontal className="h-4 w-4 shrink-0" />
                            <span className="truncate">{t("timer.session_options")}</span>
                          </span>
-                         <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", optionsOpen && "rotate-180")} />
+                         <span className="flex shrink-0 items-center gap-2">
+                           {runMode && <Footprints className="h-4 w-4 text-primary" />}
+                           {focusTarget ? <span className="text-xs font-medium text-primary">{focusTarget} min</span> : null}
+                           <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform", optionsOpen && "rotate-180")} />
+                         </span>
                        </Button>
                      </CollapsibleTrigger>
                      <CollapsibleContent className="space-y-3 pt-3">
-                       <RoomPicker value={selectedRoom} onValueChange={setSelectedRoom} />
-                       <RoomChallengePicker roomId={selectedRoom} value={selectedChallenge} onChange={setSelectedChallenge} />
-                       <RoomChallengeBanner roomId={selectedRoom} activeChallengeId={selectedChallenge} />
+
                        <RunModeToggle
                          enabled={runMode}
                          onChange={setRunMode}
