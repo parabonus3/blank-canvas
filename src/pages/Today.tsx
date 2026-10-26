@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CalendarClock, CheckCircle2, Clock3, Play, Target, Timer, Zap } from "lucide-react";
+import { CalendarClock, CheckCircle2, Clock3, Flame, Play, Target, Timer, Zap } from "lucide-react";
 import { useMyNextRoomSession } from "@/hooks/useRoomSessions";
+import { usePersonalStreak } from "@/hooks/usePersonalStreak";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SEO } from "@/components/SEO";
 import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
@@ -42,6 +43,10 @@ export default function Today() {
   const routines = routinesQuery.data ?? [];
   const startTimer = useStartTimer();
   const { data: nextSession } = useMyNextRoomSession();
+  const { data: streak } = usePersonalStreak();
+  const lastEntry = useMemo(() => entries
+    .filter(e => e.end_time && e.project_id)
+    .reduce<(typeof entries)[number] | null>((best, e) => !best || new Date(e.start_time) > new Date(best.start_time) ? e : best, null), [entries]);
 
   const todayStart = startOfDayInTz(new Date(), timezone);
   const todayEntries = entries.filter(entry => new Date(entry.start_time) >= todayStart && entry.duration);
@@ -106,6 +111,23 @@ export default function Today() {
               <Button size="sm" onClick={() => navigate("/timer")}>{t("today.open_timer")}</Button>
             </CardContent>
           </Card>
+        )}
+
+        {!isLoading && streak && (
+          <div className={`flex items-center gap-2 rounded-md border p-3 text-sm ${streak.studiedToday ? "border-success/40 text-success" : "border-warning/50 text-warning"}`}>
+            <Flame className="h-4 w-4 shrink-0" />
+            <span>{streak.studiedToday
+              ? t("today.streak_safe", { count: streak.streak })
+              : streak.streak > 0 ? t("today.streak_at_risk", { count: streak.streak }) : t("today.streak_start")}</span>
+          </div>
+        )}
+
+        {!isLoading && !activeEntry && lastEntry && (
+          <Button variant="secondary" className="w-full justify-start gap-2" disabled={startTimer.isPending}
+            onClick={async () => { await startTimer.mutateAsync({ projectId: lastEntry.project_id, taskId: lastEntry.task_id ?? undefined }); navigate("/timer"); }}>
+            <Play className="h-4 w-4" />
+            <span className="truncate">{t("today.continue_last")} · {lastEntry.project?.name}</span>
+          </Button>
         )}
 
         {nextSession && (
