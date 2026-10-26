@@ -3070,7 +3070,11 @@
       "urgent": "긴급"
     },
     "hour_short": "시간",
-    "minute_short": "분"
+    "minute_short": "분",
+    "continue_last": "이어서 하기",
+    "streak_safe": "오늘 {{count}}일 연속 달성",
+    "streak_at_risk": "오늘 한 번 집중해서 {{count}}일 연속을 지키세요",
+    "streak_start": "오늘 새 연속 기록을 시작하세요"
   },
   "weekly_review": {
     "suggestion_title": "목표 제안",

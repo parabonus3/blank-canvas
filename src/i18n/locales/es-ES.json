@@ -3091,7 +3091,11 @@
       "urgent": "Urgente"
     },
     "hour_short": "h",
-    "minute_short": "min"
+    "minute_short": "min",
+    "continue_last": "Continuar donde lo dejé",
+    "streak_safe": "Racha de {{count}} días asegurada hoy",
+    "streak_at_risk": "Haz una sesión hoy para mantener tu racha de {{count}} días",
+    "streak_start": "Empieza hoy una nueva racha"
   },
   "weekly_review": {
     "suggestion_title": "Sugerencias de metas",

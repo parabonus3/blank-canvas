@@ -3070,7 +3070,11 @@
       "urgent": "Срочный"
     },
     "hour_short": "ч",
-    "minute_short": "мин"
+    "minute_short": "мин",
+    "continue_last": "Продолжить с того места",
+    "streak_safe": "Серия {{count}} дн. сохранена сегодня",
+    "streak_at_risk": "Проведите сессию сегодня, чтобы сохранить серию {{count}} дн.",
+    "streak_start": "Начните новую серию сегодня"
   },
   "weekly_review": {
     "suggestion_title": "Предложения целей",

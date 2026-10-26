@@ -3234,7 +3234,11 @@
       "urgent": "Urgente"
     },
     "hour_short": "h",
-    "minute_short": "min"
+    "minute_short": "min",
+    "continue_last": "Continuar onde parei",
+    "streak_safe": "Sequência de {{count}} dias garantida hoje",
+    "streak_at_risk": "Faça uma sessão hoje para manter sua sequência de {{count}} dias",
+    "streak_start": "Comece hoje uma nova sequência"
   },
   "weekly_review": {
     "suggestion_title": "Sugestões para suas metas",
