@@ -2842,7 +2842,10 @@
     "field_project": "项目（用于计时）",
     "no_project": "无项目",
     "field_start": "开始时间",
-    "field_duration": "时长"
+    "field_duration": "时长",
+    "routines_today": "今日例程",
+    "routine_schedule": "加入日程",
+    "routine_scheduled": "已安排"
   },
   "timeline": {
     "title": "当日时间轴",

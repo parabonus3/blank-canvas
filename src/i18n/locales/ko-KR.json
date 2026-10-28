@@ -2828,7 +2828,10 @@
     "field_project": "프로젝트 (타이머용)",
     "no_project": "프로젝트 없음",
     "field_start": "시작",
-    "field_duration": "길이"
+    "field_duration": "길이",
+    "routines_today": "오늘의 루틴",
+    "routine_schedule": "일정에 추가",
+    "routine_scheduled": "예정됨"
   },
   "timeline": {
     "title": "하루 타임라인",

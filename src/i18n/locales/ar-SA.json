@@ -2828,7 +2828,10 @@
     "field_project": "مشروع (للمؤقّت)",
     "no_project": "بدون مشروع",
     "field_start": "البداية",
-    "field_duration": "المدة"
+    "field_duration": "المدة",
+    "routines_today": "روتينات اليوم",
+    "routine_schedule": "أضف إلى الجدول",
+    "routine_scheduled": "مجدولة"
   },
   "timeline": {
     "title": "الخط الزمني لليوم",

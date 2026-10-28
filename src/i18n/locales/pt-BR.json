@@ -2992,7 +2992,10 @@
     "field_project": "Projeto (para o cronômetro)",
     "no_project": "Sem projeto",
     "field_start": "Início",
-    "field_duration": "Duração"
+    "field_duration": "Duração",
+    "routines_today": "Rotinas de hoje",
+    "routine_schedule": "Pôr na agenda",
+    "routine_scheduled": "Na agenda"
   },
   "timeline": {
     "title": "Linha do tempo do dia",
