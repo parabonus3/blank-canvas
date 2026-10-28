@@ -2842,7 +2842,10 @@
     "field_project": "プロジェクト（タイマー用）",
     "no_project": "プロジェクトなし",
     "field_start": "開始",
-    "field_duration": "長さ"
+    "field_duration": "長さ",
+    "routines_today": "今日のルーティン",
+    "routine_schedule": "予定に追加",
+    "routine_scheduled": "予定済み"
   },
   "timeline": {
     "title": "1日のタイムライン",

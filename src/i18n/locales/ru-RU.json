@@ -2828,7 +2828,10 @@
     "field_project": "Проект (для таймера)",
     "no_project": "Без проекта",
     "field_start": "Начало",
-    "field_duration": "Длительность"
+    "field_duration": "Длительность",
+    "routines_today": "Рутины на сегодня",
+    "routine_schedule": "Добавить в план",
+    "routine_scheduled": "Запланировано"
   },
   "timeline": {
     "title": "Хронология дня",

@@ -2828,7 +2828,10 @@
     "field_project": "Progetto (per il timer)",
     "no_project": "Nessun progetto",
     "field_start": "Inizio",
-    "field_duration": "Durata"
+    "field_duration": "Durata",
+    "routines_today": "Routine di oggi",
+    "routine_schedule": "Aggiungi all'agenda",
+    "routine_scheduled": "In agenda"
   },
   "timeline": {
     "title": "Cronologia del giorno",

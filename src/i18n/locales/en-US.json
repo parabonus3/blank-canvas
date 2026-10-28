@@ -2937,7 +2937,10 @@
     "field_project": "Project (for the timer)",
     "no_project": "No project",
     "field_start": "Start",
-    "field_duration": "Duration"
+    "field_duration": "Duration",
+    "routines_today": "Today's routines",
+    "routine_schedule": "Add to agenda",
+    "routine_scheduled": "Scheduled"
   },
   "timeline": {
     "title": "Day timeline",

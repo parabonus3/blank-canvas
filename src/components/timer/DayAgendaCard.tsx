@@ -20,6 +20,9 @@ import {
   useBlocksActualMinutes, type TimeBlock,
 } from "@/hooks/useTimeBlocks";
 import { cn } from "@/lib/utils";
+import { useFocusRoutines, useRoutineRuns, routineTotalMinutes } from "@/hooks/useFocusRoutines";
+import { useTimezone } from "@/hooks/useTimezone";
+import { routineDayStatus, todayKeyFor, weekdayOfKey } from "@/lib/routineStatus";
 
 const DURATIONS = [15, 30, 45, 60, 90, 120];
 
@@ -59,6 +62,28 @@ export function DayAgendaCard({ className, compact = false }: { className?: stri
   const [duration, setDuration] = useState(60);
 
   const openTasks = tasks.filter((tk) => !tk.is_completed);
+  const { data: routines = [] } = useFocusRoutines();
+  const { data: runs = [] } = useRoutineRuns(1);
+  const { timezone } = useTimezone();
+  const todayKey = todayKeyFor(timezone);
+  const todayRoutines = routines
+    .filter((r) => r.steps.length > 0 && r.weekdays.includes(weekdayOfKey(todayKey)))
+    .map((r) => {
+      const label = `${r.emoji ? `${r.emoji} ` : ""}${r.title}`;
+      return {
+        r,
+        label,
+        status: routineDayStatus(runs.filter((x) => x.routine_id === r.id), r.weekdays, todayKey, todayKey),
+        scheduled: blocks.some((b) => b.title === label),
+      };
+    });
+  const durationOptions = DURATIONS.includes(duration) ? DURATIONS : [...DURATIONS, duration].sort((a, b) => a - b);
+
+  const scheduleRoutine = (label: string, minutes: number) => {
+    setTitle(label);
+    setDuration(Math.max(5, minutes));
+    setOpen(true);
+  };
 
   const reset = () => {
     setTitle(""); setTaskId("none"); setProjectId("none"); setDuration(60);
@@ -113,6 +138,35 @@ export function DayAgendaCard({ className, compact = false }: { className?: stri
             {t("timeblock.add", "Bloco")}
           </Button>
         </div>
+
+        {todayRoutines.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("timeblock.routines_today")}
+            </p>
+            {todayRoutines.map(({ r, status, label, scheduled }) => (
+              <div
+                key={r.id}
+                className={cn(
+                  "flex items-center gap-2 rounded-xl border p-2",
+                  status === "done" && "border-primary/50 bg-primary/5",
+                  status === "partial" && "border-orange-500/50 bg-orange-500/5",
+                )}
+              >
+                <span className="text-base">{r.emoji || "🎯"}</span>
+                <span className="min-w-0 flex-1 truncate text-sm">{r.title}</span>
+                <span className="text-[10px] tabular-nums text-muted-foreground">{routineTotalMinutes(r.steps)} min</span>
+                {scheduled || status === "done" ? (
+                  <span className="text-[10px] font-medium text-primary">{t("timeblock.routine_scheduled")}</span>
+                ) : (
+                  <Button size="sm" variant="outline" className="h-7 px-2 text-xs" onClick={() => scheduleRoutine(label, routineTotalMinutes(r.steps))}>
+                    {t("timeblock.routine_schedule")}
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {blocks.length === 0 ? (
           <p className="text-xs text-muted-foreground">
@@ -242,7 +296,7 @@ export function DayAgendaCard({ className, compact = false }: { className?: stri
                   <Select value={String(duration)} onValueChange={(v) => setDuration(Number(v))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {DURATIONS.map((d) => (
+                      {durationOptions.map((d) => (
                         <SelectItem key={d} value={String(d)}>{d} min</SelectItem>
                       ))}
                     </SelectContent>

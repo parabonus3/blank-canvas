@@ -2842,7 +2842,10 @@
     "field_project": "Projekt (für den Timer)",
     "no_project": "Kein Projekt",
     "field_start": "Beginn",
-    "field_duration": "Dauer"
+    "field_duration": "Dauer",
+    "routines_today": "Heutige Routinen",
+    "routine_schedule": "Zur Agenda hinzufügen",
+    "routine_scheduled": "Eingeplant"
   },
   "timeline": {
     "title": "Tages-Zeitleiste",
