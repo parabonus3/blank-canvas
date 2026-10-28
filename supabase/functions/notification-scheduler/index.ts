@@ -2,6 +2,7 @@
 // push subscriptions' timezone) and dispatches the appropriate notification.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { usualFocusHour } from "../_shared/habit-hour.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -425,6 +426,7 @@ Deno.serve(async (_req) => {
     const results = await Promise.all([
       runSafe("room_goal", () => processRoomGoalReminders(users)),
       runSafe("streak_risk", () => processStreakRisk(users)),
+      runSafe("habit_reminder", () => processHabitReminder(users)),
       runSafe("challenge_deadline", () => processChallengeDeadlines(users)),
       runSafe("re_engagement", () => processReEngagement(users)),
       runSafe("weekly_recap", () => processWeeklyRecap(users)),
