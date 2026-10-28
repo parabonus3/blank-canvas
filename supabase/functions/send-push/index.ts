@@ -111,6 +111,7 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
     const prefKey: Record<string, string> = {
       room_goal_reminder: "room_goal_reminder",
       streak_risk: "streak_risk",
+      habit_reminder: "streak_risk",
       room_challenge_deadline: "room_challenge_deadline",
       re_engagement: "re_engagement",
       weekly_recap: "weekly_recap",

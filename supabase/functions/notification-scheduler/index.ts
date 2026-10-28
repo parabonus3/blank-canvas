@@ -2,6 +2,7 @@
 // push subscriptions' timezone) and dispatches the appropriate notification.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { usualFocusHour } from "../_shared/habit-hour.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -140,6 +141,33 @@ async function processStreakRisk(users: { user_id: string; tz: string }[]) {
     });
   }
 }
+
+// Reminds at the user's usual start hour if no session yet today.
+// Evening hours (>= 20h) are skipped because streak_risk already covers them.
+async function processHabitReminder(users: { user_id: string; tz: string }[]) {
+  const since = new Date(Date.now() - 28 * 24 * 3600 * 1000).toISOString();
+  for (const u of users) {
+    const hourNow = localHour(u.tz);
+    if (hourNow < 6 || hourNow >= 20) continue;
+    const { data: entries } = await admin
+      .from("time_entries")
+      .select("start_time")
+      .eq("user_id", u.user_id)
+      .gte("start_time", since)
+      .order("start_time", { ascending: false })
+      .limit(500);
+    const starts = (entries || []).map((e: any) => {
+      const d = new Date(e.start_time);
+      return { hour: localHour(u.tz, d), date: localDate(u.tz, d) };
+    });
+    const usual = usualFocusHour(starts);
+    if (usual === null || usual !== hourNow || usual >= 20) continue;
+    const today = localDate(u.tz);
+    if (starts.some((s) => s.date === today)) continue;
+    await sendPushToUser({ userId: u.user_id, kind: "habit_reminder", url: "/today" });
+  }
+}
+
 
 async function processChallengeDeadlines(users: { user_id: string; tz: string }[]) {
   for (const u of users) {
@@ -398,6 +426,7 @@ Deno.serve(async (_req) => {
     const results = await Promise.all([
       runSafe("room_goal", () => processRoomGoalReminders(users)),
       runSafe("streak_risk", () => processStreakRisk(users)),
+      runSafe("habit_reminder", () => processHabitReminder(users)),
       runSafe("challenge_deadline", () => processChallengeDeadlines(users)),
       runSafe("re_engagement", () => processReEngagement(users)),
       runSafe("weekly_recap", () => processWeeklyRecap(users)),

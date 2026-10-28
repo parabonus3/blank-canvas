@@ -39,3 +39,10 @@
 - [x] Hoje: aviso de sequência do dia e botão "Continuar onde parei"
 - [ ] Fase 8: alertas de segurança antigos, textos de reserva e revisão 320/360/390 px — próxima rodada
 - [ ] Lembrete inteligente, rotina na agenda, planejar a semana, sessão ao vivo, conquistas sociais
+
+## Plano 2026-10-28 (o que falta e vale a pena ter)
+- [x] Lembrete no horário habitual (só se ainda não houve sessão no dia; usa a opção "sequência em risco")
+- [ ] Revisão 320/360/390 px, textos dos 12 idiomas e avisos de segurança antigos
+- [ ] Planejar a semana + rotina de foco na agenda
+- [ ] Sessão ao vivo na sala + conquistas sociais + resumo compartilhável
+- [ ] Cronômetro sem internet

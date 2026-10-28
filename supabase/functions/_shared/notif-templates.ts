@@ -28,7 +28,8 @@ export type NotifKind =
   | "duel_lost"
   | "duel_tie"
   | "room_session_updated"
-  | "room_session_cancelled";
+  | "room_session_cancelled"
+  | "habit_reminder";
 
 type LangPack = Partial<Record<NotifKind, { title: string; body: string }[]>>;
 
@@ -991,6 +992,21 @@ const D: Record<string, LangPack> = {
   },
 };
 
+const H: Record<string, LangPack> = {
+  "pt-BR": { habit_reminder: [{ title: "⏱️ Sua hora de foco", body: "Você costuma começar agora. Que tal uma sessão rápida?" }, { title: "🔥 Mantenha o ritmo", body: "É seu horário habitual. Comece uma sessão e garanta o dia." }] },
+  "en-US": { habit_reminder: [{ title: "⏱️ Your focus time", body: "You usually start around now. How about a quick session?" }, { title: "🔥 Keep the rhythm", body: "It's your usual time. Start a session and secure today." }] },
+  "es-ES": { habit_reminder: [{ title: "⏱️ Tu hora de enfoque", body: "Sueles empezar ahora. ¿Una sesión rápida?" }] },
+  "fr-FR": { habit_reminder: [{ title: "⏱️ C'est l'heure de te concentrer", body: "Tu commences souvent maintenant. Une petite session ?" }] },
+  "de-DE": { habit_reminder: [{ title: "⏱️ Deine Fokuszeit", body: "Normalerweise fängst du jetzt an. Eine kurze Sitzung?" }] },
+  "it-IT": { habit_reminder: [{ title: "⏱️ È il tuo momento di focus", body: "Di solito inizi adesso. Una sessione veloce?" }] },
+  "ja-JP": { habit_reminder: [{ title: "⏱️ いつもの集中時間です", body: "いつもこの時間に始めています。少しだけ始めませんか？" }] },
+  "ko-KR": { habit_reminder: [{ title: "⏱️ 집중할 시간이에요", body: "평소 이 시간에 시작했어요. 짧게 한 세션 어때요?" }] },
+  "zh-CN": { habit_reminder: [{ title: "⏱️ 专注时间到了", body: "你通常在这个时间开始。来一次快速专注吧？" }] },
+  "ru-RU": { habit_reminder: [{ title: "⏱️ Время сосредоточиться", body: "Обычно вы начинаете в это время. Короткая сессия?" }] },
+  "ar-SA": { habit_reminder: [{ title: "⏱️ وقت التركيز", body: "عادةً تبدأ في هذا الوقت. ما رأيك بجلسة قصيرة؟" }] },
+  "id-ID": { habit_reminder: [{ title: "⏱️ Waktunya fokus", body: "Biasanya kamu mulai sekarang. Satu sesi singkat?" }] },
+};
+
 function render(tpl: string, vars: Record<string, string | number>): string {
   return tpl.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? ""));
 }
@@ -1006,12 +1022,15 @@ export function pickTemplate(
     T[normalized]?.[kind] ||
     S[normalized]?.[kind] ||
     D[normalized]?.[kind] ||
+    H[normalized]?.[kind] ||
     T[short]?.[kind] ||
     S[short]?.[kind] ||
     D[short]?.[kind] ||
+    H[short]?.[kind] ||
     T["en-US"][kind] ||
     S["en-US"][kind] ||
     D["en-US"][kind] ||
+    H["en-US"][kind] ||
     T["en-US"]["test"]!;
   const choice = list[Math.floor(Math.random() * list.length)];
   return { title: render(choice.title, vars), body: render(choice.body, vars) };
