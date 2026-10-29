@@ -3274,5 +3274,16 @@
     "blocks": "Today’s agenda: {{count}} blocks",
     "over": "Estimate exceeded by {{time}}",
     "month": "Month"
+  },
+  "weekplan": {
+    "title": "Plan the week",
+    "total": "{{h}}h{{m}} planned",
+    "hint": "Tap a day to see or add blocks.",
+    "empty": "Nothing planned",
+    "add": "Add block",
+    "repeat": "Repeat this day on empty days",
+    "copied": "{{count}} blocks copied",
+    "routines": "Routines planned: {{min}} min",
+    "today": "Today"
   }
 }

@@ -3179,5 +3179,16 @@
     "blocks": "Agenda du jour : {{count}} créneaux",
     "over": "Estimation dépassée de {{time}}",
     "month": "Mois"
+  },
+  "weekplan": {
+    "title": "Planifier la semaine",
+    "total": "{{h}}h{{m}} planifiées",
+    "hint": "Touchez un jour pour voir ou ajouter des blocs.",
+    "empty": "Rien de prévu",
+    "add": "Ajouter un bloc",
+    "repeat": "Répéter ce jour sur les jours vides",
+    "copied": "{{count}} blocs copiés",
+    "routines": "Routines prévues : {{min}} min",
+    "today": "Aujourd'hui"
   }
 }

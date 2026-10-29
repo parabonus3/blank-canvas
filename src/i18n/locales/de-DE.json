@@ -3179,5 +3179,16 @@
     "blocks": "Heutiger Zeitplan: {{count}} Blöcke",
     "over": "Schätzung um {{time}} überschritten",
     "month": "Monat"
+  },
+  "weekplan": {
+    "title": "Woche planen",
+    "total": "{{h}}h{{m}} geplant",
+    "hint": "Tippe auf einen Tag, um Blöcke zu sehen oder hinzuzufügen.",
+    "empty": "Nichts geplant",
+    "add": "Block hinzufügen",
+    "repeat": "Diesen Tag an leeren Tagen wiederholen",
+    "copied": "{{count}} Blöcke kopiert",
+    "routines": "Geplante Routinen: {{min}} Min",
+    "today": "Heute"
   }
 }
