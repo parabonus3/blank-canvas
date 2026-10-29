@@ -43,6 +43,7 @@
 ## Plano 2026-10-28 (o que falta e vale a pena ter)
 - [x] Lembrete no horário habitual (só se ainda não houve sessão no dia; usa a opção "sequência em risco")
 - [ ] Revisão 320/360/390 px, textos dos 12 idiomas e avisos de segurança antigos
-- [ ] Planejar a semana + rotina de foco na agenda
+- [x] Rotina de foco na agenda (rotinas do dia com "Pôr na agenda")
+- [ ] Planejar a semana
 - [ ] Sessão ao vivo na sala + conquistas sociais + resumo compartilhável
 - [ ] Cronômetro sem internet
