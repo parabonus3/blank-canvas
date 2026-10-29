@@ -3179,5 +3179,16 @@
     "blocks": "今日日程：{{count}} 个时间块",
     "over": "超出预计 {{time}}",
     "month": "月份"
+  },
+  "weekplan": {
+    "title": "规划本周",
+    "total": "已规划 {{h}}小时{{m}}",
+    "hint": "点击某天查看或添加时间块。",
+    "empty": "暂无计划",
+    "add": "添加时间块",
+    "repeat": "将这天复制到空白日",
+    "copied": "已复制 {{count}} 个时间块",
+    "routines": "计划的例程：{{min}} 分钟",
+    "today": "今天"
   }
 }

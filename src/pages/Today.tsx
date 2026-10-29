@@ -9,6 +9,7 @@ import { SEO } from "@/components/SEO";
 import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
 import { ActiveGoalsStrip } from "@/components/timer/ActiveGoalsStrip";
 import { WeeklyReviewCard } from "@/components/timer/WeeklyReviewCard";
+import { WeekPlanCard } from "@/components/timer/WeekPlanCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -158,6 +159,7 @@ export default function Today() {
         </div>}
 
         {!isLoading && <DayAgendaCard />}
+        {!isLoading && <WeekPlanCard />}
         <WeeklyReviewCard compact />
 
         {!isLoading && <section className="space-y-2">

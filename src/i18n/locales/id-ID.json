@@ -3179,5 +3179,16 @@
     "blocks": "Agenda hari ini: {{count}} blok",
     "over": "Perkiraan terlampaui {{time}}",
     "month": "Bulan"
+  },
+  "weekplan": {
+    "title": "Rencanakan minggu ini",
+    "total": "{{h}}j{{m}} direncanakan",
+    "hint": "Ketuk hari untuk melihat atau menambah blok.",
+    "empty": "Belum ada rencana",
+    "add": "Tambah blok",
+    "repeat": "Ulangi hari ini di hari kosong",
+    "copied": "{{count}} blok disalin",
+    "routines": "Rutinitas terjadwal: {{min}} mnt",
+    "today": "Hari ini"
   }
 }

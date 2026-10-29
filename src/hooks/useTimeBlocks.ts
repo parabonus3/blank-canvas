@@ -144,3 +144,39 @@ export function useBlocksActualMinutes(blocks: TimeBlock[]) {
     staleTime: 30_000,
   });
 }
+
+/** Blocos de agenda de uma semana inteira (segunda a domingo, hora local). */
+export function useWeekTimeBlocks(weekStart: Date) {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["timeBlocks", user?.id, "week", weekStart.toDateString()],
+    queryFn: async () => {
+      const end = new Date(weekStart);
+      end.setDate(weekStart.getDate() + 7);
+      const { data, error } = await (supabase as any)
+        .from("time_blocks")
+        .select("*")
+        .gte("start_at", weekStart.toISOString())
+        .lt("start_at", end.toISOString())
+        .order("start_at")
+        .limit(1000);
+      if (error) throw error;
+      return (data || []) as TimeBlock[];
+    },
+    enabled: !!user,
+  });
+}
+
+export function useCreateTimeBlocksBulk() {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (rows: { title: string; start_at: string; end_at: string; task_id: string | null; project_id: string | null }[]) => {
+      if (!user) throw new Error("Not authenticated");
+      if (rows.length === 0) return;
+      const { error } = await (supabase as any).from("time_blocks").insert(rows.map((r) => ({ ...r, user_id: user.id })));
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["timeBlocks"] }),
+  });
+}

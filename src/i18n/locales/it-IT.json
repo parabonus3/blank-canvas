@@ -3165,5 +3165,16 @@
     "blocks": "Agenda di oggi: {{count}} blocchi",
     "over": "Stima superata di {{time}}",
     "month": "Mese"
+  },
+  "weekplan": {
+    "title": "Pianifica la settimana",
+    "total": "{{h}}h{{m}} pianificate",
+    "hint": "Tocca un giorno per vedere o aggiungere blocchi.",
+    "empty": "Niente in programma",
+    "add": "Aggiungi blocco",
+    "repeat": "Ripeti questo giorno nei giorni vuoti",
+    "copied": "{{count}} blocchi copiati",
+    "routines": "Routine previste: {{min}} min",
+    "today": "Oggi"
   }
 }

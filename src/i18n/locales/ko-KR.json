@@ -3165,5 +3165,16 @@
     "blocks": "오늘 일정: {{count}} 블록",
     "over": "예상 시간 {{time}} 초과",
     "month": "월"
+  },
+  "weekplan": {
+    "title": "주간 계획",
+    "total": "{{h}}시간{{m}} 계획됨",
+    "hint": "날짜를 눌러 블록을 보거나 추가하세요.",
+    "empty": "계획 없음",
+    "add": "블록 추가",
+    "repeat": "빈 날에 이 날 반복",
+    "copied": "블록 {{count}}개 복사됨",
+    "routines": "예정된 루틴: {{min}}분",
+    "today": "오늘"
   }
 }
