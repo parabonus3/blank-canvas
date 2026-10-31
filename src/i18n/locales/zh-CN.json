@@ -1501,7 +1501,8 @@
     "room_timer_helper_room_only": "从这里开始,你的时间将计入排行榜和本房间连续记录。",
     "room_timer_chip_challenge": "挑战",
     "room_day_tz": "房间日 ({{tz}})",
-    "room_day_tz_hint": "所有成员共享此日期(房主的时区)"
+    "room_day_tz_hint": "所有成员共享此日期(房主的时区)",
+    "focus_together_summary": "你们一起专注了 {{h}}小时{{m}}分 • {{count}} 人"
   },
   "explore": {
     "title": "探索房间",
@@ -3157,7 +3158,10 @@
     "edit": "编辑",
     "edit_title": "编辑时段",
     "new_activity": "新活动",
-    "next_title": "你的下一个时段"
+    "next_title": "你的下一个时段",
+    "join_now": "立即加入",
+    "joined_live": "你已加入会话，计时器已开始",
+    "joined_live_running": "你已加入会话。计时器已在运行"
   },
   "timesheet": {
     "title": "月度报告",
@@ -3190,5 +3194,48 @@
     "copied": "已复制 {{count}} 个时间块",
     "routines": "计划的例程：{{min}} 分钟",
     "today": "今天"
+  },
+  "social_ach": {
+    "title": "社交成就",
+    "subtitle": "已解锁 {{done}}/{{total}}",
+    "group_first": {
+      "name": "首次小组会话",
+      "desc": "在房间预定会话中专注至少 10 分钟"
+    },
+    "group_five": {
+      "name": "忠实伙伴",
+      "desc": "参加 5 次小组会话"
+    },
+    "kept_promise": {
+      "name": "说到做到",
+      "desc": "确认出席并专注至少半场"
+    },
+    "duel_win": {
+      "name": "对决胜者",
+      "desc": "赢得一次专注对决"
+    },
+    "challenge_done": {
+      "name": "挑战完成",
+      "desc": "完成一个房间挑战"
+    },
+    "same_room_7": {
+      "name": "主场",
+      "desc": "在同一房间专注 7 个不同的日子"
+    }
+  },
+  "share_week": {
+    "button": "分享",
+    "title": "分享我的一周",
+    "desc": "我们会在你的设备上生成一张图片，包含时长、专注天数、连续天数和最佳一天。不会自动发布。",
+    "show_name": "显示我的名字和头像",
+    "create": "生成图片",
+    "heading": "我在 Timezoni 的一周",
+    "focused": "本周专注时长",
+    "days": "专注天数",
+    "streak": "当前连续（天）",
+    "best_day": "最佳一天",
+    "text": "我在 Timezoni 的专注一周",
+    "downloaded": "图片已下载",
+    "error": "无法生成图片"
   }
 }

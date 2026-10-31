@@ -1501,7 +1501,8 @@
     "room_timer_helper_room_only": "여기서 시작하면 시간이 랭킹과 이 방의 연속 기록에 반영됩니다.",
     "room_timer_chip_challenge": "챌린지",
     "room_day_tz": "룸 날짜 ({{tz}})",
-    "room_day_tz_hint": "모든 멤버가 공유하는 날짜 (방장의 시간대)"
+    "room_day_tz_hint": "모든 멤버가 공유하는 날짜 (방장의 시간대)",
+    "focus_together_summary": "함께 {{h}}시간 {{m}}분 집중했어요 • {{count}}명"
   },
   "explore": {
     "title": "방 탐색",
@@ -3143,7 +3144,10 @@
     "edit": "편집",
     "edit_title": "세션 편집",
     "new_activity": "새 활동",
-    "next_title": "다음 세션"
+    "next_title": "다음 세션",
+    "join_now": "지금 참여",
+    "joined_live": "세션에 참여했고 타이머가 시작됐어요",
+    "joined_live_running": "세션에 참여했어요. 타이머는 이미 실행 중이에요"
   },
   "timesheet": {
     "title": "월간 보고서",
@@ -3176,5 +3180,48 @@
     "copied": "블록 {{count}}개 복사됨",
     "routines": "예정된 루틴: {{min}}분",
     "today": "오늘"
+  },
+  "social_ach": {
+    "title": "소셜 업적",
+    "subtitle": "{{total}}개 중 {{done}}개 달성",
+    "group_first": {
+      "name": "첫 그룹 세션",
+      "desc": "예약된 방 세션에서 10분 이상 집중하기"
+    },
+    "group_five": {
+      "name": "든든한 팀",
+      "desc": "그룹 세션 5회 참여"
+    },
+    "kept_promise": {
+      "name": "약속 지킴",
+      "desc": "참석을 확정하고 세션 절반 이상 집중"
+    },
+    "duel_win": {
+      "name": "결투 승자",
+      "desc": "집중 결투에서 승리"
+    },
+    "challenge_done": {
+      "name": "챌린지 완료",
+      "desc": "방 챌린지 완료"
+    },
+    "same_room_7": {
+      "name": "나의 공부방",
+      "desc": "같은 방에서 서로 다른 7일 집중"
+    }
+  },
+  "share_week": {
+    "button": "공유",
+    "title": "이번 주 공유",
+    "desc": "기기에서 시간, 집중한 날, 연속 기록, 최고의 날을 담은 이미지를 만들어요. 자동으로 게시되지 않아요.",
+    "show_name": "이름과 사진 표시",
+    "create": "이미지 만들기",
+    "heading": "Timezoni에서의 이번 주",
+    "focused": "이번 주 집중 시간",
+    "days": "집중한 날",
+    "streak": "현재 연속 기록(일)",
+    "best_day": "최고의 날",
+    "text": "Timezoni 집중 주간",
+    "downloaded": "이미지를 다운로드했어요",
+    "error": "이미지를 만들 수 없어요"
   }
 }

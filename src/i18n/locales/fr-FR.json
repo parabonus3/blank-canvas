@@ -1501,7 +1501,8 @@
     "room_timer_helper_room_only": "En démarrant ici, ton temps compte pour le classement et la série de cette salle.",
     "room_timer_chip_challenge": "Défi",
     "room_day_tz": "Jour de la salle ({{tz}})",
-    "room_day_tz_hint": "Tous les membres partagent ce jour (fuseau du propriétaire)"
+    "room_day_tz_hint": "Tous les membres partagent ce jour (fuseau du propriétaire)",
+    "focus_together_summary": "Vous avez travaillé {{h}}h{{m}} ensemble • {{count}} personnes"
   },
   "explore": {
     "title": "Explorer les Salles",
@@ -3157,7 +3158,10 @@
     "edit": "Modifier",
     "edit_title": "Modifier la session",
     "new_activity": "Nouvelle activité",
-    "next_title": "Votre prochaine session"
+    "next_title": "Votre prochaine session",
+    "join_now": "Rejoindre",
+    "joined_live": "Vous avez rejoint la session et le chrono a démarré",
+    "joined_live_running": "Vous avez rejoint la session. Votre chrono tournait déjà"
   },
   "timesheet": {
     "title": "Rapport mensuel",
@@ -3190,5 +3194,48 @@
     "copied": "{{count}} blocs copiés",
     "routines": "Routines prévues : {{min}} min",
     "today": "Aujourd'hui"
+  },
+  "social_ach": {
+    "title": "Succès sociaux",
+    "subtitle": "{{done}} sur {{total}} débloqués",
+    "group_first": {
+      "name": "Première session de groupe",
+      "desc": "Concentrez-vous 10 min dans une session planifiée"
+    },
+    "group_five": {
+      "name": "Équipe fidèle",
+      "desc": "Participez à 5 sessions de groupe"
+    },
+    "kept_promise": {
+      "name": "Promesse tenue",
+      "desc": "Confirmez et restez la moitié de la session"
+    },
+    "duel_win": {
+      "name": "Vainqueur de duel",
+      "desc": "Gagnez un duel de concentration"
+    },
+    "challenge_done": {
+      "name": "Défi relevé",
+      "desc": "Terminez un défi de salle"
+    },
+    "same_room_7": {
+      "name": "Port d'attache",
+      "desc": "Travaillez 7 jours différents dans la même salle"
+    }
+  },
+  "share_week": {
+    "button": "Partager",
+    "title": "Partager ma semaine",
+    "desc": "Nous créons une image sur votre appareil avec vos heures, jours de concentration, série et meilleur jour. Rien n'est publié automatiquement.",
+    "show_name": "Afficher mon nom et ma photo",
+    "create": "Créer l'image",
+    "heading": "Ma semaine sur Timezoni",
+    "focused": "de concentration cette semaine",
+    "days": "Jours concentrés",
+    "streak": "Série actuelle (jours)",
+    "best_day": "Meilleur jour",
+    "text": "Ma semaine de concentration sur Timezoni",
+    "downloaded": "Image téléchargée",
+    "error": "Impossible de créer l'image"
   }
 }

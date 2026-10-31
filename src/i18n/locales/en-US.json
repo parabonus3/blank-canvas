@@ -2386,7 +2386,8 @@
     "room_timer_helper_room_only": "Starting here, your time counts for the ranking and this room's streak.",
     "room_timer_chip_challenge": "Challenge",
     "room_day_tz": "Room day ({{tz}})",
-    "room_day_tz_hint": "All members share this day (owner's timezone)"
+    "room_day_tz_hint": "All members share this day (owner's timezone)",
+    "focus_together_summary": "You focused {{h}}h{{m}} together • {{count}} people"
   },
   "explore": {
     "title": "Explore Rooms",
@@ -3252,7 +3253,10 @@
     "edit": "Edit",
     "edit_title": "Edit session",
     "new_activity": "New activity",
-    "next_title": "Your next session"
+    "next_title": "Your next session",
+    "join_now": "Join now",
+    "joined_live": "You joined the session and your timer started",
+    "joined_live_running": "You joined the session. Your timer was already running"
   },
   "timesheet": {
     "title": "Monthly report",
@@ -3285,5 +3289,48 @@
     "copied": "{{count}} blocks copied",
     "routines": "Routines planned: {{min}} min",
     "today": "Today"
+  },
+  "social_ach": {
+    "title": "Social achievements",
+    "subtitle": "{{done}} of {{total}} unlocked",
+    "group_first": {
+      "name": "First group session",
+      "desc": "Focus at least 10 min in a scheduled room session"
+    },
+    "group_five": {
+      "name": "Loyal crew",
+      "desc": "Take part in 5 group sessions"
+    },
+    "kept_promise": {
+      "name": "Promise kept",
+      "desc": "Confirm attendance and focus half the session"
+    },
+    "duel_win": {
+      "name": "Duel winner",
+      "desc": "Win a focus duel"
+    },
+    "challenge_done": {
+      "name": "Challenge complete",
+      "desc": "Complete a room challenge"
+    },
+    "same_room_7": {
+      "name": "Home base",
+      "desc": "Focus on 7 different days in the same room"
+    }
+  },
+  "share_week": {
+    "button": "Share",
+    "title": "Share my week",
+    "desc": "We create an image on your device with your hours, focus days, streak and best day. Nothing is posted automatically.",
+    "show_name": "Show my name and photo",
+    "create": "Create image",
+    "heading": "My week on Timezoni",
+    "focused": "focused this week",
+    "days": "Focus days",
+    "streak": "Current streak (days)",
+    "best_day": "Best day",
+    "text": "My focus week on Timezoni",
+    "downloaded": "Image downloaded",
+    "error": "Couldn't create the image"
   }
 }

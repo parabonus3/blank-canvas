@@ -2441,7 +2441,8 @@
     "room_timer_helper_room_only": "Ao iniciar aqui, seu tempo conta para o ranking e o streak desta sala.",
     "room_timer_chip_challenge": "Desafio",
     "room_day_tz": "Dia da sala ({{tz}})",
-    "room_day_tz_hint": "Todos os membros compartilham este dia (fuso do dono da sala)"
+    "room_day_tz_hint": "Todos os membros compartilham este dia (fuso do dono da sala)",
+    "focus_together_summary": "Vocês focaram {{h}}h{{m}} juntos • {{count}} pessoas"
   },
   "explore": {
     "title": "Explorar Salas",
@@ -3307,7 +3308,10 @@
     "edit": "Editar",
     "edit_title": "Editar sessão",
     "new_activity": "Nova atividade",
-    "next_title": "Sua próxima sessão"
+    "next_title": "Sua próxima sessão",
+    "join_now": "Entrar agora",
+    "joined_live": "Você entrou na sessão e o cronômetro começou",
+    "joined_live_running": "Você entrou na sessão. Seu cronômetro já estava ligado"
   },
   "timesheet": {
     "title": "Relatório mensal",
@@ -3340,5 +3344,48 @@
     "copied": "{{count}} blocos copiados",
     "routines": "Rotinas previstas: {{min}} min",
     "today": "Hoje"
+  },
+  "social_ach": {
+    "title": "Conquistas sociais",
+    "subtitle": "{{done}} de {{total}} liberadas",
+    "group_first": {
+      "name": "Primeira sessão em grupo",
+      "desc": "Foque pelo menos 10 min numa sessão agendada da sala"
+    },
+    "group_five": {
+      "name": "Turma fiel",
+      "desc": "Participe de 5 sessões em grupo"
+    },
+    "kept_promise": {
+      "name": "Palavra cumprida",
+      "desc": "Confirme presença e foque metade da sessão"
+    },
+    "duel_win": {
+      "name": "Vencedor de duelo",
+      "desc": "Vença um duelo de foco"
+    },
+    "challenge_done": {
+      "name": "Desafio completo",
+      "desc": "Complete um desafio de sala"
+    },
+    "same_room_7": {
+      "name": "Casa de estudos",
+      "desc": "Foque em 7 dias diferentes na mesma sala"
+    }
+  },
+  "share_week": {
+    "button": "Compartilhar",
+    "title": "Compartilhar minha semana",
+    "desc": "Criamos uma imagem no seu aparelho com suas horas, dias com foco, sequência e melhor dia. Nada é publicado sozinho.",
+    "show_name": "Mostrar meu nome e foto",
+    "create": "Criar imagem",
+    "heading": "Minha semana no Timezoni",
+    "focused": "de foco nesta semana",
+    "days": "Dias com foco",
+    "streak": "Sequência atual (dias)",
+    "best_day": "Melhor dia",
+    "text": "Minha semana de foco no Timezoni",
+    "downloaded": "Imagem baixada",
+    "error": "Não foi possível criar a imagem"
   }
 }
