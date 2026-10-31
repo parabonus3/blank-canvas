@@ -23,6 +23,10 @@ import {
   type RoomSession,
 } from "@/hooks/useRoomSessions";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { useProjects } from "@/hooks/useProjects";
+import { useActiveTimeEntry, useStartTimer } from "@/hooks/useTimeEntries";
 
 type MemberLite = { user_id: string; display_name?: string | null; avatar_url?: string | null };
 
@@ -36,6 +40,37 @@ export function RoomSessionsCard({ roomId, canManage, members = [] }: { roomId: 
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const qc = useQueryClient();
+  const { data: projects = [] } = useProjects();
+  const { data: activeEntry } = useActiveTimeEntry();
+  const startTimer = useStartTimer();
+  const [joiningId, setJoiningId] = useState<string | null>(null);
+
+  /** Entra na sessão ao vivo: confirma presença, liga o foco em grupo e o cronômetro da sala. */
+  const joinLive = async (sessionId: string) => {
+    setJoiningId(sessionId);
+    try {
+      const { error } = await (supabase as any).rpc("join_live_room_session", { _session_id: sessionId });
+      if (error) throw error;
+      qc.invalidateQueries({ queryKey: ["rooms"] });
+      qc.invalidateQueries({ queryKey: ["roomMembers", roomId] });
+      qc.invalidateQueries({ queryKey: ["roomSessions"] });
+      if (!activeEntry) {
+        const saved = localStorage.getItem("lastProjectId");
+        const projectId = (saved && projects.find((p) => p.id === saved)?.id) || projects[0]?.id;
+        if (projectId) {
+          await startTimer.mutateAsync({ projectId, roomId });
+          toast({ title: t("room_sessions.joined_live") });
+        } else navigate(`/timer?room=${roomId}`);
+      } else {
+        toast({ title: t("room_sessions.joined_live_running") });
+      }
+    } catch (e: any) {
+      toast({ title: t("common.error"), description: e.message, variant: "destructive" });
+    } finally {
+      setJoiningId(null);
+    }
+  };
   const [view, setView] = useState<"upcoming" | "past">("upcoming");
   const { data, isLoading, isError } = useRoomSessions(roomId);
   const past = usePastRoomSessions(roomId, view === "past");
@@ -152,7 +187,9 @@ export function RoomSessionsCard({ roomId, canManage, members = [] }: { roomId: 
                   <Button size="sm" variant={joined ? "outline" : "default"} onClick={() => attendance.mutate({ sessionId: session.id, roomId, confirmed: !joined })} disabled={attendance.isPending}>
                     {joined ? <X className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" />}{t(joined ? "room_sessions.leave" : "room_sessions.join")}
                   </Button>
-                  {(live || soon) ? (
+                  {live ? (
+                    <Button size="sm" className="bg-success text-success-foreground hover:bg-success/90" disabled={joiningId === session.id} onClick={() => joinLive(session.id)}>{t("room_sessions.join_now")}</Button>
+                  ) : soon ? (
                     <Button size="sm" variant="secondary" onClick={() => navigate(`/timer?room=${roomId}`)}>{t("room_sessions.open_timer")}</Button>
                   ) : canManage ? (
                     <Button size="sm" variant="ghost" className="text-destructive" onClick={() => cancel.mutate({ id: session.id, roomId })}>{t("room_sessions.cancel")}</Button>
