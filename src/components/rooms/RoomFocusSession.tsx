@@ -27,6 +27,8 @@ interface Props {
   memberProfiles?: Map<string, { display_name?: string; avatar_url?: string }>;
   isChalkboard?: boolean;
   members?: RoomMemberLike[];
+  /** Dono/moderador: pode abrir sessão sem agendamento. Os demais só veem quando há sessão. */
+  canManage?: boolean;
 }
 
 export function RoomFocusSession({
@@ -38,6 +40,7 @@ export function RoomFocusSession({
   memberProfiles,
   isChalkboard = false,
   members = [],
+  canManage = false,
 }: Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -47,6 +50,7 @@ export function RoomFocusSession({
   const [countdownRemaining, setCountdownRemaining] = useState(0);
   const [starting, setStarting] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [summary, setSummary] = useState<{ total_seconds: number; people: number } | null>(null);
 
   const isActive = focusSessionEndAt && new Date(focusSessionEndAt) > new Date();
   const isCountdown = focusSessionStartAt && new Date(focusSessionStartAt) > new Date() && !isActive;
@@ -109,7 +113,10 @@ export function RoomFocusSession({
         setShowCelebration(true);
         playStopSound();
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-        setTimeout(() => setShowCelebration(false), 5000);
+        setTimeout(() => setShowCelebration(false), 12000);
+        const startIso = new Date(endTime.getTime() - focusSessionDuration * 60000).toISOString();
+        (supabase as any).rpc("get_room_focus_summary", { _room_id: roomId, _start: startIso, _end: endTime.toISOString() })
+          .then(({ data }: any) => { const row = Array.isArray(data) ? data[0] : data; if (row) setSummary({ total_seconds: Number(row.total_seconds), people: Number(row.people) }); });
 
         supabase.from("room_activity_log").insert({
           room_id: roomId,
@@ -254,7 +261,10 @@ export function RoomFocusSession({
         )}
         <div className="flex flex-wrap gap-1">
           {participants.map(p => (
-            <div key={p.user_id} className="flex items-center gap-1 bg-primary/10 rounded-full px-2 py-0.5">
+            <div key={p.user_id} className="flex items-center gap-1 bg-primary/10 rounded-full px-1 py-0.5 pr-2">
+              {(memberProfiles?.get(p.user_id)?.avatar_url || p.avatar_url) ? (
+                <img src={memberProfiles?.get(p.user_id)?.avatar_url || p.avatar_url} alt="" className="h-4 w-4 rounded-full object-cover" loading="lazy" />
+              ) : null}
               <span className="text-[10px] font-medium">{p.display_name || "?"}</span>
             </div>
           ))}
@@ -291,7 +301,9 @@ export function RoomFocusSession({
             {t("rooms.focus_completed_celebration")}
           </p>
           <p className={cn("text-xs", isChalkboard ? "chalk-text opacity-70" : "text-muted-foreground")}>
-            +{focusSessionDuration}min • {participants.length} {t("rooms.focus_participants").toLowerCase()}
+            {summary && summary.total_seconds > 0
+              ? t("rooms.focus_together_summary", { h: Math.floor(summary.total_seconds / 3600), m: String(Math.floor((summary.total_seconds % 3600) / 60)).padStart(2, "0"), count: summary.people })
+              : <>+{focusSessionDuration}min • {participants.length} {t("rooms.focus_participants").toLowerCase()}</>}
           </p>
         </motion.div>
       )}
@@ -322,7 +334,7 @@ export function RoomFocusSession({
             {t("rooms.focus_started_by", { name: starterName })}
           </span>
         )}
-        {focusSessionStartedBy === user?.id && (
+        {(focusSessionStartedBy === user?.id || canManage) && (
           <Button variant="outline" size="sm" className="w-full" onClick={stopSession}>
             <Square className="h-3.5 w-3.5 mr-1.5" />
             {t("rooms.focus_cancel")}
@@ -372,7 +384,7 @@ export function RoomFocusSession({
             style={{ width: `${progress}%` }}
           />
         </div>
-        {focusSessionStartedBy === user?.id && (
+        {(focusSessionStartedBy === user?.id || canManage) && (
           <Button
             variant="outline"
             size="sm"
@@ -417,7 +429,7 @@ export function RoomFocusSession({
             style={{ width: `${progress}%` }}
           />
         </div>
-        {focusSessionStartedBy === user?.id && (
+        {(focusSessionStartedBy === user?.id || canManage) && (
           <Button variant="outline" size="sm" className="w-full border-foreground/20 text-foreground" onClick={stopSession}>
             <Square className="h-3.5 w-3.5 mr-1.5" />
             {t("rooms.focus_stop")}
@@ -482,6 +494,8 @@ export function RoomFocusSession({
       </div>
     </div>
   );
+
+  if (!canManage) return celebrationBanner;
 
   if (isChalkboard) {
     return <>{celebrationBanner}{sessionButtons(true)}</>;

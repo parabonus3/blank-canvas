@@ -19,6 +19,7 @@ import { DailyProgressCard } from "@/components/achievements/DailyProgressCard";
 import { TreePhaseIndicator } from "@/components/achievements/TreePhaseIndicator";
 import { ConsistencyCalendar } from "@/components/achievements/ConsistencyCalendar";
 import { UnlockedAchievements } from "@/components/achievements/UnlockedAchievements";
+import { SocialAchievementsCard } from "@/components/achievements/SocialAchievementsCard";
 import { FreezeMissionsCard } from "@/components/achievements/FreezeMissionsCard";
 import { getCurrentMilestone, TREE_PHASES, LEVEL_MILESTONES } from "@/lib/treeConfig";
 import { Button } from "@/components/ui/button";
@@ -414,6 +415,7 @@ export default function Achievements() {
 
         {/* Freeze Missions (gamification) */}
         <FreezeMissionsCard />
+        <SocialAchievementsCard />
          {/* Bottom Section - Calendar and Chart */}
          <div className="grid gap-6 lg:grid-cols-2">
            {/* Consistency Calendar */}

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useWeeklyReview } from "@/hooks/useWeeklyReview";
 import { cn } from "@/lib/utils";
+import { ShareWeekButton } from "@/components/timer/ShareWeekButton";
 import { activityLabelKey } from "@/lib/activityTypes";
 import { useFocusRoutines, useRoutineRuns } from "@/hooks/useFocusRoutines";
 import { useTimezone } from "@/hooks/useTimezone";
@@ -80,7 +81,10 @@ export function WeeklyReviewCard({ compact = false }: { compact?: boolean }) {
             <CardTitle className="flex items-center gap-2 text-base"><Target className="h-4 w-4 text-primary" />{t("weekly_review.title")}</CardTitle>
             <p className="mt-1 text-xs text-muted-foreground">{t("weekly_review.subtitle")}</p>
           </div>
-          {compact && <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>{t("weekly_review.details")}</Button>}
+          <div className="flex shrink-0 items-center gap-1">
+            {review.data?.hasData && <ShareWeekButton />}
+            {compact && <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>{t("weekly_review.details")}</Button>}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">

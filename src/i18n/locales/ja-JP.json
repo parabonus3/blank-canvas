@@ -1501,7 +1501,8 @@
     "room_timer_helper_room_only": "ここから開始すると、あなたの時間はランキングとこのルームの連続記録に加算されます。",
     "room_timer_chip_challenge": "チャレンジ",
     "room_day_tz": "ルームの日 ({{tz}})",
-    "room_day_tz_hint": "全メンバーで共有される日（オーナーのタイムゾーン）"
+    "room_day_tz_hint": "全メンバーで共有される日（オーナーのタイムゾーン）",
+    "focus_together_summary": "みんなで {{h}}時間{{m}}分 集中しました • {{count}}人"
   },
   "explore": {
     "title": "ルームを探索",
@@ -3157,7 +3158,10 @@
     "edit": "編集",
     "edit_title": "セッションを編集",
     "new_activity": "新しいアクティビティ",
-    "next_title": "次のセッション"
+    "next_title": "次のセッション",
+    "join_now": "今すぐ参加",
+    "joined_live": "セッションに参加し、タイマーを開始しました",
+    "joined_live_running": "セッションに参加しました。タイマーはすでに動いています"
   },
   "timesheet": {
     "title": "月次レポート",
@@ -3190,5 +3194,48 @@
     "copied": "{{count}}件のブロックをコピーしました",
     "routines": "予定のルーティン: {{min}}分",
     "today": "今日"
+  },
+  "social_ach": {
+    "title": "ソーシャル実績",
+    "subtitle": "{{total}}件中{{done}}件解除",
+    "group_first": {
+      "name": "初めてのグループセッション",
+      "desc": "予定されたセッションで10分以上集中する"
+    },
+    "group_five": {
+      "name": "頼れる仲間",
+      "desc": "グループセッションに5回参加する"
+    },
+    "kept_promise": {
+      "name": "約束を守った",
+      "desc": "参加を確定し、セッションの半分集中する"
+    },
+    "duel_win": {
+      "name": "デュエル勝者",
+      "desc": "集中デュエルに勝つ"
+    },
+    "challenge_done": {
+      "name": "チャレンジ達成",
+      "desc": "ルームチャレンジを達成する"
+    },
+    "same_room_7": {
+      "name": "ホームルーム",
+      "desc": "同じルームで7日間集中する"
+    }
+  },
+  "share_week": {
+    "button": "共有",
+    "title": "今週を共有",
+    "desc": "時間、集中した日、連続記録、ベストな日を載せた画像を端末内で作成します。自動で投稿されることはありません。",
+    "show_name": "名前と写真を表示",
+    "create": "画像を作成",
+    "heading": "Timezoniでの今週",
+    "focused": "今週の集中時間",
+    "days": "集中した日",
+    "streak": "現在の連続日数",
+    "best_day": "ベストな日",
+    "text": "Timezoniでの集中ウィーク",
+    "downloaded": "画像を保存しました",
+    "error": "画像を作成できませんでした"
   }
 }

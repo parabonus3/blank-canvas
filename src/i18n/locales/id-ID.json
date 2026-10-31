@@ -1501,7 +1501,8 @@
     "room_timer_helper_room_only": "Memulai di sini, waktumu dihitung untuk peringkat dan streak ruangan ini.",
     "room_timer_chip_challenge": "Tantangan",
     "room_day_tz": "Hari ruangan ({{tz}})",
-    "room_day_tz_hint": "Semua anggota berbagi hari ini (zona waktu pemilik)"
+    "room_day_tz_hint": "Semua anggota berbagi hari ini (zona waktu pemilik)",
+    "focus_together_summary": "Kalian fokus {{h}}j{{m}} bersama • {{count}} orang"
   },
   "explore": {
     "title": "Jelajahi Ruangan",
@@ -3157,7 +3158,10 @@
     "edit": "Edit",
     "edit_title": "Edit sesi",
     "new_activity": "Aktivitas baru",
-    "next_title": "Sesi berikutnya"
+    "next_title": "Sesi berikutnya",
+    "join_now": "Gabung sekarang",
+    "joined_live": "Kamu bergabung dan timer dimulai",
+    "joined_live_running": "Kamu bergabung. Timer-mu sudah berjalan"
   },
   "timesheet": {
     "title": "Laporan bulanan",
@@ -3190,5 +3194,48 @@
     "copied": "{{count}} blok disalin",
     "routines": "Rutinitas terjadwal: {{min}} mnt",
     "today": "Hari ini"
+  },
+  "social_ach": {
+    "title": "Pencapaian sosial",
+    "subtitle": "{{done}} dari {{total}} terbuka",
+    "group_first": {
+      "name": "Sesi grup pertama",
+      "desc": "Fokus minimal 10 menit di sesi terjadwal ruangan"
+    },
+    "group_five": {
+      "name": "Kru setia",
+      "desc": "Ikuti 5 sesi grup"
+    },
+    "kept_promise": {
+      "name": "Janji ditepati",
+      "desc": "Konfirmasi hadir dan fokus setengah sesi"
+    },
+    "duel_win": {
+      "name": "Juara duel",
+      "desc": "Menangkan duel fokus"
+    },
+    "challenge_done": {
+      "name": "Tantangan selesai",
+      "desc": "Selesaikan tantangan ruangan"
+    },
+    "same_room_7": {
+      "name": "Markas",
+      "desc": "Fokus di 7 hari berbeda di ruangan yang sama"
+    }
+  },
+  "share_week": {
+    "button": "Bagikan",
+    "title": "Bagikan mingguku",
+    "desc": "Kami membuat gambar di perangkatmu berisi jam, hari fokus, streak, dan hari terbaik. Tidak ada yang diposting otomatis.",
+    "show_name": "Tampilkan nama dan foto",
+    "create": "Buat gambar",
+    "heading": "Mingguku di Timezoni",
+    "focused": "fokus minggu ini",
+    "days": "Hari fokus",
+    "streak": "Streak saat ini (hari)",
+    "best_day": "Hari terbaik",
+    "text": "Minggu fokusku di Timezoni",
+    "downloaded": "Gambar diunduh",
+    "error": "Gagal membuat gambar"
   }
 }

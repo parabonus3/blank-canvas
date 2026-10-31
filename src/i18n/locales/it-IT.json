@@ -1501,7 +1501,8 @@
     "room_timer_helper_room_only": "Iniziando qui, il tuo tempo conta per la classifica e la streak di questa stanza.",
     "room_timer_chip_challenge": "Sfida",
     "room_day_tz": "Giorno della stanza ({{tz}})",
-    "room_day_tz_hint": "Tutti i membri condividono questo giorno (fuso del proprietario)"
+    "room_day_tz_hint": "Tutti i membri condividono questo giorno (fuso del proprietario)",
+    "focus_together_summary": "Avete fatto {{h}}h{{m}} di focus insieme • {{count}} persone"
   },
   "explore": {
     "title": "Esplora Stanze",
@@ -3143,7 +3144,10 @@
     "edit": "Modifica",
     "edit_title": "Modifica sessione",
     "new_activity": "Nuova attività",
-    "next_title": "La tua prossima sessione"
+    "next_title": "La tua prossima sessione",
+    "join_now": "Entra ora",
+    "joined_live": "Sei entrato nella sessione e il timer è partito",
+    "joined_live_running": "Sei entrato nella sessione. Il timer era già attivo"
   },
   "timesheet": {
     "title": "Report mensile",
@@ -3176,5 +3180,48 @@
     "copied": "{{count}} blocchi copiati",
     "routines": "Routine previste: {{min}} min",
     "today": "Oggi"
+  },
+  "social_ach": {
+    "title": "Traguardi social",
+    "subtitle": "{{done}} su {{total}} sbloccati",
+    "group_first": {
+      "name": "Prima sessione di gruppo",
+      "desc": "Fai almeno 10 min di focus in una sessione programmata"
+    },
+    "group_five": {
+      "name": "Squadra fedele",
+      "desc": "Partecipa a 5 sessioni di gruppo"
+    },
+    "kept_promise": {
+      "name": "Parola mantenuta",
+      "desc": "Conferma e resta metà della sessione"
+    },
+    "duel_win": {
+      "name": "Vincitore di duello",
+      "desc": "Vinci un duello di focus"
+    },
+    "challenge_done": {
+      "name": "Sfida completata",
+      "desc": "Completa una sfida della stanza"
+    },
+    "same_room_7": {
+      "name": "Stanza di casa",
+      "desc": "Fai focus in 7 giorni diversi nella stessa stanza"
+    }
+  },
+  "share_week": {
+    "button": "Condividi",
+    "title": "Condividi la mia settimana",
+    "desc": "Creiamo un'immagine sul tuo dispositivo con ore, giorni di focus, serie e giorno migliore. Nulla viene pubblicato da solo.",
+    "show_name": "Mostra nome e foto",
+    "create": "Crea immagine",
+    "heading": "La mia settimana su Timezoni",
+    "focused": "di focus questa settimana",
+    "days": "Giorni di focus",
+    "streak": "Serie attuale (giorni)",
+    "best_day": "Giorno migliore",
+    "text": "La mia settimana di focus su Timezoni",
+    "downloaded": "Immagine scaricata",
+    "error": "Impossibile creare l'immagine"
   }
 }

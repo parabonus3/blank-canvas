@@ -2943,6 +2943,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_social_achievements: {
+        Row: {
+          achievement_type: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_type: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_type?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       study_rooms_safe: {
@@ -3070,6 +3091,7 @@ export type Database = {
           new_streak: number
         }[]
       }
+      check_social_achievements: { Args: never; Returns: string[] }
       compute_challenge_period: {
         Args: { _at: string; _period_type: string; _tz: string }
         Returns: {
@@ -3424,6 +3446,13 @@ export type Database = {
           total_seconds_today: number
         }[]
       }
+      get_room_focus_summary: {
+        Args: { _end: string; _room_id: string; _start: string }
+        Returns: {
+          people: number
+          total_seconds: number
+        }[]
+      }
       get_room_heatmap: {
         Args: { _days?: number; _room_id: string }
         Returns: {
@@ -3565,6 +3594,7 @@ export type Database = {
       }
       is_support_admin: { Args: { _user_id: string }; Returns: boolean }
       is_support_agent: { Args: { _user_id: string }; Returns: boolean }
+      join_live_room_session: { Args: { _session_id: string }; Returns: string }
       join_public_room: {
         Args: { _password?: string; _room_id: string }
         Returns: string

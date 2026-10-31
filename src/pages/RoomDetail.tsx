@@ -30,6 +30,7 @@ import { RoomStreakBadge } from "@/components/rooms/RoomStreakBadge";
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { RoomAchievements } from "@/components/rooms/RoomAchievements";
 import { RoomSessionsCard } from "@/components/rooms/RoomSessionsCard";
+import { RoomFocusSession } from "@/components/rooms/RoomFocusSession";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -288,6 +289,18 @@ export default function RoomDetail() {
             />
 
             <div className="space-y-4 sm:space-y-5 mt-4">
+              {room && (
+                <RoomFocusSession
+                  roomId={room.id}
+                  focusSessionEndAt={(room as any).focus_session_end_at}
+                  focusSessionDuration={(room as any).focus_session_duration}
+                  focusSessionStartedBy={(room as any).focus_session_started_by}
+                  focusSessionStartAt={(room as any).focus_session_start_at}
+                  memberProfiles={memberProfiles}
+                  members={members as any}
+                  canManage={isOwnerOrMod}
+                />
+              )}
               <RoomStatsHeader
                 roomId={id}
                 members={members}
