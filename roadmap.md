@@ -45,5 +45,5 @@
 - [ ] Revisão 320/360/390 px, textos dos 12 idiomas e avisos de segurança antigos
 - [x] Rotina de foco na agenda (rotinas do dia com "Pôr na agenda")
 - [x] Planejar a semana (visão seg–dom em Hoje, adicionar e repetir dia)
-- [ ] Sessão ao vivo na sala + conquistas sociais + resumo compartilhável
+- [x] Sessão ao vivo na sala + conquistas sociais + resumo compartilhável
 - [ ] Cronômetro sem internet
