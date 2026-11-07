@@ -21,7 +21,7 @@ import { ConsistencyCalendar } from "@/components/achievements/ConsistencyCalend
 import { UnlockedAchievements } from "@/components/achievements/UnlockedAchievements";
 import { SocialAchievementsCard } from "@/components/achievements/SocialAchievementsCard";
 import { FreezeMissionsCard } from "@/components/achievements/FreezeMissionsCard";
-import { getCurrentMilestone, TREE_PHASES, LEVEL_MILESTONES } from "@/lib/treeConfig";
+import { getCurrentMilestone, TREE_PHASES, LEVEL_MILESTONES, YEARLY_GOAL_HOURS } from "@/lib/treeConfig";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSubscription } from "@/contexts/SubscriptionContext";
@@ -96,7 +96,7 @@ export default function Achievements() {
   const localToday = progress?.localToday || new Date().toISOString().slice(0, 10);
   const dayOfYear = Math.floor((Date.parse(`${localToday}T00:00:00Z`) - Date.UTC(Number(localToday.slice(0, 4)), 0, 1)) / 86400000) + 1;
   const avgHoursPerDay = progress?.totalHours && dayOfYear > 0 ? progress.totalHours / dayOfYear : 0;
-  const hoursRemaining = (progress?.yearlyGoal || 1100) - (progress?.totalHours || 0);
+  const hoursRemaining = (progress?.yearlyGoal || YEARLY_GOAL_HOURS) - (progress?.totalHours || 0);
   const daysToComplete = avgHoursPerDay > 0 ? Math.ceil(hoursRemaining / avgHoursPerDay) : null;
   // currentLevel already declared above
   const currentMilestone = getCurrentMilestone(currentLevel);
@@ -299,7 +299,7 @@ export default function Achievements() {
                       : progress?.phaseName}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {(progress?.totalHours || 0).toFixed(1)}h / 1100h
+                  {(progress?.totalHours || 0).toFixed(1)}h / {YEARLY_GOAL_HOURS}h
                 </div>
               </div>
             </CardContent>

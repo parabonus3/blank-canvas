@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { YEARLY_GOAL_HOURS } from "@/lib/treeConfig";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -83,7 +84,7 @@ export function useAnnualProgress() {
       const totalSeconds = entries?.reduce((sum, e) => sum + (e.duration || 0), 0) || 0;
       const totalHours = totalSeconds / 3600;
       const stage = getTreeStage(totalHours);
-      const yearlyGoal = 1100;
+      const yearlyGoal = YEARLY_GOAL_HOURS;
       const progress = Math.min((totalHours / yearlyGoal) * 100, 100);
 
       // Calculate unlocked milestones

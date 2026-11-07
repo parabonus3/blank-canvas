@@ -14,10 +14,13 @@ describe('achievement visuals preserve earned milestones', () => {
   ])('level %i uses milestone %i', (level, expected) => {
     expect(getTreeVisualLevel(level)).toBe(expected);
   });
-  it('preserves the existing 1098-hour final level and separate 1100-hour goal', () => {
-    expect(calculateTreeLevel(1097)).toBe(365);
-    expect(calculateTreeLevel(1098)).toBe(366);
-    expect(YEARLY_GOAL_HOURS).toBe(1100);
+  it('grants one level per hour and finishes the tree at the 366-hour yearly goal', () => {
+    expect(calculateTreeLevel(0.99)).toBe(0);
+    expect(calculateTreeLevel(1)).toBe(1);
+    expect(calculateTreeLevel(365)).toBe(365);
+    expect(calculateTreeLevel(366)).toBe(366);
+    expect(calculateTreeLevel(1000)).toBe(366);
+    expect(YEARLY_GOAL_HOURS).toBe(366);
   });
 });
 

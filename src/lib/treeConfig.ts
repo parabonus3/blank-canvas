@@ -1,18 +1,18 @@
-// Tree Configuration for 366 levels (1 level per 3 hours)
-export const HOURS_PER_LEVEL = 3;
+// Tree Configuration for 366 levels (1 level per hour of focus)
+export const HOURS_PER_LEVEL = 1;
 export const MAX_LEVELS = 366;
-export const YEARLY_GOAL_HOURS = 1100;
+export const YEARLY_GOAL_HOURS = 366;
 
 // Phase definitions with level ranges
 export const TREE_PHASES = [
-  { id: 'planting', nameKey: 'achievements.phase_planting', name: 'Plantio', minLevel: 0, maxLevel: 10, minHours: 0, maxHours: 30, icon: '🌰' },
-  { id: 'sprout', nameKey: 'achievements.phase_sprout', name: 'Broto', minLevel: 10, maxLevel: 30, minHours: 30, maxHours: 90, icon: '🌱' },
-  { id: 'sapling', nameKey: 'achievements.phase_sapling', name: 'Mudinha', minLevel: 30, maxLevel: 60, minHours: 90, maxHours: 180, icon: '🌿' },
-  { id: 'tree', nameKey: 'achievements.phase_tree', name: 'Árvore', minLevel: 60, maxLevel: 120, minHours: 180, maxHours: 360, icon: '🌳' },
-  { id: 'pine', nameKey: 'achievements.phase_pine', name: 'Pinheiro', minLevel: 120, maxLevel: 200, minHours: 360, maxHours: 600, icon: '🌲' },
-  { id: 'lights', nameKey: 'achievements.phase_lights', name: 'Luzes', minLevel: 200, maxLevel: 267, minHours: 600, maxHours: 800, icon: '💡' },
-  { id: 'ornaments', nameKey: 'achievements.phase_ornaments', name: 'Enfeites', minLevel: 267, maxLevel: 333, minHours: 800, maxHours: 1000, icon: '🎄' },
-  { id: 'complete', nameKey: 'achievements.phase_complete', name: 'Completa', minLevel: 333, maxLevel: 366, minHours: 1000, maxHours: 1100, icon: '⭐' }
+  { id: 'planting', nameKey: 'achievements.phase_planting', name: 'Plantio', minLevel: 0, maxLevel: 10, minHours: 0, maxHours: 10, icon: '🌰' },
+  { id: 'sprout', nameKey: 'achievements.phase_sprout', name: 'Broto', minLevel: 10, maxLevel: 30, minHours: 10, maxHours: 30, icon: '🌱' },
+  { id: 'sapling', nameKey: 'achievements.phase_sapling', name: 'Mudinha', minLevel: 30, maxLevel: 60, minHours: 30, maxHours: 60, icon: '🌿' },
+  { id: 'tree', nameKey: 'achievements.phase_tree', name: 'Árvore', minLevel: 60, maxLevel: 120, minHours: 60, maxHours: 120, icon: '🌳' },
+  { id: 'pine', nameKey: 'achievements.phase_pine', name: 'Pinheiro', minLevel: 120, maxLevel: 200, minHours: 120, maxHours: 200, icon: '🌲' },
+  { id: 'lights', nameKey: 'achievements.phase_lights', name: 'Luzes', minLevel: 200, maxLevel: 267, minHours: 200, maxHours: 267, icon: '💡' },
+  { id: 'ornaments', nameKey: 'achievements.phase_ornaments', name: 'Enfeites', minLevel: 267, maxLevel: 333, minHours: 267, maxHours: 333, icon: '🎄' },
+  { id: 'complete', nameKey: 'achievements.phase_complete', name: 'Completa', minLevel: 333, maxLevel: 366, minHours: 333, maxHours: 366, icon: '⭐' }
 ] as const;
 
 // Level milestones - specific achievements for each significant level
@@ -26,78 +26,78 @@ export interface LevelMilestone {
 }
 
 export const LEVEL_MILESTONES: LevelMilestone[] = [
-  // Fase Plantio (0-30h, levels 0-10)
-  { level: 1, description: "Vaso de terracota vazio", descriptionKey: "achievements.milestone_pot", icon: "🪴", element: "pot", phase: "planting" },
-  { level: 2, description: "Vaso com terra comum", descriptionKey: "achievements.milestone_soil", icon: "🟤", element: "soil", phase: "planting" },
-  { level: 3, description: "Terra mais rica e escura", descriptionKey: "achievements.milestone_rich_soil", icon: "🌱", element: "rich_soil", phase: "planting" },
-  { level: 4, description: "Pequeno buraco na terra", descriptionKey: "achievements.milestone_seed", icon: "🌰", element: "seed", phase: "planting" },
-  { level: 5, description: "Semente visível no buraco", descriptionKey: "achievements.milestone_sprouting", icon: "🌿", element: "sprouting", phase: "planting" },
-  { level: 6, description: "Semente parcialmente coberta", descriptionKey: "achievements.milestone_first_green", icon: "🌱", element: "first_green", phase: "planting" },
-  { level: 7, description: "Semente totalmente coberta", descriptionKey: "achievements.milestone_growing", icon: "🌿", element: "growing", phase: "planting" },
-  { level: 8, description: "Terra levemente úmida", descriptionKey: "achievements.milestone_leaf_1", icon: "🍃", element: "leaf_1", phase: "planting" },
-  { level: 9, description: "Pequeno rachado na terra", descriptionKey: "achievements.milestone_leaf_2", icon: "🍃", element: "leaf_2", phase: "planting" },
-  { level: 10, description: "Primeiro broto surgindo!", descriptionKey: "achievements.milestone_planting_done", icon: "✅", element: "planting_done", phase: "planting" },
+  // Fase Plantio (0-10h, levels 0-10)
+  { level: 1, description: "Vaso com terra", descriptionKey: "achievements.milestone_pot", icon: "🪴", element: "pot", phase: "planting" },
+  { level: 2, description: "Cova aberta para a semente", descriptionKey: "achievements.milestone_soil", icon: "🟤", element: "soil", phase: "planting" },
+  { level: 3, description: "Semente plantada", descriptionKey: "achievements.milestone_rich_soil", icon: "🌱", element: "rich_soil", phase: "planting" },
+  { level: 4, description: "Terra coberta e regada", descriptionKey: "achievements.milestone_seed", icon: "🌰", element: "seed", phase: "planting" },
+  { level: 5, description: "Semente despertando", descriptionKey: "achievements.milestone_sprouting", icon: "🌿", element: "sprouting", phase: "planting" },
+  { level: 6, description: "Primeiro sinal de vida", descriptionKey: "achievements.milestone_first_green", icon: "🌱", element: "first_green", phase: "planting" },
+  { level: 7, description: "Broto saindo da terra", descriptionKey: "achievements.milestone_growing", icon: "🌿", element: "growing", phase: "planting" },
+  { level: 8, description: "Broto se erguendo", descriptionKey: "achievements.milestone_leaf_1", icon: "🍃", element: "leaf_1", phase: "planting" },
+  { level: 9, description: "Primeiras agulhas abrindo", descriptionKey: "achievements.milestone_leaf_2", icon: "🍃", element: "leaf_2", phase: "planting" },
+  { level: 10, description: "Pequena muda nasceu!", descriptionKey: "achievements.milestone_planting_done", icon: "✅", element: "planting_done", phase: "planting" },
   
-  // Fase Broto (30-90h, levels 10-30)
-  { level: 12, description: "Broto maior (2 cm)", descriptionKey: "achievements.milestone_stem_1", icon: "🌿", element: "stem_1", phase: "sprout" },
-  { level: 14, description: "Broto mais firme", descriptionKey: "achievements.milestone_leaf_3", icon: "🍃", element: "leaf_3", phase: "sprout" },
-  { level: 16, description: "Primeira folha pequena", descriptionKey: "achievements.milestone_leaf_4", icon: "🍃", element: "leaf_4", phase: "sprout" },
-  { level: 18, description: "Primeira folha aberta", descriptionKey: "achievements.milestone_taller", icon: "🌱", element: "taller", phase: "sprout" },
-  { level: 20, description: "Segunda folha surgindo", descriptionKey: "achievements.milestone_branch_start", icon: "🌿", element: "branch_start", phase: "sprout" },
-  { level: 22, description: "Duas folhas abertas", descriptionKey: "achievements.milestone_more_leaves", icon: "🌿", element: "more_leaves", phase: "sprout" },
-  { level: 24, description: "Caule mais grosso", descriptionKey: "achievements.milestone_robust", icon: "🌱", element: "robust", phase: "sprout" },
-  { level: 26, description: "Broto mais alto", descriptionKey: "achievements.milestone_preparing", icon: "🌿", element: "preparing", phase: "sprout" },
-  { level: 28, description: "Pequenas veias nas folhas", descriptionKey: "achievements.milestone_details", icon: "✨", element: "details", phase: "sprout" },
-  { level: 30, description: "Broto jovem completo", descriptionKey: "achievements.milestone_sprout_done", icon: "✅", element: "sprout_done", phase: "sprout" },
+  // Fase Broto (10-30h, levels 10-30)
+  { level: 12, description: "Agulhas mais cheias", descriptionKey: "achievements.milestone_stem_1", icon: "🌿", element: "stem_1", phase: "sprout" },
+  { level: 14, description: "Caule mais alto", descriptionKey: "achievements.milestone_leaf_3", icon: "🍃", element: "leaf_3", phase: "sprout" },
+  { level: 16, description: "Topo em forma de estrela", descriptionKey: "achievements.milestone_leaf_4", icon: "🍃", element: "leaf_4", phase: "sprout" },
+  { level: 18, description: "Tufo de agulhas maior", descriptionKey: "achievements.milestone_taller", icon: "🌱", element: "taller", phase: "sprout" },
+  { level: 20, description: "Agulhas se espalhando", descriptionKey: "achievements.milestone_branch_start", icon: "🌿", element: "branch_start", phase: "sprout" },
+  { level: 22, description: "Copinha mais aberta", descriptionKey: "achievements.milestone_more_leaves", icon: "🌿", element: "more_leaves", phase: "sprout" },
+  { level: 24, description: "Caule firme e alto", descriptionKey: "achievements.milestone_robust", icon: "🌱", element: "robust", phase: "sprout" },
+  { level: 26, description: "Copa cheia de agulhas", descriptionKey: "achievements.milestone_preparing", icon: "🌿", element: "preparing", phase: "sprout" },
+  { level: 28, description: "Primeiros galhos laterais", descriptionKey: "achievements.milestone_details", icon: "✨", element: "details", phase: "sprout" },
+  { level: 30, description: "Mini pinheiro em camadas", descriptionKey: "achievements.milestone_sprout_done", icon: "✅", element: "sprout_done", phase: "sprout" },
   
-  // Fase Mudinha (90-180h, levels 30-60)
-  { level: 35, description: "Tronco formando", descriptionKey: "achievements.milestone_trunk_1", icon: "🪵", element: "trunk_1", phase: "sapling" },
-  { level: 40, description: "Primeiro galho", descriptionKey: "achievements.milestone_branch_1", icon: "🌳", element: "branch_1", phase: "sapling" },
-  { level: 45, description: "Segundo galho", descriptionKey: "achievements.milestone_branch_2", icon: "🌳", element: "branch_2", phase: "sapling" },
-  { level: 50, description: "Folhagem básica", descriptionKey: "achievements.milestone_foliage_1", icon: "🌿", element: "foliage_1", phase: "sapling" },
-  { level: 55, description: "Formato surgindo", descriptionKey: "achievements.milestone_shape", icon: "🌲", element: "shape", phase: "sapling" },
+  // Fase Mudinha (30-60h, levels 30-60)
+  { level: 35, description: "Tronco mais alto", descriptionKey: "achievements.milestone_trunk_1", icon: "🪵", element: "trunk_1", phase: "sapling" },
+  { level: 40, description: "Mais camadas de galhos", descriptionKey: "achievements.milestone_branch_1", icon: "🌳", element: "branch_1", phase: "sapling" },
+  { level: 45, description: "Galhos mais longos", descriptionKey: "achievements.milestone_branch_2", icon: "🌳", element: "branch_2", phase: "sapling" },
+  { level: 50, description: "Folhagem mais densa", descriptionKey: "achievements.milestone_foliage_1", icon: "🌿", element: "foliage_1", phase: "sapling" },
+  { level: 55, description: "Formato de cone surgindo", descriptionKey: "achievements.milestone_shape", icon: "🌲", element: "shape", phase: "sapling" },
   { level: 60, description: "Mudinha completa!", descriptionKey: "achievements.milestone_sapling_done", icon: "✅", element: "sapling_done", phase: "sapling" },
   
-  // Fase Árvore (180-360h, levels 60-120)
-  { level: 70, description: "Tronco mais alto", descriptionKey: "achievements.milestone_trunk_2", icon: "🪵", element: "trunk_2", phase: "tree" },
-  { level: 80, description: "Mais galhos", descriptionKey: "achievements.milestone_branches", icon: "🌳", element: "branches", phase: "tree" },
-  { level: 90, description: "Copa formando", descriptionKey: "achievements.milestone_crown", icon: "🌲", element: "crown", phase: "tree" },
+  // Fase Árvore (60-120h, levels 60-120)
+  { level: 70, description: "Pinheirinho mais alto", descriptionKey: "achievements.milestone_trunk_2", icon: "🪵", element: "trunk_2", phase: "tree" },
+  { level: 80, description: "Galhos mais largos", descriptionKey: "achievements.milestone_branches", icon: "🌳", element: "branches", phase: "tree" },
+  { level: 90, description: "Copa ganhando volume", descriptionKey: "achievements.milestone_crown", icon: "🌲", element: "crown", phase: "tree" },
   { level: 100, description: "Árvore jovem", descriptionKey: "achievements.milestone_young_tree", icon: "🌳", element: "young_tree", phase: "tree" },
   { level: 110, description: "Crescimento forte", descriptionKey: "achievements.milestone_strong", icon: "💪", element: "strong", phase: "tree" },
   { level: 120, description: "Árvore completa!", descriptionKey: "achievements.milestone_tree_done", icon: "✅", element: "tree_done", phase: "tree" },
   
-  // Fase Pinheiro (360-600h, levels 120-200)
-  { level: 140, description: "Formato de pinheiro", descriptionKey: "achievements.milestone_pine_shape", icon: "🌲", element: "pine_shape", phase: "pine" },
+  // Fase Pinheiro (120-200h, levels 120-200)
+  { level: 140, description: "Pinheiro mais cheio", descriptionKey: "achievements.milestone_pine_shape", icon: "🌲", element: "pine_shape", phase: "pine" },
   { level: 160, description: "Pinheiro crescendo", descriptionKey: "achievements.milestone_pine_growing", icon: "🌲", element: "pine_growing", phase: "pine" },
   { level: 180, description: "Galhos densos", descriptionKey: "achievements.milestone_dense", icon: "🌲", element: "dense", phase: "pine" },
   { level: 200, description: "Pinheiro completo!", descriptionKey: "achievements.milestone_pine_done", icon: "✅", element: "pine_done", phase: "pine" },
   
-  // Fase Luzes (600-800h, levels 200-267)
-  { level: 205, description: "Primeira luz amarela", descriptionKey: "achievements.milestone_light_1", icon: "💡", element: "light_1", phase: "lights" },
-  { level: 210, description: "Luz vermelha", descriptionKey: "achievements.milestone_light_2", icon: "🔴", element: "light_2", phase: "lights" },
-  { level: 220, description: "Luz azul", descriptionKey: "achievements.milestone_light_3", icon: "🔵", element: "light_3", phase: "lights" },
-  { level: 230, description: "Luz verde", descriptionKey: "achievements.milestone_light_4", icon: "🟢", element: "light_4", phase: "lights" },
-  { level: 240, description: "Mais luzes", descriptionKey: "achievements.milestone_more_lights", icon: "✨", element: "more_lights", phase: "lights" },
+  // Fase Luzes (200-267h, levels 200-267)
+  { level: 205, description: "Primeira luz acesa", descriptionKey: "achievements.milestone_light_1", icon: "💡", element: "light_1", phase: "lights" },
+  { level: 210, description: "Mais luzinhas", descriptionKey: "achievements.milestone_light_2", icon: "🔴", element: "light_2", phase: "lights" },
+  { level: 220, description: "Luzes pelos galhos", descriptionKey: "achievements.milestone_light_3", icon: "🔵", element: "light_3", phase: "lights" },
+  { level: 230, description: "Luzes coloridas", descriptionKey: "achievements.milestone_light_4", icon: "🟢", element: "light_4", phase: "lights" },
+  { level: 240, description: "Árvore toda iluminada", descriptionKey: "achievements.milestone_more_lights", icon: "✨", element: "more_lights", phase: "lights" },
   { level: 250, description: "Luzes brilhantes", descriptionKey: "achievements.milestone_bright_lights", icon: "💫", element: "bright_lights", phase: "lights" },
-  { level: 260, description: "Festival de luzes", descriptionKey: "achievements.milestone_festival", icon: "🎇", element: "festival", phase: "lights" },
+  { level: 260, description: "Primeiras bolinhas", descriptionKey: "achievements.milestone_festival", icon: "🎇", element: "festival", phase: "lights" },
   { level: 267, description: "Luzes completas!", descriptionKey: "achievements.milestone_lights_done", icon: "✅", element: "lights_done", phase: "lights" },
   
-  // Fase Enfeites (800-1000h, levels 267-333)
-  { level: 275, description: "Primeira bola vermelha", descriptionKey: "achievements.milestone_ornament_1", icon: "🔴", element: "ornament_1", phase: "ornaments" },
-  { level: 285, description: "Bola dourada", descriptionKey: "achievements.milestone_ornament_2", icon: "🟡", element: "ornament_2", phase: "ornaments" },
-  { level: 295, description: "Bola prateada", descriptionKey: "achievements.milestone_ornament_3", icon: "⚪", element: "ornament_3", phase: "ornaments" },
-  { level: 305, description: "Bola azul", descriptionKey: "achievements.milestone_ornament_4", icon: "🔵", element: "ornament_4", phase: "ornaments" },
-  { level: 315, description: "Laços decorativos", descriptionKey: "achievements.milestone_ribbons", icon: "🎀", element: "ribbons", phase: "ornaments" },
-  { level: 325, description: "Festão dourado", descriptionKey: "achievements.milestone_garland", icon: "✨", element: "garland", phase: "ornaments" },
+  // Fase Enfeites (267-333h, levels 267-333)
+  { level: 275, description: "Primeiro laço vermelho", descriptionKey: "achievements.milestone_ornament_1", icon: "🔴", element: "ornament_1", phase: "ornaments" },
+  { level: 285, description: "Mais laços", descriptionKey: "achievements.milestone_ornament_2", icon: "🟡", element: "ornament_2", phase: "ornaments" },
+  { level: 295, description: "Bolas vermelhas", descriptionKey: "achievements.milestone_ornament_3", icon: "⚪", element: "ornament_3", phase: "ornaments" },
+  { level: 305, description: "Bolas douradas e azuis", descriptionKey: "achievements.milestone_ornament_4", icon: "🔵", element: "ornament_4", phase: "ornaments" },
+  { level: 315, description: "Mais enfeites", descriptionKey: "achievements.milestone_ribbons", icon: "🎀", element: "ribbons", phase: "ornaments" },
+  { level: 325, description: "Árvore bem enfeitada", descriptionKey: "achievements.milestone_garland", icon: "✨", element: "garland", phase: "ornaments" },
   { level: 333, description: "Enfeites completos!", descriptionKey: "achievements.milestone_ornaments_done", icon: "✅", element: "ornaments_done", phase: "ornaments" },
   
-  // Fase Completa (1000-1100h, levels 333-366)
-  { level: 338, description: "Primeiro presente", descriptionKey: "achievements.milestone_present_1", icon: "🎁", element: "present_1", phase: "complete" },
+  // Fase Completa (333-366h, levels 333-366)
+  { level: 338, description: "Primeiros presentes", descriptionKey: "achievements.milestone_present_1", icon: "🎁", element: "present_1", phase: "complete" },
   { level: 343, description: "Mais presentes", descriptionKey: "achievements.milestone_presents", icon: "🎁", element: "presents", phase: "complete" },
-  { level: 348, description: "Neve caindo", descriptionKey: "achievements.milestone_snow", icon: "❄️", element: "snow", phase: "complete" },
-  { level: 353, description: "Neve intensa", descriptionKey: "achievements.milestone_snow_heavy", icon: "🌨️", element: "snow_heavy", phase: "complete" },
+  { level: 348, description: "Neve sobre a terra", descriptionKey: "achievements.milestone_snow", icon: "❄️", element: "snow", phase: "complete" },
+  { level: 353, description: "Mais neve e brilho", descriptionKey: "achievements.milestone_snow_heavy", icon: "🌨️", element: "snow_heavy", phase: "complete" },
   { level: 358, description: "Estrela no topo", descriptionKey: "achievements.milestone_star", icon: "⭐", element: "star", phase: "complete" },
-  { level: 363, description: "Estrela brilhante", descriptionKey: "achievements.milestone_star_bright", icon: "🌟", element: "star_bright", phase: "complete" },
+  { level: 363, description: "Festão prateado", descriptionKey: "achievements.milestone_star_bright", icon: "🌟", element: "star_bright", phase: "complete" },
   { level: 366, description: "Árvore perfeita!", descriptionKey: "achievements.milestone_complete_tree", icon: "🎄", element: "complete", phase: "complete" }
 ];
 
@@ -187,6 +187,8 @@ export function getCurrentMilestone(currentLevel: number): LevelMilestone | null
  
  // Get next unlock description key for i18n
  export function getNextUnlockDescriptionKey(level: number): string {
+   const next = getNextMilestone(level);
+   if (next) return next.descriptionKey;
    const phase = getCurrentPhase(level);
    
    if (level < 10) {

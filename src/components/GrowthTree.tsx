@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { YEARLY_GOAL_HOURS } from "@/lib/treeConfig";
 import { cn } from "@/lib/utils";
 import { TreeStage } from "@/hooks/useAchievements";
 import { Progress } from "@/components/ui/progress";
@@ -19,7 +20,7 @@ export function GrowthTree({
   stage, 
   stageName,
   progress, 
-  yearlyGoal = 1100,
+  yearlyGoal = YEARLY_GOAL_HOURS,
   size = "md",
   showStats = true
 }: GrowthTreeProps) {
