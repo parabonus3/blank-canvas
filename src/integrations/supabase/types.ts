@@ -1262,6 +1262,7 @@ export type Database = {
       }
       notification_preferences: {
         Row: {
+          block_reminders: boolean
           chat_mentions: boolean
           friend_activity: boolean
           max_per_day: number
@@ -1279,6 +1280,7 @@ export type Database = {
           weekly_recap: boolean
         }
         Insert: {
+          block_reminders?: boolean
           chat_mentions?: boolean
           friend_activity?: boolean
           max_per_day?: number
@@ -1296,6 +1298,7 @@ export type Database = {
           weekly_recap?: boolean
         }
         Update: {
+          block_reminders?: boolean
           chat_mentions?: boolean
           friend_activity?: boolean
           max_per_day?: number
@@ -2703,6 +2706,7 @@ export type Database = {
           id: string
           is_done: boolean
           project_id: string | null
+          reminder_sent_at: string | null
           start_at: string
           task_id: string | null
           time_entry_id: string | null
@@ -2716,6 +2720,7 @@ export type Database = {
           id?: string
           is_done?: boolean
           project_id?: string | null
+          reminder_sent_at?: string | null
           start_at: string
           task_id?: string | null
           time_entry_id?: string | null
@@ -2729,6 +2734,7 @@ export type Database = {
           id?: string
           is_done?: boolean
           project_id?: string | null
+          reminder_sent_at?: string | null
           start_at?: string
           task_id?: string | null
           time_entry_id?: string | null

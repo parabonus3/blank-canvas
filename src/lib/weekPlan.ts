@@ -9,6 +9,51 @@ export function startOfWeekMonday(ref: Date): Date {
   return d;
 }
 
+export const MAX_WEEKS_AHEAD = 8;
+export const MAX_WEEKS_BACK = 4;
+
+/** Segunda-feira da semana deslocada `offset` semanas a partir de `ref` (seguro em DST: usa setDate). */
+export function shiftedWeekStart(ref: Date, offset: number): Date {
+  const s = startOfWeekMonday(ref);
+  s.setDate(s.getDate() + offset * 7);
+  return s;
+}
+
+export function clampWeekOffset(n: number) {
+  return Math.max(-MAX_WEEKS_BACK, Math.min(MAX_WEEKS_AHEAD, n));
+}
+
+/**
+ * Copia os blocos da semana anterior para os mesmos dias da semana destino,
+ * apenas nos dias que ainda estão vazios e não passaram.
+ */
+export function copyWeekToEmptyDays<T extends PlanBlock>(prevBlocks: T[], target: { day: Date; blocks: unknown[] }[], now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const out: PlanBlock[] = [];
+  for (const t of target) {
+    if (t.blocks.length > 0 || t.day < today) continue;
+    const wd = t.day.getDay();
+    const src = prevBlocks.filter((b) => new Date(b.start_at).getDay() === wd);
+    out.push(...copyDayToEmptyDays(src, [t]));
+  }
+  return out;
+}
+
+/** Bloco em andamento ou o próximo de hoje, ainda não feito. */
+export function currentOrNextBlock<T extends PlanBlock & { is_done?: boolean; time_entry_id?: string | null }>(blocks: T[], now = new Date()) {
+  const open = blocks
+    .filter((b) => !b.is_done && !b.time_entry_id && sameLocalDay(new Date(b.start_at), now))
+    .sort((a, b) => a.start_at.localeCompare(b.start_at));
+  const t = now.getTime();
+  const current = open.find((b) => new Date(b.start_at).getTime() <= t && new Date(b.end_at).getTime() > t);
+  if (current) return { block: current, state: "now" as const };
+  const next = open.find((b) => new Date(b.start_at).getTime() > t);
+  if (next) return { block: next, state: "next" as const };
+  const missed = open.filter((b) => new Date(b.end_at).getTime() <= t).pop();
+  if (missed) return { block: missed, state: "missed" as const };
+  return null;
+}
+
 export function weekDays(ref: Date): Date[] {
   const start = startOfWeekMonday(ref);
   return Array.from({ length: 7 }, (_, i) => {
