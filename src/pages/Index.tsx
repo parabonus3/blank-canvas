@@ -47,6 +47,8 @@ import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocu
 import { ToastAction } from "@/components/ui/toast";
 import { useToggleChecklist } from "@/hooks/useChecklists";
 import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
+import { PlannedBlockBanner } from "@/components/timer/PlannedBlockBanner";
+import { useUpdateTimeBlock } from "@/hooks/useTimeBlocks";
 import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
 import { useFocusRoutines, useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
 import { usePersonalStreak } from "@/hooks/usePersonalStreak";
@@ -77,6 +79,7 @@ export default function Index() {
   const { data: activeEntry, isLoading: isLoadingEntry } = useActiveTimeEntry();
   const { data: profile } = useProfile();
   const startTimer = useStartTimer();
+  const updateBlock = useUpdateTimeBlock();
   const stopTimer = useStopTimer();
   const saveEntryTags = useSaveTimeEntryTags();
   
@@ -824,6 +827,21 @@ export default function Index() {
                        <DeepWorkPicker value={focusTarget} onChange={setFocusTarget} />
                      </CollapsibleContent>
                    </Collapsible>
+
+                  {!activeEntry && !routineRun.run && (
+                    <PlannedBlockBanner
+                      disabled={startTimer.isPending}
+                      onStart={async (b) => {
+                        if (!b.project_id) return;
+                        playPageStart();
+                        resetInactivityCheck();
+                        initInactivityCheck(Date.now());
+                        setSelectedProject(b.project_id);
+                        const entry: any = await startTimer.mutateAsync({ projectId: b.project_id, taskId: b.task_id });
+                        if (entry?.id) updateBlock.mutate({ id: b.id, time_entry_id: entry.id });
+                      }}
+                    />
+                  )}
 
                   {routineRun.run && routineRun.currentStep ? (
                     <RoutineRunBar

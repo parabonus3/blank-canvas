@@ -2527,7 +2527,8 @@
       "reengage": "Te extrañamos",
       "social_invites": "Invitaciones y amigos",
       "task_updates": "Tareas y tableros",
-      "morning_kickoff": "Arranque matinal"
+      "morning_kickoff": "Arranque matinal",
+      "block_reminders": "Recordatorios de bloques planificados"
     },
     "diagnostics": "Diagnóstico",
     "errors": {
@@ -3200,7 +3201,18 @@
     "repeat": "Repetir este día en los días vacíos",
     "copied": "{{count}} bloques copiados",
     "routines": "Rutinas previstas: {{min}} min",
-    "today": "Hoy"
+    "today": "Hoy",
+    "prev_week": "Semana anterior",
+    "next_week": "Próxima semana",
+    "this_week": "Esta semana",
+    "plan_next_prompt": "Planifica la próxima semana ahora",
+    "empty_days_one": "{{count}} día sin plan",
+    "empty_days_other": "{{count}} días sin plan",
+    "vs_prev": "{{sign}}{{value}} vs. semana anterior",
+    "copy_prev_week": "Copiar semana anterior ({{count}} bloques) en días vacíos",
+    "past_readonly": "Día pasado — solo lectura",
+    "move": "Editar / mover bloque",
+    "field_day": "Día"
   },
   "social_ach": {
     "title": "Logros sociales",
@@ -3244,5 +3256,15 @@
     "text": "Mi semana de enfoque en Timezoni",
     "downloaded": "Imagen descargada",
     "error": "No se pudo crear la imagen"
+  },
+  "plannedbanner": {
+    "now": "Planeaste ahora",
+    "next": "Siguiente en tu plan",
+    "missed": "Se quedó atrás",
+    "start": "Empezar ahora",
+    "in30": "+30 min",
+    "tomorrow": "Mañana",
+    "dismiss": "Descartar",
+    "no_project": "Elige un proyecto en el bloque para iniciarlo aquí."
   }
 }

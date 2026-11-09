@@ -2615,7 +2615,8 @@
       "reengage": "We miss you",
       "social_invites": "Invites & friends",
       "task_updates": "Tasks & boards",
-      "morning_kickoff": "Morning kickoff"
+      "morning_kickoff": "Morning kickoff",
+      "block_reminders": "Planned block reminders"
     },
     "diagnostics": "Diagnostics",
     "errors": {
@@ -3288,7 +3289,18 @@
     "repeat": "Repeat this day on empty days",
     "copied": "{{count}} blocks copied",
     "routines": "Routines planned: {{min}} min",
-    "today": "Today"
+    "today": "Today",
+    "prev_week": "Previous week",
+    "next_week": "Next week",
+    "this_week": "This week",
+    "plan_next_prompt": "Plan next week now",
+    "empty_days_one": "{{count}} day without a plan",
+    "empty_days_other": "{{count}} days without a plan",
+    "vs_prev": "{{sign}}{{value}} vs. last week",
+    "copy_prev_week": "Copy last week ({{count}} blocks) into empty days",
+    "past_readonly": "Past day — read only",
+    "move": "Edit / move block",
+    "field_day": "Day"
   },
   "social_ach": {
     "title": "Social achievements",
@@ -3332,5 +3344,15 @@
     "text": "My focus week on Timezoni",
     "downloaded": "Image downloaded",
     "error": "Couldn't create the image"
+  },
+  "plannedbanner": {
+    "now": "You planned now",
+    "next": "Next in your plan",
+    "missed": "Fell behind",
+    "start": "Start now",
+    "in30": "+30 min",
+    "tomorrow": "Tomorrow",
+    "dismiss": "Dismiss",
+    "no_project": "Pick a project on the block to start from here."
   }
 }

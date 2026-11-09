@@ -2506,7 +2506,8 @@
       "reengage": "보고 싶어요",
       "social_invites": "초대 및 친구",
       "task_updates": "작업 및 보드",
-      "morning_kickoff": "아침 시작 알림"
+      "morning_kickoff": "아침 시작 알림",
+      "block_reminders": "계획된 블록 알림"
     },
     "diagnostics": "진단",
     "errors": {
@@ -3179,7 +3180,18 @@
     "repeat": "빈 날에 이 날 반복",
     "copied": "블록 {{count}}개 복사됨",
     "routines": "예정된 루틴: {{min}}분",
-    "today": "오늘"
+    "today": "오늘",
+    "prev_week": "이전 주",
+    "next_week": "다음 주",
+    "this_week": "이번 주",
+    "plan_next_prompt": "지금 다음 주를 계획하세요",
+    "empty_days_one": "계획 없는 날 {{count}}일",
+    "empty_days_other": "계획 없는 날 {{count}}일",
+    "vs_prev": "지난주 대비 {{sign}}{{value}}",
+    "copy_prev_week": "지난주({{count}}개 블록)를 빈 날에 복사",
+    "past_readonly": "지난 날 — 읽기 전용",
+    "move": "블록 편집/이동",
+    "field_day": "날짜"
   },
   "social_ach": {
     "title": "소셜 업적",
@@ -3223,5 +3235,15 @@
     "text": "Timezoni 집중 주간",
     "downloaded": "이미지를 다운로드했어요",
     "error": "이미지를 만들 수 없어요"
+  },
+  "plannedbanner": {
+    "now": "지금 계획된 일",
+    "next": "다음 계획",
+    "missed": "놓친 계획",
+    "start": "지금 시작",
+    "in30": "+30분",
+    "tomorrow": "내일",
+    "dismiss": "닫기",
+    "no_project": "여기서 시작하려면 블록에 프로젝트를 지정하세요."
   }
 }

@@ -21,6 +21,7 @@ type Prefs = {
   social_invites: boolean;
   task_updates: boolean;
   morning_kickoff: boolean;
+  block_reminders: boolean;
 };
 
 const DEFAULTS: Prefs = {
@@ -34,6 +35,7 @@ const DEFAULTS: Prefs = {
   social_invites: true,
   task_updates: true,
   morning_kickoff: true,
+  block_reminders: true,
 };
 
 function explainError(msg: string, t: (k: string) => string): string {
@@ -70,6 +72,7 @@ export function PushNotificationsSection() {
           social_invites: (data as any).social_invites ?? true,
           task_updates: (data as any).task_updates ?? true,
           morning_kickoff: (data as any).morning_kickoff ?? true,
+          block_reminders: (data as any).block_reminders ?? true,
         });
       }
     })();
@@ -156,6 +159,7 @@ export function PushNotificationsSection() {
                 ["social_invites", "push.kinds.social_invites"],
                 ["task_updates", "push.kinds.task_updates"],
                 ["morning_kickoff", "push.kinds.morning_kickoff"],
+                ["block_reminders", "push.kinds.block_reminders"],
               ] as const
             ).map(([key, label]) => (
               <div key={key} className="flex items-center justify-between rounded-md border p-3">

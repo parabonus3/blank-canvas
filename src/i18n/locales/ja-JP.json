@@ -2520,7 +2520,8 @@
       "reengage": "会いたかった",
       "social_invites": "招待と友達",
       "task_updates": "タスクとボード",
-      "morning_kickoff": "朝のスタート"
+      "morning_kickoff": "朝のスタート",
+      "block_reminders": "計画ブロックのリマインダー"
     },
     "diagnostics": "診断",
     "errors": {
@@ -3193,7 +3194,18 @@
     "repeat": "この日を空いている日に繰り返す",
     "copied": "{{count}}件のブロックをコピーしました",
     "routines": "予定のルーティン: {{min}}分",
-    "today": "今日"
+    "today": "今日",
+    "prev_week": "前の週",
+    "next_week": "来週",
+    "this_week": "今週",
+    "plan_next_prompt": "今すぐ来週を計画する",
+    "empty_days_one": "計画のない日：{{count}}日",
+    "empty_days_other": "計画のない日：{{count}}日",
+    "vs_prev": "先週比 {{sign}}{{value}}",
+    "copy_prev_week": "先週（{{count}}ブロック）を空いている日にコピー",
+    "past_readonly": "過去の日 — 閲覧のみ",
+    "move": "ブロックを編集・移動",
+    "field_day": "日付"
   },
   "social_ach": {
     "title": "ソーシャル実績",
@@ -3237,5 +3249,15 @@
     "text": "Timezoniでの集中ウィーク",
     "downloaded": "画像を保存しました",
     "error": "画像を作成できませんでした"
+  },
+  "plannedbanner": {
+    "now": "今の予定",
+    "next": "次の予定",
+    "missed": "遅れています",
+    "start": "今すぐ開始",
+    "in30": "+30分",
+    "tomorrow": "明日",
+    "dismiss": "閉じる",
+    "no_project": "ここから開始するにはブロックにプロジェクトを設定してください。"
   }
 }

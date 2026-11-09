@@ -2520,7 +2520,8 @@
       "reengage": "Wir vermissen dich",
       "social_invites": "Einladungen & Freunde",
       "task_updates": "Aufgaben & Boards",
-      "morning_kickoff": "Morgenstart"
+      "morning_kickoff": "Morgenstart",
+      "block_reminders": "Erinnerungen an geplante Blöcke"
     },
     "diagnostics": "Diagnose",
     "errors": {
@@ -3193,7 +3194,18 @@
     "repeat": "Diesen Tag an leeren Tagen wiederholen",
     "copied": "{{count}} Blöcke kopiert",
     "routines": "Geplante Routinen: {{min}} Min",
-    "today": "Heute"
+    "today": "Heute",
+    "prev_week": "Vorherige Woche",
+    "next_week": "Nächste Woche",
+    "this_week": "Diese Woche",
+    "plan_next_prompt": "Plane jetzt die nächste Woche",
+    "empty_days_one": "{{count}} Tag ohne Plan",
+    "empty_days_other": "{{count}} Tage ohne Plan",
+    "vs_prev": "{{sign}}{{value}} ggü. Vorwoche",
+    "copy_prev_week": "Vorwoche ({{count}} Blöcke) in leere Tage kopieren",
+    "past_readonly": "Vergangener Tag — nur lesen",
+    "move": "Block bearbeiten / verschieben",
+    "field_day": "Tag"
   },
   "social_ach": {
     "title": "Soziale Erfolge",
@@ -3237,5 +3249,15 @@
     "text": "Meine Fokuswoche bei Timezoni",
     "downloaded": "Bild heruntergeladen",
     "error": "Bild konnte nicht erstellt werden"
+  },
+  "plannedbanner": {
+    "now": "Jetzt geplant",
+    "next": "Als Nächstes geplant",
+    "missed": "Verpasst",
+    "start": "Jetzt starten",
+    "in30": "+30 Min",
+    "tomorrow": "Morgen",
+    "dismiss": "Verwerfen",
+    "no_project": "Wähle ein Projekt im Block, um hier zu starten."
   }
 }

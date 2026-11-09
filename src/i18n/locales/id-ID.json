@@ -2520,7 +2520,8 @@
       "reengage": "Kami rindu kamu",
       "social_invites": "Undangan & teman",
       "task_updates": "Tugas & papan",
-      "morning_kickoff": "Pemicu pagi"
+      "morning_kickoff": "Pemicu pagi",
+      "block_reminders": "Pengingat blok terencana"
     },
     "diagnostics": "Diagnostik",
     "errors": {
@@ -3193,7 +3194,18 @@
     "repeat": "Ulangi hari ini di hari kosong",
     "copied": "{{count}} blok disalin",
     "routines": "Rutinitas terjadwal: {{min}} mnt",
-    "today": "Hari ini"
+    "today": "Hari ini",
+    "prev_week": "Minggu lalu",
+    "next_week": "Minggu depan",
+    "this_week": "Minggu ini",
+    "plan_next_prompt": "Rencanakan minggu depan sekarang",
+    "empty_days_one": "{{count}} hari tanpa rencana",
+    "empty_days_other": "{{count}} hari tanpa rencana",
+    "vs_prev": "{{sign}}{{value}} vs. minggu lalu",
+    "copy_prev_week": "Salin minggu lalu ({{count}} blok) ke hari kosong",
+    "past_readonly": "Hari lalu — hanya baca",
+    "move": "Edit / pindahkan blok",
+    "field_day": "Hari"
   },
   "social_ach": {
     "title": "Pencapaian sosial",
@@ -3237,5 +3249,15 @@
     "text": "Minggu fokusku di Timezoni",
     "downloaded": "Gambar diunduh",
     "error": "Gagal membuat gambar"
+  },
+  "plannedbanner": {
+    "now": "Kamu rencanakan sekarang",
+    "next": "Berikutnya di rencanamu",
+    "missed": "Terlewat",
+    "start": "Mulai sekarang",
+    "in30": "+30 mnt",
+    "tomorrow": "Besok",
+    "dismiss": "Abaikan",
+    "no_project": "Pilih proyek di blok untuk mulai dari sini."
   }
 }

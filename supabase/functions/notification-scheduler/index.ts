@@ -164,6 +164,7 @@ async function processHabitReminder(users: { user_id: string; tz: string }[]) {
     if (usual === null || usual !== hourNow || usual >= 20) continue;
     const today = localDate(u.tz);
     if (starts.some((s) => s.date === today)) continue;
+    if (await hasPlannedBlockToday(u.user_id, u.tz)) continue;
     await sendPushToUser({ userId: u.user_id, kind: "habit_reminder", url: "/today" });
   }
 }
@@ -364,6 +365,50 @@ async function processTaskDueToday(users: { user_id: string; tz: string }[]) {
   }
 }
 
+// Lembrete de bloco planejado: o agendador roda de hora em hora, então avisa
+// os blocos que começam na próxima hora. reminder_sent_at evita duplicados.
+async function processBlockReminders(users: { user_id: string; tz: string }[]) {
+  const now = Date.now();
+  const from = new Date(now).toISOString();
+  const to = new Date(now + 60 * 60_000).toISOString();
+  for (const u of users) {
+    const { data: blocks } = await admin
+      .from("time_blocks")
+      .select("id,title,start_at")
+      .eq("user_id", u.user_id)
+      .eq("is_done", false)
+      .is("time_entry_id", null)
+      .is("reminder_sent_at", null)
+      .gte("start_at", from)
+      .lt("start_at", to)
+      .order("start_at")
+      .limit(3);
+    for (const b of (blocks || []) as any[]) {
+      const { data: claimed } = await admin
+        .from("time_blocks")
+        .update({ reminder_sent_at: new Date().toISOString() })
+        .eq("id", b.id)
+        .is("reminder_sent_at", null)
+        .select("id");
+      if (!claimed?.length) continue;
+      const time = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: u.tz }).format(new Date(b.start_at));
+      await sendPushToUser({ userId: u.user_id, kind: "block_reminder", vars: { block_title: b.title, block_time: time }, url: "/timer" });
+    }
+  }
+}
+
+async function hasPlannedBlockToday(userId: string, tz: string): Promise<boolean> {
+  const today = localDate(tz);
+  const { data } = await admin
+    .from("time_blocks")
+    .select("start_at")
+    .eq("user_id", userId)
+    .gte("start_at", new Date(Date.now() - 24 * 3600_000).toISOString())
+    .lt("start_at", new Date(Date.now() + 24 * 3600_000).toISOString())
+    .limit(20);
+  return (data || []).some((r: any) => localDate(tz, new Date(r.start_at)) === today);
+}
+
 async function processRoomSessionReminders(users: { user_id: string; tz: string }[]) {
   const from = new Date(Date.now() + 20 * 60_000).toISOString();
   const to = new Date(Date.now() + 40 * 60_000).toISOString();
@@ -434,6 +479,7 @@ Deno.serve(async (_req) => {
       runSafe("morning_kickoff", () => processMorningKickoff(users)),
       runSafe("task_due_today", () => processTaskDueToday(users)),
       runSafe("room_session_reminders", () => processRoomSessionReminders(users)),
+      runSafe("block_reminders", () => processBlockReminders(users)),
     ]);
     const cleaned = await cleanupDeadSubscriptions().catch(() => 0);
     return new Response(

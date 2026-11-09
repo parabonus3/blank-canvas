@@ -29,7 +29,8 @@ export type NotifKind =
   | "duel_tie"
   | "room_session_updated"
   | "room_session_cancelled"
-  | "habit_reminder";
+  | "habit_reminder"
+  | "block_reminder";
 
 type LangPack = Partial<Record<NotifKind, { title: string; body: string }[]>>;
 
@@ -993,18 +994,18 @@ const D: Record<string, LangPack> = {
 };
 
 const H: Record<string, LangPack> = {
-  "pt-BR": { habit_reminder: [{ title: "⏱️ Sua hora de foco", body: "Você costuma começar agora. Que tal uma sessão rápida?" }, { title: "🔥 Mantenha o ritmo", body: "É seu horário habitual. Comece uma sessão e garanta o dia." }] },
-  "en-US": { habit_reminder: [{ title: "⏱️ Your focus time", body: "You usually start around now. How about a quick session?" }, { title: "🔥 Keep the rhythm", body: "It's your usual time. Start a session and secure today." }] },
-  "es-ES": { habit_reminder: [{ title: "⏱️ Tu hora de enfoque", body: "Sueles empezar ahora. ¿Una sesión rápida?" }] },
-  "fr-FR": { habit_reminder: [{ title: "⏱️ C'est l'heure de te concentrer", body: "Tu commences souvent maintenant. Une petite session ?" }] },
-  "de-DE": { habit_reminder: [{ title: "⏱️ Deine Fokuszeit", body: "Normalerweise fängst du jetzt an. Eine kurze Sitzung?" }] },
-  "it-IT": { habit_reminder: [{ title: "⏱️ È il tuo momento di focus", body: "Di solito inizi adesso. Una sessione veloce?" }] },
-  "ja-JP": { habit_reminder: [{ title: "⏱️ いつもの集中時間です", body: "いつもこの時間に始めています。少しだけ始めませんか？" }] },
-  "ko-KR": { habit_reminder: [{ title: "⏱️ 집중할 시간이에요", body: "평소 이 시간에 시작했어요. 짧게 한 세션 어때요?" }] },
-  "zh-CN": { habit_reminder: [{ title: "⏱️ 专注时间到了", body: "你通常在这个时间开始。来一次快速专注吧？" }] },
-  "ru-RU": { habit_reminder: [{ title: "⏱️ Время сосредоточиться", body: "Обычно вы начинаете в это время. Короткая сессия?" }] },
-  "ar-SA": { habit_reminder: [{ title: "⏱️ وقت التركيز", body: "عادةً تبدأ في هذا الوقت. ما رأيك بجلسة قصيرة؟" }] },
-  "id-ID": { habit_reminder: [{ title: "⏱️ Waktunya fokus", body: "Biasanya kamu mulai sekarang. Satu sesi singkat?" }] },
+  "pt-BR": { block_reminder: [{ title: "📅 Hora do seu plano", body: "Você planejou \"{{block_title}}\" às {{block_time}}. Toque para começar." }], habit_reminder: [{ title: "⏱️ Sua hora de foco", body: "Você costuma começar agora. Que tal uma sessão rápida?" }, { title: "🔥 Mantenha o ritmo", body: "É seu horário habitual. Comece uma sessão e garanta o dia." }] },
+  "en-US": { block_reminder: [{ title: "📅 Time for your plan", body: "You planned \"{{block_title}}\" at {{block_time}}. Tap to start." }], habit_reminder: [{ title: "⏱️ Your focus time", body: "You usually start around now. How about a quick session?" }, { title: "🔥 Keep the rhythm", body: "It's your usual time. Start a session and secure today." }] },
+  "es-ES": { block_reminder: [{ title: "📅 Hora de tu plan", body: "Planeaste \"{{block_title}}\" a las {{block_time}}. Toca para empezar." }], habit_reminder: [{ title: "⏱️ Tu hora de enfoque", body: "Sueles empezar ahora. ¿Una sesión rápida?" }] },
+  "fr-FR": { block_reminder: [{ title: "📅 C'est l'heure de ton plan", body: "Tu as prévu « {{block_title}} » à {{block_time}}. Touche pour commencer." }], habit_reminder: [{ title: "⏱️ C'est l'heure de te concentrer", body: "Tu commences souvent maintenant. Une petite session ?" }] },
+  "de-DE": { block_reminder: [{ title: "📅 Zeit für deinen Plan", body: "Du hast „{{block_title}}“ um {{block_time}} geplant. Tippe zum Starten." }], habit_reminder: [{ title: "⏱️ Deine Fokuszeit", body: "Normalerweise fängst du jetzt an. Eine kurze Sitzung?" }] },
+  "it-IT": { block_reminder: [{ title: "📅 È l'ora del tuo piano", body: "Hai pianificato \"{{block_title}}\" alle {{block_time}}. Tocca per iniziare." }], habit_reminder: [{ title: "⏱️ È il tuo momento di focus", body: "Di solito inizi adesso. Una sessione veloce?" }] },
+  "ja-JP": { block_reminder: [{ title: "📅 計画の時間です", body: "{{block_time}}に「{{block_title}}」を予定しています。タップして開始。" }], habit_reminder: [{ title: "⏱️ いつもの集中時間です", body: "いつもこの時間に始めています。少しだけ始めませんか？" }] },
+  "ko-KR": { block_reminder: [{ title: "📅 계획한 시간이에요", body: "{{block_time}}에 \"{{block_title}}\"을(를) 계획했어요. 탭해서 시작하세요." }], habit_reminder: [{ title: "⏱️ 집중할 시간이에요", body: "평소 이 시간에 시작했어요. 짧게 한 세션 어때요?" }] },
+  "zh-CN": { block_reminder: [{ title: "📅 计划时间到了", body: "你计划在 {{block_time}} 进行「{{block_title}}」。点按开始。" }], habit_reminder: [{ title: "⏱️ 专注时间到了", body: "你通常在这个时间开始。来一次快速专注吧？" }] },
+  "ru-RU": { block_reminder: [{ title: "📅 Время по плану", body: "Вы запланировали «{{block_title}}» на {{block_time}}. Нажмите, чтобы начать." }], habit_reminder: [{ title: "⏱️ Время сосредоточиться", body: "Обычно вы начинаете в это время. Короткая сессия?" }] },
+  "ar-SA": { block_reminder: [{ title: "📅 حان وقت خطتك", body: "خططت لـ \"{{block_title}}\" في {{block_time}}. اضغط للبدء." }], habit_reminder: [{ title: "⏱️ وقت التركيز", body: "عادةً تبدأ في هذا الوقت. ما رأيك بجلسة قصيرة؟" }] },
+  "id-ID": { block_reminder: [{ title: "📅 Waktunya rencanamu", body: "Kamu merencanakan \"{{block_title}}\" pukul {{block_time}}. Ketuk untuk mulai." }], habit_reminder: [{ title: "⏱️ Waktunya fokus", body: "Biasanya kamu mulai sekarang. Satu sesi singkat?" }] },
 };
 
 function render(tpl: string, vars: Record<string, string | number>): string {

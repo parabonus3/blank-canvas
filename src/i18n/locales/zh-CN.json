@@ -2520,7 +2520,8 @@
       "reengage": "想你了",
       "social_invites": "邀请与好友",
       "task_updates": "任务与看板",
-      "morning_kickoff": "早晨启动"
+      "morning_kickoff": "早晨启动",
+      "block_reminders": "计划时段提醒"
     },
     "diagnostics": "诊断",
     "errors": {
@@ -3193,7 +3194,18 @@
     "repeat": "将这天复制到空白日",
     "copied": "已复制 {{count}} 个时间块",
     "routines": "计划的例程：{{min}} 分钟",
-    "today": "今天"
+    "today": "今天",
+    "prev_week": "上一周",
+    "next_week": "下一周",
+    "this_week": "本周",
+    "plan_next_prompt": "现在就计划下周",
+    "empty_days_one": "{{count}} 天没有计划",
+    "empty_days_other": "{{count}} 天没有计划",
+    "vs_prev": "较上周 {{sign}}{{value}}",
+    "copy_prev_week": "将上周（{{count}} 个时段）复制到空白日",
+    "past_readonly": "已过去的日期 — 只读",
+    "move": "编辑 / 移动时段",
+    "field_day": "日期"
   },
   "social_ach": {
     "title": "社交成就",
@@ -3237,5 +3249,15 @@
     "text": "我在 Timezoni 的专注一周",
     "downloaded": "图片已下载",
     "error": "无法生成图片"
+  },
+  "plannedbanner": {
+    "now": "你计划现在做",
+    "next": "计划中的下一项",
+    "missed": "已错过",
+    "start": "立即开始",
+    "in30": "+30 分钟",
+    "tomorrow": "明天",
+    "dismiss": "忽略",
+    "no_project": "为时段选择项目即可从这里开始。"
   }
 }

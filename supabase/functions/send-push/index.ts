@@ -134,6 +134,7 @@ export async function sendPushToUser(args: SendArgs): Promise<{ sent: number; sk
       task_comment: "task_updates",
       task_due_today: "task_updates",
       morning_kickoff: "morning_kickoff",
+      block_reminder: "block_reminders",
     };
     if (prefs) {
       const key = prefKey[kind];

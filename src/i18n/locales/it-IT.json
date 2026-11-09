@@ -2506,7 +2506,8 @@
       "reengage": "Ci manchi",
       "social_invites": "Inviti e amici",
       "task_updates": "Attività e bacheche",
-      "morning_kickoff": "Avvio mattutino"
+      "morning_kickoff": "Avvio mattutino",
+      "block_reminders": "Promemoria dei blocchi pianificati"
     },
     "diagnostics": "Diagnostica",
     "errors": {
@@ -3179,7 +3180,18 @@
     "repeat": "Ripeti questo giorno nei giorni vuoti",
     "copied": "{{count}} blocchi copiati",
     "routines": "Routine previste: {{min}} min",
-    "today": "Oggi"
+    "today": "Oggi",
+    "prev_week": "Settimana precedente",
+    "next_week": "Prossima settimana",
+    "this_week": "Questa settimana",
+    "plan_next_prompt": "Pianifica ora la prossima settimana",
+    "empty_days_one": "{{count}} giorno senza piano",
+    "empty_days_other": "{{count}} giorni senza piano",
+    "vs_prev": "{{sign}}{{value}} vs. settimana scorsa",
+    "copy_prev_week": "Copia la settimana scorsa ({{count}} blocchi) nei giorni vuoti",
+    "past_readonly": "Giorno passato — sola lettura",
+    "move": "Modifica / sposta blocco",
+    "field_day": "Giorno"
   },
   "social_ach": {
     "title": "Traguardi social",
@@ -3223,5 +3235,15 @@
     "text": "La mia settimana di focus su Timezoni",
     "downloaded": "Immagine scaricata",
     "error": "Impossibile creare l'immagine"
+  },
+  "plannedbanner": {
+    "now": "Pianificato ora",
+    "next": "Prossimo nel tuo piano",
+    "missed": "Rimasto indietro",
+    "start": "Inizia ora",
+    "in30": "+30 min",
+    "tomorrow": "Domani",
+    "dismiss": "Ignora",
+    "no_project": "Scegli un progetto nel blocco per avviarlo da qui."
   }
 }

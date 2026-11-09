@@ -2506,7 +2506,8 @@
       "reengage": "اشتقنا لك",
       "social_invites": "الدعوات والأصدقاء",
       "task_updates": "المهام واللوحات",
-      "morning_kickoff": "انطلاقة الصباح"
+      "morning_kickoff": "انطلاقة الصباح",
+      "block_reminders": "تذكيرات الكتل المخططة"
     },
     "diagnostics": "التشخيص",
     "errors": {
@@ -3179,7 +3180,18 @@
     "repeat": "كرر هذا اليوم في الأيام الفارغة",
     "copied": "تم نسخ {{count}} كتل",
     "routines": "الروتينات المتوقعة: {{min}} د",
-    "today": "اليوم"
+    "today": "اليوم",
+    "prev_week": "الأسبوع السابق",
+    "next_week": "الأسبوع القادم",
+    "this_week": "هذا الأسبوع",
+    "plan_next_prompt": "خطط للأسبوع القادم الآن",
+    "empty_days_one": "{{count}} يوم بلا خطة",
+    "empty_days_other": "{{count}} أيام بلا خطة",
+    "vs_prev": "{{sign}}{{value}} مقارنة بالأسبوع السابق",
+    "copy_prev_week": "نسخ الأسبوع السابق ({{count}} كتل) إلى الأيام الفارغة",
+    "past_readonly": "يوم مضى — للقراءة فقط",
+    "move": "تعديل / نقل الكتلة",
+    "field_day": "اليوم"
   },
   "social_ach": {
     "title": "إنجازات اجتماعية",
@@ -3223,5 +3235,15 @@
     "text": "أسبوع تركيزي على Timezoni",
     "downloaded": "تم تنزيل الصورة",
     "error": "تعذر إنشاء الصورة"
+  },
+  "plannedbanner": {
+    "now": "خططت لهذا الآن",
+    "next": "التالي في خطتك",
+    "missed": "فاتك",
+    "start": "ابدأ الآن",
+    "in30": "+30 دقيقة",
+    "tomorrow": "غدًا",
+    "dismiss": "تجاهل",
+    "no_project": "اختر مشروعًا للكتلة لتبدأ من هنا."
   }
 }
