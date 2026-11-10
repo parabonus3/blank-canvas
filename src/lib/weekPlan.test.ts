@@ -76,3 +76,17 @@ describe("planejar próximas semanas", () => {
     expect(currentOrNextBlock([b(9, { is_done: true })], fri)).toBeNull();
   });
 });
+
+import { blockAfter as _ba, dayBlocksProgress as _dp } from "./weekPlan";
+describe("NowCard helpers", () => {
+  const now = new Date(2026, 10, 9, 10, 0);
+  const mk = (id: string, h: number, extra: any = {}) => ({ id, title: id, project_id: null, task_id: null, start_at: new Date(2026, 10, 9, h).toISOString(), end_at: new Date(2026, 10, 9, h + 1).toISOString(), ...extra });
+  it("blockAfter returns the next open block after the current one", () => {
+    const bs = [mk("a", 10), mk("b", 12, { is_done: true }), mk("c", 14)];
+    expect(_ba(bs, "a", now)?.id).toBe("c");
+  });
+  it("dayBlocksProgress counts done and linked blocks", () => {
+    const bs = [mk("a", 8, { time_entry_id: "x" }), mk("b", 9, { is_done: true }), mk("c", 14)];
+    expect(_dp(bs, now)).toEqual({ done: 2, total: 3 });
+  });
+});

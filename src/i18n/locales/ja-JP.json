@@ -3259,5 +3259,15 @@
     "tomorrow": "明日",
     "dismiss": "閉じる",
     "no_project": "ここから開始するにはブロックにプロジェクトを設定してください。"
+  },
+  "nowcard": {
+    "title": "今",
+    "progress": "{{total}}件中{{done}}件完了",
+    "see_day": "今日を見る",
+    "routine_today": "今日のルーティン",
+    "all_done": "今日の予定はすべて完了！",
+    "nothing": "今の予定はありません。「今日」で計画するかルーティンを開始。",
+    "after": "次",
+    "start_routine": "ルーティン開始"
   }
 }

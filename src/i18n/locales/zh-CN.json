@@ -3259,5 +3259,15 @@
     "tomorrow": "明天",
     "dismiss": "忽略",
     "no_project": "为时段选择项目即可从这里开始。"
+  },
+  "nowcard": {
+    "title": "现在",
+    "progress": "已完成 {{done}}/{{total}}",
+    "see_day": "查看今天",
+    "routine_today": "今日例程",
+    "all_done": "今天的计划全部完成！",
+    "nothing": "现在没有安排。在“今天”中规划或开始一个例程。",
+    "after": "接下来",
+    "start_routine": "开始例程"
   }
 }

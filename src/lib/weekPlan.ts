@@ -96,3 +96,18 @@ export function copyDayToEmptyDays<T extends PlanBlock>(source: T[], targets: { 
   }
   return out;
 }
+
+/** Próximo bloco aberto de hoje depois do bloco informado (para a linha "Depois"). */
+export function blockAfter<T extends PlanBlock & { id: string; is_done?: boolean; time_entry_id?: string | null }>(blocks: T[], currentId: string, now = new Date()) {
+  const cur = blocks.find((b) => b.id === currentId);
+  if (!cur) return null;
+  return blocks
+    .filter((b) => b.id !== currentId && !b.is_done && !b.time_entry_id && sameLocalDay(new Date(b.start_at), now) && b.start_at >= cur.start_at)
+    .sort((a, b) => a.start_at.localeCompare(b.start_at))[0] ?? null;
+}
+
+/** Quantos blocos de hoje já foram feitos (marcados ou com sessão vinculada). */
+export function dayBlocksProgress<T extends PlanBlock & { is_done?: boolean; time_entry_id?: string | null }>(blocks: T[], now = new Date()) {
+  const today = blocks.filter((b) => sameLocalDay(new Date(b.start_at), now));
+  return { done: today.filter((b) => b.is_done || !!b.time_entry_id).length, total: today.length };
+}

@@ -46,8 +46,7 @@ import { DeepWorkBar } from "@/components/timer/DeepWorkBar";
 import { useSaveFocusCommitment, type InterruptionReason } from "@/hooks/useFocusCommitments";
 import { ToastAction } from "@/components/ui/toast";
 import { useToggleChecklist } from "@/hooks/useChecklists";
-import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
-import { PlannedBlockBanner } from "@/components/timer/PlannedBlockBanner";
+import { NowCard } from "@/components/timer/NowCard";
 import { useUpdateTimeBlock } from "@/hooks/useTimeBlocks";
 import { RoutineRunBar } from "@/components/timer/RoutineRunBar";
 import { useFocusRoutines, useRoutineRun, type FocusRoutine } from "@/hooks/useFocusRoutines";
@@ -829,9 +828,10 @@ export default function Index() {
                    </Collapsible>
 
                   {!activeEntry && !routineRun.run && (
-                    <PlannedBlockBanner
+                    <NowCard
                       disabled={startTimer.isPending}
-                      onStart={async (b) => {
+                      onStartRoutine={handleStartRoutine}
+                      onStartBlock={async (b) => {
                         if (!b.project_id) return;
                         playPageStart();
                         resetInactivityCheck();
@@ -852,9 +852,7 @@ export default function Index() {
                       onSkip={routineRun.skipCurrent}
                       onStop={routineRun.stop}
                     />
-                  ) : (
-                    <FocusRoutinesCard onStart={handleStartRoutine} />
-                  )}
+                  ) : null}
 
                   {activeProjects.length === 0 && !projectsLoading && (
                     <p className="text-sm text-muted-foreground text-center">

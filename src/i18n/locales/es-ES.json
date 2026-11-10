@@ -3266,5 +3266,15 @@
     "tomorrow": "Mañana",
     "dismiss": "Descartar",
     "no_project": "Elige un proyecto en el bloque para iniciarlo aquí."
+  },
+  "nowcard": {
+    "title": "Ahora",
+    "progress": "{{done}} de {{total}} hechos",
+    "see_day": "Ver mi día",
+    "routine_today": "Rutina de hoy",
+    "all_done": "¡Todo lo planeado para hoy está hecho!",
+    "nothing": "Nada previsto ahora. Planifica en Hoy o inicia una rutina.",
+    "after": "Después",
+    "start_routine": "Iniciar rutina"
   }
 }

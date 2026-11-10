@@ -3259,5 +3259,15 @@
     "tomorrow": "Besok",
     "dismiss": "Abaikan",
     "no_project": "Pilih proyek di blok untuk mulai dari sini."
+  },
+  "nowcard": {
+    "title": "Sekarang",
+    "progress": "{{done}} dari {{total}} selesai",
+    "see_day": "Lihat hariku",
+    "routine_today": "Rutinitas hari ini",
+    "all_done": "Semua rencana hari ini selesai!",
+    "nothing": "Tidak ada jadwal. Rencanakan di Hari Ini atau mulai rutinitas.",
+    "after": "Berikutnya",
+    "start_routine": "Mulai rutinitas"
   }
 }

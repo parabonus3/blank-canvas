@@ -10,6 +10,7 @@ import { DayAgendaCard } from "@/components/timer/DayAgendaCard";
 import { ActiveGoalsStrip } from "@/components/timer/ActiveGoalsStrip";
 import { WeeklyReviewCard } from "@/components/timer/WeeklyReviewCard";
 import { WeekPlanCard } from "@/components/timer/WeekPlanCard";
+import { FocusRoutinesCard } from "@/components/timer/FocusRoutinesCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -160,6 +161,7 @@ export default function Today() {
 
         {!isLoading && <DayAgendaCard />}
         {!isLoading && <WeekPlanCard />}
+        {!isLoading && <FocusRoutinesCard onStart={(r) => navigate(`/timer?routine=${r.id}`)} />}
         <WeeklyReviewCard compact />
 
         {!isLoading && <section className="space-y-2">

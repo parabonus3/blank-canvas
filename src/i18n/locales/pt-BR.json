@@ -3409,5 +3409,15 @@
     "tomorrow": "Amanhã",
     "dismiss": "Dispensar",
     "no_project": "Escolha um projeto no bloco para iniciar daqui."
+  },
+  "nowcard": {
+    "title": "Agora",
+    "progress": "{{done}} de {{total}} feitos",
+    "see_day": "Ver meu dia",
+    "routine_today": "Rotina de hoje",
+    "all_done": "Tudo do plano de hoje está feito!",
+    "nothing": "Nada previsto agora. Planeje em Hoje ou inicie uma rotina.",
+    "after": "Depois",
+    "start_routine": "Iniciar rotina"
   }
 }

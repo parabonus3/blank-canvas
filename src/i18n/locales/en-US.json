@@ -3354,5 +3354,15 @@
     "tomorrow": "Tomorrow",
     "dismiss": "Dismiss",
     "no_project": "Pick a project on the block to start from here."
+  },
+  "nowcard": {
+    "title": "Now",
+    "progress": "{{done}} of {{total}} done",
+    "see_day": "See my day",
+    "routine_today": "Today's routine",
+    "all_done": "Everything planned for today is done!",
+    "nothing": "Nothing scheduled now. Plan in Today or start a routine.",
+    "after": "Next",
+    "start_routine": "Start routine"
   }
 }

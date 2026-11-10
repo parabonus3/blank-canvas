@@ -3245,5 +3245,15 @@
     "tomorrow": "내일",
     "dismiss": "닫기",
     "no_project": "여기서 시작하려면 블록에 프로젝트를 지정하세요."
+  },
+  "nowcard": {
+    "title": "지금",
+    "progress": "{{total}}개 중 {{done}}개 완료",
+    "see_day": "내 하루 보기",
+    "routine_today": "오늘의 루틴",
+    "all_done": "오늘 계획을 모두 마쳤어요!",
+    "nothing": "지금 예정된 것이 없습니다. 오늘에서 계획하거나 루틴을 시작하세요.",
+    "after": "다음",
+    "start_routine": "루틴 시작"
   }
 }
